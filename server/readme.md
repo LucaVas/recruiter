@@ -84,14 +84,16 @@ Allows admin to approve other users.
 
 Request payload description:
 
-| Key  | Type     | Description                          | Requirements |
-|:-----|:---------|:-------------------------------------|:-------------|
-| `id` | `number` | **Required**: Id of user to approve. |              |
+| Key        | Type      | Description                            | Requirements                                                   |
+|:-----------|:----------|:---------------------------------------|:---------------------------------------------------------------|
+| `approved` | `boolean` | **Required**: Approval status of user. |                                                                |
+| `comments` | `string`  | **Required**: Comments from approver.  |                                                                |
 
 Request payload example:
 ```json
 {
-  "id": 1
+  "approved": true,
+  "comments": "No comments"
 }
 ```
 

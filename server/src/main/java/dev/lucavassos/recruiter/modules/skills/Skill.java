@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.skills;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,9 +27,12 @@ public class Skill {
     private Long id;
 
     @Column(nullable = false)
+    @Size(min = 1, message = "Skill name must be at least 1 character long")
     private String name;
 
-    @ManyToMany(mappedBy = "skills")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "job_skills", joinColumns = @JoinColumn(name = "skill_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_id"))
     private List<Job> jobs;
 
     @OneToMany(mappedBy="skill")
@@ -39,9 +43,4 @@ public class Skill {
 
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
-
-    public Skill(String name, List<Job> jobs) {
-        this.name = name;
-        this.jobs = jobs;
-    }
 }

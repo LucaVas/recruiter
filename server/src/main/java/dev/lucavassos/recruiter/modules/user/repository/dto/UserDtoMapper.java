@@ -19,7 +19,7 @@ public class UserDtoMapper implements Function<User, UserDto> {
                 user.getCountry(),
                 user.getRole(),
                 user.getComments(),
-                user.getApproved(),
+                user.isApproved(),
                 new ApproverDto(
                         user.getId(),
                         user.getUsername()

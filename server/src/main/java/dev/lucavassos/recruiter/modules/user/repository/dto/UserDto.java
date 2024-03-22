@@ -2,6 +2,7 @@ package dev.lucavassos.recruiter.modules.user.repository.dto;
 
 import dev.lucavassos.recruiter.modules.user.domain.Role;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public record UserDto(
@@ -15,6 +16,6 @@ public record UserDto(
         String comments,
         Boolean approved,
         ApproverDto approver,
-        Date approvedOn
+        LocalDateTime approvedOn
 ) {
 }

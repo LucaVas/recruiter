@@ -11,7 +11,7 @@ public record JobDto(
         JobStatus status,
         Integer wantedCVs,
         List<SkillDto> skills,
-        String experienceRange,
+        Double experienceRange,
         Integer noticePeriodInDays,
         Double salaryBudget,
         String description,

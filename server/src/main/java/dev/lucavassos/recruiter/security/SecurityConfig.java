@@ -27,7 +27,8 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "api/v*/login/**",
                                         "api/v*/signup/**",
-                                        "api/v*/users/**").permitAll()
+                                        "api/v*/users/**",
+                                        "api/v*/resetEmail/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());

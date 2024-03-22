@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name="users")
 public class User {
 
@@ -26,43 +28,43 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    @Size(min = 3, max = 50)
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters long")
     private String username;
 
     @Column(nullable = false, unique = true)
-    @Size(min = 5, max = 50)
-    @Email
+    @Size(min = 5, max = 50, message = "Email must be between 5 and 50 characters long")
+    @Email(message = "Invalid email")
     private String email;
 
     @Column(nullable = false)
-    @Size(min = 8, max = 64)
-    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$")
+    @Size(min = 8, max = 64, message = "Password must be between 8 and 64 characters long")
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$", message = "Invalid password. Password must contain at least 1 lowercase letter, 1 uppercase letter and 1 number.")
     private String password;
 
     @Column(nullable = false, unique = true)
-    @Size(min = 5, max = 10)
+    @Size(min = 5, max = 10, message = "Mobile number must be between 5 and 10 characters long")
     private String mobile;
 
     @Column(nullable = false)
-    @Size(min = 3, max = 50)
+    @Size(min = 3, max = 50, message = "City name must be between 3 and 50 characters long")
     private String city;
 
     @Column(nullable = false)
-    @Size(min = 3, max = 50)
+    @Size(min = 3, max = 50, message = "Country name must be between 3 and 50 characters long")
     private String country;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column
-    @Size(max = 500)
     private String comments;
 
-    @OneToMany(mappedBy = "recruiter")
-    private List<Candidate> candidates;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private PasswordResetToken passwordResetToken;
 
     @Column(nullable = false)
-    private Boolean approved = false;
+    private boolean approved = false;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "approver_id")
@@ -70,21 +72,11 @@ public class User {
 
     @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date approvedOn;
+    private LocalDateTime approvedOn;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
-
-    public User(String username, String email, String password, String mobile, String city, String country, Role role) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.mobile = mobile;
-        this.city = city;
-        this.country = country;
-        this.role = role;
-    }
 }

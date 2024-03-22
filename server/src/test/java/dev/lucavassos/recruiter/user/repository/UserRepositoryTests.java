@@ -15,6 +15,10 @@ import org.springframework.test.annotation.Rollback;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static dev.lucavassos.recruiter.testUtils.RandomUtils.randomEmail;
+import static dev.lucavassos.recruiter.testUtils.RandomUtils.randomPhoneNumber;
+import static dev.lucavassos.recruiter.testUtils.RandomUtils.randomLowerCaseString;
+import static dev.lucavassos.recruiter.testUtils.RandomUtils.randomString;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -33,15 +37,15 @@ public class UserRepositoryTests {
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        User user = new User(
-                "username",
-                "user@email.com",
-                encoder.encode("Password123"),
-                "1234567890",
-                "city",
-                "country",
-                Role.RECRUITER
-        );
+        User user = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(encoder.encode("Password123"))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
         User savedUser = repository.save(user);
 
@@ -53,25 +57,26 @@ public class UserRepositoryTests {
 
     @Test
     public void save_throws_error_if_email_exists() {
-        User user1 = new User(
-                "username1",
-                "user@email.com",
-                "Password123",
-                "1234567890",
-                "city1",
-                "country1",
-                Role.RECRUITER
-        );
 
-        User user2 = new User(
-                "username2",
-                "user@email.com",
-                "Password123",
-                "1234567891",
-                "city2",
-                "country2",
-                Role.RECRUITER
-        );
+        User user1 = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email("user@mail.com")
+                .password(randomString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
+
+        User user2 = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email("user@mail.com")
+                .password(randomString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
         repository.save(user1);
 
@@ -83,25 +88,25 @@ public class UserRepositoryTests {
 
     @Test
     public void save_throws_error_if_mobile_exists() {
-        User user1 = new User(
-                "username1",
-                "user1@email.com",
-                "Password123",
-                "1234567890",
-                "city1",
-                "country1",
-                Role.RECRUITER
-        );
+        User user1 = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile("1234567890")
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
-        User user2 = new User(
-                "username2",
-                "user2@email.com",
-                "Password123",
-                "1234567890",
-                "city2",
-                "country2",
-                Role.RECRUITER
-        );
+        User user2 = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile("1234567890")
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
         repository.save(user1);
 
@@ -112,132 +117,196 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void save_throws_error_if_mobile_is_short_or_long() {
-        User userWithShortMobile = new User(
-                "username",
-                "user@email.com",
-                "Password123",
-                "1234",
-                "city",
-                "country",
-                Role.RECRUITER
-        );
+    public void save_throws_error_if_mobile_is_invalid() {
+        User userWithShortMobile = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile("")
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
-        User userWithLongMobile = new User(
-                "username",
-                "user@email.com",
-                "Password123",
-                "123456789010",
-                "city",
-                "country",
-                Role.RECRUITER
-        );
+        User userWithLongMobile = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile("12345678901")
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
         assertThatThrownBy(() -> {
             repository.save(userWithShortMobile);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("size must be between 5 and 10");
+                .hasMessageContaining("Mobile number must be between 5 and 10 characters long");
         assertThatThrownBy(() -> {
             repository.save(userWithLongMobile);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("size must be between 5 and 10");
+                .hasMessageContaining("Mobile number must be between 5 and 10 characters long");
     }
 
     @Test
-    public void save_throws_error_if_username_is_of_wrong_size() {
-        User userWithShortUsername = new User(
-                "",
-                "user@email.com",
-                "Password123",
-                "1234567890",
-                "city",
-                "country",
-                Role.RECRUITER
-        );
+    public void save_throws_error_if_username_is_invalid() {
+        User userWithShortUsername = User.builder()
+                .username("")
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
-        User userWithLongUsername = new User(
-                "usernameusernameusernameusernameusernameusernameusernameusername",
-                "user@email.com",
-                "Password123",
-                "1234567890",
-                "city",
-                "country",
-                Role.RECRUITER
-        );
+        User userWithLongUsername = User.builder()
+                .username(randomLowerCaseString(51, 100))
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
         assertThatThrownBy(() -> {
             repository.save(userWithShortUsername);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("size must be between 3 and 50");
+                .hasMessageContaining("Username must be between 3 and 50 characters long");
 
         assertThatThrownBy(() -> {
             repository.save(userWithLongUsername);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("size must be between 3 and 50");
+                .hasMessageContaining("Username must be between 3 and 50 characters long");
     }
 
     @Test
     public void save_throws_error_if_email_is_invalid() {
-        User userWithWrongEmail = new User(
-                "username",
-                "ut.com",
-                "Password123",
-                "1234567890",
-                "city",
-                "country",
-                Role.RECRUITER
-        );
+        User userWithWrongEmail = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email("mail.com")
+                .password(randomString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
+
         assertThatThrownBy(() -> {
             repository.save(userWithWrongEmail);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("must be a well-formed email address");
+                .hasMessageContaining("Invalid email");
     }
 
     @Test
-    public void save_throws_error_if_password_is_invalid_short_or_long() {
-        User userWithInvalidPassword = new User(
-                "username",
-                "username@mail.com",
-                "password",
-                "1234567890",
-                "city",
-                "country",
-                Role.RECRUITER
-        );
+    public void save_throws_error_if_password_is_invalid() {
+        User userWithInvalidPassword = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomLowerCaseString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
-        User userWithShortPassword = new User(
-                "username",
-                "username@mail.com",
-                "Pass1",
-                "1234567890",
-                "city",
-                "country",
-                Role.RECRUITER
-        );
+        User userWithShortPassword = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(1, 7))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
-        User userWithLongPassword = new User(
-                "username",
-                "username@mail.com",
-                "Password123Password123Password123Password123Password123Password123Password123Password123",
-                "1234567890",
-                "city",
-                "country",
-                Role.RECRUITER
-        );
+        User userWithLongPassword = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(65, 100))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
+
         assertThatThrownBy(() -> {
             repository.save(userWithInvalidPassword);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("must match");
+                .hasMessageContaining("Invalid password. Password must contain at least 1 lowercase letter, 1 uppercase letter and 1 number.");
         assertThatThrownBy(() -> {
             repository.save(userWithShortPassword);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("size must be between 8 and 64");
+                .hasMessageContaining("Password must be between 8 and 64 characters long");
         assertThatThrownBy(() -> {
             repository.save(userWithLongPassword);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("size must be between 8 and 64");
+                .hasMessageContaining("Password must be between 8 and 64 characters long");
     }
 
+    @Test
+    public void save_throws_error_if_city_is_invalid() {
+        User userWithShortCity = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city("")
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
 
+        User userWithLongCity = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(51, 100))
+                .country(randomLowerCaseString(3, 8))
+                .role(Role.RECRUITER)
+                .build();
+
+        assertThatThrownBy(() -> {
+            repository.save(userWithShortCity);
+        }).isInstanceOf(ConstraintViolationException.class)
+                .hasMessageContaining("City name must be between 3 and 50 characters long");
+        assertThatThrownBy(() -> {
+            repository.save(userWithLongCity);
+        }).isInstanceOf(ConstraintViolationException.class)
+                .hasMessageContaining("City name must be between 3 and 50 characters long");
+    }
+
+    @Test
+    public void save_throws_error_if_country_is_invalid() {
+        User userWithShortCountry = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country("")
+                .role(Role.RECRUITER)
+                .build();
+
+        User userWithLongCountry = User.builder()
+                .username(randomLowerCaseString(3, 8))
+                .email(randomEmail())
+                .password(randomString(8, 64))
+                .mobile(randomPhoneNumber())
+                .city(randomLowerCaseString(3, 8))
+                .country(randomLowerCaseString(51, 100))
+                .role(Role.RECRUITER)
+                .build();
+
+        assertThatThrownBy(() -> {
+            repository.save(userWithShortCountry);
+        }).isInstanceOf(ConstraintViolationException.class)
+                .hasMessageContaining("Country name must be between 3 and 50 characters long");
+        assertThatThrownBy(() -> {
+            repository.save(userWithLongCountry);
+        }).isInstanceOf(ConstraintViolationException.class)
+                .hasMessageContaining("Country name must be between 3 and 50 characters long");
+    }
 
 }

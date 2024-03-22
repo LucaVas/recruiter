@@ -14,7 +14,7 @@ public class NewJobRequest {
     private JobStatus status;
     private Integer wantedCVs;
     private List<Long> skillsIds;
-    private String experienceRange;
+    private Double experienceRange;
     private Integer noticePeriodInDays;
     private Double salaryBudget;
     private String description;
