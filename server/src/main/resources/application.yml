@@ -1,0 +1,26 @@
+server:
+    port: 8080
+    error:
+        include-message: always
+
+spring:
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                format_sql: true
+        show-sql: true
+    datasource:
+        platform: postgres
+        url: jdbc:postgresql://localhost:5432/recruiter
+        username: postgres
+        password: postgres
+        driverClassName: org.postgresql.Driver
+
+cors:
+    allowed-origins: "*"
+    allowed-methods: "*"
+    allowed-headers: "*"
+    exposed-headers: "*"
