@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:16.1-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vilnius4kids
+    ports:
+      - "5435:5432"
+    volumes:
+      - vilnius4kids-db:/var/lib/postgresql/data
+
+  server:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    env_file:
+      - ./server/.env
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: vilnius4kids
+      DB_SSL: false
+      DB_HOST: database
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+
+  client:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+      args:
+        VITE_API_ORIGIN: http://localhost:3001
+        VITE_API_PATH: /api/v1/trpc
+    environment:
+      API_PROXY_PASS: http://server:3000
+    ports:
+      - "3001:80"
+    depends_on:
+      - server
+
+volumes:
+  vilnius4kids-db:

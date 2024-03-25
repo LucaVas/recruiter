@@ -69,12 +69,12 @@ public class UserService {
 
         if (repository.existsUserByEmail(email)) {
             throw new DuplicateResourceException(
-                    "User with email [%s] already exists.".formatted(email)
+                    "User with email %s already exists.".formatted(email)
             );
         }
         if (repository.existsUserByMobile(mobile)) {
             throw new DuplicateResourceException(
-                    "User with mobile [%s] already exists.".formatted(mobile)
+                    "User with mobile %s already exists.".formatted(mobile)
             );
         }
 
@@ -106,7 +106,7 @@ public class UserService {
                 .findOneById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "User with id [%d] not found".formatted(id)
+                                "User with id %d not found".formatted(id)
                         )
                 );
 
