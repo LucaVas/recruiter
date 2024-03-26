@@ -1,9 +1,12 @@
 package dev.lucavassos.recruiter.modules.user.jwt;
 
+import dev.lucavassos.recruiter.modules.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +21,7 @@ import java.io.IOException;
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
     private final JWTUtil jwtUtil;
     private final UserDetailsService service;
 
@@ -46,7 +50,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         if (subject != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = service.loadUserByUsername(subject);
+            LOG.info("UserDetails: {}", userDetails);
             if (jwtUtil.isTokenValid(jwt, userDetails.getUsername())) {
+
+                LOG.info("Valid token");
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities()

@@ -3,8 +3,8 @@
 # 1. Building the App with Maven
 FROM maven:3-jdk-11
 
-ADD . /springbootvuejs
-WORKDIR /springbootvuejs
+ADD . /recruiter
+WORKDIR /recruiter
 
 # Just echo so we can see, if everything is there :)
 RUN ls -l
@@ -20,7 +20,7 @@ FROM openjdk:17.0.2-jdk
 VOLUME /tmp
 
 # Add Spring Boot app.jar to Container
-COPY --from=0 "/springbootvuejs/server/target/server-0.0.1-SNAPSHOT.jar" app.jar
+COPY --from=0 "/recruiter/server/target/server-0.0.1-SNAPSHOT.jar" app.jar
 
 ENV JAVA_OPTS=""
 
