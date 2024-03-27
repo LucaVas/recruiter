@@ -15,7 +15,7 @@ const loading = ref(false);
 const store = useUserStore();
 
 const userForm = ref({
-  email: '',
+  usernameOrEmail: '',
   password: '',
 });
 
@@ -36,7 +36,7 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
           <InputText
             type="email"
             id="email"
-            v-model="userForm.email"
+            v-model="userForm.usernameOrEmail"
             minlength="3"
             maxlength="50"
             required

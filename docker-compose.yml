@@ -7,19 +7,20 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: vilnius4kids
+      POSTGRES_DB: recruiterdb
     ports:
       - "5435:5432"
     volumes:
-      - vilnius4kids-db:/var/lib/postgresql/data
+      - recruiter-db:/var/lib/postgresql/data
 
   server:
     platform: linux/amd64
     build:
       context: .
       dockerfile: ./server/Dockerfile
+      image: recruiter-server:latest
     env_file:
-      - ./server/.env
+      - ./server/src/main/resources/application.yml
     environment:
       DB_USER: postgres
       DB_PASSWORD: postgres
@@ -36,6 +37,7 @@ services:
     build:
       context: .
       dockerfile: ./client/Dockerfile
+      image: recruiter-client:latest
       args:
         VITE_API_ORIGIN: http://localhost:3001
         VITE_API_PATH: /api/v1/trpc

@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.user.repository;
 
-import dev.lucavassos.recruiter.modules.user.domain.Role;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import jakarta.validation.ConstraintViolationException;
@@ -44,7 +43,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         User savedUser = repository.save(user);
@@ -65,7 +63,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         User user2 = User.builder()
@@ -75,7 +72,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         repository.save(user1);
@@ -95,7 +91,6 @@ public class UserRepositoryTests {
                 .mobile("1234567890")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         User user2 = User.builder()
@@ -105,7 +100,6 @@ public class UserRepositoryTests {
                 .mobile("1234567890")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         repository.save(user1);
@@ -125,7 +119,6 @@ public class UserRepositoryTests {
                 .mobile("")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         User userWithLongMobile = User.builder()
@@ -135,7 +128,6 @@ public class UserRepositoryTests {
                 .mobile("12345678901")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         assertThatThrownBy(() -> {
@@ -157,7 +149,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         User userWithLongUsername = User.builder()
@@ -167,7 +158,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         assertThatThrownBy(() -> {
@@ -190,7 +180,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         assertThatThrownBy(() -> {
@@ -208,7 +197,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         User userWithShortPassword = User.builder()
@@ -218,7 +206,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         User userWithLongPassword = User.builder()
@@ -228,7 +215,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         assertThatThrownBy(() -> {
@@ -254,7 +240,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city("")
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         User userWithLongCity = User.builder()
@@ -264,7 +249,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(51, 100))
                 .country(randomLowerCaseString(3, 8))
-                .role(Role.RECRUITER)
                 .build();
 
         assertThatThrownBy(() -> {
@@ -286,7 +270,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country("")
-                .role(Role.RECRUITER)
                 .build();
 
         User userWithLongCountry = User.builder()
@@ -296,7 +279,6 @@ public class UserRepositoryTests {
                 .mobile(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(51, 100))
-                .role(Role.RECRUITER)
                 .build();
 
         assertThatThrownBy(() -> {

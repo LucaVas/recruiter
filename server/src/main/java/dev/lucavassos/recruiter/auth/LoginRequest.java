@@ -1,8 +1,14 @@
 package dev.lucavassos.recruiter.auth;
 
-public record AuthenticationRequest(
-        String email,
-        String password
-) {
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+public class LoginRequest {
+        @NotBlank
+        private String usernameOrEmail;
+        @NotBlank
+        private String password;
 }

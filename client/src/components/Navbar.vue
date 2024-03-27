@@ -12,7 +12,7 @@ const { links, tag } = defineProps<{
 </script>
 
 <template>
-  <div class="card justify-content-center max-w-1/4 flex h-screen">
+  <div class="card justify-content-center flex h-full w-full">
     <Menu :model="links" class="w-full p-2">
       <template #start>
         <span class="align-items-center inline-flex gap-1 px-2 py-2">

@@ -2,6 +2,7 @@ package dev.lucavassos.recruiter.modules.job.entities;
 
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.skills.Skill;
+import dev.lucavassos.recruiter.modules.user.entities.Role;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -14,7 +15,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -50,6 +53,10 @@ public class Job {
             joinColumns = @JoinColumn(name = "job_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skills;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "contract_type_id", referencedColumnName = "id")
+    private ContractType contractType;
 
     @Column(nullable = false)
     @Min(value = 0, message = "Experience range cannot be negative")

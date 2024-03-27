@@ -7,21 +7,14 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Alert: typeof import('./src/components/Alert.vue')['default']
-    AlertError: typeof import('./src/components/AlertError.vue')['default']
-    Avatar: typeof import('primevue/avatar')['default']
-    Badge: typeof import('primevue/badge')['default']
     Button: typeof import('primevue/button')['default']
+    DashboardTable: typeof import('./src/components/DashboardTable.vue')['default']
     Divider: typeof import('primevue/divider')['default']
-    Dropdown: typeof import('primevue/dropdown')['default']
-    InputMask: typeof import('primevue/inputmask')['default']
-    InputText: typeof import('primevue/inputtext')['default']
     Menu: typeof import('primevue/menu')['default']
-    Menubar: typeof import('primevue/menubar')['default']
     Message: typeof import('primevue/message')['default']
+    MultiSelect: typeof import('primevue/multiselect')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']
     PageForm: typeof import('./src/components/PageForm.vue')['default']
-    Password: typeof import('primevue/password')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -8,26 +8,18 @@ import InputMask from 'primevue/inputmask';
 import Dropdown from 'primevue/dropdown';
 import { useUserStore } from '@/stores/user';
 import { type UserSignupForm } from '@/stores/user/types';
-import { type UserRole } from '../stores/user/types';
 import Password from 'primevue/password';
 
 const store = useUserStore();
 const countries = ref([{ label: 'India', value: 'india' }]);
-const roles = ref([
-  {
-    label: 'Admin',
-    value: 'ADMIN',
-  },
-  { label: 'Recruiter', value: 'RECRUITER' },
-]);
 const userForm = ref<UserSignupForm>({
+  name: '',
   username: '',
   email: '',
   password: '',
   mobile: '',
   city: '',
   country: '',
-  role: '' as UserRole,
 });
 
 const hasSucceeded = ref(false);
@@ -52,6 +44,11 @@ const [submitSignup, errorMessage] = useErrorMessage(async () => {
       data-testid="signup-form"
     >
       <template #default>
+        <!-- name -->
+        <FloatLabel class="flex flex-col">
+          <InputText id="name" v-model="userForm.name" minlength="3" maxlength="50" required />
+          <label for="name">Name</label>
+        </FloatLabel>
         <!-- username -->
         <FloatLabel class="flex flex-col">
           <InputText
@@ -123,16 +120,6 @@ const [submitSignup, errorMessage] = useErrorMessage(async () => {
           optionLabel="label"
           optionValue="value"
           placeholder="Country"
-          class="md:w-14rem w-full"
-        />
-        <!-- role -->
-        <Dropdown
-          v-model="userForm.role"
-          editable
-          :options="roles"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Role"
           class="md:w-14rem w-full"
         />
 

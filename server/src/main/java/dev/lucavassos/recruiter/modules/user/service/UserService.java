@@ -1,104 +1,44 @@
 package dev.lucavassos.recruiter.modules.user.service;
 
+import dev.lucavassos.recruiter.auth.SignupRequest;
+import dev.lucavassos.recruiter.auth.SignupResponse;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
-import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.entities.PasswordResetToken;
 import dev.lucavassos.recruiter.modules.user.generator.PasswordResetTokenGenerator;
 import dev.lucavassos.recruiter.modules.user.repository.PasswordResetTokenRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.entities.User;
-import dev.lucavassos.recruiter.modules.user.jwt.JWTUtil;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService  {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private PasswordResetTokenGenerator resetTokenGenerator;
-    @Autowired
-    private UserRepository repository;
-    @Autowired
-    private PasswordResetTokenRepository tokenRepository;
-    @Autowired
-    private UserDtoMapper userDtoMapper;
-    @Autowired
-    private JWTUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordResetTokenGenerator resetTokenGenerator;
+    private final UserRepository repository;
+    private final PasswordResetTokenRepository tokenRepository;
+    private final UserDtoMapper userDtoMapper;
 
-    public LoginResponse login(LoginRequest request) {
-        String email = request.email();
-        String password = request.password();
-
-        User user = repository.findOneByEmail(email)
-                .orElseThrow(() ->
-                        new UnauthorizedException("Invalid email or password. Please, try again.")
-                );
-
-        boolean isMatch = passwordEncoder.matches(password, user.getPassword());
-        if (!isMatch) {
-            throw new UnauthorizedException("Invalid email or password. Please, try again.");
-        }
-
-        UserDto userDto = userDtoMapper.apply(user);
-        String token = jwtUtil.issueToken(userDto.id(), userDto.username());
-        return new LoginResponse(token, userDto.username());
-    }
-
-    public SignupResponse signup(SignupRequest request) throws Exception {
-        LOG.info("Initiated signup process in service...");
-        String email = request.email();
-        String mobile = request.mobile();
-
-        if (repository.existsUserByEmail(email)) {
-            throw new DuplicateResourceException(
-                    "User with email %s already exists.".formatted(email)
-            );
-        }
-        if (repository.existsUserByMobile(mobile)) {
-            throw new DuplicateResourceException(
-                    "User with mobile %s already exists.".formatted(mobile)
-            );
-        }
-
-        User createdUser;
-        try {
-            createdUser = repository.save(
-                    User.builder()
-                            .username(request.username())
-                            .email(request.email())
-                            .password(passwordEncoder.encode(request.password()))
-                            .mobile(request.mobile())
-                            .city(request.city())
-                            .country(request.country())
-                            .role(request.role())
-                            .build()
-            );
-        } catch (Exception e) {
-            throw new Exception(e.getCause());
-        }
-
-
-        LOG.info("New user created: [{}]", createdUser);
-
-        return new SignupResponse(createdUser.getId());
+    public UserService(PasswordEncoder passwordEncoder, PasswordResetTokenGenerator resetTokenGenerator, UserRepository repository, PasswordResetTokenRepository tokenRepository, UserDtoMapper userDtoMapper) {
+        this.passwordEncoder = passwordEncoder;
+        this.resetTokenGenerator = resetTokenGenerator;
+        this.repository = repository;
+        this.tokenRepository = tokenRepository;
+        this.userDtoMapper = userDtoMapper;
     }
 
     public void approveUser(Long id, UserApprovalRequest request) {
@@ -122,7 +62,7 @@ public class UserService {
         List<User> users = repository.findAll();
         return users
                 .stream()
-                .map(user -> userDtoMapper.apply(user))
+                .map(userDtoMapper::apply)
                 .toList();
 
     }

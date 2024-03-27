@@ -6,7 +6,7 @@ import { fakeRecruiter } from 'utils/fakeData';
  * Related issues:
  */
 
-const { email, username, password, mobile, city, country, role } = fakeRecruiter();
+const { name, email, username, password, mobile, city, country } = fakeRecruiter();
 
 test.describe.serial('signup and login sequence', () => {
   test('user can signup', async ({ page }) => {
@@ -15,6 +15,7 @@ test.describe.serial('signup and login sequence', () => {
     await expect(successMessage).toBeHidden();
 
     const form = page.getByRole('form', { name: 'Signup' });
+    await form.locator('input[id="name"]').fill(name);
     await form.locator('input[id="username"]').fill(username);
     await form.locator('input[id="email"]').fill(email);
     await form.getByPlaceholder('Password').fill(password);
@@ -23,9 +24,6 @@ test.describe.serial('signup and login sequence', () => {
     const countryInput = page.getByPlaceholder('Country');
     await countryInput.fill(country);
     await countryInput.press('Enter');
-    const roleInput = page.getByPlaceholder('Role');
-    await roleInput.fill(role);
-    await roleInput.press('Enter');
     await form.locator('button[type="submit"]').click();
 
     await expect(successMessage).toBeVisible({ timeout: 5000 });
@@ -75,5 +73,25 @@ test.describe.serial('signup and login sequence', () => {
     await page.goto('/');
     await expect(logoutButton).toBeHidden();
     await expect(page).toHaveURL('/login');
+  });
+});
+
+test.describe('login validation', () => {
+  test('User cannot login without registration', async ({ page }) => {
+    
+    const errorMessage = page.getByTestId('error-message');
+    await page.goto('/login');
+
+    const myJobsLink = page.getByText('My jobs');
+    await expect(myJobsLink).toBeHidden();
+
+    const form = page.getByRole('form', { name: 'Login' });
+    await form.locator('input[type="email"]').fill('invalid@email.com');
+    await form.locator('input[type="password"]').fill('invalidPassword123');
+    await form.locator('button[type="submit"]').click();
+
+    await expect(errorMessage).toBeVisible();
+    await expect(errorMessage).toHaveText('Invalid credentials');
+    await expect(myJobsLink).toBeHidden();
   });
 });

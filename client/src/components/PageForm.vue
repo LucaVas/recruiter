@@ -14,7 +14,7 @@ defineEmits<{
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <h1 class="text-xl text-black">{{ heading }}</h1>
 
-      <div class="mt-10">
+      <div class="mt-6">
         <form class="space-y-6" :aria-label="formLabel" @submit.prevent="$emit('submit')">
           <slot />
         </form>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import Button from 'primevue/button';
+import DashboardTable from '@/components/DashboardTable.vue';
 </script>
 <template>
-  <Button label="Click me" />
+  <div class="h-full w-full">
+    <DashboardTable />
+  </div>
 </template>

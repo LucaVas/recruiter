@@ -1,7 +1,5 @@
 package dev.lucavassos.recruiter.modules.user.entities;
 
-import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
-import dev.lucavassos.recruiter.modules.user.domain.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -11,9 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +22,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters long")
+    private String name;
 
     @Column(nullable = false)
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters long")
@@ -53,9 +53,11 @@ public class User {
     @Size(min = 3, max = 50, message = "Country name must be between 3 and 50 characters long")
     private String country;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @Column
     private String comments;

@@ -27,7 +27,7 @@ Response example:
 ```json
 {
   "token": "ey*",
-  "username": "username"
+  "id": 1
 }
 ```
 ---

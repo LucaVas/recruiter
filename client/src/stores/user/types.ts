@@ -1,23 +1,22 @@
-export type UserRole = 'ADMIN' | 'RECRUITER';
+export type UserRole = 'USER_ADMIN' | 'USER_RECRUITER';
 
 export type UserSignupForm = {
+  name: string;
   username: string;
   email: string;
   password: string;
   mobile: string;
   city: string;
   country: string;
-  role: UserRole;
 };
 
 export type UserLoginForm = {
-  email: string;
+  usernameOrEmail: string;
   password: string;
 };
 
-export type UserLoginResponse = {
+export type AuthUser = {
   token: string;
-  username: string;
 };
 
 export type User = {

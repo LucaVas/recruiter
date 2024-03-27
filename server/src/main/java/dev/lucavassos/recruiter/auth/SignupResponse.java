@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.modules.user.domain;
+package dev.lucavassos.recruiter.auth;
 
 public record SignupResponse (
         Long id

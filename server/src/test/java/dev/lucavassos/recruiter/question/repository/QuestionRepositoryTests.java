@@ -2,15 +2,12 @@ package dev.lucavassos.recruiter.question.repository;
 
 import dev.lucavassos.recruiter.modules.question.entity.Question;
 import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
-import dev.lucavassos.recruiter.modules.user.domain.Role;
-import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
 
 import static dev.lucavassos.recruiter.testUtils.RandomUtils.*;

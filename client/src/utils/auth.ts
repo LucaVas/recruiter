@@ -1,4 +1,4 @@
-import type { AuthUser } from '@vilnius4kids/server/src/shared/entities';
+import type { AuthUser } from '@/stores/user/types';
 
 const TOKEN_KEY = 'token';
 
@@ -21,8 +21,4 @@ export function getStoredAccessToken(storage: Storage): string | null {
 
 export function getUserIdFromToken(token: string) {
   return getUserFromToken(token).id;
-}
-
-export function getUserRoleFromToken(token: string) {
-  return getUserFromToken(token).role;
 }

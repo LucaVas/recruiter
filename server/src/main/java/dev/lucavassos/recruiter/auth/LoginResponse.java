@@ -2,8 +2,8 @@ package dev.lucavassos.recruiter.auth;
 
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 
-public record AuthenticationResponse(
+public record LoginResponse(
         String token,
-        UserDto userDto
+        String tokenType
 ){
 }

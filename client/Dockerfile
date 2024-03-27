@@ -1,12 +1,11 @@
 # Stage 1: Build our front end
-FROM --platform=linux/amd64 node:18.19.0-alpine3.18 AS builder
+FROM --platform=linux/amd64 node:21.0.0-alpine3.18 AS builder
 
 WORKDIR /app
 
 # Copy package.json files and install dependencies
 COPY ../package*.json .
 COPY client/package*.json client/
-COPY server/package*.json server/
 RUN npm ci
 
 # Copy over the entire monorepo since we need to access the tRPC server
@@ -32,7 +31,6 @@ COPY . .
 # Here we are specifying that we expect two arguments to be passed in at build time.
 ARG VITE_API_ORIGIN
 ARG VITE_API_PATH
-ARG VITE_GOOGLE_MAPS_API_KEY
 
 # Switch to the client folder
 WORKDIR /app/client

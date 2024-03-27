@@ -6,7 +6,7 @@
     <groupId>dev.lucavassos</groupId>
     <artifactId>recruiter</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+<version>1.0-SNAPSHOT</version>
     <name>recruiter</name>
 
     <description>Recruitment platform in Spring Boot and Vue.js</description>
@@ -15,7 +15,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+    <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>

@@ -34,7 +34,8 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 job.getDescription(),
                 job.getBonusPayPerCV(),
                 job.getClosureBonus(),
-                job.getComments()
+                job.getComments(),
+                job.getCreatedAt()
         );
     }
 }

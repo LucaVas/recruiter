@@ -26,3 +26,11 @@ cors:
     allowed-methods: "*"
     allowed-headers: "*"
     exposed-headers: "*"
+
+jwt:
+    jwtSecret: superSecretKeySuperSecretKeySuperSecretKeySuperSecretKeySuperSecretKeySuperSecretKey
+    jwtExpirationInMs: 216000000
+
+rsa:
+    private-key: classpath:certs/private.pem
+    public-key: classpath:certs/public.pem
