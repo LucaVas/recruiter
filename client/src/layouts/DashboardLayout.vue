@@ -9,32 +9,55 @@ const userStore = useUserStore();
 
 const links = ref([
   {
-    label: 'Documents',
+    label: 'Jobs',
     items: [
-      { icon: 'pi pi-list', label: 'My jobs', component: 'Dashboard', shortcut: '⌘+J', route: '/' },
       {
-        icon: 'pi pi-search',
-        label: 'Search',
+        icon: 'pi pi-list',
+        label: 'All jobs',
         component: 'Dashboard',
-        shortcut: '⌘+S',
+        shortcut: '⌘+J',
         route: '/',
       },
       { icon: 'pi pi-plus', label: 'New job', component: 'Dashboard', shortcut: '⌘+N', route: '/' },
     ],
   },
   {
+    label: 'Candidates',
+    items: [
+      {
+        icon: 'pi pi-plus',
+        label: 'New candidate',
+        component: 'Dashboard',
+        shortcut: '⌘+N',
+        route: '/',
+      },
+    ],
+  },
+  {
+    label: 'Users',
+    items: [
+      {
+        icon: 'pi pi-list',
+        label: 'All users',
+        component: 'Dashboard',
+        shortcut: '⌘+J',
+        route: '/',
+      },
+    ],
+  },
+  {
     label: 'Profile',
     items: [
       {
-        label: 'Settings',
-        icon: 'pi pi-cog',
+        label: 'My performance',
+        icon: 'pi pi-chart-line',
         shortcut: '⌘+O',
         route: '/',
       },
       {
-        label: 'Messages',
-        icon: 'pi pi-inbox',
-        badge: 2,
+        label: 'Settings',
+        icon: 'pi pi-cog',
+        shortcut: '⌘+O',
         route: '/',
       },
       {

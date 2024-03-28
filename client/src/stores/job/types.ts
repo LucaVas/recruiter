@@ -8,7 +8,7 @@ export type Job = {
   wantedCVs: number;
   skills: Skill[];
   contractType: ContractType;
-  experienceRange: number;
+  experienceRange: string;
   noticePeriodInDays: number;
   salaryBudget: number;
   description: string;
@@ -16,8 +16,10 @@ export type Job = {
   closureBonus: string;
   comments: string;
   numberOfCandidates: number;
-  createdAt: Date;
+  createdAt: string;
 };
 
-export type ContractType = 'PERMANENT' | 'TEMPORARY';
+export type ContractType = {
+  contractTypeName: 'PERMANENT' | 'TEMPORARY';
+};
 export type JobStatus = 'OPEN' | 'NO_CV_ACCEPTED' | 'CLOSED' | 'ARCHIVED';

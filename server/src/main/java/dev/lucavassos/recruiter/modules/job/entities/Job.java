@@ -2,8 +2,6 @@ package dev.lucavassos.recruiter.modules.job.entities;
 
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.skills.Skill;
-import dev.lucavassos.recruiter.modules.user.entities.Role;
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -16,7 +14,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -31,36 +28,36 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "client")
     @Size(min = 1, message = "Job client must be at least 1 character long")
     private String client;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "name")
     @Size(min = 1, message = "Job name must be at least 1 character long")
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "status")
     @Enumerated(EnumType.STRING)
     private JobStatus status;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "wanted_cvs")
     @Min(value = 0, message = "Wanted CVs cannot be negative")
-    private Integer wantedCVs;
+    private Integer wantedCvs;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "job_skills",
+            name = "jobs_skills",
             joinColumns = @JoinColumn(name = "job_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
-    private List<Skill> skills;
+    private Set<Skill> skills = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "contract_type_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contract_type_id")
     private ContractType contractType;
 
     @Column(nullable = false)
-    @Min(value = 0, message = "Experience range cannot be negative")
-    private Double experienceRange;
+    @Size(min = 1, message = "Experience range must be at least 1 character long")
+    private String experienceRange;
 
     @Column(nullable = false)
     @Min(value = 0, message = "Notice period cannot be negative")
@@ -75,7 +72,7 @@ public class Job {
 
     @Column(nullable = false)
     @Min(value = 0, message = "Bonus pay per CV cannot be negative")
-    private Double bonusPayPerCV;
+    private Double bonusPayPerCv;
 
     @Column(nullable = false)
     private String closureBonus;

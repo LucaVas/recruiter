@@ -19,7 +19,7 @@ public class SkillDtoMapper implements Function<Skill, SkillDto> {
                                 question.getId(),
                                 question.getText())
                         )
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toSet())
         );
     }
 }

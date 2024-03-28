@@ -32,10 +32,6 @@ public class Question {
     @Column(nullable = false)
     private Boolean active = true;
 
-    @ManyToOne
-    @JoinColumn(name="skill_id")
-    private Skill skill;
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -44,10 +40,5 @@ public class Question {
 
     public Question(String text) {
         this.text = text;
-    }
-
-    public Question(String text, Boolean active) {
-        this.text = text;
-        this.active = active;
     }
 }
