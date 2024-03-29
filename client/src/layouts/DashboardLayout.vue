@@ -30,7 +30,7 @@ const links = ref([
         label: 'New candidate',
         component: 'Dashboard',
         shortcut: '⌘+C',
-        route: '/',
+        route: '/candidates/new',
       },
     ],
   },

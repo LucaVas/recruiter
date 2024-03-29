@@ -4,17 +4,16 @@ import StepperPanel from 'primevue/stepperpanel';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import Button from 'primevue/button';
-import SkillsList from '@/components/SkillsList.vue';
 import Toast from 'primevue/toast';
+import InputMask from 'primevue/inputmask';
 import { useToast } from 'primevue/usetoast';
+import FilesUploader from '@/components/FilesUploader.vue';
 import { ref, watch } from 'vue';
-import type { NewJob, JobStatus, Currency } from '../stores/job/types';
-import Dropdown from 'primevue/dropdown';
-import type { RawSkill } from '../stores/skill/types';
-import { useJobStore } from '@/stores/job';
-import type { ContractTypeName } from '../stores/job/types';
+import type { Currency } from '../stores/job/types';
 import type { ToastMessageOptions } from 'primevue/toast';
 import useErrorMessage from '../composables/index';
+import { useCandidateStore } from '../stores/candidate/index';
+import type { Candidate } from '../stores/candidate/types';
 
 const toast = useToast();
 const errorToastContent = ref<ToastMessageOptions>({
@@ -24,74 +23,53 @@ const errorToastContent = ref<ToastMessageOptions>({
   life: 5000,
 });
 
-const jobStore = useJobStore();
-const skills = ref<RawSkill[]>([]);
-const experienceRangeValues = ref([0, 45]);
-const jobStatuses = ref<{ name: string; label: string; value: JobStatus }[]>([
-  { name: 'Open', label: 'job_open.png', value: 'OPEN' },
-  { name: 'Closed', label: 'job_closed.png', value: 'CLOSED' },
-  { name: 'No CVs Accepted', label: 'job_no_cv_accepted.png', value: 'NO_CV_ACCEPTED' },
-]);
+const candidateStore = useCandidateStore();
 const currencies = ref<{ name: string; value: Currency }[]>([{ name: 'INR', value: 'INR' }]);
-const contracTypes = ref<{ name: string; value: ContractTypeName }[]>([
-  { name: 'Permanent', value: 'PERMANENT' },
-  { name: 'Temporary', value: 'TEMPORARY' },
-]);
-const newJobForm = ref({
-  client: '',
+const newCandidateForm = ref({
   name: '',
-  status: {} as (typeof jobStatuses.value)[0],
-  contractType: {} as (typeof contracTypes.value)[0],
-  wantedCvs: '',
-  noticePeriodInDays: '',
-  salaryBudget: '',
-  currency: currencies.value[0],
-  description: '',
-  bonusPayPerCv: '',
-  closureBonus: '',
+  phone: '',
+  email: '',
+  totalExperience: '',
+  relevantExperience: '',
+  education: '',
+  currentCtc: '',
+  expectedCtc: '',
+  officialNoticePeriod: '',
+  actualNoticePeriod: '',
+  reasonForQuickJoin: '',
+  remarks: '',
+  pan: '',
   comments: '',
 });
-
-type NewJobForm = typeof newJobForm;
-function formToNewJob(newJobForm: NewJobForm): NewJob {
+type NewCandidateForm = typeof newCandidateForm;
+function formToNewCandidate(newCandidateForm: NewCandidateForm): Candidate {
   return {
-    ...newJobForm.value,
-    skills: skills.value,
-    status: newJobForm.value.status.value,
-    currency: newJobForm.value.currency.value,
-    contractType: newJobForm.value.contractType.value,
-    experienceRangeMin: experienceRangeValues.value[0],
-    experienceRangeMax: experienceRangeValues.value[1],
-    wantedCvs: Number(newJobForm.value.wantedCvs),
-    noticePeriodInDays: Number(newJobForm.value.noticePeriodInDays),
-    salaryBudget: Number(newJobForm.value.salaryBudget),
-    bonusPayPerCv: Number(newJobForm.value.bonusPayPerCv),
+    ...newCandidateForm.value,
+    totalExperience: Number(newCandidateForm.value.totalExperience),
+    relevantExperience: Number(newCandidateForm.value.relevantExperience),
+    currentCtc: Number(newCandidateForm.value.currentCtc),
+    expectedCtc: Number(newCandidateForm.value.expectedCtc),
+    officialNoticePeriod: Number(newCandidateForm.value.officialNoticePeriod),
+    actualNoticePeriod: Number(newCandidateForm.value.actualNoticePeriod),
   };
 }
 
-let [submitNewJob, errorMessage] = useErrorMessage(async () => {
-  submittingNewJob.value = true;
-  const newJob = formToNewJob(newJobForm);
-  await jobStore.addJob(newJob);
-  submittingNewJob.value = false;
-  jobSubmitted.value = true;
+let [submitNewCandidate, errorMessage] = useErrorMessage(async () => {
+  submittingNewCandidate.value = true;
+  const newCandidate = formToNewCandidate(newCandidateForm);
+  await candidateStore.addCandidate(newCandidate);
+  submittingNewCandidate.value = false;
+  candidateSubmitted.value = true;
 });
 
-function removeSkill(skill: RawSkill): void {
-  const idx = skills.value.indexOf(skill);
-  if (idx > -1) {
-    skills.value.splice(idx, 1);
-  }
-}
-
 const active = ref(0);
-const submittingNewJob = ref(false);
-const jobSubmitted = ref(false);
+const submittingNewCandidate = ref(false);
+const candidateSubmitted = ref(false);
 
 watch(errorMessage, (errorMessage) => {
   errorToastContent.value.detail = errorMessage;
   toast.add(errorToastContent.value);
-  submittingNewJob.value = false;
+  submittingNewCandidate.value = false;
   console.log(errorMessage);
   errorMessage = '';
 });
@@ -99,7 +77,7 @@ watch(errorMessage, (errorMessage) => {
 
 <template>
   <Stepper v-model:activeStep="active" class="flex h-full w-[50rem] flex-col justify-start">
-    <!-- Job main info -->
+    <!-- Personal info -->
     <StepperPanel>
       <template #header="{ index }">
         <span
@@ -115,52 +93,68 @@ watch(errorMessage, (errorMessage) => {
       <template #content="{ nextCallback }">
         <div class="flex h-full w-full flex-col justify-between gap-6">
           <div class="flex flex-col gap-6">
-            <div class="mb-3 mt-3 text-center text-xl font-semibold">Add Job Information</div>
+            <div class="mb-3 mt-3 text-center text-xl font-semibold">Personal information</div>
             <div class="field p-fluid">
               <IconField>
                 <InputIcon>
                   <i class="pi pi-user" />
                 </InputIcon>
                 <InputText
-                  id="jobClient"
-                  v-model="newJobForm.client"
+                  id="candidateName"
+                  v-model="newCandidateForm.name"
                   type="text"
-                  placeholder="Client Name"
+                  placeholder="Candidate Name"
+                  minlength="3"
+                  maxlength="50"
+                  required
                 />
               </IconField>
             </div>
             <div class="field p-fluid">
               <IconField>
                 <InputIcon>
-                  <i class="pi pi-briefcase" />
+                  <i class="pi pi-phone" />
                 </InputIcon>
-                <InputText
-                  id="jobName"
-                  v-model="newJobForm.name"
-                  type="text"
-                  placeholder="Job Name"
+                <InputMask
+                  id="phone"
+                  v-model="newCandidateForm.phone"
+                  mask="(999) 999-9999"
+                  placeholder="(999) 999-9999"
+                  :unmask="true"
                 />
               </IconField>
             </div>
             <div class="field p-fluid">
-              <Dropdown
-                v-model="newJobForm.status"
-                :options="jobStatuses"
-                optionLabel="name"
-                dropdown-icon="pi pi-angle-down"
-                placeholder="Select a Status"
-                class="w-full"
-              />
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-at" />
+                </InputIcon>
+                <InputText
+                  id="candidateEmail"
+                  v-model="newCandidateForm.email"
+                  type="email"
+                  placeholder="Candidate Email"
+                  minlength="3"
+                  maxlength="50"
+                  required
+                />
+              </IconField>
             </div>
             <div class="field p-fluid">
-              <Dropdown
-                v-model="newJobForm.contractType"
-                :options="contracTypes"
-                optionLabel="name"
-                dropdown-icon="pi pi-angle-down"
-                placeholder="Select a Contract Type"
-                class="w-full"
-              />
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-id-card" />
+                </InputIcon>
+                <InputText
+                  id="candidatePan"
+                  v-model="newCandidateForm.pan"
+                  type="text"
+                  placeholder="Candidate PAN"
+                  minlength="10"
+                  maxlength="10"
+                  required
+                />
+              </IconField>
             </div>
           </div>
           <div class="flex justify-end pt-4">
@@ -170,17 +164,17 @@ watch(errorMessage, (errorMessage) => {
               iconPos="right"
               @click="nextCallback"
               :disabled="
-                newJobForm.client === '' ||
-                newJobForm.name === '' ||
-                Object.keys(newJobForm.status).length === 0 ||
-                Object.keys(newJobForm.contractType).length === 0
+                newCandidateForm.name === '' ||
+                newCandidateForm.phone === '' ||
+                newCandidateForm.email === ''
               "
             />
           </div>
         </div>
       </template>
     </StepperPanel>
-    <!-- Job details -->
+
+    <!-- Experience & salary details -->
     <StepperPanel>
       <template #header="{ index }">
         <span
@@ -189,82 +183,128 @@ watch(errorMessage, (errorMessage) => {
             { 'bg-primary border-primary': index <= active, 'surface-border': index > active },
           ]"
         >
-          <i class="pi pi-star" />
+          <i class="pi pi-briefcase" />
         </span>
       </template>
       <template #content="{ prevCallback, nextCallback }">
         <div class="flex h-full w-full flex-col justify-between gap-6">
           <div class="flex flex-col gap-4">
             <div class="mb-3 mt-3 text-center text-xl font-semibold">Add Job Details</div>
+
+            <!-- work experience -->
+            <div class="field p-fluid flex w-full gap-3">
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-calendar-plus" />
+                </InputIcon>
+                <InputText
+                  id="totalExperience"
+                  v-model="newCandidateForm.totalExperience"
+                  type="number"
+                  placeholder="Total work experience"
+                  min="0"
+                  max="45"
+                  required
+                />
+              </IconField>
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-calendar" />
+                </InputIcon>
+                <InputText
+                  id="relevantExperience"
+                  v-model="newCandidateForm.relevantExperience"
+                  type="number"
+                  placeholder="Relevant work experience"
+                  required
+                  min="0"
+                  max="45"
+                />
+              </IconField>
+            </div>
+
+            <!-- education -->
             <div class="field p-fluid w-full">
               <IconField>
                 <InputIcon>
-                  <i class="pi pi-file" />
+                  <i class="pi pi-pencil" />
                 </InputIcon>
                 <InputText
-                  id="wantedCvs"
-                  v-model="newJobForm.wantedCvs"
-                  type="number"
-                  placeholder="Number of CVs wanter"
+                  id="education"
+                  v-model="newCandidateForm.education"
+                  type="text"
+                  placeholder="Education"
                   required
                 />
               </IconField>
             </div>
-            <div class="field mb-3 flex w-full flex-col justify-center gap-5">
-              <div class="flex flex-row items-center justify-between">
-                <span>{{ experienceRangeValues[0] }} years</span>
-                <span class="font-medium">Experience range</span>
-                <span>{{ experienceRangeValues[1] }} years</span>
-              </div>
-              <div class="px-1">
-                <Slider v-model="experienceRangeValues" :max="45" range class="w-14rem" />
-              </div>
+
+            <!-- salary expectation -->
+            <div class="field p-fluid flex w-full gap-3">
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-wallet" />
+                </InputIcon>
+                <InputText
+                  id="currentCtc"
+                  v-model="newCandidateForm.currentCtc"
+                  type="number"
+                  placeholder="Current CTC"
+                  required
+                />
+              </IconField>
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-money-bill" />
+                </InputIcon>
+                <InputText
+                  id="expectedCtc"
+                  v-model="newCandidateForm.expectedCtc"
+                  type="number"
+                  placeholder="Expected CTC"
+                  required
+                />
+              </IconField>
             </div>
-            <div class="field p-fluid w-full">
+
+            <!-- notice periods -->
+            <div class="field p-fluid flex w-full gap-3">
               <IconField>
                 <InputIcon>
                   <i class="pi pi-calendar-times" />
                 </InputIcon>
                 <InputText
-                  id="noticePeriodInDays"
-                  v-model="newJobForm.noticePeriodInDays"
+                  id="officialNoticePeriod"
+                  v-model="newCandidateForm.officialNoticePeriod"
                   type="number"
-                  placeholder="Notice Period (days)"
+                  placeholder="Official Notice Period (days)"
                   required
                 />
               </IconField>
-            </div>
-            <div class="field p-fluid flex w-full gap-2">
-              <IconField class="w-full">
+              <IconField>
                 <InputIcon>
-                  <i class="pi pi-money-bill" />
+                  <i class="pi pi-bolt" />
                 </InputIcon>
                 <InputText
-                  id="salaryBudget"
-                  v-model="newJobForm.salaryBudget"
+                  id="actualNoticePeriod"
+                  v-model="newCandidateForm.actualNoticePeriod"
                   type="number"
-                  placeholder="Salary Budget"
+                  placeholder="Actual Notice Period (if different)"
                   required
                 />
               </IconField>
-              <Dropdown
-                v-model="newJobForm.currency"
-                :options="currencies"
-                optionLabel="name"
-                dropdown-icon="pi pi-angle-down"
-                class="w-40"
-                required
-              />
             </div>
-            <div>
+
+            <!-- quick join remarks -->
+            <div class="field p-fluid flex w-full">
               <Textarea
-                v-model="newJobForm.description"
+                v-model="newCandidateForm.reasonForQuickJoin"
                 class="w-full"
                 rows="4"
                 cols="30"
-                placeholder="Tell us what is the job about..."
+                placeholder="Reason for quick join"
                 style="resize: none"
-                required
+                :disabled="newCandidateForm.actualNoticePeriod === ''"
               />
             </div>
           </div>
@@ -281,57 +321,59 @@ watch(errorMessage, (errorMessage) => {
               iconPos="right"
               @click="nextCallback"
               :disabled="
-                newJobForm.wantedCvs === '' ||
-                newJobForm.noticePeriodInDays === '' ||
-                newJobForm.salaryBudget === '' ||
-                newJobForm.description === ''
+                newCandidateForm.totalExperience === '' ||
+                newCandidateForm.relevantExperience === '' ||
+                newCandidateForm.education === '' ||
+                newCandidateForm.currentCtc === '' ||
+                newCandidateForm.expectedCtc === '' ||
+                newCandidateForm.officialNoticePeriod === ''
               "
             />
           </div>
         </div>
       </template>
     </StepperPanel>
-    <!-- Skills -->
+
+    <!-- Remarks -->
     <StepperPanel>
-      <template #header="{ index, clickCallback }">
-        <button
-          class="flex-column inline-flex gap-2 border-none bg-transparent"
-          @click="clickCallback"
+      <template #header="{ index }">
+        <span
+          :class="[
+            'border-round w-3rem h-3rem align-items-center justify-content-center inline-flex border-2',
+            { 'bg-primary border-primary': index <= active, 'surface-border': index > active },
+          ]"
         >
-          <span
-            :class="[
-              'border-round w-3rem h-3rem align-items-center justify-content-center inline-flex border-2',
-              { 'bg-primary border-primary': index <= active, 'surface-border': index > active },
-            ]"
-          >
-            <i class="pi pi-briefcase" />
-          </span>
-        </button>
+          <i class="pi pi-briefcase" />
+        </span>
       </template>
       <template #content="{ prevCallback, nextCallback }">
         <div class="flex h-full w-full flex-col justify-between gap-6">
           <div class="flex flex-col gap-4">
-            <div class="my-3 text-center text-xl font-semibold">Skills required</div>
-            <!-- Skill chips -->
-            <div
-              v-if="skills.length > 0"
-              class="field my-4 flex max-h-24 min-h-9 w-full flex-wrap gap-3"
-            >
-              <Chip
-                v-for="skill in skills"
-                v-bind:key="skill.id"
-                :label="skill.name"
-                icon="pi pi-check"
-                removable
-                class="bg-[#3b80f64d]"
-                @remove="removeSkill(skill)"
+            <div class="mb-3 mt-3 text-center text-xl font-semibold">Final details</div>
+
+            <!-- Remarks -->
+            <div class="field p-fluid flex w-full">
+              <Textarea
+                v-model="newCandidateForm.remarks"
+                class="w-full"
+                rows="4"
+                cols="30"
+                placeholder="Remarks (if any)"
+                style="resize: none"
               />
             </div>
-            <div v-else class="field my-4 flex h-9 w-full flex-wrap gap-3">No skills selected.</div>
 
-            <!-- Skill list -->
-            <div class="flex flex-col gap-4">
-              <SkillsList @updateSelection="(selectedSkills) => (skills = selectedSkills)" />
+            <!-- Admin comments -->
+            <div class="field p-fluid flex w-full">
+              <Textarea
+                v-model="newCandidateForm.comments"
+                class="w-full"
+                rows="4"
+                cols="30"
+                placeholder="Admin comments"
+                style="resize: none"
+                disabled
+              />
             </div>
           </div>
 
@@ -342,18 +384,13 @@ watch(errorMessage, (errorMessage) => {
               icon="pi pi-arrow-left"
               @click="prevCallback"
             />
-            <Button
-              label="Next"
-              icon="pi pi-arrow-right"
-              iconPos="right"
-              @click="nextCallback"
-              :disabled="skills.length === 0"
-            />
+            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="nextCallback" />
           </div>
         </div>
       </template>
     </StepperPanel>
-    <!-- Final details -->
+
+    <!-- Upload section -->
     <StepperPanel>
       <template #header="{ index }">
         <span
@@ -366,49 +403,12 @@ watch(errorMessage, (errorMessage) => {
         </span>
       </template>
       <template #content="{ prevCallback }">
-        <div v-if="!jobSubmitted" class="mb-auto flex h-full w-full flex-col justify-between gap-6">
+        <div
+          v-if="!candidateSubmitted"
+          class="mb-auto flex h-full w-full flex-col justify-between gap-6"
+        >
           <div class="flex flex-col gap-4">
-            <div class="mb-3 mt-3 text-center text-xl font-semibold">Almost there...</div>
-            <div class="field p-fluid w-full">
-              <IconField>
-                <InputIcon>
-                  <i class="pi pi-wallet" />
-                </InputIcon>
-                <InputText
-                  id="bonusPayPerCv"
-                  v-model="newJobForm.bonusPayPerCv"
-                  type="number"
-                  placeholder="Bonus Pay per CV"
-                  required
-                />
-              </IconField>
-            </div>
-            <div class="field p-fluid w-full">
-              <IconField>
-                <InputIcon>
-                  <i class="pi pi-money-bill" />
-                </InputIcon>
-                <InputText
-                  id="closureBonus"
-                  v-model="newJobForm.closureBonus"
-                  type="text"
-                  placeholder="Closure Bonus"
-                  required
-                />
-              </IconField>
-            </div>
-            <div>
-              <Textarea
-                v-model="newJobForm.comments"
-                class="w-full"
-                variant="filled"
-                rows="5"
-                cols="30"
-                placeholder="Administrator Comments"
-                required
-                disabled
-              />
-            </div>
+            <FilesUploader />
           </div>
           <Toast />
           <div class="flex justify-between pt-4">
@@ -423,9 +423,8 @@ watch(errorMessage, (errorMessage) => {
               label="Create new job"
               icon="pi pi-arrow-right"
               iconPos="right"
-              :loading="submittingNewJob"
+              :loading="submittingNewCandidate"
               @click="submitNewJob()"
-              :disabled="newJobForm.bonusPayPerCv === '' || newJobForm.closureBonus === ''"
             />
           </div>
         </div>
