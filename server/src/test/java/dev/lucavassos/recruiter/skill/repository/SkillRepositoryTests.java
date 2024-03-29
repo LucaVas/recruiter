@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.skill.repository;
 
-import dev.lucavassos.recruiter.modules.skills.Skill;
-import dev.lucavassos.recruiter.modules.skills.repository.SkillRepository;
+import dev.lucavassos.recruiter.modules.skill.entities.Skill;
+import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

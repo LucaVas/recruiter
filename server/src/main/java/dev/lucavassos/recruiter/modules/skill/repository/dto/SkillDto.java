@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.modules.skills.repository.dto;
+package dev.lucavassos.recruiter.modules.skill.repository.dto;
 
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 

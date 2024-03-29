@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import type { Job } from './types';
+import type { Job, JobResponse, NewJob } from './types';
 import { getStoredAccessToken } from '@/utils/auth';
 
 const axiosApi = axios.create({
@@ -17,5 +17,10 @@ export const useJobStore = defineStore('jobStore', () => {
     const res = await axiosApi.get(`/jobs`);
     return res.data;
   }
-  return { getAllJobs };
+  async function addJob(newJob: NewJob): Promise<JobResponse> {
+    const res = await axiosApi.post(`/jobs`, newJob);
+    console.log(res.data)
+    return res.data;
+  }
+  return { getAllJobs, addJob };
 });

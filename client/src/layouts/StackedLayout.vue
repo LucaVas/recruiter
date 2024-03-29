@@ -11,11 +11,11 @@ const { links, tag } = defineProps<{
 
 <template>
   <div class="flex h-screen w-screen items-center justify-center">
-    <div class="h-full w-1/6">
+    <div class="h-full w-[20%]">
       <Navbar :links="links" :role="role" :tag="tag" />
     </div>
 
-    <main class="flex h-screen w-5/6 flex-col items-center justify-start p-4">
+    <main class="flex h-screen w-[80%] flex-col items-center justify-start p-4">
       <RouterView />
     </main>
   </div>

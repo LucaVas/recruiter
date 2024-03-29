@@ -15,7 +15,6 @@ public class EntityInitializationRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         entityInitializer.createRoles();
         entityInitializer.createContractTypes();
-//        entityInitializer.saveQuestions();
         entityInitializer.saveSkills();
         entityInitializer.saveJobs();
         entityInitializer.createUser();

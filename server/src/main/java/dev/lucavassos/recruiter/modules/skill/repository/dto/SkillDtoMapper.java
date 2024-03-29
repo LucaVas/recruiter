@@ -1,7 +1,7 @@
-package dev.lucavassos.recruiter.modules.skills.repository.dto;
+package dev.lucavassos.recruiter.modules.skill.repository.dto;
 
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
-import dev.lucavassos.recruiter.modules.skills.Skill;
+import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

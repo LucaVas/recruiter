@@ -2,7 +2,7 @@ package dev.lucavassos.recruiter.modules.job.repository.dto;
 
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
-import dev.lucavassos.recruiter.modules.skills.repository.dto.SkillDto;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -30,9 +30,11 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                         ))
                         .collect(Collectors.toSet()),
                 new ContractTypeDto(job.getContractType().getContractTypeName()),
-                job.getExperienceRange(),
+                job.getExperienceRangeMin(),
+                job.getExperienceRangeMax(),
                 job.getNoticePeriodInDays(),
                 job.getSalaryBudget(),
+                job.getCurrency(),
                 job.getDescription(),
                 job.getBonusPayPerCv(),
                 job.getClosureBonus(),

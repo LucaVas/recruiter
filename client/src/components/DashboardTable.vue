@@ -95,6 +95,22 @@ const getContractType = (type: string) => {
   }
 };
 
+const getClientIcon = (clientName: string) => {
+  switch (clientName.toLowerCase()) {
+    case 'infosys':
+      return 'infosys.svg';
+
+    case 'ibm':
+      return 'ibm.svg';
+
+    case 'accenture':
+      return 'accenture.svg';
+
+    default:
+      return 'placeholder.png';
+  }
+};
+
 const getSkills = (skills: Skill[]): string => {
   return skills.map((skill) => skill.name).join(', ');
 };
@@ -137,13 +153,13 @@ onMounted(async () => {
       'status',
     ]"
     :value="jobs"
-    showGridlines
+    stripedRows
     paginator
-    :rows="10"
+    :rows="5"
     :loading="loading"
     dataKey="id"
     :rowsPerPageOptions="[5, 10, 20, 50]"
-    tableStyle="min-height: 100%; margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
+    tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
       <div class="flex w-full justify-between">
@@ -178,15 +194,18 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="client" header="Client" class="min-w-20">
+    <Column field="client" header="Client" class="min-w-52">
       <template #body="{ data }">
-        {{ data.client }}
+        <div class="flex items-center gap-3">
+          <img :src="`src/assets/images/clients/${getClientIcon(data.client)}`" class="w-5" />
+          {{ data.client }}
+        </div>
       </template>
       <template #filter="{ filterModel }">
         <InputText
           v-model="filterModel.value"
           type="text"
-          class="p-column-filter"
+          class="p-column-filter min-w-52"
           placeholder="Search by client"
         />
       </template>
@@ -253,10 +272,8 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="salaryBudget" header="salaryBudget" class="min-w-10">
-      <template #body="{ data }">
-        {{ data.salaryBudget }}
-      </template>
+    <Column field="salaryBudget" header="Salary Budget" class="min-w-44">
+      <template #body="{ data }"> {{ data.salaryBudget }} {{ data.currency }} </template>
       <template #filter="{ filterModel }">
         <InputText
           v-model="filterModel.value"
@@ -266,10 +283,8 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="noticePeriodInDays" header="Notice Period" dataType="numeric" class="min-w-20">
-      <template #body="{ data }">
-        {{ data.noticePeriodInDays }}
-      </template>
+    <Column field="noticePeriodInDays" header="Notice Period" dataType="numeric" class="min-w-40">
+      <template #body="{ data }"> {{ data.noticePeriodInDays }} days </template>
       <template #filter="{ filterModel }">
         <InputText
           v-model="filterModel.value"
@@ -292,7 +307,7 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="creationDate" header="Creation Date" dataType="date" class="min-w-10">
+    <Column field="creationDate" header="Creation Date" dataType="date" class="min-w-40">
       <template #body="{ data }">
         {{ formatDate(data.createdAt) }}
       </template>
@@ -321,6 +336,18 @@ onMounted(async () => {
             <Tag :value="slotProps.option" :severity="getSeverity(slotProps.option)" />
           </template>
         </Dropdown>
+      </template>
+    </Column>
+    <Column field="action" header="" class="min-w-10">
+      <template #body>
+        <Button
+          size="small"
+          label="Open"
+          class="p-2"
+          outlined
+          severity="contrast"
+          icon="pi pi-reply"
+        />
       </template>
     </Column>
   </DataTable>

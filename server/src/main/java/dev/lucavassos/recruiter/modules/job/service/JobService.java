@@ -6,14 +6,18 @@ import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
+import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
+import dev.lucavassos.recruiter.modules.job.repository.ContractTypeRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
-import dev.lucavassos.recruiter.modules.skills.Skill;
-import dev.lucavassos.recruiter.modules.skills.repository.SkillRepository;
-import dev.lucavassos.recruiter.modules.skills.repository.dto.SkillDtoMapper;
+import dev.lucavassos.recruiter.modules.skill.entities.Skill;
+import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +39,8 @@ public class JobService {
     @Autowired
     private SkillRepository skillRepository;
     @Autowired
+    private ContractTypeRepository contractTypeRepository;
+    @Autowired
     private JobDtoMapper jobDtoMapper;
     @Autowired
     private SkillDtoMapper skillDtoMapper;
@@ -42,10 +48,14 @@ public class JobService {
     private QuestionDtoMapper questionDtoMapper;
 
     public JobResponse addJob(NewJobRequest request) throws Exception {
-        LOG.info("Adding new job");
+        LOG.info("Initiating new job creation process...");
 
         Set<Skill> skills = new HashSet<>(skillRepository
-                .findAllById(request.getSkillsIds()));
+                .findAllById(request.getSkills().stream().map(RawSkillDto::id).collect(Collectors.toSet())));
+
+        ContractType contractType = contractTypeRepository
+                .findByContractTypeName(request.getContractType())
+                .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.getContractType())));
 
         Job createdJob;
         try {
@@ -54,13 +64,16 @@ public class JobService {
                             .client(request.getClient())
                             .name(request.getName())
                             .status(request.getStatus())
-                            .wantedCvs(request.getWantedCVs())
+                            .contractType(contractType)
+                            .wantedCvs(request.getWantedCvs())
                             .skills(skills)
-                            .experienceRange(request.getExperienceRange())
+                            .experienceRangeMin(request.getExperienceRangeMin())
+                            .experienceRangeMax(request.getExperienceRangeMax())
                             .noticePeriodInDays(request.getNoticePeriodInDays())
                             .salaryBudget(request.getSalaryBudget())
+                            .currency(request.getCurrency())
                             .description(request.getDescription())
-                            .bonusPayPerCv(request.getBonusPayPerCV())
+                            .bonusPayPerCv(request.getBonusPayPerCv())
                             .closureBonus(request.getClosureBonus())
                             .comments(request.getComments())
                             .build()
@@ -103,12 +116,24 @@ public class JobService {
             job.setStatus(request.getStatus());
             changes = true;
         }
-        if (request.getWantedCVs() != null && !request.getWantedCVs().equals(job.getWantedCvs())) {
-            job.setWantedCvs(request.getWantedCVs());
+        if (request.getContractType() != null && !request.getContractType().equals(job.getContractType().getContractTypeName())) {
+            ContractType contractType = contractTypeRepository
+                    .findByContractTypeName(request.getContractType())
+                    .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.getContractType())));
+
+            job.setContractType(contractType);
             changes = true;
         }
-        if (request.getExperienceRange() != null && !request.getExperienceRange().equals(job.getExperienceRange())) {
-            job.setExperienceRange(request.getExperienceRange());
+        if (request.getWantedCvs() != null && !request.getWantedCvs().equals(job.getWantedCvs())) {
+            job.setWantedCvs(request.getWantedCvs());
+            changes = true;
+        }
+        if (request.getExperienceRangeMin() != null && !request.getExperienceRangeMin().equals(job.getExperienceRangeMin())) {
+            job.setExperienceRangeMin(request.getExperienceRangeMin());
+            changes = true;
+        }
+        if (request.getExperienceRangeMax() != null && !request.getExperienceRangeMax().equals(job.getExperienceRangeMax())) {
+            job.setExperienceRangeMax(request.getExperienceRangeMax());
             changes = true;
         }
         if (request.getNoticePeriodInDays() != null && !request.getNoticePeriodInDays().equals(job.getNoticePeriodInDays())) {
@@ -119,12 +144,16 @@ public class JobService {
             job.setSalaryBudget(request.getSalaryBudget());
             changes = true;
         }
+        if (request.getCurrency() != null && !request.getCurrency().equals(job.getCurrency())) {
+            job.setCurrency(request.getCurrency());
+            changes = true;
+        }
         if (request.getDescription() != null && !request.getDescription().equals(job.getDescription())) {
             job.setDescription(request.getDescription());
             changes = true;
         }
-        if (request.getBonusPayPerCV() != null && !request.getBonusPayPerCV().equals(job.getBonusPayPerCv())) {
-            job.setBonusPayPerCv(request.getBonusPayPerCV());
+        if (request.getBonusPayPerCv() != null && !request.getBonusPayPerCv().equals(job.getBonusPayPerCv())) {
+            job.setBonusPayPerCv(request.getBonusPayPerCv());
             changes = true;
         }
         if (request.getClosureBonus() != null && !request.getClosureBonus().equals(job.getClosureBonus())) {
@@ -135,9 +164,9 @@ public class JobService {
             job.setComments(request.getComments());
             changes = true;
         }
-        if (request.getSkillsIds() != null) {
+        if (request.getSkills() != null) {
             Set<Skill> skills = new HashSet<>(skillRepository
-                    .findAllById(request.getSkillsIds()));
+                    .findAllById(request.getSkills().stream().map(RawSkillDto::id).collect(Collectors.toSet())));
             if (!skills.equals(job.getSkills())) {
                 job.setSkills(skills);
                 changes = true;

@@ -1,6 +1,5 @@
-package dev.lucavassos.recruiter.modules.skills;
+package dev.lucavassos.recruiter.modules.skill.entities;
 
-import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -13,7 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data

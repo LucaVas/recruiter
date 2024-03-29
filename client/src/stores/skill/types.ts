@@ -5,3 +5,5 @@ export type Skill = {
   name: string;
   questions: Question[]
 };
+
+export type RawSkill = Pick<Skill, 'id' | 'name'>

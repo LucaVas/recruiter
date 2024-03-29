@@ -5,7 +5,7 @@ import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 
 public record JobResponse(
     Long id,
-    JobDto jobDto
+    JobDto job
 ) {
 
 }

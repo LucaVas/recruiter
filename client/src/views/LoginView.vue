@@ -77,7 +77,7 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
       </template>
 
       <template #footer>
-        <div class="flex items-center justify-between">
+        <div class="mt-4 flex items-center justify-between">
           <RouterLink :to="{ name: 'Login' }" target="_blank" rel="noopener">
             <Button
               class="w-full"
@@ -88,17 +88,18 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
               data-testid="reset-password-button"
             />
           </RouterLink>
-          <Message
-            class="text-center"
-            severity="secondary"
-            :sticky="true"
-            :closable="false"
-            data-testid="not-member-message"
-          >
-            <RouterLink :to="{ name: 'Signup' }" class="font-semibold leading-6"
-              >Not a member?</RouterLink
-            >
-          </Message>
+          <RouterLink :to="{ name: 'Signup' }">
+            <Button
+              class="w-full"
+              type="button"
+              label="Not a member?"
+              icon="pi pi-question-circle"
+              severity="secondary"
+              :loading="loading && !errorMessage"
+              :disabled="loading && !errorMessage"
+              data-testid="not-member-button"
+            />
+          </RouterLink>
         </div>
       </template>
     </PageForm>

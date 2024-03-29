@@ -18,17 +18,18 @@ const links = ref([
         shortcut: '⌘+J',
         route: '/',
       },
-      { icon: 'pi pi-plus', label: 'New job', component: 'Dashboard', shortcut: '⌘+N', route: '/' },
-    ],
-  },
-  {
-    label: 'Candidates',
-    items: [
+      {
+        icon: 'pi pi-plus',
+        label: 'New job',
+        component: 'Dashboard',
+        shortcut: '⌘+N',
+        route: '/jobs/new',
+      },
       {
         icon: 'pi pi-plus',
         label: 'New candidate',
         component: 'Dashboard',
-        shortcut: '⌘+N',
+        shortcut: '⌘+C',
         route: '/',
       },
     ],
@@ -37,10 +38,10 @@ const links = ref([
     label: 'Users',
     items: [
       {
-        icon: 'pi pi-list',
+        icon: 'pi pi-users',
         label: 'All users',
         component: 'Dashboard',
-        shortcut: '⌘+J',
+        shortcut: '⌘+U',
         route: '/',
       },
     ],
@@ -51,13 +52,13 @@ const links = ref([
       {
         label: 'My performance',
         icon: 'pi pi-chart-line',
-        shortcut: '⌘+O',
+        shortcut: '⌘+P',
         route: '/',
       },
       {
         label: 'Settings',
         icon: 'pi pi-cog',
-        shortcut: '⌘+O',
+        shortcut: '⌘+S',
         route: '/',
       },
       {
@@ -74,8 +75,8 @@ const links = ref([
   },
 ]);
 
-const tag = ref('username');
-const role = ref('Recruiter');
+const tag = ref('janny_doe');
+const role = ref('Admin');
 </script>
 
 <template>

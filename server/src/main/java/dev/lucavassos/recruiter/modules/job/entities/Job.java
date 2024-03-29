@@ -1,8 +1,10 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
+import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
-import dev.lucavassos.recruiter.modules.skills.Skill;
+import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -56,8 +58,12 @@ public class Job {
     private ContractType contractType;
 
     @Column(nullable = false)
-    @Size(min = 1, message = "Experience range must be at least 1 character long")
-    private String experienceRange;
+    @Min(value = 0, message = "Experience range minimum cannot be negative")
+    private Integer experienceRangeMin;
+
+    @Column(nullable = false)
+    @Max(value = 100, message = "Experience range maximum cannot exceed 100")
+    private Integer experienceRangeMax;
 
     @Column(nullable = false)
     @Min(value = 0, message = "Notice period cannot be negative")
@@ -66,6 +72,10 @@ public class Job {
     @Column(nullable = false)
     @Min(value = 0, message = "Salary budget cannot be negative")
     private Double salaryBudget;
+
+    @Column(nullable = false, name = "currency")
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 
     @Column(nullable = false)
     private String description;

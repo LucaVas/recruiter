@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter;
 
+import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
@@ -7,8 +8,8 @@ import dev.lucavassos.recruiter.modules.job.repository.ContractTypeRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
 import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
-import dev.lucavassos.recruiter.modules.skills.Skill;
-import dev.lucavassos.recruiter.modules.skills.repository.SkillRepository;
+import dev.lucavassos.recruiter.modules.skill.entities.Skill;
+import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.user.entities.ContractTypeName;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.entities.RoleName;
@@ -176,9 +177,11 @@ public class EntityInitializer {
                 .contractType(
                         permanentContractType
                 )
-                .experienceRange("1-2 years")
+                .experienceRangeMin(1)
+                .experienceRangeMax(2)
                 .noticePeriodInDays(90)
                 .salaryBudget(1500.0)
+                .currency(Currency.INR)
                 .description("Description for a Java software engineer job.")
                 .bonusPayPerCv(3.7)
                 .closureBonus("200")
@@ -196,9 +199,11 @@ public class EntityInitializer {
                         ).collect(Collectors.toSet())
                 )
                 .contractType(permanentContractType)
-                .experienceRange("3-5 years")
+                .experienceRangeMin(3)
+                .experienceRangeMax(5)
                 .noticePeriodInDays(70)
                 .salaryBudget(2000.0)
+                .currency(Currency.INR)
                 .description("Description for a Python software engineer job.")
                 .bonusPayPerCv(3.7)
                 .closureBonus("260")
@@ -215,9 +220,11 @@ public class EntityInitializer {
                         ).collect(Collectors.toSet())
                 )
                 .contractType(permanentContractType)
-                .experienceRange("2-3.5 years")
+                .experienceRangeMin(2)
+                .experienceRangeMax(3)
                 .noticePeriodInDays(50)
                 .salaryBudget(1200.0)
+                .currency(Currency.INR)
                 .description("Description for a BA job.")
                 .bonusPayPerCv(3.0)
                 .closureBonus("230")
@@ -233,9 +240,11 @@ public class EntityInitializer {
                         ).collect(Collectors.toSet())
                 )
                 .contractType(permanentContractType)
-                .experienceRange("5-7 years")
+                .experienceRangeMin(5)
+                .experienceRangeMax(7)
                 .noticePeriodInDays(20)
                 .salaryBudget(2100.00)
+                .currency(Currency.INR)
                 .description("Description for a Mainframe developer job.")
                 .bonusPayPerCv(6.0)
                 .closureBonus("400")
@@ -253,9 +262,11 @@ public class EntityInitializer {
                 ).collect(Collectors.toSet())
                 )
                 .contractType(permanentContractType)
-                .experienceRange("10-12 years")
+                .experienceRangeMin(10)
+                .experienceRangeMax(12)
                 .noticePeriodInDays(60)
                 .salaryBudget(3400.00)
+                .currency(Currency.INR)
                 .description("Description for a cloud architect job.")
                 .bonusPayPerCv(8.0)
                 .closureBonus("700")

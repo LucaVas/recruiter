@@ -1,6 +1,6 @@
-package dev.lucavassos.recruiter.modules.skills.repository;
+package dev.lucavassos.recruiter.modules.skill.repository;
 
-import dev.lucavassos.recruiter.modules.skills.Skill;
+import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

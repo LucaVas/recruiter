@@ -35,7 +35,7 @@ const [submitSignup, errorMessage] = useErrorMessage(async () => {
 </script>
 
 <template>
-  <div class="flex h-screen w-full justify-center bg-slate-100">
+  <div class="flex h-full w-full justify-center bg-slate-100">
     <PageForm
       heading="Sign up"
       name="Signup"
