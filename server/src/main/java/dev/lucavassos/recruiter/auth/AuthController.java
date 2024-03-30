@@ -104,12 +104,13 @@ public class AuthController {
         }
 
         LOG.info("Authenticated user: {}", auth);
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = tokenProvider.generateToken(auth);
 
-        LoginResponse res = new LoginResponse(jwt, "Bearer");
+        LoginResponse res = new LoginResponse(userPrincipal.getId(), userPrincipal.getUsername(), jwt, "Bearer");
         LOG.info("Login successful. Response: {}", res);
 
         return ResponseEntity.ok()

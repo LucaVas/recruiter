@@ -1,5 +1,7 @@
 package dev.lucavassos.recruiter;
 
+import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
+import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
@@ -41,6 +43,8 @@ public class EntityInitializer {
     private QuestionRepository questionRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CandidateRepository candidateRepository;
     @Autowired
     private PasswordEncoder encoder;
 
@@ -278,6 +282,49 @@ public class EntityInitializer {
         jobRepository.save(job3);
         jobRepository.save(job4);
         jobRepository.save(job5);
+    }
+
+    @Transactional
+    public void saveCandidates() {
+        Set<Candidate> candidates = new HashSet<>(List.of(
+                Candidate.builder()
+                        .name("John")
+                        .phone("1231231231")
+                        .email("john@mail.com")
+                        .totalExperience(15.0)
+                        .education("Education for John")
+                        .currentCtc(2000.0)
+                        .pan("1234561234")
+                        .build(),
+                Candidate.builder()
+                        .name("Mary")
+                        .phone("1231231232")
+                        .email("mary@mail.com")
+                        .totalExperience(10.0)
+                        .education("Education for Mary")
+                        .currentCtc(2050.0)
+                        .pan("1234561233")
+                        .build(),
+                Candidate.builder()
+                        .name("Micheal")
+                        .phone("1231231233")
+                        .email("micheal@mail.com")
+                        .totalExperience(5.0)
+                        .education("Education for Micheal")
+                        .currentCtc(1370.0)
+                        .pan("1234561234")
+                        .build(),
+                Candidate.builder()
+                        .name("Morta")
+                        .phone("1231231234")
+                        .email("morta@mail.com")
+                        .totalExperience(25.0)
+                        .education("Education for Morta")
+                        .currentCtc(2060.0)
+                        .pan("1234561235")
+                        .build()));
+
+        candidateRepository.saveAll(candidates);
     }
 
     @Transactional

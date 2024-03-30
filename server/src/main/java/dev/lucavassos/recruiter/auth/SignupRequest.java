@@ -1,7 +1,5 @@
 package dev.lucavassos.recruiter.auth;
 
-import dev.lucavassos.recruiter.modules.user.entities.Role;
-
 public record SignupRequest(
         String name,
         String username,

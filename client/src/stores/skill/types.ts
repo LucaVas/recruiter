@@ -1,9 +1,9 @@
-import type { Question } from "../question/types";
+import type { QuestionDto } from '../question/types';
 
-export type Skill = {
+export type SkillDto = {
   id: number;
   name: string;
-  questions: Question[]
+  questions: Set<QuestionDto>;
 };
 
-export type RawSkill = Pick<Skill, 'id' | 'name'>
+export type RawSkillDto = Pick<SkillDto, 'id' | 'name'>;

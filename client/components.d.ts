@@ -7,15 +7,11 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Badge: typeof import('primevue/badge')['default']
     Button: typeof import('primevue/button')['default']
     Chip: typeof import('primevue/chip')['default']
     DashboardTable: typeof import('./src/components/DashboardTable.vue')['default']
     Divider: typeof import('primevue/divider')['default']
     FilesUploader: typeof import('./src/components/FilesUploader.vue')['default']
-    FileUpload: typeof import('primevue/fileupload')['default']
-    Image: typeof import('primevue/image')['default']
-    InputMask: typeof import('primevue/inputmask')['default']
     InputText: typeof import('primevue/inputtext')['default']
     Menu: typeof import('primevue/menu')['default']
     Message: typeof import('primevue/message')['default']
@@ -24,8 +20,6 @@ declare module 'vue' {
     NewCandidateStepper: typeof import('./src/components/NewCandidateStepper.vue')['default']
     NewJobStepper: typeof import('./src/components/NewJobStepper.vue')['default']
     PageForm: typeof import('./src/components/PageForm.vue')['default']
-    ProgressBar: typeof import('primevue/progressbar')['default']
-    ProgressSpinner: typeof import('primevue/progressspinner')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SkillsList: typeof import('./src/components/SkillsList.vue')['default']

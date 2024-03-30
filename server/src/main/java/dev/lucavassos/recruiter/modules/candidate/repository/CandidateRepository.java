@@ -9,6 +9,5 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     boolean existsCandidateByEmail(String email);
     boolean existsCandidateByPhone(String phone);
     boolean existsCandidateByPan(String pan);
-    Optional<Candidate> findOneByEmail(String email);
     Optional<Candidate> findOneById(Long id);
 }

@@ -1,11 +1,9 @@
 package dev.lucavassos.recruiter.modules.candidate.repository.dto;
 
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
-public record CandidateDto(
+public record NewCandidateDto(
         Long id,
         String name,
         String phone,
@@ -14,8 +12,5 @@ public record CandidateDto(
         String education,
         Double currentCtc,
         String pan,
-        String comments,
-        Set<CandidacyDto> candidacies,
         LocalDateTime createdAt
-) {
-}
+){}

@@ -1,13 +1,13 @@
-import type { RawSkill, Skill } from '../skill/types';
+import type { SkillDto } from '../skill/types';
 
-export type Job = {
+export type JobDto = {
   id: number;
   client: string;
   name: string;
   status: JobStatus;
   wantedCvs: number;
-  skills: Skill[];
-  contractType: ContractType;
+  skills: Set<SkillDto>;
+  contractType: ContractTypeDto;
   experienceRangeMin: number;
   experienceRangeMax: number;
   noticePeriodInDays: number;
@@ -21,29 +21,15 @@ export type Job = {
   createdAt: string;
 };
 
-export type NewJob = {
-  client: string;
-  name: string;
-  status: JobStatus;
-  wantedCvs: number;
-  contractType: ContractTypeName;
-  experienceRangeMin: number;
-  experienceRangeMax: number;
-  noticePeriodInDays: number;
-  skills: RawSkill[];
-  salaryBudget: number;
-  currency: Currency;
-  description: string;
-  bonusPayPerCv: number;
-  closureBonus: string;
-  comments: string;
-};
+export type NewJob = Omit<JobDto, 'id' | 'skills' | 'comments' | 'numberOfCandidates' | 'createdAt'>;
 
-export type JobResponse = { id: number; job: Job };
+export type JobResponse = { id: number; job: JobDto };
 
-export type ContractTypeName = 'PERMANENT' | 'TEMPORARY';
-export type ContractType = {
+export type JobStatus = 'OPEN' | 'NO_CV_ACCEPTED' | 'CLOSED' | 'ARCHIVED';
+
+export type ContractTypeDto = {
   contractTypeName: ContractTypeName;
 };
-export type JobStatus = 'OPEN' | 'NO_CV_ACCEPTED' | 'CLOSED' | 'ARCHIVED';
+export type ContractTypeName = 'PERMANENT' | 'TEMPORARY';
+
 export type Currency = 'INR';

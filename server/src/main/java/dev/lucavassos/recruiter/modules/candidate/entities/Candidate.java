@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.modules.candidate.entities;
 
+import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
-import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -13,6 +13,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -26,61 +28,35 @@ public class Candidate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "name")
     private String name;
 
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(nullable = false, unique = true, length = 10, name = "phone")
     private String phone;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name = "email")
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "total_experience")
     @Min(0)
     private double totalExperience;
 
-    @Column(nullable = false)
-    @Min(0)
-    private double relevantExperience;
-
-    @Column(nullable = false)
+    @Column(nullable = false, name = "education")
     private String education;
 
-    @Column
+    @Column(nullable = false, name = "current_ctc")
     @Min(0)
     private double currentCtc;
 
-    @Column(nullable = false)
-    @Min(0)
-    private double expectedCtc;
-
-    @Column(nullable = false)
-    @Min(0)
-    private double officialNoticePeriod;
-
-    @Column(nullable = false)
-    @Min(0)
-    private double actualNoticePeriod;
-
-    @Column
-    private String reasonForQuickJoin;
-
-    @Column
-    private String remarks;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "recuiter_id")
-    private User recruiter;
-
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(nullable = false, unique = true, length = 10, name = "pan")
     @Size(min = 10, max = 10)
     private String pan;
 
-    @Column
-    private String comments;
-
-    @Column
+    @Column(name = "candidate_status")
     private CandidateStatus status = CandidateStatus.ACTIVE;
+
+    @OneToMany(mappedBy = "candidate")
+    private Set<Candidacy> candidacies = new HashSet<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -88,21 +64,4 @@ public class Candidate {
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
-    public Candidate(String name, String phone, String email, double totalExperience, double relevantExperience, String education, double currentCtc, double expectedCtc, double officialNoticePeriod, double actualNoticePeriod, String reasonForQuickJoin, String remarks, User recruiter, String pan, String comments) {
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.totalExperience = totalExperience;
-        this.relevantExperience = relevantExperience;
-        this.education = education;
-        this.currentCtc = currentCtc;
-        this.expectedCtc = expectedCtc;
-        this.officialNoticePeriod = officialNoticePeriod;
-        this.actualNoticePeriod = actualNoticePeriod;
-        this.reasonForQuickJoin = reasonForQuickJoin;
-        this.remarks = remarks;
-        this.recruiter = recruiter;
-        this.pan = pan;
-        this.comments = comments;
-    }
 }

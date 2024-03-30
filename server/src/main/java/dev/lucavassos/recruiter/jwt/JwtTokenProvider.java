@@ -35,7 +35,12 @@ public class JwtTokenProvider {
 
         logger.info("Generating new token with principal {} and expiry date {}", userPrincipal, expiryDate);
 
-        return Jwts.builder().setSubject(Long.toString(userPrincipal.getId())).setIssuedAt(new Date()).setExpiration(expiryDate).signWith(getSigningKey(), SignatureAlgorithm.HS512).compact();
+        return Jwts.builder()
+                .setId(Long.toString(userPrincipal.getId()))
+                .setSubject(userPrincipal.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(expiryDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512).compact();
     }
 
     private Key getSigningKey() {
@@ -46,7 +51,7 @@ public class JwtTokenProvider {
     public Long getUserIdFromJWT(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
 
-        return Long.parseLong(claims.getSubject());
+        return Long.parseLong(claims.getId());
     }
 
     public boolean validateToken(String authToken) {

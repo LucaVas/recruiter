@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { getStoredAccessToken } from '@/utils/auth';
-import type { Candidate, CandidateResponse } from './types';
+import { getIdFromToken, getStoredAccessToken, getUsernameFromToken } from '@/utils/auth';
+import type { CandidateResponse, NewCandidateDto } from './types';
+import { computed, ref } from 'vue';
 
 const axiosApi = axios.create({
   baseURL: `http://localhost:8080/api/v1`,
@@ -13,8 +14,17 @@ const axiosApi = axios.create({
 });
 
 export const useCandidateStore = defineStore('candidateStore', () => {
-  async function addCandidate(newCandidate: Candidate): Promise<CandidateResponse> {
-    const res = await axiosApi.post(`/candidates`, newCandidate);
+  const authToken = ref(getStoredAccessToken(localStorage));
+  const authUserId = computed(() => (authToken.value ? getIdFromToken(authToken.value) : null));
+  const authUsername = computed(() =>
+    authToken.value ? getUsernameFromToken(authToken.value) : null
+  );
+
+  async function addCandidate(newCandidate: NewCandidateDto): Promise<CandidateResponse> {
+    const res = await axiosApi.post(`/candidates`, {
+      ...newCandidate,
+      recruiter: { id: authUserId, username: authUsername },
+    });
     console.log(res.data);
     return res.data;
   }

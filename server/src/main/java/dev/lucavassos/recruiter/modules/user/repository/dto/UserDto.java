@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.user.repository.dto;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public record UserDto(
         Long id,
@@ -11,7 +12,7 @@ public record UserDto(
         String mobile,
         String city,
         String country,
-        java.util.Set<Role> role,
+        Set<Role> roles,
         String comments,
         Boolean approved,
         ApproverDto approver,

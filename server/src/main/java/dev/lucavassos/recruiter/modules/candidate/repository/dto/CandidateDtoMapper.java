@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.candidate.repository.dto;
 
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
+import dev.lucavassos.recruiter.modules.user.repository.dto.RecruiterDto;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -23,10 +24,15 @@ public class CandidateDtoMapper implements Function<Candidate, CandidateDto> {
                 candidate.getActualNoticePeriod(),
                 candidate.getReasonForQuickJoin(),
                 candidate.getRemarks(),
-                candidate.getRecruiter(),
+                new RecruiterDto(
+                        candidate.getRecruiter().getId(),
+                        candidate.getRecruiter().getUsername()
+                ),
                 candidate.getPan(),
                 candidate.getComments(),
-                candidate.getStatus()
+                candidate.getStatus(),
+                candidate.getPerCvRatePaymentDate(),
+                candidate.getClosureBonusPaymentDate()
         );
     }
 }

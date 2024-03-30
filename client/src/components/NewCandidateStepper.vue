@@ -13,7 +13,7 @@ import type { Currency } from '../stores/job/types';
 import type { ToastMessageOptions } from 'primevue/toast';
 import useErrorMessage from '../composables/index';
 import { useCandidateStore } from '../stores/candidate/index';
-import type { Candidate } from '../stores/candidate/types';
+import type { NewCandidateDto } from '../stores/candidate/types';
 
 const toast = useToast();
 const errorToastContent = ref<ToastMessageOptions>({
@@ -24,33 +24,22 @@ const errorToastContent = ref<ToastMessageOptions>({
 });
 
 const candidateStore = useCandidateStore();
-const currencies = ref<{ name: string; value: Currency }[]>([{ name: 'INR', value: 'INR' }]);
 const newCandidateForm = ref({
   name: '',
   phone: '',
   email: '',
   totalExperience: '',
-  relevantExperience: '',
   education: '',
   currentCtc: '',
-  expectedCtc: '',
-  officialNoticePeriod: '',
-  actualNoticePeriod: '',
-  reasonForQuickJoin: '',
-  remarks: '',
   pan: '',
-  comments: '',
+  comments: ''
 });
 type NewCandidateForm = typeof newCandidateForm;
-function formToNewCandidate(newCandidateForm: NewCandidateForm): Candidate {
+function formToNewCandidate(newCandidateForm: NewCandidateForm): NewCandidateDto {
   return {
     ...newCandidateForm.value,
     totalExperience: Number(newCandidateForm.value.totalExperience),
-    relevantExperience: Number(newCandidateForm.value.relevantExperience),
-    currentCtc: Number(newCandidateForm.value.currentCtc),
-    expectedCtc: Number(newCandidateForm.value.expectedCtc),
-    officialNoticePeriod: Number(newCandidateForm.value.officialNoticePeriod),
-    actualNoticePeriod: Number(newCandidateForm.value.actualNoticePeriod),
+    currentCtc: Number(newCandidateForm.value.currentCtc)
   };
 }
 
@@ -65,6 +54,8 @@ let [submitNewCandidate, errorMessage] = useErrorMessage(async () => {
 const active = ref(0);
 const submittingNewCandidate = ref(false);
 const candidateSubmitted = ref(false);
+const closureBonus = ref('');
+const bonusPayPerCv = ref('');
 
 watch(errorMessage, (errorMessage) => {
   errorToastContent.value.detail = errorMessage;
@@ -351,6 +342,67 @@ watch(errorMessage, (errorMessage) => {
           <div class="flex flex-col gap-4">
             <div class="mb-3 mt-3 text-center text-xl font-semibold">Final details</div>
 
+            <!-- paying information -->
+            <div class="field p-fluid flex w-full gap-3">
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-wallet" />
+                </InputIcon>
+                <InputText
+                  id="bonusPayPerCv"
+                  v-model="bonusPayPerCv"
+                  type="number"
+                  placeholder="Rate payable (per CV)"
+                  disabled
+                />
+              </IconField>
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-money-bill" />
+                </InputIcon>
+                <InputText
+                  id="closureBonus"
+                  v-model="closureBonus"
+                  type="number"
+                  placeholder="Closure Bonus"
+                  disabled
+                />
+              </IconField>
+            </div>
+
+            <!-- paying dates -->
+            <div class="field p-fluid flex w-full gap-3">
+              <div class="field p-fluid w-full">
+                <IconField>
+                  <InputIcon>
+                    <i class="pi pi-wallet" />
+                  </InputIcon>
+                  <InputText
+                    id="perCvRatePaymentDate"
+                    v-model="newCandidateForm.perCvRatePaymentDate"
+                    type="number"
+                    placeholder="CV Rate Payment Date"
+                    required
+                  />
+                </IconField>
+              </div>
+
+              <div class="field p-fluid w-full">
+                <IconField>
+                  <InputIcon>
+                    <i class="pi pi-money-bill" />
+                  </InputIcon>
+                  <InputText
+                    id="closureBonusPaymentDate"
+                    v-model="newCandidateForm.closureBonusPaymentDate"
+                    type="text"
+                    placeholder="Closure Bonus Payment Date"
+                    required
+                  />
+                </IconField>
+              </div>
+            </div>
+
             <!-- Remarks -->
             <div class="field p-fluid flex w-full">
               <Textarea
@@ -424,7 +476,7 @@ watch(errorMessage, (errorMessage) => {
               icon="pi pi-arrow-right"
               iconPos="right"
               :loading="submittingNewCandidate"
-              @click="submitNewJob()"
+              @click="submitNewCandidate()"
             />
           </div>
         </div>

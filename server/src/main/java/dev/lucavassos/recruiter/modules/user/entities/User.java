@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.user.entities;
 
+import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -75,6 +76,9 @@ public class User {
     @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime approvedOn;
+
+    @OneToMany(mappedBy = "recruiter")
+    private Set<Candidacy> candidacies = new HashSet<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
