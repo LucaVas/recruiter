@@ -2,32 +2,32 @@
 import Avatar from 'primevue/avatar';
 import type { MenuItem } from '@/layouts/DashboardLayout.vue';
 import Divider from 'primevue/divider';
-import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import Button from 'primevue/button';
-import { useUserStore } from '../stores/user/index';
+import { useUserStore } from '@/stores/user/index';
 
 const userStore = useUserStore();
 const router = useRouter();
-const { menuItems, tag } = defineProps<{
+const { menuItems, tag, visible } = defineProps<{
+  visible: boolean;
   menuItems: MenuItem[];
   tag: string;
   role: string;
+}>();
+defineEmits<{
+  (e: 'closeMenu'): void;
 }>();
 
 function logout() {
   userStore.logout();
   router.push({ name: 'Login' });
 }
-
-const visible = ref(false);
 </script>
 
 <template>
   <div class="card flex justify-center">
-    <Button icon="pi pi-bars" @click="visible = true" />
-    <Sidebar v-model:visible="visible">
-      <template #container="{ closeCallback }">
+    <Sidebar :visible="visible">
+      <template #container>
         <div class="flex h-full flex-col justify-between p-4">
           <div class="flex flex-shrink-0 items-center justify-between px-4 pt-3">
             <span class="inline-flex items-center gap-2">
@@ -178,7 +178,7 @@ const visible = ref(false);
             <span>
               <Button
                 type="button"
-                @click="closeCallback"
+                @click="$emit('closeMenu')"
                 icon="pi pi-times"
                 rounded
                 outlined
@@ -211,6 +211,7 @@ const visible = ref(false);
                 <li v-for="link in item.links" :key="link.name">
                   <RouterLink
                     :to="{ name: link.view }"
+                    @click="$emit('closeMenu')"
                     class="border-round text-700 hover:surface-100 transition-duration-150 p-ripple flex cursor-pointer items-center p-3 transition-colors"
                     ><i :class="link.icon"></i>
                     <span class="ml-2 font-medium">{{ link.name }}</span>
