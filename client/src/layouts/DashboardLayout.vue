@@ -1,10 +1,18 @@
 <script setup lang="ts">
 import StackedLayout from './StackedLayout.vue';
 import { ref } from 'vue';
+import { useUserStore } from '../stores/user/index';
 
+const userStore = useUserStore();
 export type MenuItem = {
   group: string;
-  links: { icon: string; name: string; shortcut: string; view: string; command?: (...args: any) => any }[];
+  links: {
+    icon: string;
+    name: string;
+    shortcut: string;
+    view: string;
+    command?: (...args: any) => any;
+  }[];
 };
 const menuItems = ref<MenuItem[]>([
   {
@@ -26,7 +34,7 @@ const menuItems = ref<MenuItem[]>([
         icon: 'pi pi-plus',
         name: 'New candidate',
         shortcut: '⌘+C',
-        view: 'NewCandidate'
+        view: 'NewCandidate',
       },
     ],
   },
@@ -37,7 +45,7 @@ const menuItems = ref<MenuItem[]>([
         icon: 'pi pi-users',
         name: 'All users',
         shortcut: '⌘+U',
-        view: 'Dashboard'
+        view: 'Dashboard',
       },
     ],
   },
@@ -48,19 +56,19 @@ const menuItems = ref<MenuItem[]>([
         name: 'My performance',
         icon: 'pi pi-chart-line',
         shortcut: '⌘+P',
-        view: 'Dashboard'
+        view: 'Dashboard',
       },
       {
         name: 'Settings',
         icon: 'pi pi-cog',
         shortcut: '⌘+S',
-        view: 'Dashboard'
+        view: 'Dashboard',
       },
     ],
   },
 ]);
 
-const tag = ref('janny_doe');
+const tag = userStore.username !== '' ? userStore.username : 'john_doe';
 const role = ref('Admin');
 </script>
 

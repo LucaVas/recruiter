@@ -180,10 +180,11 @@ onMounted(async () => {
     :loading="loading"
     dataKey="id"
     :rowsPerPageOptions="[5, 10, 20, 50]"
+    class="w-full"
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <div class="flex w-full justify-between">
+      <div class="w-25 flex justify-between">
         <Button
           type="button"
           icon="pi pi-filter-slash"
