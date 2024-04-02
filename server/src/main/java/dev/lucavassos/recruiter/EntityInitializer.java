@@ -363,10 +363,10 @@ public class EntityInitializer {
         User user = User.builder()
                 .name("Tester")
                 .username("tester")
-                .email("tester@test.com")
+                .email("tester@mail.com")
                 .password(encoder.encode("Password123"))
                 .mobile("1234567890")
-                .city("Indian city")
+                .city("Test city")
                 .country("India")
                 .build();
 

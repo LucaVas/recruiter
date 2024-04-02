@@ -26,8 +26,7 @@ public class JobController {
 
     @PostMapping("/jobs")
     public ResponseEntity<JobResponse> addJob(
-            @RequestBody NewJobRequest request,
-            HttpServletResponse response) throws Exception {
+            @RequestBody NewJobRequest request) throws Exception {
         LOG.info("Received request to add new job: {}", request);
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }

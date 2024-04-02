@@ -88,6 +88,8 @@ public class JobService {
                             .description(request.getDescription())
                             .bonusPayPerCv(request.getBonusPayPerCv())
                             .closureBonus(request.getClosureBonus())
+                            .cvRatePaymentDate(request.getCvRatePaymentDate())
+                            .closureBonusPaymentDate(request.getClosureBonusPaymentDate())
                             .comments(request.getComments())
                             .build()
             );

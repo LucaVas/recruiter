@@ -18,10 +18,15 @@ export type JobDto = {
   closureBonus: string;
   comments: string;
   numberOfCandidates: number;
+  closureBonusPaymentDate: Date;
+  cvRatePaymentDate: Date;
   createdAt: string;
 };
 
-export type NewJob = Omit<JobDto, 'id' | 'skills' | 'comments' | 'numberOfCandidates' | 'createdAt'>;
+export type NewJob = Omit<
+  JobDto,
+  'id' | 'skills' | 'comments' | 'numberOfCandidates' | 'createdAt'
+>;
 
 export type JobResponse = { id: number; job: JobDto };
 

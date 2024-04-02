@@ -69,7 +69,7 @@ public class User {
     @Column(nullable = false)
     private boolean approved = false;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approver_id")
     private User approver;
 

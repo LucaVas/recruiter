@@ -2,6 +2,7 @@ package dev.lucavassos.recruiter.modules.user.service;
 
 import dev.lucavassos.recruiter.auth.SignupRequest;
 import dev.lucavassos.recruiter.auth.SignupResponse;
+import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.modules.user.domain.*;
@@ -15,6 +16,8 @@ import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +45,11 @@ public class UserService  {
     }
 
     public void approveUser(UserApprovalRequest request) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
         User user = repository
                 .findOneById(request.userId())
                 .orElseThrow(() ->
@@ -50,10 +58,18 @@ public class UserService  {
                         )
                 );
 
+        User approver = repository
+                .findOneById(userPrincipal.getId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Approver with id %d not found".formatted(userPrincipal.getId())
+                        )
+                );
+
         user.setApproved(request.approved());
         user.setComments(request.commments());
         user.setApprovedOn(LocalDateTime.now());
-        // TODO: add approver
+        user.setApprover(approver);
 
         User approvedUser = repository.save(user);
 

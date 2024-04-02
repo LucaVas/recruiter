@@ -90,7 +90,7 @@ public class Job {
     @Column(nullable = false, name = "cv_rate_payment_date")
     private LocalDateTime cvRatePaymentDate;
 
-    @Column(nullable = false, name = "closure_bonus_payment_rate")
+    @Column(nullable = false, name = "closure_bonus_payment_date")
     private LocalDateTime closureBonusPaymentDate;
 
     @Column

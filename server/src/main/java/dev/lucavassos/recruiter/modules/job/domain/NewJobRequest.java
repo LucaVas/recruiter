@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -28,5 +29,7 @@ public class NewJobRequest {
     private String description;
     private Double bonusPayPerCv;
     private String closureBonus;
+    private LocalDateTime closureBonusPaymentDate;
+    private LocalDateTime cvRatePaymentDate;
     private String comments;
 }

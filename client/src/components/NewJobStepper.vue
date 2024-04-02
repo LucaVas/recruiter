@@ -49,6 +49,8 @@ const newJobForm = ref({
   description: '',
   bonusPayPerCv: '',
   closureBonus: '',
+  closureBonusPaymentDate: '',
+  cvRatePaymentDate: '',
   comments: '',
 });
 
@@ -66,12 +68,20 @@ function formToNewJob(newJobForm: NewJobForm): NewJob {
     noticePeriodInDays: Number(newJobForm.value.noticePeriodInDays),
     salaryBudget: Number(newJobForm.value.salaryBudget),
     bonusPayPerCv: Number(newJobForm.value.bonusPayPerCv),
+    closureBonusPaymentDate: parseDateFromString(newJobForm.value.closureBonusPaymentDate),
+    cvRatePaymentDate: parseDateFromString(newJobForm.value.cvRatePaymentDate),
   };
+}
+
+function parseDateFromString(dateString: string) {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
 }
 
 let [submitNewJob, errorMessage] = useErrorMessage(async () => {
   submittingNewJob.value = true;
   const newJob = formToNewJob(newJobForm);
+  console.log(newJob);
   await jobStore.addJob(newJob);
   submittingNewJob.value = false;
   jobSubmitted.value = true;
@@ -369,7 +379,8 @@ watch(errorMessage, (errorMessage) => {
         <div v-if="!jobSubmitted" class="mb-auto flex h-full w-full flex-col justify-between gap-6">
           <div class="flex flex-col gap-4">
             <div class="mb-3 mt-3 text-center text-xl font-semibold">Almost there...</div>
-            <div class="field p-fluid w-full">
+
+            <div class="field p-fluid flex w-full gap-2">
               <IconField>
                 <InputIcon>
                   <i class="pi pi-wallet" />
@@ -382,17 +393,42 @@ watch(errorMessage, (errorMessage) => {
                   required
                 />
               </IconField>
+              <IconField class="w-full">
+                <InputIcon>
+                  <i class="pi pi-calendar" />
+                </InputIcon>
+                <InputText
+                  id="cvRatePaymentDate"
+                  v-model="newJobForm.cvRatePaymentDate"
+                  type="date"
+                  placeholder="CV Rate Payment Date"
+                  required
+                />
+              </IconField>
             </div>
-            <div class="field p-fluid w-full">
-              <IconField>
+
+            <div class="field p-fluid flex w-full gap-2">
+              <IconField class="w-full">
                 <InputIcon>
                   <i class="pi pi-money-bill" />
                 </InputIcon>
                 <InputText
                   id="closureBonus"
                   v-model="newJobForm.closureBonus"
-                  type="text"
+                  type="number"
                   placeholder="Closure Bonus"
+                  required
+                />
+              </IconField>
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-calendar" />
+                </InputIcon>
+                <InputText
+                  id="salaryBudget"
+                  v-model="newJobForm.closureBonusPaymentDate"
+                  type="date"
+                  placeholder="Closure Bonus Payment Date"
                   required
                 />
               </IconField>
@@ -425,7 +461,12 @@ watch(errorMessage, (errorMessage) => {
               iconPos="right"
               :loading="submittingNewJob"
               @click="submitNewJob()"
-              :disabled="newJobForm.bonusPayPerCv === '' || newJobForm.closureBonus === ''"
+              :disabled="
+                newJobForm.bonusPayPerCv === '' ||
+                newJobForm.closureBonus === '' ||
+                newJobForm.closureBonusPaymentDate === '' ||
+                newJobForm.cvRatePaymentDate === ''
+              "
             />
           </div>
         </div>

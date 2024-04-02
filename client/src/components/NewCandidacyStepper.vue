@@ -149,11 +149,12 @@ const active = ref(0);
                   candidateToDisplay = newCandidate;
                   newCandidateModalOpen = false;
                   active = +1;
+                  candidateSearchError = '';
                 }
               "
             />
 
-            <Message v-if="candidateSearchError" severity="error" :closable="false">{{
+            <Message v-if="candidateSearchError" severity="error" :life="1000">{{
               candidateSearchError
             }}</Message>
 
