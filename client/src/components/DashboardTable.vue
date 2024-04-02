@@ -10,13 +10,13 @@ import Column from 'primevue/column';
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import Dropdown from 'primevue/dropdown';
 import { useJobStore } from '@/stores/job';
-import { type Job } from '../stores/job/types';
-import type { Skill } from '@/stores/skill/types';
+import type { JobDto } from '../stores/job/types';
+import type { SkillDto } from '../stores/skill/types';
 
 const jobStore = useJobStore();
 const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
-const jobs = ref<Job[]>();
+const jobs = ref<JobDto[]>();
 const filters = ref();
 
 const initFilters = () => {
@@ -111,21 +111,17 @@ const getClientIcon = (clientName: string) => {
   }
 };
 
-const getSkills = (skills: Skill[]): string => {
+const getSkills = (skills: SkillDto[]): string => {
   return skills.map((skill) => skill.name).join(', ');
 };
 
 const formatDate = (value: string) => {
   const date = new Date(Date.parse(value));
-  console.log(date);
   const formattedDate = date.toLocaleDateString('en-US', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
   });
-
-  console.log(formattedDate);
-
   return formattedDate;
 };
 

@@ -14,8 +14,6 @@ public record CandidateDto(
         String education,
         Double currentCtc,
         String pan,
-        String comments,
-        Set<CandidacyDto> candidacies,
         LocalDateTime createdAt
 ) {
 }

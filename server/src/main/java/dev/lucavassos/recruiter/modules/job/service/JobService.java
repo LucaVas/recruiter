@@ -9,6 +9,7 @@ import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.repository.ContractTypeRepository;
+import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
@@ -36,6 +37,8 @@ public class JobService {
 
     @Autowired
     private JobRepository repository;
+    @Autowired
+    private JobHistoryRepository historyRepository;
     @Autowired
     private SkillRepository skillRepository;
     @Autowired
@@ -84,6 +87,8 @@ public class JobService {
 
 
         LOG.info("New job created: [{}]", createdJob);
+
+        // TODO: create new entry in history table
 
         return new JobResponse(
                 createdJob.getId(),
@@ -185,6 +190,9 @@ public class JobService {
 
 
         LOG.info("Job updated: [{}]", job);
+
+        // TODO: create new entry in history table if needed
+
 
         return new JobResponse(
                 job.getId(),
