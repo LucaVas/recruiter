@@ -17,6 +17,7 @@ import CandidateSingleSelectTable from './CandidateSingleSelectTable.vue';
 import { AxiosError } from 'axios';
 import type { CandidateDto } from '../stores/candidate/types';
 import { ApiError } from '../utils/types';
+import NewCandidateModal from './new-candidate/NewCandidateModal.vue';
 
 const active = ref(0);
 const candidateStore = useCandidateStore();
@@ -31,13 +32,16 @@ const searchCandidate = async () => {
   candidateSearchLoading.value = true;
   try {
     const res = await candidateStore.findCandidateByPan(candidatePanSearch.value);
-    candidateSearched.value = res;
+    candidateSearched.value = res.candidate;
   } catch (err) {
     if (err instanceof ApiError) candidateSearchError.value = err.message;
   } finally {
     candidateSearchLoading.value = false;
   }
 };
+
+// new candidate script
+const newCandidateModalOpen = ref(false);
 
 // const newCandidateForm = ref({
 //   name: '',
@@ -138,9 +142,18 @@ const searchCandidate = async () => {
 
             <h3>Add a new candidate</h3>
 
+            <NewCandidateModal
+              v-if="newCandidateModalOpen"
+              @close="newCandidateModalOpen = false"
+            />
             <!-- create new candidate -->
             <div class="field p-fluid">
-              <Button label="New candidate" icon="pi pi-user-plus" iconPos="right" />
+              <Button
+                label="New candidate"
+                icon="pi pi-user-plus"
+                iconPos="right"
+                @click="newCandidateModalOpen = true"
+              />
             </div>
           </div>
           <div class="flex justify-end pt-4">

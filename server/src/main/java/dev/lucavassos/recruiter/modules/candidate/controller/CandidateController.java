@@ -1,9 +1,9 @@
 package dev.lucavassos.recruiter.modules.candidate.controller;
 
 import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
-import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateResponse;
-import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
+import dev.lucavassos.recruiter.modules.candidate.domain.CandidateResponse;
 import dev.lucavassos.recruiter.modules.candidate.service.CandidateService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +20,20 @@ public class CandidateController {
     private CandidateService service;
 
     @PostMapping("/candidates")
-    public ResponseEntity<NewCandidateResponse> addCandidate(
-            @RequestBody NewCandidateRequest request) throws Exception {
-        NewCandidateResponse response = service.addCandidate(request);
+    public ResponseEntity<CandidateResponse> addCandidate(
+            @Valid @RequestBody NewCandidateRequest request) throws Exception {
+        LOG.info("Received new request for candidate: {}", request);
+        CandidateResponse response = service.addCandidate(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);
     }
 
     @GetMapping("/candidates/pan/{pan}")
-    public ResponseEntity<CandidateDto> findCandidateByPan(
+    public ResponseEntity<CandidateResponse> findCandidateByPan(
             @PathVariable("pan") String pan) throws Exception {
         LOG.info("New request received for candidate with PAN {}", pan);
-        CandidateDto candidate = service.findCandidateByPan(pan);
+        CandidateResponse response = service.findCandidateByPan(pan);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(candidate);
+                .body(response);
     }
 }

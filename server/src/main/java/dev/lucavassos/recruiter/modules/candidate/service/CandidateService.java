@@ -3,14 +3,13 @@ package dev.lucavassos.recruiter.modules.candidate.service;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
-import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateResponse;
+import dev.lucavassos.recruiter.modules.candidate.domain.CandidateResponse;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
 import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDtoMapper;
-import dev.lucavassos.recruiter.modules.candidate.repository.dto.NewCandidateDtoMapper;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +29,8 @@ public class CandidateService {
     private UserRepository userRepository;
     @Autowired
     private CandidateDtoMapper dtoMapper;
-    @Autowired
-    private NewCandidateDtoMapper newCandidateDtoMapper;
 
-    public NewCandidateResponse addCandidate(NewCandidateRequest request) throws Exception {
+    public CandidateResponse addCandidate(NewCandidateRequest request) throws Exception {
         LOG.info("Adding a new candidate");
 
         String pan = request.pan();
@@ -69,6 +66,7 @@ public class CandidateService {
                                 .education(request.education())
                                 .currentCtc(request.currentCtc())
                                 .pan(request.pan())
+                                .status(CandidateStatus.ACTIVE)
                                 .build()
                         );
             } catch (Exception e) {
@@ -77,9 +75,9 @@ public class CandidateService {
 
             LOG.info("New candidate created: [{}]", newCandidate);
 
-            return new NewCandidateResponse(
+            return new CandidateResponse(
                     newCandidate.getId(),
-                    newCandidateDtoMapper.apply(newCandidate)
+                    dtoMapper.apply(newCandidate)
             );
     }
 
@@ -195,14 +193,17 @@ public class CandidateService {
 //
 //    }
 
-    public CandidateDto findCandidateByPan(String pan) {
+    public CandidateResponse findCandidateByPan(String pan) {
         Candidate candidate = this.candidateRepository.findOneByPan(pan).orElseThrow(
                 () -> new ResourceNotFoundException(
                         "Candidate with PAN [%s] not found".formatted(pan)
                 )
         );
 
-        return dtoMapper.apply(candidate);
+        return new CandidateResponse(
+                candidate.getId(),
+                dtoMapper.apply(candidate)
+        );
     }
 
     public void changeCandidateStatus(Long id) {

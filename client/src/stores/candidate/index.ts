@@ -22,14 +22,20 @@ export const useCandidateStore = defineStore('candidateStore', () => {
   );
 
   async function addCandidate(newCandidate: NewCandidateDto): Promise<CandidateResponse> {
-    const res = await axiosApi.post(`/candidates`, {
-      ...newCandidate,
-      recruiter: { id: authUserId, username: authUsername },
-    });
-    console.log(res.data);
-    return res.data;
+    console.log("Add Candidate payload:", newCandidate);
+    try {
+      const { data } = await axiosApi.post(`/candidates`, newCandidate);
+      return data;
+    } catch (err) {
+      console.log(err);
+      if (axios.isAxiosError(err)) {
+        throw new ApiError(err.response?.data.message);
+      } else {
+        throw new ApiError('An unexpected error occurred');
+      }
+    }
   }
-  async function findCandidateByPan(pan: string): Promise<CandidateDto> {
+  async function findCandidateByPan(pan: string): Promise<CandidateResponse> {
     try {
       const { data } = await axiosApi.get(`/candidates/pan/${pan}`);
       return data;
