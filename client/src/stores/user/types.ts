@@ -37,3 +37,9 @@ export type AuthUser = {
   token: string;
   tokenType: string;
 };
+
+export type ApprovalRequest = {
+  userId: number;
+  approved: boolean;
+  comments: string;
+};

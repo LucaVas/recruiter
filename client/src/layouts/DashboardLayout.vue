@@ -39,7 +39,7 @@ const menuItems = ref<MenuItem[]>([
         icon: 'pi pi-users',
         name: 'All users',
         shortcut: '⌘+U',
-        view: 'Dashboard',
+        view: 'UsersView',
       },
     ],
   },

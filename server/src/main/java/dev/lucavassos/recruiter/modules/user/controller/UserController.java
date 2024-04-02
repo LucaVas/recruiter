@@ -21,11 +21,11 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    @PostMapping("/users/{userId}/approve")
+    @PostMapping("/users/approvals")
     public void approveUser(
-            @PathVariable("userId") Long userId,
             @RequestBody UserApprovalRequest request) {
-        service.approveUser(userId, request);
+        LOG.info("Received request to approve users.");
+        service.approveUser(request);
     }
 
     @GetMapping("/users")

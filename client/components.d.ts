@@ -7,11 +7,14 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ApproveModal: typeof import('./src/components/users-table/ApproveModal.vue')['default']
     Avatar: typeof import('primevue/avatar')['default']
     Button: typeof import('primevue/button')['default']
     CandidateSingleSelectTable: typeof import('./src/components/CandidateSingleSelectTable.vue')['default']
     Chip: typeof import('primevue/chip')['default']
     DashboardTable: typeof import('./src/components/DashboardTable.vue')['default']
+    Dialog: typeof import('primevue/dialog')['default']
+    Divider: typeof import('primevue/divider')['default']
     FilesUploader: typeof import('./src/components/FilesUploader.vue')['default']
     InputMask: typeof import('primevue/inputmask')['default']
     InputText: typeof import('primevue/inputtext')['default']
@@ -33,5 +36,8 @@ declare module 'vue' {
     SkillsList: typeof import('./src/components/SkillsList.vue')['default']
     Slider: typeof import('primevue/slider')['default']
     Textarea: typeof import('primevue/textarea')['default']
+    TriStateCheckbox: typeof import('primevue/tristatecheckbox')['default']
+    UsersTable: typeof import('./src/components/users-table/UsersTable.vue')['default']
+    UsersTableHeader: typeof import('./src/components/users-table/UsersTableHeader.vue')['default']
   }
 }

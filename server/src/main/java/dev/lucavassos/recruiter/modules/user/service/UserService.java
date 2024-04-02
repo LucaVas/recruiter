@@ -41,12 +41,12 @@ public class UserService  {
         this.userDtoMapper = userDtoMapper;
     }
 
-    public void approveUser(Long id, UserApprovalRequest request) {
+    public void approveUser(UserApprovalRequest request) {
         User user = repository
-                .findOneById(id)
+                .findOneById(request.userId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "User with id %d not found".formatted(id)
+                                "User with id %d not found".formatted(request.userId())
                         )
                 );
 
@@ -55,7 +55,9 @@ public class UserService  {
         user.setApprovedOn(LocalDateTime.now());
         // TODO: add approver
 
-        repository.save(user);
+        User approvedUser = repository.save(user);
+
+        LOG.info("User approved: {}",approvedUser );
     }
 
     public List<UserDto> getAllUsers() {

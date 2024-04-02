@@ -25,6 +25,11 @@ const router = createRouter({
           name: 'NewCandidacy',
           component: () => import('../views/NewCandidacy.vue'),
         },
+        {
+          path: '/users',
+          name: 'UsersView',
+          component: () => import('../views/UsersView.vue'),
+        },
         //     // {
         //     //   path: '/playgrounds',
         //     //   name: 'Playgrounds',
