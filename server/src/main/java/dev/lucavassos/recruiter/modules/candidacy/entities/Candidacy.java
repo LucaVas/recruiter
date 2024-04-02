@@ -63,12 +63,6 @@ public class Candidacy {
     @Column(name = "comments")
     private String comments;
 
-    @Column(nullable = false, name = "cv_rate_payment_date")
-    private LocalDateTime cvRatePaymentDate;
-
-    @Column(nullable = false, name = "closure_bonus_payment_rate")
-    private LocalDateTime closureBonusPaymentDate;
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 

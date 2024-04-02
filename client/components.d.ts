@@ -18,7 +18,7 @@ declare module 'vue' {
     Message: typeof import('primevue/message')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
     Navbar: typeof import('./src/components/navbar/Navbar.vue')['default']
-    NewCandidacyComponent: typeof import('./src/components/NewCandidacyComponent.vue')['default']
+    NewCandidacyStepper: typeof import('./src/components/NewCandidacyStepper.vue')['default']
     NewCandidateModal: typeof import('./src/components/new-candidate/NewCandidateModal.vue')['default']
     NewCandidateStepper: typeof import('./src/components/NewCandidateStepper.vue')['default']
     NewJobStepper: typeof import('./src/components/NewJobStepper.vue')['default']

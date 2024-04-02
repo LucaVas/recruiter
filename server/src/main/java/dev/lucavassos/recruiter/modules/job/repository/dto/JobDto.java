@@ -25,6 +25,8 @@ public record JobDto(
         String closureBonus,
         String comments,
         Integer numberOfCandidates,
+        LocalDateTime closureBonusPaymentDate,
+        LocalDateTime cvRatePaymentDate,
         LocalDateTime createdAt
 ) {
 }

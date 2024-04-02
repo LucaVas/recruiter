@@ -1,105 +1,92 @@
 <script setup lang="ts">
-import Stepper from 'primevue/stepper';
-import StepperPanel from 'primevue/stepperpanel';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
+import Stepper from 'primevue/stepper';
+import StepperPanel from 'primevue/stepperpanel';
+import Message from 'primevue/message';
 import Button from 'primevue/button';
-import SkillsList from '@/components/SkillsList.vue';
-import Toast from 'primevue/toast';
-import { useToast } from 'primevue/usetoast';
-import { ref, watch } from 'vue';
-import type { NewJob, JobStatus, Currency } from '../stores/job/types';
-import Dropdown from 'primevue/dropdown';
-import type { RawSkillDto } from '../stores/skill/types';
-import { useJobStore } from '@/stores/job';
-import type { ContractTypeName } from '../stores/job/types';
-import type { ToastMessageOptions } from 'primevue/toast';
-import useErrorMessage from '../composables/index';
+import { ref } from 'vue';
+import { useCandidateStore } from '../stores/candidate/index';
+import CandidateSingleSelectTable from './CandidateSingleSelectTable.vue';
+import type { CandidateDto } from '../stores/candidate/types';
+import { ApiError } from '../utils/types';
+import NewCandidateModal from './new-candidate/NewCandidateModal.vue';
+import type { NewCandidacyDto } from '../stores/candidate/types';
+import { useRoute } from 'vue-router';
 
-const toast = useToast();
-const errorToastContent = ref<ToastMessageOptions>({
-  severity: 'error',
-  summary: 'Error Message',
-  detail: 'There was an error.',
-  life: 5000,
-});
+const route = useRoute();
+const jobId = ref(route.params.jobId);
 
-const jobStore = useJobStore();
-const skills = ref<RawSkillDto[]>([]);
-const experienceRangeValues = ref([0, 45]);
-const jobStatuses = ref<{ name: string; label: string; value: JobStatus }[]>([
-  { name: 'Open', label: 'job_open.png', value: 'OPEN' },
-  { name: 'Closed', label: 'job_closed.png', value: 'CLOSED' },
-  { name: 'No CVs Accepted', label: 'job_no_cv_accepted.png', value: 'NO_CV_ACCEPTED' },
-]);
-const currencies = ref<{ name: string; value: Currency }[]>([{ name: 'INR', value: 'INR' }]);
-const contractTypes = ref<{ name: string; value: ContractTypeName }[]>([
-  { name: 'Permanent', value: 'PERMANENT' },
-  { name: 'Temporary', value: 'TEMPORARY' },
-]);
-const newJobForm = ref({
-  client: '',
-  name: '',
-  status: {} as (typeof jobStatuses.value)[0],
-  contractType: {} as (typeof contractTypes.value)[0],
-  wantedCvs: '',
-  noticePeriodInDays: '',
-  salaryBudget: '',
-  currency: currencies.value[0],
-  description: '',
-  bonusPayPerCv: '',
-  closureBonus: '',
+const candidateStore = useCandidateStore();
+const newCandidacyError = ref('');
+
+// candidate search scripts
+const candidateSelectedId = ref<number>();
+const candidatePanSearch = ref('');
+const candidateSearchError = ref('');
+const candidateToDisplay = ref<CandidateDto>();
+const candidateSearchLoading = ref(false);
+const searchCandidate = async () => {
+  candidateSearchLoading.value = true;
+  try {
+    const res = await candidateStore.findCandidateByPan(candidatePanSearch.value);
+    candidateToDisplay.value = res.candidate;
+  } catch (err) {
+    if (err instanceof ApiError) candidateSearchError.value = err.message;
+  } finally {
+    candidateSearchLoading.value = false;
+  }
+};
+const newCandidateModalOpen = ref(false);
+
+// candidacy details
+const candidacyDetails = ref({
+  jobId: jobId,
+  relevantExperience: '',
+  expectedCtc: '',
+  officialNoticePeriod: '',
+  actualNoticePeriod: '',
+  reasonForQuickJoin: '',
+  remarks: '',
   comments: '',
 });
-
-type NewJobForm = typeof newJobForm;
-function formToNewJob(newJobForm: NewJobForm): NewJob {
+type CandidacyDetails = typeof candidacyDetails.value;
+function formToNewCandidate(candidacyDetails: CandidacyDetails): NewCandidacyDto {
   return {
-    ...newJobForm.value,
-    skills: skills.value,
-    status: newJobForm.value.status.value,
-    currency: newJobForm.value.currency.value,
-    contractType: newJobForm.value.contractType.value,
-    experienceRangeMin: experienceRangeValues.value[0],
-    experienceRangeMax: experienceRangeValues.value[1],
-    wantedCvs: Number(newJobForm.value.wantedCvs),
-    noticePeriodInDays: Number(newJobForm.value.noticePeriodInDays),
-    salaryBudget: Number(newJobForm.value.salaryBudget),
-    bonusPayPerCv: Number(newJobForm.value.bonusPayPerCv),
+    ...candidacyDetails,
+    jobId: Number(candidacyDetails.jobId),
+    candidateId: Number(candidateSelectedId.value),
+    relevantExperience: Number(candidacyDetails.relevantExperience),
+    expectedCtc: Number(candidacyDetails.expectedCtc),
+    officialNoticePeriod: Number(candidacyDetails.officialNoticePeriod),
+    actualNoticePeriod: Number(candidacyDetails.actualNoticePeriod),
   };
 }
 
-let [submitNewJob, errorMessage] = useErrorMessage(async () => {
-  submittingNewJob.value = true;
-  const newJob = formToNewJob(newJobForm);
-  await jobStore.addJob(newJob);
-  submittingNewJob.value = false;
-  jobSubmitted.value = true;
-});
+// candidacy submission
+const candidateSubmitted = ref(false);
+const submittingNewCandidate = ref(false);
 
-function removeSkill(skill: RawSkillDto): void {
-  const idx = skills.value.indexOf(skill);
-  if (idx > -1) {
-    skills.value.splice(idx, 1);
+async function submitCandidacy() {
+  submittingNewCandidate.value = true;
+  const candidacy = formToNewCandidate(candidacyDetails.value);
+  console.log(candidacy);
+  try {
+    await candidateStore.submitCandidacy(candidacy);
+    candidateSubmitted.value = true;
+  } catch (err) {
+    if (err instanceof ApiError) newCandidacyError.value = err.message;
+  } finally {
+    submittingNewCandidate.value = false;
   }
 }
 
 const active = ref(0);
-const submittingNewJob = ref(false);
-const jobSubmitted = ref(false);
-
-watch(errorMessage, (errorMessage) => {
-  errorToastContent.value.detail = errorMessage;
-  toast.add(errorToastContent.value);
-  submittingNewJob.value = false;
-  console.log(errorMessage);
-  errorMessage = '';
-});
 </script>
 
 <template>
   <Stepper v-model:activeStep="active" class="flex h-full w-[50rem] flex-col justify-start">
-    <!-- Job main info -->
+    <!-- Candidate -->
     <StepperPanel>
       <template #header="{ index }">
         <span
@@ -114,52 +101,71 @@ watch(errorMessage, (errorMessage) => {
 
       <template #content="{ nextCallback }">
         <div class="flex h-full w-full flex-col justify-between gap-6">
-          <div class="flex flex-col gap-6">
-            <div class="mb-3 mt-3 text-center text-xl font-semibold">Add Job Information</div>
-            <div class="field p-fluid">
-              <IconField>
+          <div class="flex w-full flex-col gap-6">
+            <div class="mb-3 mt-3 text-center text-xl font-semibold">Candidate information</div>
+
+            <h3>Search for a candidate</h3>
+            <div class="field p-fluid flex gap-2">
+              <IconField class="w-full">
                 <InputIcon>
-                  <i class="pi pi-user" />
+                  <i class="pi pi-search" />
                 </InputIcon>
                 <InputText
-                  id="jobClient"
-                  v-model="newJobForm.client"
+                  id="candidatePan"
+                  v-model="candidatePanSearch"
                   type="text"
-                  placeholder="Client Name"
+                  placeholder="Candidate PAN"
+                  required
                 />
               </IconField>
-            </div>
-            <div class="field p-fluid">
-              <IconField>
-                <InputIcon>
-                  <i class="pi pi-briefcase" />
-                </InputIcon>
-                <InputText
-                  id="jobName"
-                  v-model="newJobForm.name"
-                  type="text"
-                  placeholder="Job Name"
-                />
-              </IconField>
-            </div>
-            <div class="field p-fluid">
-              <Dropdown
-                v-model="newJobForm.status"
-                :options="jobStatuses"
-                optionLabel="name"
-                dropdown-icon="pi pi-angle-down"
-                placeholder="Select a Status"
-                class="w-full"
+              <Button
+                class="w-[10rem]"
+                type="button"
+                label="Search"
+                icon="pi pi-search"
+                :loading="candidateSearchLoading"
+                @click="searchCandidate()"
+                :disabled="candidatePanSearch === ''"
               />
             </div>
+
+            <h3>Add a new candidate</h3>
+
+            <!-- create new candidate -->
             <div class="field p-fluid">
-              <Dropdown
-                v-model="newJobForm.contractType"
-                :options="contractTypes"
-                optionLabel="name"
-                dropdown-icon="pi pi-angle-down"
-                placeholder="Select a Contract Type"
-                class="w-full"
+              <Button
+                label="New candidate"
+                icon="pi pi-user-plus"
+                iconPos="right"
+                @click="newCandidateModalOpen = true"
+              />
+            </div>
+
+            <NewCandidateModal
+              v-if="newCandidateModalOpen"
+              @close="newCandidateModalOpen = false"
+              @selectCandidate="
+                (newCandidate) => {
+                  candidateToDisplay = newCandidate;
+                  newCandidateModalOpen = false;
+                  active = +1;
+                }
+              "
+            />
+
+            <Message v-if="candidateSearchError" severity="error" :closable="false">{{
+              candidateSearchError
+            }}</Message>
+
+            <div v-if="candidateToDisplay !== undefined" class="field p-fluid">
+              <CandidateSingleSelectTable
+                :candidates="[candidateToDisplay]"
+                @selectCandidate="
+                  (candidate) =>
+                    candidate === null
+                      ? (candidateSelectedId = candidate)
+                      : (candidateSelectedId = candidate.id)
+                "
               />
             </div>
           </div>
@@ -169,18 +175,14 @@ watch(errorMessage, (errorMessage) => {
               icon="pi pi-arrow-right"
               iconPos="right"
               @click="nextCallback"
-              :disabled="
-                newJobForm.client === '' ||
-                newJobForm.name === '' ||
-                Object.keys(newJobForm.status).length === 0 ||
-                Object.keys(newJobForm.contractType).length === 0
-              "
+              :disabled="false"
             />
           </div>
         </div>
       </template>
     </StepperPanel>
-    <!-- Job details -->
+
+    <!-- Candidacy details -->
     <StepperPanel>
       <template #header="{ index }">
         <span
@@ -189,82 +191,82 @@ watch(errorMessage, (errorMessage) => {
             { 'bg-primary border-primary': index <= active, 'surface-border': index > active },
           ]"
         >
-          <i class="pi pi-star" />
+          <i class="pi pi-briefcase" />
         </span>
       </template>
       <template #content="{ prevCallback, nextCallback }">
         <div class="flex h-full w-full flex-col justify-between gap-6">
           <div class="flex flex-col gap-4">
-            <div class="mb-3 mt-3 text-center text-xl font-semibold">Add Job Details</div>
-            <div class="field p-fluid w-full">
+            <div class="mb-3 mt-3 text-center text-xl font-semibold">Add Candidacy Details</div>
+
+            <!-- relevant experience + expected CTC -->
+            <div class="field p-fluid flex w-full gap-3">
               <IconField>
                 <InputIcon>
-                  <i class="pi pi-file" />
+                  <i class="pi pi-calendar" />
                 </InputIcon>
                 <InputText
-                  id="wantedCvs"
-                  v-model="newJobForm.wantedCvs"
+                  id="relevantExperience"
+                  v-model="candidacyDetails.relevantExperience"
                   type="number"
-                  placeholder="Number of CVs wanter"
+                  placeholder="Relevant work experience"
+                  required
+                  min="0"
+                  max="45"
+                />
+              </IconField>
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-money-bill" />
+                </InputIcon>
+                <InputText
+                  id="expectedCtc"
+                  v-model="candidacyDetails.expectedCtc"
+                  type="number"
+                  placeholder="Expected CTC"
                   required
                 />
               </IconField>
             </div>
-            <div class="field mb-3 flex w-full flex-col justify-center gap-5">
-              <div class="flex flex-row items-center justify-between">
-                <span>{{ experienceRangeValues[0] }} years</span>
-                <span class="font-medium">Experience range</span>
-                <span>{{ experienceRangeValues[1] }} years</span>
-              </div>
-              <div class="px-1">
-                <Slider v-model="experienceRangeValues" :max="45" range class="w-14rem" />
-              </div>
-            </div>
-            <div class="field p-fluid w-full">
+
+            <!-- notice periods -->
+            <div class="field p-fluid flex w-full gap-3">
               <IconField>
                 <InputIcon>
                   <i class="pi pi-calendar-times" />
                 </InputIcon>
                 <InputText
-                  id="noticePeriodInDays"
-                  v-model="newJobForm.noticePeriodInDays"
+                  id="officialNoticePeriod"
+                  v-model="candidacyDetails.officialNoticePeriod"
                   type="number"
-                  placeholder="Notice Period (days)"
+                  placeholder="Official Notice Period (days)"
                   required
                 />
               </IconField>
-            </div>
-            <div class="field p-fluid flex w-full gap-2">
-              <IconField class="w-full">
+              <IconField>
                 <InputIcon>
-                  <i class="pi pi-money-bill" />
+                  <i class="pi pi-bolt" />
                 </InputIcon>
                 <InputText
-                  id="salaryBudget"
-                  v-model="newJobForm.salaryBudget"
+                  id="actualNoticePeriod"
+                  v-model="candidacyDetails.actualNoticePeriod"
                   type="number"
-                  placeholder="Salary Budget"
+                  placeholder="Actual Notice Period (if different)"
                   required
                 />
               </IconField>
-              <Dropdown
-                v-model="newJobForm.currency"
-                :options="currencies"
-                optionLabel="name"
-                dropdown-icon="pi pi-angle-down"
-                class="w-40"
-                required
-              />
             </div>
-            <div>
+
+            <!-- quick join remarks -->
+            <div class="field p-fluid flex w-full">
               <Textarea
-                v-model="newJobForm.description"
+                v-model="candidacyDetails.reasonForQuickJoin"
                 class="w-full"
                 rows="4"
                 cols="30"
-                placeholder="Tell us what is the job about..."
+                placeholder="Reason for quick join"
                 style="resize: none"
-                required
+                :disabled="candidacyDetails.actualNoticePeriod === ''"
               />
             </div>
           </div>
@@ -280,58 +282,53 @@ watch(errorMessage, (errorMessage) => {
               icon="pi pi-arrow-right"
               iconPos="right"
               @click="nextCallback"
-              :disabled="
-                newJobForm.wantedCvs === '' ||
-                newJobForm.noticePeriodInDays === '' ||
-                newJobForm.salaryBudget === '' ||
-                newJobForm.description === ''
-              "
+              :disabled="false"
             />
           </div>
         </div>
       </template>
     </StepperPanel>
-    <!-- Skills -->
+
+    <!-- Remarks -->
     <StepperPanel>
-      <template #header="{ index, clickCallback }">
-        <button
-          class="flex-column inline-flex gap-2 border-none bg-transparent"
-          @click="clickCallback"
+      <template #header="{ index }">
+        <span
+          :class="[
+            'border-round w-3rem h-3rem align-items-center justify-content-center inline-flex border-2',
+            { 'bg-primary border-primary': index <= active, 'surface-border': index > active },
+          ]"
         >
-          <span
-            :class="[
-              'border-round w-3rem h-3rem align-items-center justify-content-center inline-flex border-2',
-              { 'bg-primary border-primary': index <= active, 'surface-border': index > active },
-            ]"
-          >
-            <i class="pi pi-briefcase" />
-          </span>
-        </button>
+          <i class="pi pi-briefcase" />
+        </span>
       </template>
       <template #content="{ prevCallback, nextCallback }">
         <div class="flex h-full w-full flex-col justify-between gap-6">
           <div class="flex flex-col gap-4">
-            <div class="my-3 text-center text-xl font-semibold">Skills required</div>
-            <!-- Skill chips -->
-            <div
-              v-if="skills.length > 0"
-              class="field my-4 flex max-h-24 min-h-9 w-full flex-wrap gap-3"
-            >
-              <Chip
-                v-for="skill in skills"
-                v-bind:key="skill.id"
-                :label="skill.name"
-                icon="pi pi-check"
-                removable
-                class="bg-[#3b80f64d]"
-                @remove="removeSkill(skill)"
+            <div class="mb-3 mt-3 text-center text-xl font-semibold">Final remarks</div>
+
+            <!-- Remarks -->
+            <div class="field p-fluid flex w-full">
+              <Textarea
+                v-model="candidacyDetails.remarks"
+                class="w-full"
+                rows="4"
+                cols="30"
+                placeholder="Remarks (if any)"
+                style="resize: none"
               />
             </div>
-            <div v-else class="field my-4 flex h-9 w-full flex-wrap gap-3">No skills selected.</div>
 
-            <!-- Skill list -->
-            <div class="flex flex-col gap-4">
-              <SkillsList @updateSelection="(selectedSkills) => (skills = selectedSkills)" />
+            <!-- Admin comments -->
+            <div class="field p-fluid flex w-full">
+              <Textarea
+                v-model="candidacyDetails.comments"
+                class="w-full"
+                rows="4"
+                cols="30"
+                placeholder="Admin comments"
+                style="resize: none"
+                disabled
+              />
             </div>
           </div>
 
@@ -342,18 +339,13 @@ watch(errorMessage, (errorMessage) => {
               icon="pi pi-arrow-left"
               @click="prevCallback"
             />
-            <Button
-              label="Next"
-              icon="pi pi-arrow-right"
-              iconPos="right"
-              @click="nextCallback"
-              :disabled="skills.length === 0"
-            />
+            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="nextCallback" />
           </div>
         </div>
       </template>
     </StepperPanel>
-    <!-- Final details -->
+
+    <!-- Upload section -->
     <StepperPanel>
       <template #header="{ index }">
         <span
@@ -366,51 +358,16 @@ watch(errorMessage, (errorMessage) => {
         </span>
       </template>
       <template #content="{ prevCallback }">
-        <div v-if="!jobSubmitted" class="mb-auto flex h-full w-full flex-col justify-between gap-6">
+        <div
+          v-if="!candidateSubmitted"
+          class="mb-auto flex h-full w-full flex-col justify-between gap-6"
+        >
           <div class="flex flex-col gap-4">
-            <div class="mb-3 mt-3 text-center text-xl font-semibold">Almost there...</div>
-            <div class="field p-fluid w-full">
-              <IconField>
-                <InputIcon>
-                  <i class="pi pi-wallet" />
-                </InputIcon>
-                <InputText
-                  id="bonusPayPerCv"
-                  v-model="newJobForm.bonusPayPerCv"
-                  type="number"
-                  placeholder="Bonus Pay per CV"
-                  required
-                />
-              </IconField>
-            </div>
-            <div class="field p-fluid w-full">
-              <IconField>
-                <InputIcon>
-                  <i class="pi pi-money-bill" />
-                </InputIcon>
-                <InputText
-                  id="closureBonus"
-                  v-model="newJobForm.closureBonus"
-                  type="text"
-                  placeholder="Closure Bonus"
-                  required
-                />
-              </IconField>
-            </div>
-            <div>
-              <Textarea
-                v-model="newJobForm.comments"
-                class="w-full"
-                variant="filled"
-                rows="5"
-                cols="30"
-                placeholder="Administrator Comments"
-                required
-                disabled
-              />
-            </div>
+            <FilesUploader />
           </div>
-          <Toast />
+          <Message v-if="newCandidacyError" severity="error" :closable="false" class="w-full">{{
+            newCandidacyError
+          }}</Message>
           <div class="flex justify-between pt-4">
             <Button
               label="Back"
@@ -420,12 +377,11 @@ watch(errorMessage, (errorMessage) => {
             />
             <Button
               type="button"
-              label="Create new job"
+              label="Submit candidacy"
               icon="pi pi-arrow-right"
               iconPos="right"
-              :loading="submittingNewJob"
-              @click="submitNewJob()"
-              :disabled="newJobForm.bonusPayPerCv === '' || newJobForm.closureBonus === ''"
+              :loading="submittingNewCandidate"
+              @click="submitCandidacy()"
             />
           </div>
         </div>
@@ -433,7 +389,7 @@ watch(errorMessage, (errorMessage) => {
           <div class="flex flex-col gap-4">
             <div class="mx-auto mb-5 flex flex-col gap-4">
               <div class="mb-3 mt-3 text-center text-xl font-semibold">
-                Job submitted successfully!
+                Candidacy submitted successfully!
               </div>
               <div class="text-center">
                 <svg

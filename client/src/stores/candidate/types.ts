@@ -1,5 +1,5 @@
-import type { JobDto } from "../job/types";
-import type { RecruiterDto } from "../user/types";
+import type { JobDto } from '../job/types';
+import type { RecruiterDto } from '../user/types';
 
 export type CandidateDto = {
   id: number;
@@ -25,10 +25,13 @@ export type CandidacyDto = {
   reasonForQuickJoin: string;
   remarks: string;
   comments: string;
-  cvRatePaymentDate: Date;
-  closureBonusPaymentDate: Date;
   createdAt: Date;
 };
+
+export type NewCandidacyDto = Omit<
+  CandidacyDto,
+  'id' | 'job' | 'candidate' | 'recruiter' | 'comments' | 'createdAt'
+> & { jobId: number; candidateId: number };
 
 export type NewCandidateDto = Omit<CandidateDto, 'id' | 'createdAt'>;
 

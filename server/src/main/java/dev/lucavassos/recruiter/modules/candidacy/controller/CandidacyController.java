@@ -1,10 +1,8 @@
 package dev.lucavassos.recruiter.modules.candidacy.controller;
 
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyRequest;
+import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.service.CandidacyService;
-import dev.lucavassos.recruiter.modules.user.controller.UserController;
-import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
-import dev.lucavassos.recruiter.modules.user.service.UserService;
+import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ public class CandidacyController {
 
     @PostMapping("/candidacies")
     public ResponseEntity<?> addCandidacy(
-            @RequestBody CandidacyRequest candidacyRequest) {
+            @RequestBody NewCandidacyRequest candidacyRequest) {
         service.addCandidacy(candidacyRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

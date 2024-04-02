@@ -88,6 +88,12 @@ public class Job {
     @Column(nullable = false)
     private String closureBonus;
 
+    @Column(nullable = false, name = "cv_rate_payment_date")
+    private LocalDateTime cvRatePaymentDate;
+
+    @Column(nullable = false, name = "closure_bonus_payment_rate")
+    private LocalDateTime closureBonusPaymentDate;
+
     @Column
     private String comments;
 

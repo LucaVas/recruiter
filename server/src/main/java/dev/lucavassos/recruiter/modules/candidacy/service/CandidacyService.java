@@ -1,7 +1,8 @@
 package dev.lucavassos.recruiter.modules.candidacy.service;
 
+import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyRequest;
+import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
@@ -13,6 +14,8 @@ import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,12 +32,17 @@ public class CandidacyService {
     @Autowired
     private CandidacyRepository candidacyRepository;
 
-    public void addCandidacy(CandidacyRequest candidacy) {
+    public void addCandidacy(NewCandidacyRequest candidacy) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
 
         // find recruiter
-        User recruiter = userRepository.findOneById(candidacy.recruiterId()).orElseThrow(
+        User recruiter = userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
-                    LOG.error("Recruiter with ID {} not found", candidacy.recruiterId());
+                    LOG.error("Recruiter with ID {} not found", userPrincipal.getId());
                     return new ResourceNotFoundException("Recruiter not found");
                 }
         );
@@ -64,9 +72,6 @@ public class CandidacyService {
                 .actualNoticePeriod(candidacy.actualNoticePeriod())
                 .reasonForQuickJoin(candidacy.reasonForQuickJoin())
                 .remarks(candidacy.remarks())
-                .comments(candidacy.comments())
-                .cvRatePaymentDate(candidacy.cvRatePaymentDate())
-                .closureBonusPaymentDate(candidacy.closureBonusPaymentDate())
                 .build();
 
         candidacyRepository.save(newCandidacy);

@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -189,6 +190,12 @@ public class EntityInitializer {
                 .description("Description for a Java software engineer job.")
                 .bonusPayPerCv(3.7)
                 .closureBonus("200")
+                .cvRatePaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
+                .closureBonusPaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
                 .comments("Test comments")
                 .build();
 
@@ -211,6 +218,12 @@ public class EntityInitializer {
                 .description("Description for a Python software engineer job.")
                 .bonusPayPerCv(3.7)
                 .closureBonus("260")
+                .cvRatePaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
+                .closureBonusPaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
                 .comments("Test comments")
                 .build();
 
@@ -232,6 +245,12 @@ public class EntityInitializer {
                 .description("Description for a BA job.")
                 .bonusPayPerCv(3.0)
                 .closureBonus("230")
+                .cvRatePaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
+                .closureBonusPaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
                 .comments("Test comments")
                 .build();
         Job job4 = Job.builder()
@@ -252,6 +271,12 @@ public class EntityInitializer {
                 .description("Description for a Mainframe developer job.")
                 .bonusPayPerCv(6.0)
                 .closureBonus("400")
+                .cvRatePaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
+                .closureBonusPaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
                 .comments("Test comments")
                 .build();
         Job job5 = Job.builder()
@@ -273,6 +298,12 @@ public class EntityInitializer {
                 .currency(Currency.INR)
                 .description("Description for a cloud architect job.")
                 .bonusPayPerCv(8.0)
+                .cvRatePaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
+                .closureBonusPaymentDate(LocalDateTime.of(
+                        2024, 12, 31, 0, 0, 0
+                ))
                 .closureBonus("700")
                 .comments("Test comments")
                 .build();

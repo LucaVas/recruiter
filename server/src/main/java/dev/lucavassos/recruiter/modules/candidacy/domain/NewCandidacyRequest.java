@@ -1,9 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy.domain;
 
-import java.time.LocalDateTime;
-
-public record CandidacyRequest(
-        Long recruiterId,
+public record NewCandidacyRequest(
         Long jobId,
         Long candidateId,
         double relevantExperience,
@@ -11,9 +8,6 @@ public record CandidacyRequest(
         double officialNoticePeriod,
         double actualNoticePeriod,
         String reasonForQuickJoin,
-        String remarks,
-        String comments,
-        LocalDateTime cvRatePaymentDate,
-        LocalDateTime closureBonusPaymentDate
+        String remarks
 ) {
 }

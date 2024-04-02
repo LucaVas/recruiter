@@ -8,6 +8,7 @@ import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
+import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
 import dev.lucavassos.recruiter.modules.job.repository.ContractTypeRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
@@ -88,7 +89,19 @@ public class JobService {
 
         LOG.info("New job created: [{}]", createdJob);
 
-        // TODO: create new entry in history table
+        // Create new entry in history table
+        try {
+            historyRepository.save(
+                    JobHistory.builder()
+                            .status(createdJob.getStatus())
+                            .bonusPayPerCv(createdJob.getBonusPayPerCv())
+                            .closureBonus(createdJob.getClosureBonus())
+                            .job(createdJob)
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new Exception(e.getCause());
+        }
 
         return new JobResponse(
                 createdJob.getId(),

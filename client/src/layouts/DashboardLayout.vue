@@ -30,12 +30,6 @@ const menuItems = ref<MenuItem[]>([
         shortcut: '⌘+N',
         view: 'NewJob',
       },
-      {
-        icon: 'pi pi-plus',
-        name: 'New candidate',
-        shortcut: '⌘+C',
-        view: 'NewCandidate',
-      },
     ],
   },
   {

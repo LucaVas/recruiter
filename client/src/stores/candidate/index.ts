@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse } from 'axios';
 import { defineStore } from 'pinia';
 import { getIdFromToken, getStoredAccessToken, getUsernameFromToken } from '@/utils/auth';
-import type { CandidateDto, CandidateResponse, NewCandidateDto } from './types';
+import type { CandidateDto, CandidateResponse, NewCandidacyDto, NewCandidateDto } from './types';
 import { computed, ref } from 'vue';
 import { ApiError } from '../../utils/types';
 
@@ -22,7 +22,7 @@ export const useCandidateStore = defineStore('candidateStore', () => {
   );
 
   async function addCandidate(newCandidate: NewCandidateDto): Promise<CandidateResponse> {
-    console.log("Add Candidate payload:", newCandidate);
+    console.log('Add Candidate payload:', newCandidate);
     try {
       const { data } = await axiosApi.post(`/candidates`, newCandidate);
       return data;
@@ -47,5 +47,17 @@ export const useCandidateStore = defineStore('candidateStore', () => {
       }
     }
   }
-  return { addCandidate, findCandidateByPan };
+  async function submitCandidacy(candidacy: NewCandidacyDto): Promise<void> {
+    try {
+      const { data } = await axiosApi.post(`/candidacies`, candidacy);
+    } catch (err) {
+      console.log(err);
+      if (axios.isAxiosError(err)) {
+        throw new ApiError(err.response?.data.message);
+      } else {
+        throw new ApiError('An unexpected error occurred');
+      }
+    }
+  }
+  return { addCandidate, findCandidateByPan, submitCandidacy };
 });

@@ -18,8 +18,6 @@ public record CandidacyDto(
         String reasonForQuickJoin,
         String remarks,
         String comments,
-        LocalDateTime cvRatePaymentDate,
-        LocalDateTime closureBonusPaymentDate,
         LocalDateTime createdAt
 ) {
 }
