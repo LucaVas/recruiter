@@ -1,7 +1,7 @@
 <template>
   <DataTable
     v-model:selection="selectedCandidate"
-    :update:selection="$emit('selectCandidate', selectedCandidate)"
+    @update:selection="$emit('selectCandidate', selectedCandidate)"
     :value="candidates"
     selectionMode="single"
     dataKey="id"

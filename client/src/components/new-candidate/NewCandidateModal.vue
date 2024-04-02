@@ -39,7 +39,6 @@ async function createCandidate() {
     const res = await candidateStore.addCandidate(toNewCandidate());
     creatingCandidate.value = false;
     emits('selectCandidate', res.id);
-    emits('close');
   } catch (err) {
     if (err instanceof ApiError) newCandidateError.value = err.message;
   } finally {
@@ -48,8 +47,8 @@ async function createCandidate() {
 }
 
 const emits = defineEmits<{
-  (e: 'selectCandidate', selectedCandidate: number): void;
-  (e: 'close'): void;
+  (e: 'selectCandidate', selectedCandidateId: number): void;
+  (e: 'close', evt: Event): void;
 }>();
 </script>
 

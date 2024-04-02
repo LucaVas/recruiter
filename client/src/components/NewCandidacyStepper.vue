@@ -23,7 +23,7 @@ const active = ref(0);
 const candidateStore = useCandidateStore();
 
 // candidate search scripts
-const candidateSelectedId = ref<number>();
+const candidateSelectedId = ref<number | null>();
 const candidatePanSearch = ref('');
 const candidateSearchError = ref('');
 const candidateSearched = ref<CandidateDto>();
@@ -136,7 +136,12 @@ const newCandidateModalOpen = ref(false);
             <div v-if="candidateSearched !== undefined" class="field p-fluid">
               <CandidateSingleSelectTable
                 :candidates="[candidateSearched]"
-                @select-candidate="(value) => (candidateSelectedId = value.id)"
+                @selectCandidate="
+                  (candidate) =>
+                    candidate === null
+                      ? (candidateSelectedId = candidate)
+                      : (candidateSelectedId = candidate.id)
+                "
               />
             </div>
 
@@ -145,6 +150,13 @@ const newCandidateModalOpen = ref(false);
             <NewCandidateModal
               v-if="newCandidateModalOpen"
               @close="newCandidateModalOpen = false"
+              @selectCandidate="
+                (id) => {
+                  candidateSelectedId = id;
+                  newCandidateModalOpen = false;
+                  active = 1;
+                }
+              "
             />
             <!-- create new candidate -->
             <div class="field p-fluid">
