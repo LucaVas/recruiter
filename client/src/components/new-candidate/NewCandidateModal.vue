@@ -9,6 +9,7 @@ import { useCandidateStore } from '@/stores/candidate/index';
 import type { NewCandidateDto } from '@/stores/candidate/types';
 import { ApiError } from '@/utils/types';
 import { invalidFields, invalidCandidate } from '.';
+import type { CandidateDto } from '../../stores/candidate/types';
 
 const candidateStore = useCandidateStore();
 const creatingCandidate = ref(false);
@@ -38,7 +39,7 @@ async function createCandidate() {
     console.log('Sending:', payload);
     const res = await candidateStore.addCandidate(toNewCandidate());
     creatingCandidate.value = false;
-    emits('selectCandidate', res.id);
+    emits('selectCandidate', res.candidate);
   } catch (err) {
     if (err instanceof ApiError) newCandidateError.value = err.message;
   } finally {
@@ -47,8 +48,8 @@ async function createCandidate() {
 }
 
 const emits = defineEmits<{
-  (e: 'selectCandidate', selectedCandidateId: number): void;
-  (e: 'close', evt: Event): void;
+  (e: 'selectCandidate', selectedCandidate: CandidateDto): void;
+  (e: 'close'): void;
 }>();
 </script>
 

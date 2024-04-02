@@ -160,6 +160,7 @@ onMounted(async () => {
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"
+    size="small"
     :globalFilterFields="[
       'id',
       'client',

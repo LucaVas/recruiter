@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import NewCandidacyStepper from '@/components/NewCandidacyStepper.vue';
+import NewCandidacyComponent from '@/components/NewCandidacyComponent.vue';
 </script>
 <template>
   <div class="w-ful h-full">
-    <NewCandidacyStepper />
+    <NewCandidacyComponent />
   </div>
 </template>

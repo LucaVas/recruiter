@@ -2,7 +2,7 @@
 import DashboardTable from '@/components/DashboardTable.vue';
 </script>
 <template>
-  <div class="h-full w-full">
+  <div>
     <DashboardTable />
   </div>
 </template>

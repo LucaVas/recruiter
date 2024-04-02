@@ -1,75 +1,60 @@
 <script setup lang="ts">
 import StackedLayout from './StackedLayout.vue';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUserStore } from '../stores/user/index';
 
-const router = useRouter();
-const userStore = useUserStore();
-
-const links = ref([
+export type MenuItem = {
+  group: string;
+  links: { icon: string; name: string; shortcut: string; view: string; command?: (...args: any) => any }[];
+};
+const menuItems = ref<MenuItem[]>([
   {
-    label: 'Jobs',
-    items: [
+    group: 'Jobs',
+    links: [
       {
         icon: 'pi pi-list',
-        label: 'All jobs',
-        component: 'Dashboard',
+        name: 'All jobs',
         shortcut: '⌘+J',
-        route: '/',
+        view: 'Dashboard',
       },
       {
         icon: 'pi pi-plus',
-        label: 'New job',
-        component: 'Dashboard',
+        name: 'New job',
         shortcut: '⌘+N',
-        route: '/jobs/new',
+        view: 'NewJob',
       },
       {
         icon: 'pi pi-plus',
-        label: 'New candidate',
-        component: 'Dashboard',
+        name: 'New candidate',
         shortcut: '⌘+C',
-        route: '/candidates/new',
+        view: 'NewCandidate'
       },
     ],
   },
   {
-    label: 'Users',
-    items: [
+    group: 'Users',
+    links: [
       {
         icon: 'pi pi-users',
-        label: 'All users',
-        component: 'Dashboard',
+        name: 'All users',
         shortcut: '⌘+U',
-        route: '/',
+        view: 'Dashboard'
       },
     ],
   },
   {
-    label: 'Profile',
-    items: [
+    group: 'Profile',
+    links: [
       {
-        label: 'My performance',
+        name: 'My performance',
         icon: 'pi pi-chart-line',
         shortcut: '⌘+P',
-        route: '/',
+        view: 'Dashboard'
       },
       {
-        label: 'Settings',
+        name: 'Settings',
         icon: 'pi pi-cog',
         shortcut: '⌘+S',
-        route: '/',
-      },
-      {
-        label: 'Logout',
-        icon: 'pi pi-sign-out',
-        shortcut: '⌘+Q',
-        route: '',
-        command: () => {
-          userStore.logout();
-          router.push({ name: 'Login' });
-        },
+        view: 'Dashboard'
       },
     ],
   },
@@ -80,5 +65,5 @@ const role = ref('Admin');
 </script>
 
 <template>
-  <StackedLayout :links="links" :role="role" :tag="tag"></StackedLayout>
+  <StackedLayout :menuItems="menuItems" :role="role" :tag="tag"></StackedLayout>
 </template>
