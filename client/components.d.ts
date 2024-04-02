@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Button: typeof import('primevue/button')['default']
+    CandidateSingleSelectTable: typeof import('./src/components/CandidateSingleSelectTable.vue')['default']
     Chip: typeof import('primevue/chip')['default']
     DashboardTable: typeof import('./src/components/DashboardTable.vue')['default']
     Divider: typeof import('primevue/divider')['default']
@@ -17,6 +18,7 @@ declare module 'vue' {
     Message: typeof import('primevue/message')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']
+    NewCandidacyStepper: typeof import('./src/components/NewCandidacyStepper.vue')['default']
     NewCandidateStepper: typeof import('./src/components/NewCandidateStepper.vue')['default']
     NewJobStepper: typeof import('./src/components/NewJobStepper.vue')['default']
     PageForm: typeof import('./src/components/PageForm.vue')['default']

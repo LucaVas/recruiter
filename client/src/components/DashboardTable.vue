@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
+import SplitButton from 'primevue/splitbutton';
 import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
@@ -12,7 +13,9 @@ import Dropdown from 'primevue/dropdown';
 import { useJobStore } from '@/stores/job';
 import type { JobDto } from '../stores/job/types';
 import type { SkillDto } from '../stores/skill/types';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const jobStore = useJobStore();
 const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
@@ -124,6 +127,27 @@ const formatDate = (value: string) => {
   });
   return formattedDate;
 };
+
+const splitButtonChoices = [
+  {
+    label: 'Edit',
+    icon: 'pi pi-pen-to-square',
+    command: () => {
+      router.push({ name: 'Dashboard' });
+    },
+  },
+  {
+    label: 'Delete',
+    icon: 'pi pi-times',
+    command: () => {
+      router.push({ name: 'Dashboard' });
+    },
+  },
+];
+
+function applyToJob(jobId: number): void {
+  router.push({ name: 'NewCandidacy', params: { jobId: jobId } });
+}
 
 onMounted(async () => {
   loading.value = true;
@@ -335,14 +359,16 @@ onMounted(async () => {
       </template>
     </Column>
     <Column field="action" header="" class="min-w-10">
-      <template #body>
-        <Button
+      <template #body="{ data }">
+        <SplitButton
+          label="Apply"
           size="small"
-          label="Open"
           class="p-2"
           outlined
           severity="contrast"
-          icon="pi pi-reply"
+          menuButtonIcon="pi pi-angle-down"
+          @click="applyToJob(data.id)"
+          :model="splitButtonChoices"
         />
       </template>
     </Column>

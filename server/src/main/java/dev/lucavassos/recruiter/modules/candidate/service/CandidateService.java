@@ -195,10 +195,10 @@ public class CandidateService {
 //
 //    }
 
-    public CandidateDto getCandidateById(Long id) {
-        Candidate candidate = this.candidateRepository.findOneById(id).orElseThrow(
+    public CandidateDto findCandidateByPan(String pan) {
+        Candidate candidate = this.candidateRepository.findOneByPan(pan).orElseThrow(
                 () -> new ResourceNotFoundException(
-                        "Candidate with id [%d] not found".formatted(id)
+                        "Candidate with PAN [%s] not found".formatted(pan)
                 )
         );
 

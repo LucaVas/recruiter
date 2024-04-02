@@ -294,7 +294,7 @@ public class EntityInitializer {
                         .totalExperience(15.0)
                         .education("Education for John")
                         .currentCtc(2000.0)
-                        .pan("1234561234")
+                        .pan("1234561232")
                         .build(),
                 Candidate.builder()
                         .name("Mary")

@@ -10,7 +10,6 @@ export type CandidateDto = {
   education: string;
   currentCtc: number;
   pan: string;
-  candidacies: Set<CandidacyDto>;
   createdAt: Date;
 };
 
@@ -31,7 +30,7 @@ export type CandidacyDto = {
   createdAt: Date;
 };
 
-export type NewCandidateDto = Omit<CandidateDto, 'id' | 'candidacies' | 'createdAt'>;
+export type NewCandidateDto = Omit<CandidateDto, 'id' | 'createdAt'>;
 
 export type Recruiter = {
   id: number;

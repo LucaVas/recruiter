@@ -1,8 +1,9 @@
-import axios from 'axios';
+import axios, { type AxiosResponse } from 'axios';
 import { defineStore } from 'pinia';
 import { getIdFromToken, getStoredAccessToken, getUsernameFromToken } from '@/utils/auth';
-import type { CandidateResponse, NewCandidateDto } from './types';
+import type { CandidateDto, CandidateResponse, NewCandidateDto } from './types';
 import { computed, ref } from 'vue';
+import { ApiError } from '../../utils/types';
 
 const axiosApi = axios.create({
   baseURL: `http://localhost:8080/api/v1`,
@@ -28,5 +29,17 @@ export const useCandidateStore = defineStore('candidateStore', () => {
     console.log(res.data);
     return res.data;
   }
-  return { addCandidate };
+  async function findCandidateByPan(pan: string): Promise<CandidateDto> {
+    try {
+      const { data } = await axiosApi.get(`/candidates/pan/${pan}`);
+      return data;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        throw new ApiError(err.response?.data.message);
+      } else {
+        throw new ApiError('An unexpected error occurred');
+      }
+    }
+  }
+  return { addCandidate, findCandidateByPan };
 });

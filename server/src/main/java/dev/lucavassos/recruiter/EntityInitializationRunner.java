@@ -18,5 +18,6 @@ public class EntityInitializationRunner implements ApplicationRunner {
         entityInitializer.saveSkills();
         entityInitializer.saveJobs();
         entityInitializer.createUser();
+        entityInitializer.saveCandidates();
     }
 }
