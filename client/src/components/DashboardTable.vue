@@ -283,7 +283,7 @@ onMounted(async () => {
     </Column>
     <Column field="experienceRange" header="Experience" class="min-w-20">
       <template #body="{ data }">
-        {{ data.experienceRange }}
+        {{ data.experienceRangeMin }}-{{ data.experienceRangeMax }} years
       </template>
       <template #filter="{ filterModel }">
         <InputText

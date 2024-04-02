@@ -6,15 +6,15 @@ import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class JobDtoMapper implements Function<Job, JobDto> {
+public class FullJobDtoMapper implements BiFunction<Job, Set<Candidacy>, JobDto> {
     @Override
-    public JobDto apply(Job job) {
+    public JobDto apply(Job job, Set<Candidacy> candidacies) {
         return new JobDto(
                 job.getId(),
                 job.getClient(),
@@ -42,7 +42,7 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 job.getBonusPayPerCv(),
                 job.getClosureBonus(),
                 job.getComments(),
-                25,
+                candidacies.size(),
                 job.getClosureBonusPaymentDate(),
                 job.getCvRatePaymentDate(),
                 job.getCreatedAt()

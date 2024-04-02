@@ -26,15 +26,16 @@ public class Candidacy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "job_id")
     private Job job;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recuiter_id")
     private User recruiter;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "candidate_id")
     private Candidate candidate;
 

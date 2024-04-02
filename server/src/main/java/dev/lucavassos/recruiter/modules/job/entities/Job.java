@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
-import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
@@ -96,12 +95,6 @@ public class Job {
 
     @Column
     private String comments;
-
-    @OneToMany(mappedBy = "job")
-    private Set<Candidacy> candidacies = new HashSet<>();
-
-    @OneToMany(mappedBy = "job")
-    private Set<JobHistory> history = new HashSet<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

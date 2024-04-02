@@ -2,6 +2,9 @@ package dev.lucavassos.recruiter.modules.job.service;
 
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
+import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
+import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
@@ -12,6 +15,7 @@ import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
 import dev.lucavassos.recruiter.modules.job.repository.ContractTypeRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
+import dev.lucavassos.recruiter.modules.job.repository.dto.FullJobDtoMapper;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
@@ -26,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,11 +46,15 @@ public class JobService {
     @Autowired
     private JobHistoryRepository historyRepository;
     @Autowired
+    private CandidacyRepository candidacyRepository;
+    @Autowired
     private SkillRepository skillRepository;
     @Autowired
     private ContractTypeRepository contractTypeRepository;
     @Autowired
     private JobDtoMapper jobDtoMapper;
+    @Autowired
+    private FullJobDtoMapper fullJobDtoMapper;
     @Autowired
     private SkillDtoMapper skillDtoMapper;
     @Autowired
@@ -242,15 +251,17 @@ public class JobService {
     public List<JobDto> getAllJobs() {
         LOG.info("Retrieving {} jobs", 1000);
 
-        List<JobDto> jobs =
-                repository.findAll()
-                        .stream()
-                        .map(job -> jobDtoMapper.apply(job)
-                        )
-                        .collect(Collectors.toList());
+        List<Job> jobs = repository.findAll();
+
+        List<JobDto> jobsDtos = jobs.stream()
+                .map(job -> {
+                    Set<Candidacy> candidacies = new HashSet<>(candidacyRepository.findByJob(job));
+                    return fullJobDtoMapper.apply(job, candidacies);
+                })
+                .toList();
 
         LOG.info("Jobs retrieved: {}", jobs);
 
-        return jobs;
+        return jobsDtos;
     }
 }
