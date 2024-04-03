@@ -3,13 +3,15 @@ import { useUserStore } from '@/stores/user';
 import { ref } from 'vue';
 import PageForm from '@/components/PageForm.vue';
 import { useRouter } from 'vue-router';
-import FloatLabel from 'primevue/floatlabel';
+import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
-import Message from 'primevue/message';
-import useErrorMessage from '../composables/';
 
+import { useToast } from 'primevue/usetoast';
+import { ApiError } from '../utils/types';
+
+const toast = useToast();
 const router = useRouter();
 const loading = ref(false);
 const store = useUserStore();
@@ -19,30 +21,42 @@ const userForm = ref({
   password: '',
 });
 
-const [submitLogin, errorMessage] = useErrorMessage(async () => {
-  loading.value = true;
-  await store.login(userForm.value);
+const showError = (message: string) => {
+  toast.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
+};
 
-  router.push({ name: 'Signup' });
-});
+const submitLogin = async () => {
+  loading.value = true;
+  try {
+    await store.login(userForm.value);
+    router.push({ name: 'Signup' });
+  } catch (err) {
+    if (err instanceof ApiError) showError('Invalid credentials');
+    if (err instanceof Error) showError('Something went wrong');
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <template>
-  <div class="flex h-screen w-full justify-center bg-slate-100">
+  <Toast data-testid="error-message" />
+
+  <div class="flex h-screen w-screen justify-center bg-slate-100">
     <PageForm heading="Log in" formLabel="Login" @submit="submitLogin" data-testid="login-form">
       <template #default>
         <!-- email -->
-        <FloatLabel class="flex flex-col">
-          <InputText
-            type="email"
-            id="email"
-            v-model="userForm.usernameOrEmail"
-            minlength="3"
-            maxlength="50"
-            required
-          />
-          <label for="email">Email</label>
-        </FloatLabel>
+        <InputText
+          type="email"
+          id="email "
+          v-model="userForm.usernameOrEmail"
+          minlength="3"
+          maxlength="50"
+          required
+          aria-describedby="username-help"
+          placeholder="Email"
+          class="w-full"
+        />
 
         <Password
           v-model="userForm.password"
@@ -54,23 +68,12 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
           required
         />
 
-        <Message
-          v-if="errorMessage"
-          severity="error"
-          :sticky="false"
-          :life="5000"
-          :closable="false"
-          data-testid="error-message"
-        >
-          {{ errorMessage }}
-        </Message>
-
         <div class="grid grid-flow-row auto-rows-max gap-2">
           <Button
             type="submit"
             label="Login"
-            :loading="loading && !errorMessage"
-            :disabled="loading && !errorMessage"
+            :loading="loading"
+            :disabled="loading"
             class="flex items-center justify-center"
           />
         </div>
@@ -83,9 +86,9 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
               class="w-full"
               type="button"
               label="Forgot password?"
-              :loading="loading && !errorMessage"
-              :disabled="loading && !errorMessage"
+              :disabled="loading"
               data-testid="reset-password-button"
+              outlined
             />
           </RouterLink>
           <RouterLink :to="{ name: 'Signup' }">
@@ -95,9 +98,9 @@ const [submitLogin, errorMessage] = useErrorMessage(async () => {
               label="Not a member?"
               icon="pi pi-question-circle"
               severity="secondary"
-              :loading="loading && !errorMessage"
-              :disabled="loading && !errorMessage"
+              :disabled="loading"
               data-testid="not-member-button"
+              outlined
             />
           </RouterLink>
         </div>

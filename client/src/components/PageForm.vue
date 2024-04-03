@@ -10,7 +10,7 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="flex min-h-full w-full flex-initial flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="flex h-full w-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <h1 class="text-2xl font-medium">{{ heading }}</h1>
 

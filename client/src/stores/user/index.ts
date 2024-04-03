@@ -39,11 +39,19 @@ export const useUserStore = defineStore('userStore', () => {
   }
 
   async function login(form: UserLoginForm): Promise<void> {
-    const res: AxiosResponse<AuthUser> = await axiosApi.post(`/auth/login`, form);
-    userId.value = res.data.userId;
-    username.value = res.data.username;
-    authToken.value = res.data.token;
-    storeAccessToken(localStorage, authToken.value);
+    try {
+      const res: AxiosResponse<AuthUser> = await axiosApi.post(`/auth/login`, form);
+      userId.value = res.data.userId;
+      username.value = res.data.username;
+      authToken.value = res.data.token;
+      storeAccessToken(localStorage, authToken.value);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        throw new ApiError(err.response?.data.message);
+      } else {
+        throw new ApiError('An unexpected error occurred');
+      }
+    }
   }
 
   function logout() {
