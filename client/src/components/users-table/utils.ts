@@ -9,6 +9,7 @@ export const getSeverity = (status: boolean) => {
 };
 
 export const formatDate = (value: string) => {
+  if (!value || value === '') return '-';
   const date = new Date(Date.parse(value));
   const formattedDate = date.toLocaleDateString('en-US', {
     day: '2-digit',
@@ -17,16 +18,3 @@ export const formatDate = (value: string) => {
   });
   return formattedDate;
 };
-
-// const getContractType = (type: string) => {
-//   switch (type.toLowerCase()) {
-//     case 'PERMANENT':
-//       return 'info';
-
-//     case 'TEMPORARY':
-//       return 'pending';
-
-//     default:
-//       return 'info';
-//   }
-// };

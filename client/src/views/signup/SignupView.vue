@@ -12,6 +12,7 @@ import { ApiError } from '../../utils/types';
 import Toast from 'primevue/toast';
 import { invalidSignupFields, isValidSignup } from './index';
 import type { RoleName } from '@/stores/user/types';
+import SignupCommentsModal from '@/components/signup/SignupCommentsModal.vue';
 
 const toast = useToast();
 const errorMessage = ref('');
@@ -26,7 +27,7 @@ const showSuccess = (content: string) => {
     closable: true,
   });
 };
-
+const signupCommentsModalOpen = ref(false);
 const store = useUserStore();
 const countries = ref([{ label: 'India', value: 'india' }]);
 const roles = ref([
@@ -41,6 +42,7 @@ const userForm = ref<UserSignupForm>({
   city: '',
   country: '',
   roleName: '' as RoleName,
+  comments: '',
 });
 
 const hasSucceeded = ref(false);
@@ -77,7 +79,7 @@ const submitSignup = async () => {
       heading="Sign up"
       name="Signup"
       formLabel="Signup"
-      @submit="submitSignup"
+      @submit="signupCommentsModalOpen = true"
       data-testid="signup-form"
     >
       <template #default>
@@ -169,7 +171,17 @@ const submitSignup = async () => {
         </div>
 
         <!-- comments -->
-
+        <SignupCommentsModal
+          :visible="signupCommentsModalOpen"
+          @closeModal="signupCommentsModalOpen = false"
+          @continueSignup="
+            (comments) => {
+              userForm.comments = comments;
+              signupCommentsModalOpen = false;
+              submitSignup();
+            }
+          "
+        />
         <div class="grid gap-2">
           <Button
             type="submit"

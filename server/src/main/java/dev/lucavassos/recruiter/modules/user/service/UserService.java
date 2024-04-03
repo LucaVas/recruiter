@@ -73,14 +73,16 @@ public class UserService  {
 
         User approvedUser = repository.save(user);
 
-        LOG.info("User approved: {}",approvedUser );
+        LOG.info("User approved: {}", approvedUser );
     }
 
     public List<UserDto> getAllUsers() {
+        LOG.info("Request received for all users");
         List<User> users = repository.findAll();
+        LOG.info("Users: {}", users);
         return users
                 .stream()
-                .map(userDtoMapper::apply)
+                .map(userDtoMapper)
                 .toList();
 
     }

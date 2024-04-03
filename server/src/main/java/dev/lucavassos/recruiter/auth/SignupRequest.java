@@ -10,7 +10,8 @@ public record SignupRequest(
         String mobile,
         String city,
         String country,
-        String roleName
+        String roleName,
+        String comments
 ) {
 
 }

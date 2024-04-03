@@ -166,6 +166,17 @@ onMounted(async () => {
         />
       </template>
     </Column>
+    <Column field="comments" header="Comments" class="max-w-52 truncate text-nowrap">
+      <template #body="{ data }"> {{ data.comments }} </template>
+      <template #filter="{ filterModel }">
+        <InputText
+          v-model="filterModel.value"
+          type="text"
+          class="p-column-filter"
+          placeholder="Search by country"
+        />
+      </template>
+    </Column>
     <Column field="approvedOn" header="Approved On" dataType="date" class="min-w-40">
       <template #body="{ data }">
         {{ formatDate(data.approvedOn) }}

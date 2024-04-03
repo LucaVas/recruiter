@@ -23,7 +23,7 @@ export type Role = {
 };
 
 // request to signup
-export type UserSignupForm = Pick<UserDto, 'username' | 'email' | 'mobile' | 'city' | 'country'> & {
+export type UserSignupForm = Omit<UserDto, 'id' | 'roles' | 'approved' | 'approver' | 'approvedOn' | 'createdAt'> & {
   password: string;
   roleName: RoleName
 };

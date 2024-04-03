@@ -12,11 +12,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
+@Data
 @Table(name="users")
 public class User {
 
@@ -70,7 +70,7 @@ public class User {
     private User approver;
 
     @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIME)
     private LocalDateTime approvedOn;
 
     @OneToMany(mappedBy = "recruiter")
