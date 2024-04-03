@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.lucavassos.recruiter.modules.user.entities.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,12 @@ public class UserPrincipal implements UserDetails {
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
+
+    public boolean isAdmin() {
+        return this.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst().map(RoleName::valueOf).stream().anyMatch(role -> role.equals(RoleName.ROLE_ADMIN));
+    }
 
 
     public UserPrincipal(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {

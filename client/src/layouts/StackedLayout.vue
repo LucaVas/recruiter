@@ -3,10 +3,10 @@ import Navbar from '@/components/navbar/Navbar.vue';
 import type { MenuItem } from './DashboardLayout.vue';
 import { ref } from 'vue';
 
-const { menuItems, tag } = defineProps<{
+const { menuItems, role, username } = defineProps<{
   menuItems: MenuItem[];
-  tag: string;
   role: string;
+  username: string
 }>();
 const menuVisible = ref(false);
 </script>
@@ -19,8 +19,8 @@ const menuVisible = ref(false);
         @closeMenu="menuVisible = false"
         :visible="menuVisible"
         :menuItems="menuItems"
+        :username="username"
         :role="role"
-        :tag="tag"
       />
     </nav>
 

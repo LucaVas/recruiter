@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { authenticate, hideForAuth } from './guards';
+import { authenticate, showForAdmin } from './guards';
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
 
 const router = createRouter({
@@ -27,6 +27,7 @@ const router = createRouter({
         },
         {
           path: '/users',
+          beforeEnter: [showForAdmin],
           name: 'UsersView',
           component: () => import('../views/UsersView.vue'),
         },
@@ -86,13 +87,11 @@ const router = createRouter({
     {
       path: '/login',
       name: 'Login',
-      beforeEnter: [hideForAuth],
       component: () => import('../views/login/LoginView.vue'),
     },
     {
       path: '/signup',
       name: 'Signup',
-      beforeEnter: [hideForAuth],
       component: () => import('../views/signup/SignupView.vue'),
     },
     {

@@ -5,13 +5,12 @@ import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref } from 'vue';
-import { useCandidateStore } from '@/stores/candidate/index';
 import type { NewCandidateDto } from '@/stores/candidate/types';
 import { ApiError } from '@/utils/types';
 import { invalidFields, invalidCandidate } from '.';
 import type { CandidateDto } from '../../stores/candidate/types';
+import { addCandidate } from '@/stores/candidate';
 
-const candidateStore = useCandidateStore();
 const creatingCandidate = ref(false);
 const newCandidateError = ref('');
 const visible = ref(true);
@@ -37,7 +36,7 @@ async function createCandidate() {
   try {
     const payload = toNewCandidate();
     console.log('Sending:', payload);
-    const res = await candidateStore.addCandidate(toNewCandidate());
+    const res = await addCandidate(toNewCandidate());
     creatingCandidate.value = false;
     emits('selectCandidate', res.candidate);
   } catch (err) {

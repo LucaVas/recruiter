@@ -1,21 +1,19 @@
-import { useUserStore } from '@/stores/user';
+import { isLoggedIn, isAdmin } from '@/stores/user';
 
 export const authenticate = () => {
-  const userStore = useUserStore();
-  if (!userStore.isLoggedIn) return { name: 'Login' };
+  if (!isLoggedIn) return { name: 'Login' };
 
   return true;
 };
 
-// export const showForAdmin = () => {
-//   if (!isAdmin.value) return { name: 'MyHome' };
+export const showForAdmin = () => {
+  if (!isAdmin) return { name: 'Dashboard' };
 
-//   return true;
-// };
+  return true;
+};
 
 export const hideForAuth = () => {
-  const userStore = useUserStore();
-  if (userStore.isLoggedIn) return { name: 'Dashboard' };
+  if (isAdmin) return { name: 'Dashboard' };
 
   return true;
 };

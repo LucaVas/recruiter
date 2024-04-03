@@ -19,7 +19,6 @@
   "dependencies": {
     "@headlessui/vue": "^1.7.16",
     "axios": "^1.6.8",
-    "pinia": "^2.1.4",
     "primeicons": "^6.0.1",
     "primevue": "^3.50.0",
     "superjson": "^2.2.1",

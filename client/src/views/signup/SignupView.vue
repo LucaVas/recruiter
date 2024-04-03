@@ -4,7 +4,6 @@ import PageForm from '@/components/PageForm.vue';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import Dropdown from 'primevue/dropdown';
-import { useUserStore } from '@/stores/user';
 import { type UserSignupForm } from '@/stores/user/types';
 import Password from 'primevue/password';
 import { useToast } from 'primevue/usetoast';
@@ -13,6 +12,7 @@ import Toast from 'primevue/toast';
 import { invalidSignupFields, isValidSignup } from './index';
 import type { RoleName } from '@/stores/user/types';
 import SignupCommentsModal from '@/components/signup/SignupCommentsModal.vue';
+import { signup } from '@/stores/user';
 
 const toast = useToast();
 const errorMessage = ref('');
@@ -28,7 +28,6 @@ const showSuccess = (content: string) => {
   });
 };
 const signupCommentsModalOpen = ref(false);
-const store = useUserStore();
 const countries = ref([{ label: 'India', value: 'india' }]);
 const roles = ref([
   { label: 'Recruiter', value: 'ROLE_RECRUITER' },
@@ -58,7 +57,7 @@ const submitSignup = async () => {
 
   loading.value = true;
   try {
-    await store.signup(userForm.value);
+    await signup(userForm.value);
     hasSucceeded.value = true;
     showSuccess(
       'You have successfully signed up! An administrator will review your registration and confirm or reject it.'

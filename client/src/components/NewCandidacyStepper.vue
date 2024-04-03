@@ -6,18 +6,17 @@ import StepperPanel from 'primevue/stepperpanel';
 import Message from 'primevue/message';
 import Button from 'primevue/button';
 import { ref } from 'vue';
-import { useCandidateStore } from '../stores/candidate/index';
 import CandidateSingleSelectTable from './CandidateSingleSelectTable.vue';
 import type { CandidateDto } from '../stores/candidate/types';
 import { ApiError } from '../utils/types';
 import NewCandidateModal from './new-candidate/NewCandidateModal.vue';
 import type { NewCandidacyDto } from '../stores/candidate/types';
 import { useRoute } from 'vue-router';
+import { findCandidateByPan, submitCandidacy } from '@/stores/candidate';
 
 const route = useRoute();
 const jobId = ref(route.params.jobId);
 
-const candidateStore = useCandidateStore();
 const newCandidacyError = ref('');
 
 // candidate search scripts
@@ -29,7 +28,7 @@ const candidateSearchLoading = ref(false);
 const searchCandidate = async () => {
   candidateSearchLoading.value = true;
   try {
-    const res = await candidateStore.findCandidateByPan(candidatePanSearch.value);
+    const res = await findCandidateByPan(candidatePanSearch.value);
     candidateToDisplay.value = res.candidate;
   } catch (err) {
     if (err instanceof ApiError) candidateSearchError.value = err.message;
@@ -67,12 +66,11 @@ function formToNewCandidate(candidacyDetails: CandidacyDetails): NewCandidacyDto
 const candidateSubmitted = ref(false);
 const submittingNewCandidate = ref(false);
 
-async function submitCandidacy() {
+async function submit() {
   submittingNewCandidate.value = true;
   const candidacy = formToNewCandidate(candidacyDetails.value);
-  console.log(candidacy);
   try {
-    await candidateStore.submitCandidacy(candidacy);
+    await submitCandidacy(candidacy);
     candidateSubmitted.value = true;
   } catch (err) {
     if (err instanceof ApiError) newCandidacyError.value = err.message;
@@ -382,7 +380,7 @@ const active = ref(0);
               icon="pi pi-arrow-right"
               iconPos="right"
               :loading="submittingNewCandidate"
-              @click="submitCandidacy()"
+              @click="submit()"
             />
           </div>
         </div>

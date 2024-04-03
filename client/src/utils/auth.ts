@@ -1,13 +1,15 @@
-import type { AuthUser } from '@/stores/user/types';
-
 const TOKEN_KEY = 'token';
 
-export function getUsernameFromToken(token: string): AuthUser {
+export function getUsernameFromToken(token: string): string {
   return JSON.parse(atob(token.split('.')[1])).sub;
 }
 
-export function getIdFromToken(token: string): AuthUser {
-  return JSON.parse(atob(token.split('.')[1])).jti;
+export function getIdFromToken(token: string): number {
+  return JSON.parse(atob(token.split('.')[1])).id;
+}
+
+export function getIsAdminFromToken(token: string): boolean {
+  return JSON.parse(atob(token.split('.')[1])).isAdmin;
 }
 
 // token

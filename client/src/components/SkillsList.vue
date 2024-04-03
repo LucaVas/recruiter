@@ -5,13 +5,12 @@ import Column from 'primevue/column';
 import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
-import type { RawSkill } from '../stores/skill/types';
+import type { RawSkillDto } from '../stores/skill/types';
 import { FilterMatchMode } from 'primevue/api';
-import { useSkillsStore } from '../stores/skill/index';
+import { getAllSkills } from '@/stores/skill';
 
-const skillsStore = useSkillsStore();
-const skills = ref<RawSkill[]>();
-const selectedSkills = ref<RawSkill[]>();
+const skills = ref<RawSkillDto[]>();
+const selectedSkills = ref<RawSkillDto[]>();
 const loading = ref(false);
 const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -19,12 +18,12 @@ const filters = ref({
 
 onMounted(async () => {
   loading.value = true;
-  skills.value = await skillsStore.getAllSkills();
+  skills.value = await getAllSkills();
   loading.value = false;
 });
 
 const emit = defineEmits<{
-  (e: 'updateSelection', skills: RawSkill[]): void
+  (e: 'updateSelection', skills: RawSkillDto[]): void
 }>()
 function updateSelection() {
   if (selectedSkills.value) emit('updateSelection', selectedSkills.value)

@@ -70,7 +70,7 @@ public class User {
     private User approver;
 
     @Column(updatable = false)
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime approvedOn;
 
     @OneToMany(mappedBy = "recruiter")

@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
 import Avatar from 'primevue/avatar';
-
-import { useUserStore } from '../../stores/user/index';
 import { useRouter } from 'vue-router';
+import { logout } from '../../stores/user/index';
 
-const userStore = useUserStore();
 const router = useRouter();
 
-const { tag, role } = defineProps<{
-  tag: string;
+const { username, role } = defineProps<{
+  username: string;
   role: string;
 }>();
-function logout() {
-  userStore.logout();
+
+function logOut() {
+  logout();
   router.push({ name: 'Login' });
 }
 </script>
@@ -29,10 +28,10 @@ function logout() {
         shape="circle"
       />
       <div class="flex flex-col">
-        <h2 class="font-bold">{{ tag }}</h2>
+        <h2 class="font-bold">{{ username }}</h2>
         <h4 class="font-normal">{{ role }}</h4>
       </div>
     </div>
-    <Button @click="logout()" size="small" icon="pi pi-sign-out" />
+    <Button @click="logOut()" size="small" icon="pi pi-sign-out" />
   </div>
 </template>

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import StackedLayout from './StackedLayout.vue';
 import { ref } from 'vue';
-import { useUserStore } from '../stores/user/index';
+import { username, isAdmin } from '../stores/user/index';
 
-const userStore = useUserStore();
 export type MenuItem = {
   group: string;
   links: {
@@ -62,10 +61,9 @@ const menuItems = ref<MenuItem[]>([
   },
 ]);
 
-const tag = userStore.username !== '' ? userStore.username : 'john_doe';
-const role = ref('Admin');
+const role = isAdmin ? 'Admin' : 'Recruiter';
 </script>
 
 <template>
-  <StackedLayout :menuItems="menuItems" :role="role" :tag="tag"></StackedLayout>
+  <StackedLayout :menuItems="menuItems" :username="username" :role="role"></StackedLayout>
 </template>

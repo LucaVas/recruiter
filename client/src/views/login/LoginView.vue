@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useUserStore } from '@/stores/user';
 import { ref } from 'vue';
 import PageForm from '@/components/PageForm.vue';
 import { useRouter } from 'vue-router';
@@ -10,11 +9,11 @@ import Button from 'primevue/button';
 
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
+import { login } from '@/stores/user';
 
 const toast = useToast();
 const router = useRouter();
 const loading = ref(false);
-const store = useUserStore();
 
 const userForm = ref({
   usernameOrEmail: '',
@@ -28,8 +27,8 @@ const showError = (message: string) => {
 const submitLogin = async () => {
   loading.value = true;
   try {
-    await store.login(userForm.value);
-    router.push({ name: 'Signup' });
+    await login(userForm.value);
+    router.push({ name: 'Dashboard' });
   } catch (err) {
     if (err instanceof ApiError) showError('Invalid credentials');
     if (err instanceof Error) showError('Something went wrong');

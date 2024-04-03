@@ -8,11 +8,10 @@ import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
 import type { UserDto } from '../../stores/user/types';
-import { useUserStore } from '../../stores/user/index';
 import { ApiError } from '../../utils/types';
 import { formatDate } from './utils';
+import { getAllUsers, approveUser } from '@/stores/user';
 
-const userStore = useUserStore();
 const usersTableError = ref('');
 const loading = ref(false);
 const approvingUser = ref(false);
@@ -37,10 +36,10 @@ const approvalRequest = ref({
 });
 const approveModalOpen = ref(false);
 
-async function approveUser() {
+async function approve() {
   approvingUser.value = true;
   try {
-    await userStore.approveUser({
+    await approveUser({
       ...approvalRequest.value,
       userId: Number(approvalRequest.value.userId),
     });
@@ -57,7 +56,7 @@ async function approveUser() {
 async function initTable() {
   loading.value = true;
   try {
-    users.value = await userStore.getAllUsers();
+    users.value = await getAllUsers();
   } catch (err) {
     if (err instanceof ApiError) usersTableError.value = err.message;
   } finally {
@@ -223,7 +222,7 @@ onMounted(async () => {
               approvalRequest.comments = comments;
               approvalRequest.approved = !data.approved;
               approvalRequest.userId = data.id;
-              approveUser();
+              approve();
             }
           "
         />

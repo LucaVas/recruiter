@@ -11,10 +11,10 @@ import { ref, watch } from 'vue';
 import type { NewJob, JobStatus, Currency } from '../stores/job/types';
 import Dropdown from 'primevue/dropdown';
 import type { RawSkillDto } from '../stores/skill/types';
-import { useJobStore } from '@/stores/job';
 import type { ContractTypeName } from '../stores/job/types';
 import type { ToastMessageOptions } from 'primevue/toast';
 import useErrorMessage from '../composables/index';
+import { addJob } from '@/stores/job';
 
 const toast = useToast();
 const errorToastContent = ref<ToastMessageOptions>({
@@ -24,7 +24,6 @@ const errorToastContent = ref<ToastMessageOptions>({
   life: 5000,
 });
 
-const jobStore = useJobStore();
 const skills = ref<RawSkillDto[]>([]);
 const experienceRangeValues = ref([0, 45]);
 const jobStatuses = ref<{ name: string; label: string; value: JobStatus }[]>([
@@ -82,7 +81,7 @@ let [submitNewJob, errorMessage] = useErrorMessage(async () => {
   submittingNewJob.value = true;
   const newJob = formToNewJob(newJobForm);
   console.log(newJob);
-  await jobStore.addJob(newJob);
+  await addJob(newJob);
   submittingNewJob.value = false;
   jobSubmitted.value = true;
 });

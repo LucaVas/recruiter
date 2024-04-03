@@ -19,15 +19,14 @@ import {
   formatDate,
 } from './utils';
 import { getSkills, applyToJob } from './functions';
-import { useJobStore } from '../../stores/job/index';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '../../utils/types';
 import { useRouter } from 'vue-router';
 import type { MenuItem } from 'primevue/menuitem';
+import { deleteJob, getAllJobs } from '@/stores/job';
 
 const router = useRouter();
 const toast = useToast();
-const jobStore = useJobStore();
 const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
 const jobs = ref<JobDto[]>();
@@ -54,9 +53,9 @@ const showError = (content: string) => {
   toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
 };
 
-async function deleteJob(id: number) {
+async function delJob(id: number) {
   try {
-    await jobStore.deleteJob(id);
+    await deleteJob(id);
     initTable();
   } catch (err) {
     if (err instanceof ApiError) showError(err.message);
@@ -69,7 +68,7 @@ async function deleteJob(id: number) {
 async function initTable() {
   loading.value = true;
   try {
-    jobs.value = await jobStore.getAllJobs();
+    jobs.value = await getAllJobs();
   } catch (err) {
     if (err instanceof ApiError) showError(err.message);
   } finally {
@@ -280,7 +279,7 @@ onMounted(async () => {
         <DeleteJobModal
           :visible="deleteJobModalOpen"
           @closeModal="deleteJobModalOpen = false"
-          @deleteJob="deleteJob(data.id)"
+          @deleteJob="delJob(data.id)"
         />
 
         <SplitButton
