@@ -11,6 +11,3 @@ export const applyToJob = (jobId: number): void => {
   router.push({ name: 'NewCandidacy', params: { jobId: jobId } });
 };
 
-export const goTo = (view: string): void => {
-  router.push({ name: view });
-};

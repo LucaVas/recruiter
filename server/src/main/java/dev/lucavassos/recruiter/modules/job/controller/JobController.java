@@ -31,6 +31,13 @@ public class JobController {
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/jobs/{jobId}")
+    public ResponseEntity<?> deleteJob(@PathVariable("jobId") Long id) throws Exception {
+        LOG.info("Received request to delete job: {}", id);
+        service.deleteJob(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @GetMapping("/jobs")
     public ResponseEntity<List<JobDto>> getAllJobs() {
         LOG.info("Received request for all jobs.");

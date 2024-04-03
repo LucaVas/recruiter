@@ -38,5 +38,17 @@ export const useJobStore = defineStore('jobStore', () => {
       }
     }
   }
-  return { getAllJobs, addJob };
+  async function deleteJob(id: number): Promise<void> {
+    try {
+      await axiosApi.delete(`/jobs/${id}`);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        throw new ApiError(err.response?.data.message);
+      } else {
+        throw new ApiError('An unexpected error occurred');
+      }
+    }
+  }
+
+  return { getAllJobs, addJob, deleteJob };
 });

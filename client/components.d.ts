@@ -13,6 +13,7 @@ declare module 'vue' {
     Chip: typeof import('primevue/chip')['default']
     DashboardTable: typeof import('./src/components/dashboard-table/DashboardTable.vue')['default']
     DashboardTableHeader: typeof import('./src/components/dashboard-table/DashboardTableHeader.vue')['default']
+    DeleteJobModal: typeof import('./src/components/dashboard-table/DeleteJobModal.vue')['default']
     Divider: typeof import('primevue/divider')['default']
     FilesUploader: typeof import('./src/components/FilesUploader.vue')['default']
     InputText: typeof import('primevue/inputtext')['default']

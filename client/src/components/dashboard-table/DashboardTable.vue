@@ -2,12 +2,14 @@
 import SplitButton from 'primevue/splitbutton';
 import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
+import DeleteJobModal from './DeleteJobModal.vue';
 import { onMounted, ref } from 'vue';
 import Tag from 'primevue/tag';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
 import type { JobDto } from '@/stores/job/types';
 import DashboardTableHeader from './DashboardTableHeader.vue';
+import Toast from 'primevue/toast';
 import {
   filters,
   initFilters,
@@ -16,37 +18,55 @@ import {
   getClientIcon,
   formatDate,
 } from './utils';
-import { getSkills, applyToJob, goTo } from './functions';
+import { getSkills, applyToJob } from './functions';
 import { useJobStore } from '../../stores/job/index';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '../../utils/types';
+import { useRouter } from 'vue-router';
+import type { MenuItem } from 'primevue/menuitem';
 
+const router = useRouter();
 const toast = useToast();
 const jobStore = useJobStore();
 const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
 const jobs = ref<JobDto[]>();
 const statuses = ref(['closed', 'open', 'pending']);
-const splitButtonChoices = [
-  {
-    label: 'Edit',
-    icon: 'pi pi-file-edit',
-    command: () => goTo('Dashboard'),
-  },
-  {
-    label: 'Delete',
-    icon: 'pi pi-times',
-    command: () => goTo('Dashboard'),
-  },
-];
+const deleteJobModalOpen = ref(false);
+const getSplitButtonChoices = function (): MenuItem[] {
+  return [
+    {
+      label: 'Edit',
+      icon: 'pi pi-file-edit',
+      command: () => router.push({ name: 'Dashboard' }),
+    },
+    {
+      label: 'Delete',
+      icon: 'pi pi-times',
+      command: async () => {
+        deleteJobModalOpen.value = true;
+      },
+    },
+  ];
+};
 
 const showError = (content: string) => {
   toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
 };
 
-initFilters();
+async function deleteJob(id: number) {
+  try {
+    await jobStore.deleteJob(id);
+    initTable();
+  } catch (err) {
+    if (err instanceof ApiError) showError(err.message);
+  } finally {
+    loading.value = false;
+    deleteJobModalOpen.value = false
+  }
+}
 
-onMounted(async () => {
+async function initTable() {
   loading.value = true;
   try {
     jobs.value = await jobStore.getAllJobs();
@@ -55,10 +75,17 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
+}
+
+initFilters();
+onMounted(async () => {
+  await initTable();
 });
 </script>
 
 <template>
+  <Toast />
+
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"
@@ -250,6 +277,12 @@ onMounted(async () => {
     </Column>
     <Column field="action" header="" class="min-w-10">
       <template #body="{ data }">
+        <DeleteJobModal
+          :visible="deleteJobModalOpen"
+          @closeModal="deleteJobModalOpen = false"
+          @deleteJob="deleteJob(data.id)"
+        />
+
         <SplitButton
           label="Apply"
           size="small"
@@ -258,7 +291,7 @@ onMounted(async () => {
           severity="contrast"
           menuButtonIcon="pi pi-angle-down"
           @click="applyToJob(data.id)"
-          :model="splitButtonChoices"
+          :model="getSplitButtonChoices()"
         />
       </template>
     </Column>

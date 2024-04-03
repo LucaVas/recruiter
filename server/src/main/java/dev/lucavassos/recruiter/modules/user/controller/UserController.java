@@ -22,10 +22,11 @@ public class UserController {
     private UserService service;
 
     @PostMapping("/users/approvals")
-    public void approveUser(
+    public ResponseEntity<?> approveUser(
             @RequestBody UserApprovalRequest request) {
         LOG.info("Received request to approve users.");
         service.approveUser(request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/users")
@@ -35,15 +36,17 @@ public class UserController {
     }
 
     @PostMapping("/resetEmail/tokens")
-    public void sendResetToken(
+    public ResponseEntity<?> sendResetToken(
             @RequestBody PasswordResetTokenRequest request) throws BadRequestException {
         service.sendResetPasswordEmail(request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("/resetEmail/{token}")
-    public void verify(
+    public ResponseEntity<?> verify(
             @PathVariable("token") String token,
             @RequestBody PasswordResetRequest request) throws BadRequestException {
         service.resetPassword(token, request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

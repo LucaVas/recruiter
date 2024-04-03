@@ -60,6 +60,7 @@ public class JobService {
     @Autowired
     private QuestionDtoMapper questionDtoMapper;
 
+    @Transactional
     public JobResponse addJob(NewJobRequest request) throws Exception {
         LOG.info("Initiating new job creation process...");
 
@@ -121,6 +122,7 @@ public class JobService {
 
     }
 
+    @Transactional
     public JobResponse updateJob(UpdateJobRequest request) throws Exception {
 
         boolean changes = false;
@@ -225,6 +227,7 @@ public class JobService {
 
     }
 
+    @Transactional
     public JobDto getJobById(Long id) {
         Job job = repository.findOneById(id).orElseThrow(
                 () -> new ResourceNotFoundException(
@@ -235,6 +238,7 @@ public class JobService {
         return jobDtoMapper.apply(job);
     }
 
+    @Transactional
     public void changeJobStatus(Long id, JobStatus status) {
         Job job = repository.findOneById(id).orElseThrow(
                 () -> new ResourceNotFoundException(
@@ -242,7 +246,7 @@ public class JobService {
                 )
         );
 
-        if (status != null && job.getStatus() != status) {
+        if (status != null && job.getStatus() != status && job.getStatus() != JobStatus.ARCHIVED) {
             job.setStatus(status);
         }
 
@@ -256,6 +260,7 @@ public class JobService {
         List<Job> jobs = repository.findAll();
 
         List<JobDto> jobsDtos = jobs.stream()
+                .filter(job -> job.getStatus() != JobStatus.ARCHIVED)
                 .map(job -> {
                     Set<Candidacy> candidacies = new HashSet<>(candidacyRepository.findByJob(job));
                     return fullJobDtoMapper.apply(job, candidacies);
@@ -265,5 +270,21 @@ public class JobService {
         LOG.info("Jobs retrieved: {}", jobs);
 
         return jobsDtos;
+    }
+
+    @Transactional
+    public void deleteJob(Long id) {
+        LOG.info("Deleting job {}", id);
+        Job job = repository.findOneById(id).orElseThrow(
+                () -> {
+                    LOG.error("Job {} not found", id);
+                    return new ResourceNotFoundException("Job with id %d not found".formatted(id));
+                }
+        );
+        if (job.getStatus() != JobStatus.ARCHIVED) {
+            job.setStatus(JobStatus.ARCHIVED);
+            Job jobDeleted = repository.save(job);
+            LOG.info("Job {} deleted successfully", jobDeleted.getId());
+        }
     }
 }
