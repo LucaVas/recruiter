@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.security;
 import dev.lucavassos.recruiter.auth.CustomUserDetailsService;
 import dev.lucavassos.recruiter.jwt.JwtAuthenticationFilter;
 import dev.lucavassos.recruiter.jwt.JwtAuthenticationEntryPoint;
+import dev.lucavassos.recruiter.modules.user.entities.RoleName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -65,6 +67,10 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
+                                .requestMatchers(
+                                        HttpMethod.DELETE,
+                                        "api/v*/**"
+                                ).hasAuthority(RoleName.ROLE_ADMIN.name())
                                 .requestMatchers(
                                         HttpMethod.POST,
                                         "/api/v*/auth/login/**",

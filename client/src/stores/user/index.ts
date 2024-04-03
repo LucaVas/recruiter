@@ -41,6 +41,7 @@ export const useUserStore = defineStore('userStore', () => {
 
   async function signup(form: UserSignupForm): Promise<AxiosResponse<{ id: number }>> {
     try {
+      console.log(form)
       const { data } = await axiosApi.post(`/auth/signup`, form, { headers: unauthorizedHeaders });
       return data;
     } catch (err) {

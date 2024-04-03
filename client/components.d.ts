@@ -34,6 +34,7 @@ declare module 'vue' {
     SkillsList: typeof import('./src/components/SkillsList.vue')['default']
     Slider: typeof import('primevue/slider')['default']
     Textarea: typeof import('primevue/textarea')['default']
+    ToggleButton: typeof import('primevue/togglebutton')['default']
     UsersTable: typeof import('./src/components/users-table/UsersTable.vue')['default']
     UsersTableHeader: typeof import('./src/components/users-table/UsersTableHeader.vue')['default']
   }

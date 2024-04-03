@@ -62,7 +62,7 @@ async function deleteJob(id: number) {
     if (err instanceof ApiError) showError(err.message);
   } finally {
     loading.value = false;
-    deleteJobModalOpen.value = false
+    deleteJobModalOpen.value = false;
   }
 }
 

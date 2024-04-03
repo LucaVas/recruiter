@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,9 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class UserPrincipal implements UserDetails {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserPrincipal.class);
+
 
     private Long id;
 
@@ -39,7 +44,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.authorities;
     }
 
     public static UserPrincipal create(User user) {

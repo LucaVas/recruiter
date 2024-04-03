@@ -16,7 +16,7 @@ export type UserDto = {
 export type RecruiterDto = Pick<UserDto, 'id' | 'username'>;
 export type ApproverDto = RecruiterDto;
 
-type RoleName = 'ROLE_RECRUITER' | 'ROLE_ADMIN';
+export type RoleName = 'ROLE_RECRUITER' | 'ROLE_ADMIN';
 export type Role = {
   id: number;
   name: RoleName;
@@ -25,6 +25,7 @@ export type Role = {
 // request to signup
 export type UserSignupForm = Pick<UserDto, 'username' | 'email' | 'mobile' | 'city' | 'country'> & {
   password: string;
+  roleName: RoleName
 };
 
 // request to login

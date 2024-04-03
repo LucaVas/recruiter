@@ -28,7 +28,11 @@ export const invalidSignupFields = ref({
   },
   country: {
     invalid: false,
-    message: 'Invalid  country',
+    message: 'Invalid country',
+  },
+  role: {
+    invalid: false,
+    message: 'Invalid role',
   },
 });
 
@@ -80,6 +84,14 @@ export function isValidSignup(signupDetails, errorMessage: Ref<string>) {
   } else {
     errorMessage.value = '';
     invalidSignupFields.value.country.invalid = false;
+  }
+  if (signupDetails.role === '') {
+    errorMessage.value = invalidSignupFields.value.role.message;
+    invalidSignupFields.value.role.invalid = true;
+    return false;
+  } else {
+    errorMessage.value = '';
+    invalidSignupFields.value.role.invalid = false;
   }
 
   return true;

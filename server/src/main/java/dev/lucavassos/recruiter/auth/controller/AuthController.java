@@ -1,5 +1,7 @@
-package dev.lucavassos.recruiter.auth;
+package dev.lucavassos.recruiter.auth.controller;
 
+import dev.lucavassos.recruiter.auth.*;
+import dev.lucavassos.recruiter.auth.service.AuthService;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,50 +49,16 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    @Autowired
+    AuthService service;
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
-
-        LOG.info("Initiated signup process in service...");
-        if (userRepository.existsUserByEmail(request.email())) {
-            throw new DuplicateResourceException(
-                    "User with email %s already exists.".formatted(request.email())
-            );
-        }
-        if (userRepository.existsUserByMobile(request.mobile())) {
-            throw new DuplicateResourceException(
-                    "User with mobile %s already exists.".formatted(request.mobile())
-            );
-        }
-        if (userRepository.existsUserByUsername(request.username())) {
-            throw new DuplicateResourceException(
-                    "User with username %s already exists.".formatted(request.username())
-            );
-        }
-
-        User user = User.builder()
-                .username(request.username())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .mobile(request.mobile())
-                .city(request.city())
-                .country(request.country())
-                .build();
-
-        Role userRole = roleRepository.findByName(RoleName.ROLE_RECRUITER)
-                .orElseThrow(() -> new ServerException("User Role not set."));
-
-        user.setRoles(Collections.singleton(userRole));
-
-        User result = userRepository.save(user);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
-
-        LOG.info("New user created: [{}]", user);
+        LOG.info("Received request for signup");
+        SignupResponse res = service.signup(request);
         return ResponseEntity
-                .created(location)
-                .body(new SignupResponse(user.getId()));
+                .status(HttpStatus.CREATED)
+                .body(res);
     }
 
     @PostMapping("/login")

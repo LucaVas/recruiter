@@ -359,16 +359,31 @@ public class EntityInitializer {
     }
 
     @Transactional
-    public void createUser() {
-        User user = User.builder()
-                .username("tester")
-                .email("tester@mail.com")
+    public void createUsers() {
+
+        Set<Role> roles = new HashSet<>(roleRepository.findAll());
+
+        User recruiter = User.builder()
+                .username("recruiter")
+                .email("recruiter@mail.com")
                 .password(encoder.encode("Password123"))
                 .mobile("1234567890")
                 .city("Test city")
                 .country("India")
+                .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_RECRUITER).collect(Collectors.toSet()))
                 .build();
 
-        userRepository.save(user);
+        User admin = User.builder()
+                .username("admin")
+                .email("admin@mail.com")
+                .password(encoder.encode("Password123"))
+                .mobile("1234567891")
+                .city("Test city")
+                .country("India")
+                .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_ADMIN).collect(Collectors.toSet()))
+                .build();
+
+        userRepository.save(recruiter);
+        userRepository.save(admin);
     }
 }

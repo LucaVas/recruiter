@@ -11,6 +11,7 @@ import { useToast } from 'primevue/usetoast';
 import { ApiError } from '../../utils/types';
 import Toast from 'primevue/toast';
 import { invalidSignupFields, isValidSignup } from './index';
+import type { RoleName } from '@/stores/user/types';
 
 const toast = useToast();
 const errorMessage = ref('');
@@ -28,6 +29,10 @@ const showSuccess = (content: string) => {
 
 const store = useUserStore();
 const countries = ref([{ label: 'India', value: 'india' }]);
+const roles = ref([
+  { label: 'Recruiter', value: 'ROLE_RECRUITER' },
+  { label: 'Admin', value: 'ROLE_ADMIN' },
+]);
 const userForm = ref<UserSignupForm>({
   username: '',
   email: '',
@@ -35,6 +40,7 @@ const userForm = ref<UserSignupForm>({
   mobile: '',
   city: '',
   country: '',
+  roleName: '' as RoleName,
 });
 
 const hasSucceeded = ref(false);
@@ -45,6 +51,8 @@ const submitSignup = async () => {
     showError(errorMessage.value);
     return;
   }
+
+  console.log(userForm.value);
 
   loading.value = true;
   try {
@@ -131,19 +139,34 @@ const submitSignup = async () => {
           required
           :invalid="invalidSignupFields.city.invalid"
         />
-        <!-- country -->
-        <Dropdown
-          v-model="userForm.country"
-          :options="countries"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Select a Country"
-          class="md:w-14rem w-full"
-          :highlightOnSelect="false"
-          checkmark
-          required
-          :invalid="invalidSignupFields.country.invalid"
-        />
+        <div class="flex w-full justify-between gap-2">
+          <!-- country -->
+          <Dropdown
+            v-model="userForm.country"
+            :options="countries"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Your Country"
+            class="w-full"
+            :highlightOnSelect="false"
+            checkmark
+            required
+            :invalid="invalidSignupFields.country.invalid"
+          />
+          <!-- role -->
+          <Dropdown
+            v-model="userForm.roleName"
+            :options="roles"
+            optionLabel="label"
+            optionValue="value"
+            class="w-full"
+            placeholder="Your Role"
+            :highlightOnSelect="false"
+            checkmark
+            required
+            :invalid="invalidSignupFields.role.invalid"
+          />
+        </div>
 
         <!-- comments -->
 

@@ -50,7 +50,7 @@ public class User {
     @Size(min = 3, max = 50, message = "Country name must be between 3 and 50 characters long")
     private String country;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

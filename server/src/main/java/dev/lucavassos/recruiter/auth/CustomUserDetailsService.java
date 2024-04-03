@@ -1,8 +1,11 @@
 package dev.lucavassos.recruiter.auth;
 
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.modules.job.service.JobService;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+    private static final Logger LOG = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     @Autowired
     private UserRepository repository;
+
 
     @Override
     @Transactional

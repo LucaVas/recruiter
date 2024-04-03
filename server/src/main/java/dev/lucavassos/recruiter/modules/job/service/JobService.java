@@ -1,7 +1,9 @@
 package dev.lucavassos.recruiter.modules.job.service;
 
+import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
@@ -23,10 +25,16 @@ import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
+import dev.lucavassos.recruiter.modules.user.entities.Role;
+import dev.lucavassos.recruiter.modules.user.entities.RoleName;
+import dev.lucavassos.recruiter.modules.user.entities.User;
+import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +59,8 @@ public class JobService {
     private SkillRepository skillRepository;
     @Autowired
     private ContractTypeRepository contractTypeRepository;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private JobDtoMapper jobDtoMapper;
     @Autowired
@@ -281,6 +291,19 @@ public class JobService {
                     return new ResourceNotFoundException("Job with id %d not found".formatted(id));
                 }
         );
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User user = userRepository.findOneById(userPrincipal.getId()).orElseThrow(
+                () -> {
+                    LOG.error("User with id {} not found", id);
+                    return new ResourceNotFoundException("User not found");
+                }
+        );
+//        if (user.getRoles().stream().anyMatch(role -> role.getName() != RoleName.ROLE_ADMIN)) {
+//            LOG.error("User with id {} not found", id);
+//            throw new UnauthorizedException("User cannot perform this action");
+//        }
         if (job.getStatus() != JobStatus.ARCHIVED) {
             job.setStatus(JobStatus.ARCHIVED);
             Job jobDeleted = repository.save(job);

@@ -43,6 +43,8 @@ export const useJobStore = defineStore('jobStore', () => {
       await axiosApi.delete(`/jobs/${id}`);
     } catch (err) {
       if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401)
+          throw new ApiError("You don't have the authorities to perform this action.");
         throw new ApiError(err.response?.data.message);
       } else {
         throw new ApiError('An unexpected error occurred');
