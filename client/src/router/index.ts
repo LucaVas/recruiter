@@ -87,18 +87,18 @@ const router = createRouter({
       path: '/login',
       name: 'Login',
       beforeEnter: [hideForAuth],
-      component: () => import('../views/LoginView.vue'),
+      component: () => import('../views/login/LoginView.vue'),
     },
     {
       path: '/signup',
       name: 'Signup',
       beforeEnter: [hideForAuth],
-      component: () => import('../views/SignupView.vue'),
+      component: () => import('../views/signup/SignupView.vue'),
     },
     {
       path: '/:catchAll(.*)',
       name: 'NotFound',
-      component: () => import('../views/SignupView.vue'),
+      component: () => import('../views/signup/SignupView.vue'),
       meta: {
         requiresAuth: false,
       },

@@ -60,9 +60,13 @@ public class AuthController {
                     "User with mobile %s already exists.".formatted(request.mobile())
             );
         }
+        if (userRepository.existsUserByUsername(request.username())) {
+            throw new DuplicateResourceException(
+                    "User with username %s already exists.".formatted(request.username())
+            );
+        }
 
         User user = User.builder()
-                .name(request.name())
                 .username(request.username())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))

@@ -361,7 +361,6 @@ public class EntityInitializer {
     @Transactional
     public void createUser() {
         User user = User.builder()
-                .name("Tester")
                 .username("tester")
                 .email("tester@mail.com")
                 .password(encoder.encode("Password123"))

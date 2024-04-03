@@ -24,11 +24,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters long")
-    private String name;
-
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters long")
     private String username;
 

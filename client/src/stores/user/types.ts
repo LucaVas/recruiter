@@ -23,7 +23,9 @@ export type Role = {
 };
 
 // request to signup
-export type UserSignupForm = Pick<UserDto, 'username' | 'email' | 'mobile' | 'city' | 'country'>;
+export type UserSignupForm = Pick<UserDto, 'username' | 'email' | 'mobile' | 'city' | 'country'> & {
+  password: string;
+};
 
 // request to login
 export type UserLoginForm = {
