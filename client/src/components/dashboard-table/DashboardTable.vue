@@ -1,158 +1,60 @@
 <script setup lang="ts">
-import Button from 'primevue/button';
 import SplitButton from 'primevue/splitbutton';
 import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
 import { onMounted, ref } from 'vue';
 import Tag from 'primevue/tag';
 import Column from 'primevue/column';
-import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import Dropdown from 'primevue/dropdown';
-import { useJobStore } from '@/stores/job';
-import type { JobDto } from '../stores/job/types';
-import type { SkillDto } from '../stores/skill/types';
-import { useRouter } from 'vue-router';
+import type { JobDto } from '@/stores/job/types';
+import DashboardTableHeader from './DashboardTableHeader.vue';
+import {
+  filters,
+  initFilters,
+  getSeverity,
+  getContractType,
+  getClientIcon,
+  formatDate,
+} from './utils';
+import { getSkills, applyToJob, goTo } from './functions';
+import { useJobStore } from '../../stores/job/index';
+import { useToast } from 'primevue/usetoast';
+import { ApiError } from '../../utils/types';
 
-const router = useRouter();
+const toast = useToast();
 const jobStore = useJobStore();
 const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
 const jobs = ref<JobDto[]>();
-const filters = ref();
-
-const initFilters = () => {
-  filters.value = {
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    id: { value: null, matchMode: FilterMatchMode.EQUALS },
-    client: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    name: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    skill: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    contractType: { value: null, matchMode: FilterMatchMode.IN },
-    experienceRange: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    salaryBudget: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO }],
-    },
-    noticePeriodInDays: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO }],
-    },
-    numberOfCandidates: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO }],
-    },
-    creationDate: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }],
-    },
-    status: { value: null, matchMode: FilterMatchMode.IN },
-  };
-};
-initFilters();
-
-const clearFilter = () => {
-  initFilters();
-};
-
 const statuses = ref(['closed', 'open', 'pending']);
-const getSeverity = (status: string) => {
-  switch (status.toLowerCase()) {
-    case 'closed':
-      return 'danger';
-
-    case 'open':
-      return 'success';
-
-    case 'pending':
-      return 'warning';
-
-    default:
-      return 'info';
-  }
-};
-
-const getContractType = (type: string) => {
-  switch (type.toLowerCase()) {
-    case 'PERMANENT':
-      return 'info';
-
-    case 'TEMPORARY':
-      return 'pending';
-
-    default:
-      return 'info';
-  }
-};
-
-const getClientIcon = (clientName: string) => {
-  switch (clientName.toLowerCase()) {
-    case 'infosys':
-      return 'infosys.svg';
-
-    case 'ibm':
-      return 'ibm.svg';
-
-    case 'accenture':
-      return 'accenture.svg';
-
-    default:
-      return 'placeholder.png';
-  }
-};
-
-const getSkills = (skills: SkillDto[]): string => {
-  return skills.map((skill) => skill.name).join(', ');
-};
-
-const formatDate = (value: string) => {
-  const date = new Date(Date.parse(value));
-  const formattedDate = date.toLocaleDateString('en-US', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-  return formattedDate;
-};
-
 const splitButtonChoices = [
   {
     label: 'Edit',
-    icon: 'pi pi-pen-to-square',
-    command: () => {
-      router.push({ name: 'Dashboard' });
-    },
+    icon: 'pi pi-file-edit',
+    command: () => goTo('Dashboard'),
   },
   {
     label: 'Delete',
     icon: 'pi pi-times',
-    command: () => {
-      router.push({ name: 'Dashboard' });
-    },
+    command: () => goTo('Dashboard'),
   },
 ];
 
-function applyToJob(jobId: number): void {
-  router.push({ name: 'NewCandidacy', params: { jobId: jobId } });
-}
+const showError = (content: string) => {
+  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
+};
+
+initFilters();
 
 onMounted(async () => {
   loading.value = true;
-  jobs.value = await jobStore.getAllJobs();
-  loading.value = false;
+  try {
+    jobs.value = await jobStore.getAllJobs();
+  } catch (err) {
+    if (err instanceof ApiError) showError(err.message);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
 
@@ -184,21 +86,7 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <div class="w-25 flex justify-between">
-        <Button
-          type="button"
-          icon="pi pi-filter-slash"
-          label="Clear"
-          outlined
-          @click="clearFilter()"
-        />
-        <IconField iconPosition="left">
-          <InputIcon>
-            <i class="pi pi-search" />
-          </InputIcon>
-          <InputText v-model="filters['global'].value" placeholder="Search" />
-        </IconField>
-      </div>
+      <DashboardTableHeader />
     </template>
     <template #empty> No jobs found. </template>
     <template #loading> Loading jobs, please wait... </template>

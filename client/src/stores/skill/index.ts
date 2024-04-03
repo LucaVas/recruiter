@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import type { RawSkill } from './types';
+import type { RawSkillDto } from './types';
 import { getStoredAccessToken } from '@/utils/auth';
+import { ApiError } from '@/utils/types';
 
 const axiosApi = axios.create({
   baseURL: `http://localhost:8080/api/v1`,
@@ -13,9 +14,17 @@ const axiosApi = axios.create({
 });
 
 export const useSkillsStore = defineStore('skillsStore', () => {
-  async function getAllSkills(): Promise<RawSkill[]> {
-    const res = await axiosApi.get(`/skills`);
-    return res.data;
+  async function getAllSkills(): Promise<RawSkillDto[]> {
+    try {
+      const { data } = await axiosApi.get(`/skills`);
+      return data;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        throw new ApiError(err.response?.data.message);
+      } else {
+        throw new ApiError('An unexpected error occurred');
+      }
+    }
   }
   return { getAllSkills };
 });
