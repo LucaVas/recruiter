@@ -23,9 +23,12 @@ export type Role = {
 };
 
 // request to signup
-export type UserSignupForm = Omit<UserDto, 'id' | 'roles' | 'approved' | 'approver' | 'approvedOn' | 'createdAt'> & {
+export type UserSignupForm = Omit<
+  UserDto,
+  'id' | 'roles' | 'approved' | 'approver' | 'approvedOn' | 'createdAt'
+> & {
   password: string;
-  roleName: RoleName
+  roleName: RoleName;
 };
 
 // request to login
@@ -39,6 +42,11 @@ export type AuthUser = {
   username: string;
   token: string;
   tokenType: string;
+};
+export type AuthUserInfoDto = {
+  id: number;
+  username: string;
+  roleName: RoleName;
 };
 
 export type ApprovalRequest = {

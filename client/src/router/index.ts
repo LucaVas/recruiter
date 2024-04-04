@@ -17,6 +17,7 @@ const router = createRouter({
         },
         {
           path: '/jobs/new',
+          beforeEnter: [showForAdmin],
           name: 'NewJob',
           component: () => import('../views/NewJob.vue'),
         },

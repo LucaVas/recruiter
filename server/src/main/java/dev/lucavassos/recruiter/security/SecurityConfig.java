@@ -73,14 +73,14 @@ public class SecurityConfig {
                                 ).hasAuthority(RoleName.ROLE_ADMIN.name())
                                 .requestMatchers(
                                         HttpMethod.POST,
+                                        "api/v*/jobs"
+                                ).hasAuthority(RoleName.ROLE_ADMIN.name())
+                                .requestMatchers(
+                                        HttpMethod.POST,
                                         "/api/v*/auth/login/**",
                                         "api/v*/auth/signup/**",
                                         "api/v*/resetEmail/**"
                                 ).permitAll()
-                                .requestMatchers(
-                                        HttpMethod.GET,
-                                        "/api/v*/jobs"
-                                ).authenticated()
                                 .anyRequest().authenticated()
                 )
                 // disable session

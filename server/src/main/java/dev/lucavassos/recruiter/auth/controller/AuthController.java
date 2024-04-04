@@ -1,14 +1,10 @@
 package dev.lucavassos.recruiter.auth.controller;
 
 import dev.lucavassos.recruiter.auth.*;
+import dev.lucavassos.recruiter.auth.domain.AuthUserInfoDto;
 import dev.lucavassos.recruiter.auth.service.AuthService;
-import dev.lucavassos.recruiter.exception.DuplicateResourceException;
-import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.jwt.JwtTokenProvider;
-import dev.lucavassos.recruiter.modules.user.entities.Role;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
-import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -24,14 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.Collections;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "api/v1/auth")
@@ -89,5 +78,11 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, res.token())
                 .body(res);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<AuthUserInfoDto> getAuthUser() {
+        LOG.info("Received request for auth user.");
+        return new ResponseEntity<>(service.getAuthUser(), HttpStatus.OK);
     }
 }

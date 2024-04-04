@@ -11,7 +11,12 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="flex flex-col justify-between overflow-y-auto">
-    <NavbarGroup @closeMenu="$emit('closeMenu')" v-for="item in menuItems" :menuItem="item" :key="item.group" />
+  <div class="flex h-full flex-col justify-start overflow-y-auto">
+    <NavbarGroup
+      @closeMenu="$emit('closeMenu')"
+      v-for="item in menuItems"
+      :menuItem="item"
+      :key="item.group"
+    />
   </div>
 </template>

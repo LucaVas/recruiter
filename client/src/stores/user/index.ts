@@ -1,5 +1,13 @@
 import axios, { type AxiosResponse } from 'axios';
-import type { UserSignupForm, UserLoginForm, AuthUser, UserDto, ApprovalRequest } from './types';
+import type {
+  UserSignupForm,
+  UserLoginForm,
+  AuthUser,
+  UserDto,
+  ApprovalRequest,
+  AuthUserInfoDto,
+  RoleName,
+} from './types';
 import { computed, ref } from 'vue';
 import {
   clearStoredAccessToken,
@@ -29,6 +37,7 @@ export const userId = ref();
 export const username = ref('');
 export const isLoggedIn = computed(() => !!authToken.value);
 export const invalidToken = computed(() => !!authToken.value);
+export const role = ref<RoleName>();
 export const isAdmin = computed(() =>
   authToken.value ? getIsAdminFromToken(authToken.value) === true : false
 );
@@ -87,6 +96,23 @@ export async function getAllUsers(): Promise<UserDto[]> {
   try {
     const { data } = await axiosApi.get('/users', { headers: authorizedHeaders });
     return data;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      throw new ApiError(err.response?.data.message);
+    } else {
+      throw new ApiError('An unexpected error occurred');
+    }
+  }
+}
+
+export async function getMe(): Promise<void> {
+  try {
+    const { data } = (await axiosApi.get('/auth/me', {
+      headers: authorizedHeaders,
+    })) as AxiosResponse<AuthUserInfoDto>;
+    userId.value = data.id;
+    username.value = data.username;
+    role.value = data.roleName;
   } catch (err) {
     if (axios.isAxiosError(err)) {
       throw new ApiError(err.response?.data.message);

@@ -1,6 +1,8 @@
 package dev.lucavassos.recruiter.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.lucavassos.recruiter.exception.UnauthorizedException;
+import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.entities.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import lombok.Getter;
@@ -38,6 +40,16 @@ public class UserPrincipal implements UserDetails {
         return this.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst().map(RoleName::valueOf).stream().anyMatch(role -> role.equals(RoleName.ROLE_ADMIN));
+    }
+
+    public RoleName getRoleName() {
+        return this.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .map(RoleName::valueOf)
+                .orElseThrow(
+                        () -> new UnauthorizedException("No role assigned to user.")
+                );
     }
 
 
