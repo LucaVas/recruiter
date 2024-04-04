@@ -1,3 +1,19 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import type { CandidateDto } from '@/stores/candidate/types';
+
+const { candidates } = defineProps<{
+  candidates?: CandidateDto[];
+}>();
+defineEmits<{
+  (e: 'selectCandidate', selectedCandidate: CandidateDto): void;
+}>();
+
+const selectedCandidate = ref();
+</script>
+
 <template>
   <DataTable
     v-model:selection="selectedCandidate"
@@ -13,19 +29,3 @@
     <Column field="currentCtc" header="Current CTC"></Column>
   </DataTable>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import type { CandidateDto } from '../stores/candidate/types';
-
-const { candidates } = defineProps<{
-  candidates?: CandidateDto[];
-}>();
-defineEmits<{
-  (e: 'selectCandidate', selectedCandidate: CandidateDto): void;
-}>();
-
-const selectedCandidate = ref();
-</script>

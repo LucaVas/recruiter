@@ -8,12 +8,13 @@ import { ref } from 'vue';
 import type { NewCandidateDto } from '@/stores/candidate/types';
 import { ApiError } from '@/utils/types';
 import { invalidFields, invalidCandidate } from '.';
-import type { CandidateDto } from '../../stores/candidate/types';
-import { addCandidate } from '@/stores/candidate';
+import type { CandidateDto } from '@/stores/candidate/types';
+import { addCandidate } from '@/stores/candidate/';
 
 const creatingCandidate = ref(false);
 const newCandidateError = ref('');
 const visible = ref(true);
+export type CandidateDetails = typeof candidateDetails.value;
 const candidateDetails = ref({
   name: '',
   phone: '',
@@ -161,3 +162,4 @@ const emits = defineEmits<{
     </Dialog>
   </div>
 </template>
+../../../stores/candidate/types

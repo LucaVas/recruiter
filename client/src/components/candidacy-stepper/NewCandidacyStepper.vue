@@ -6,37 +6,19 @@ import StepperPanel from 'primevue/stepperpanel';
 import Message from 'primevue/message';
 import Button from 'primevue/button';
 import { ref } from 'vue';
-import CandidateSingleSelectTable from './CandidateSingleSelectTable.vue';
-import type { CandidateDto } from '../stores/candidate/types';
-import { ApiError } from '../utils/types';
-import NewCandidateModal from './new-candidate/NewCandidateModal.vue';
-import type { NewCandidacyDto } from '../stores/candidate/types';
+import { ApiError } from '../../utils/types';
+import type { NewCandidacyDto } from '../../stores/candidate/types';
 import { useRoute } from 'vue-router';
-import { findCandidateByPan, submitCandidacy } from '@/stores/candidate';
+import { submitCandidacy } from '@/stores/candidate';
+import Body from './stepper-panels/candidate/body/Body.vue';
+import Header from './stepper-panels/candidate/header/Header.vue';
+import Footer from './stepper-panels/candidate/footer/Footer.vue';
 
 const route = useRoute();
 const jobId = ref(route.params.jobId);
 
 const newCandidacyError = ref('');
-
-// candidate search scripts
-const candidateSelectedId = ref<number>();
-const candidatePanSearch = ref('');
-const candidateSearchError = ref('');
-const candidateToDisplay = ref<CandidateDto>();
-const candidateSearchLoading = ref(false);
-const searchCandidate = async () => {
-  candidateSearchLoading.value = true;
-  try {
-    const res = await findCandidateByPan(candidatePanSearch.value);
-    candidateToDisplay.value = res.candidate;
-  } catch (err) {
-    if (err instanceof ApiError) candidateSearchError.value = err.message;
-  } finally {
-    candidateSearchLoading.value = false;
-  }
-};
-const newCandidateModalOpen = ref(false);
+const candidateSelectedId = ref<number | null>();
 
 // candidacy details
 const candidacyDetails = ref({
@@ -87,96 +69,18 @@ const active = ref(0);
     <!-- Candidate -->
     <StepperPanel>
       <template #header="{ index }">
-        <span
-          :class="[
-            'border-round w-3rem h-3rem align-items-center justify-content-center inline-flex border-2',
-            { 'bg-primary border-primary': index <= active, 'surface-border': index > active },
-          ]"
-        >
-          <i class="pi pi-user" />
-        </span>
+        <Header :index="index" :currentIndex="active" />
       </template>
 
       <template #content="{ nextCallback }">
         <div class="flex h-full w-full flex-col justify-between gap-6">
-          <div class="flex w-full flex-col gap-6">
-            <div class="mb-3 mt-3 text-center text-xl font-semibold">Candidate information</div>
+          <Body
+            @increase-index="active += 1"
+            @pass-error="(content) => (newCandidacyError = content)"
+            @select-candidate="(candidateId) => (candidateSelectedId = candidateId)"
+          />
 
-            <h3>Search for a candidate</h3>
-            <div class="field p-fluid flex gap-2">
-              <IconField class="w-full">
-                <InputIcon>
-                  <i class="pi pi-search" />
-                </InputIcon>
-                <InputText
-                  id="candidatePan"
-                  v-model="candidatePanSearch"
-                  type="text"
-                  placeholder="Candidate PAN"
-                  required
-                />
-              </IconField>
-              <Button
-                class="w-[10rem]"
-                type="button"
-                label="Search"
-                icon="pi pi-search"
-                :loading="candidateSearchLoading"
-                @click="searchCandidate()"
-                :disabled="candidatePanSearch === ''"
-              />
-            </div>
-
-            <h3>Add a new candidate</h3>
-
-            <!-- create new candidate -->
-            <div class="field p-fluid">
-              <Button
-                label="New candidate"
-                icon="pi pi-user-plus"
-                iconPos="right"
-                @click="newCandidateModalOpen = true"
-              />
-            </div>
-
-            <NewCandidateModal
-              v-if="newCandidateModalOpen"
-              @close="newCandidateModalOpen = false"
-              @selectCandidate="
-                (newCandidate) => {
-                  candidateToDisplay = newCandidate;
-                  newCandidateModalOpen = false;
-                  active = +1;
-                  candidateSearchError = '';
-                }
-              "
-            />
-
-            <Message v-if="candidateSearchError" severity="error" :life="1000">{{
-              candidateSearchError
-            }}</Message>
-
-            <div v-if="candidateToDisplay !== undefined" class="field p-fluid">
-              <CandidateSingleSelectTable
-                :candidates="[candidateToDisplay]"
-                @selectCandidate="
-                  (candidate) =>
-                    candidate === null
-                      ? (candidateSelectedId = candidate)
-                      : (candidateSelectedId = candidate.id)
-                "
-              />
-            </div>
-          </div>
-          <div class="flex justify-end pt-4">
-            <Button
-              label="Next"
-              icon="pi pi-arrow-right"
-              iconPos="right"
-              @click="nextCallback"
-              :disabled="false"
-            />
-          </div>
+          <Footer @next="() => nextCallback" />
         </div>
       </template>
     </StepperPanel>
@@ -591,3 +495,4 @@ const active = ref(0);
     </StepperPanel>
   </Stepper>
 </template>
+./new-candidate/NewCandidateModal.vue

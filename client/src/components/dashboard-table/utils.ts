@@ -1,7 +1,19 @@
-import { FilterMatchMode, FilterOperator } from "primevue/api";
-import { ref } from "vue";
+import { FilterMatchMode, FilterOperator } from 'primevue/api';
+import { ref } from 'vue';
 
 export const filters = ref();
+export const globalFiltersFields = ref([
+  'id',
+  'client',
+  'name',
+  'experienceRange',
+  'contractType',
+  'salaryBudget',
+  'noticePeriodInDays',
+  'numberOfCandidates',
+  'creationDate',
+  'status',
+]);
 
 export const initFilters = () => {
   filters.value = {
