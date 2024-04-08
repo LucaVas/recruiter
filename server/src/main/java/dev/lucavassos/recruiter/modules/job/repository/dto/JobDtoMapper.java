@@ -1,13 +1,11 @@
 package dev.lucavassos.recruiter.modules.job.repository.dto;
 
-import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
+import dev.lucavassos.recruiter.modules.user.repository.dto.RecruiterDto;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,6 +43,7 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 25,
                 job.getClosureBonusPaymentDate(),
                 job.getCvRatePaymentDate(),
+                new RecruiterDto(job.getRecruiter().getId(), job.getRecruiter().getUsername()),
                 job.getCreatedAt()
         );
     }

@@ -1,8 +1,10 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
+import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
+import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -95,6 +97,10 @@ public class Job {
 
     @Column
     private String comments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recuiter_id")
+    private User recruiter;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

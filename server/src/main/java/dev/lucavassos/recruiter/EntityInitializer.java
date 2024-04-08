@@ -168,6 +168,7 @@ public class EntityInitializer {
         ContractType permanentContractType = contractTypeRepository.findByContractTypeName(ContractTypeName.PERMANENT)
                 .orElseThrow(() -> new IllegalStateException("ContractType PERMANENT does not exist"));
         Set<Skill> skillSet = new HashSet<>(skillRepository.findAll());
+        User recruiter = userRepository.findOneByUsername("recruiter").orElseThrow(RuntimeException::new);
 
         Job job1 = Job.builder()
                 .client("Accenture")
@@ -197,6 +198,7 @@ public class EntityInitializer {
                         2024, 12, 31, 0, 0, 0
                 ))
                 .comments("Test comments")
+                .recruiter(recruiter)
                 .build();
 
         Job job2 = Job.builder()
@@ -225,6 +227,7 @@ public class EntityInitializer {
                         2024, 12, 31, 0, 0, 0
                 ))
                 .comments("Test comments")
+                .recruiter(recruiter)
                 .build();
 
         Job job3 = Job.builder()
@@ -252,7 +255,9 @@ public class EntityInitializer {
                         2024, 12, 31, 0, 0, 0
                 ))
                 .comments("Test comments")
+                .recruiter(recruiter)
                 .build();
+
         Job job4 = Job.builder()
                 .client("Infosys")
                 .name("Mainframe developer")
@@ -278,7 +283,9 @@ public class EntityInitializer {
                         2024, 12, 31, 0, 0, 0
                 ))
                 .comments("Test comments")
+                .recruiter(recruiter)
                 .build();
+
         Job job5 = Job.builder()
                 .client("Accenture")
                 .name("Cloud architect")
@@ -306,6 +313,7 @@ public class EntityInitializer {
                 ))
                 .closureBonus("700")
                 .comments("Test comments")
+                .recruiter(recruiter)
                 .build();
 
         jobRepository.save(job1);

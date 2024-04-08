@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.job.repository.dto;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
+import dev.lucavassos.recruiter.modules.user.repository.dto.RecruiterDto;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -27,6 +28,7 @@ public record JobDto(
         Integer numberOfCandidates,
         LocalDateTime closureBonusPaymentDate,
         LocalDateTime cvRatePaymentDate,
+        RecruiterDto recruiter,
         LocalDateTime createdAt
 ) {
 }

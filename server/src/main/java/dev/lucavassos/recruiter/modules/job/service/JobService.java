@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.job.service;
 import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
 import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
@@ -23,6 +24,8 @@ import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
+import dev.lucavassos.recruiter.modules.user.entities.Role;
+import dev.lucavassos.recruiter.modules.user.entities.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import org.apache.coyote.BadRequestException;
@@ -34,6 +37,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,6 +81,8 @@ public class JobService {
                 .findByContractTypeName(request.getContractType())
                 .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.getContractType())));
 
+        User recruiter = getAuthUser();
+
         Job createdJob;
         try {
             createdJob = repository.save(
@@ -97,6 +104,7 @@ public class JobService {
                             .cvRatePaymentDate(request.getCvRatePaymentDate())
                             .closureBonusPaymentDate(request.getClosureBonusPaymentDate())
                             .comments(request.getComments())
+                            .recruiter(recruiter)
                             .build()
             );
         } catch (Exception e) {
@@ -139,6 +147,13 @@ public class JobService {
                         "Job with id [%d] not found.".formatted(id)
                 )
         );
+
+        User recruiter = getAuthUser();
+
+        if (!recruiter.getRoleName().equals(RoleName.ROLE_ADMIN) && job.getRecruiter() != recruiter) {
+            LOG.error("User with id {} is not authorized to modify this job", recruiter.getId());
+            throw new UnauthorizedException("Recruiter is unauthorized to modify this job");
+        }
 
         if (request.client() != null && !request.client().equals(job.getClient())) {
             job.setClient(request.client());
@@ -222,7 +237,19 @@ public class JobService {
 
         LOG.info("Job updated: [{}]", job);
 
-        // TODO: create new entry in history table if needed
+        // Create new entry in history table
+        try {
+            historyRepository.save(
+                    JobHistory.builder()
+                            .status(job.getStatus())
+                            .bonusPayPerCv(job.getBonusPayPerCv())
+                            .closureBonus(job.getClosureBonus())
+                            .job(job)
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new Exception(e.getCause());
+        }
 
 
         return new JobResponse(
@@ -295,14 +322,26 @@ public class JobService {
                     return new ResourceNotFoundException("User not found");
                 }
         );
-//        if (user.getRoles().stream().anyMatch(role -> role.getName() != RoleName.ROLE_ADMIN)) {
-//            LOG.error("User with id {} not found", id);
-//            throw new UnauthorizedException("User cannot perform this action");
-//        }
+
         if (job.getStatus() != JobStatus.ARCHIVED) {
             job.setStatus(JobStatus.ARCHIVED);
             Job jobDeleted = repository.save(job);
             LOG.info("Job {} deleted successfully", jobDeleted.getId());
         }
     }
+
+    private User getAuthUser() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
+                () -> {
+                    LOG.error("User with id {} not found", userPrincipal.getId());
+                    return new ResourceNotFoundException("User not found");
+                }
+        );
+    }
 }
+
+
+

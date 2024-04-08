@@ -4,6 +4,7 @@ import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
+import dev.lucavassos.recruiter.modules.user.repository.dto.RecruiterDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -45,6 +46,7 @@ public class FullJobDtoMapper implements BiFunction<Job, Set<Candidacy>, JobDto>
                 candidacies.size(),
                 job.getClosureBonusPaymentDate(),
                 job.getCvRatePaymentDate(),
+                new RecruiterDto(job.getRecruiter().getId(), job.getRecruiter().getUsername()),
                 job.getCreatedAt()
         );
     }

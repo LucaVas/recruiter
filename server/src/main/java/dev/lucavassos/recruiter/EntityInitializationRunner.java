@@ -14,10 +14,10 @@ public class EntityInitializationRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         entityInitializer.createRoles();
+        entityInitializer.createUsers();
         entityInitializer.createContractTypes();
         entityInitializer.saveSkills();
         entityInitializer.saveJobs();
-        entityInitializer.createUsers();
         entityInitializer.saveCandidates();
     }
 }
