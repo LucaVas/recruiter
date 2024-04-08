@@ -3,10 +3,8 @@ package dev.lucavassos.recruiter.modules.job.service;
 import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
-import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
@@ -25,8 +23,6 @@ import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
-import dev.lucavassos.recruiter.modules.user.entities.Role;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import org.apache.coyote.BadRequestException;
@@ -38,7 +34,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -136,7 +131,7 @@ public class JobService {
     public JobResponse updateJob(UpdateJobRequest request) throws Exception {
 
         boolean changes = false;
-        Long id = request.getId();
+        Long id = request.id();
         LOG.info("Updating job with id {}", id);
 
         Job job = repository.findOneById(id).orElseThrow(
@@ -145,69 +140,69 @@ public class JobService {
                 )
         );
 
-        if (request.getClient() != null && !request.getClient().equals(job.getClient())) {
-            job.setClient(request.getClient());
+        if (request.client() != null && !request.client().equals(job.getClient())) {
+            job.setClient(request.client());
             changes = true;
         }
-        if (request.getName() != null && !request.getName().equals(job.getName())) {
-            job.setName(request.getName());
+        if (request.name() != null && !request.name().equals(job.getName())) {
+            job.setName(request.name());
             changes = true;
         }
-        if (request.getStatus() != null && !request.getStatus().equals(job.getStatus())) {
-            job.setStatus(request.getStatus());
+        if (request.status() != null && !request.status().equals(job.getStatus())) {
+            job.setStatus(request.status());
             changes = true;
         }
-        if (request.getContractType() != null && !request.getContractType().equals(job.getContractType().getContractTypeName())) {
+        if (request.contractType() != null && !request.contractType().contractTypeName().equals(job.getContractType().getContractTypeName())) {
             ContractType contractType = contractTypeRepository
-                    .findByContractTypeName(request.getContractType())
-                    .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.getContractType())));
+                    .findByContractTypeName(request.contractType().contractTypeName())
+                    .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.contractType())));
 
             job.setContractType(contractType);
             changes = true;
         }
-        if (request.getWantedCvs() != null && !request.getWantedCvs().equals(job.getWantedCvs())) {
-            job.setWantedCvs(request.getWantedCvs());
+        if (request.wantedCvs() != null && !request.wantedCvs().equals(job.getWantedCvs())) {
+            job.setWantedCvs(request.wantedCvs());
             changes = true;
         }
-        if (request.getExperienceRangeMin() != null && !request.getExperienceRangeMin().equals(job.getExperienceRangeMin())) {
-            job.setExperienceRangeMin(request.getExperienceRangeMin());
+        if (request.experienceRangeMin() != null && !request.experienceRangeMin().equals(job.getExperienceRangeMin())) {
+            job.setExperienceRangeMin(request.experienceRangeMin());
             changes = true;
         }
-        if (request.getExperienceRangeMax() != null && !request.getExperienceRangeMax().equals(job.getExperienceRangeMax())) {
-            job.setExperienceRangeMax(request.getExperienceRangeMax());
+        if (request.experienceRangeMax() != null && !request.experienceRangeMax().equals(job.getExperienceRangeMax())) {
+            job.setExperienceRangeMax(request.experienceRangeMax());
             changes = true;
         }
-        if (request.getNoticePeriodInDays() != null && !request.getNoticePeriodInDays().equals(job.getNoticePeriodInDays())) {
-            job.setNoticePeriodInDays(request.getNoticePeriodInDays());
+        if (request.noticePeriodInDays() != null && !request.noticePeriodInDays().equals(job.getNoticePeriodInDays())) {
+            job.setNoticePeriodInDays(request.noticePeriodInDays());
             changes = true;
         }
-        if (request.getSalaryBudget() != null && !request.getSalaryBudget().equals(job.getSalaryBudget())) {
-            job.setSalaryBudget(request.getSalaryBudget());
+        if (request.salaryBudget() != null && !request.salaryBudget().equals(job.getSalaryBudget())) {
+            job.setSalaryBudget(request.salaryBudget());
             changes = true;
         }
-        if (request.getCurrency() != null && !request.getCurrency().equals(job.getCurrency())) {
-            job.setCurrency(request.getCurrency());
+        if (request.currency() != null && !request.currency().equals(job.getCurrency())) {
+            job.setCurrency(request.currency());
             changes = true;
         }
-        if (request.getDescription() != null && !request.getDescription().equals(job.getDescription())) {
-            job.setDescription(request.getDescription());
+        if (request.description() != null && !request.description().equals(job.getDescription())) {
+            job.setDescription(request.description());
             changes = true;
         }
-        if (request.getBonusPayPerCv() != null && !request.getBonusPayPerCv().equals(job.getBonusPayPerCv())) {
-            job.setBonusPayPerCv(request.getBonusPayPerCv());
+        if (request.bonusPayPerCv() != null && !request.bonusPayPerCv().equals(job.getBonusPayPerCv())) {
+            job.setBonusPayPerCv(request.bonusPayPerCv());
             changes = true;
         }
-        if (request.getClosureBonus() != null && !request.getClosureBonus().equals(job.getClosureBonus())) {
-            job.setClosureBonus(request.getClosureBonus());
+        if (request.closureBonus() != null && !request.closureBonus().equals(job.getClosureBonus())) {
+            job.setClosureBonus(request.closureBonus());
             changes = true;
         }
-        if (request.getComments() != null && !request.getComments().equals(job.getComments())) {
-            job.setComments(request.getComments());
+        if (request.comments() != null && !request.comments().equals(job.getComments())) {
+            job.setComments(request.comments());
             changes = true;
         }
-        if (request.getSkills() != null) {
+        if (request.skills() != null) {
             Set<Skill> skills = new HashSet<>(skillRepository
-                    .findAllById(request.getSkills().stream().map(RawSkillDto::id).collect(Collectors.toSet())));
+                    .findAllById(request.skills().stream().map(RawSkillDto::id).collect(Collectors.toSet())));
             if (!skills.equals(job.getSkills())) {
                 job.setSkills(skills);
                 changes = true;

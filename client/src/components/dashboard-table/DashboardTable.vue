@@ -16,7 +16,7 @@ import {
   getContractType,
   getClientIcon,
   formatDate,
-  globalFiltersFields
+  globalFiltersFields,
 } from './utils';
 import { getSkills } from './functions';
 import { useToast } from 'primevue/usetoast';

@@ -50,6 +50,22 @@ public class DefaultExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiError> handleException(UnauthorizedException e,
+                                                    HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                e.getMessage(),
+                HttpStatus.UNAUTHORIZED.value(),
+                LocalDateTime.now()
+        );
+
+        LOG.error("Unauthorized exception: {}", apiError);
+
+
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleException(Exception e,
                                                     HttpServletRequest request) {

@@ -2,6 +2,7 @@ package dev.lucavassos.recruiter.modules.job.controller;
 
 import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
+import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.service.JobService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,6 +33,13 @@ public class JobController {
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }
 
+    @PutMapping("/jobs/{jobId}")
+    public ResponseEntity<JobResponse> updateJob(
+            @RequestBody UpdateJobRequest request) throws Exception {
+        LOG.trace("Received request to update job");
+        return new ResponseEntity<>(service.updateJob(request), HttpStatus.CREATED);
+    }
+
     @DeleteMapping("/jobs/{jobId}")
     public ResponseEntity<?> deleteJob(@PathVariable("jobId") Long id) throws Exception {
         LOG.info("Received request to delete job: {}", id);
@@ -43,5 +51,14 @@ public class JobController {
     public ResponseEntity<List<JobDto>> getAllJobs() {
         LOG.info("Received request for all jobs.");
         return new ResponseEntity<>(service.getAllJobs(), HttpStatus.OK);
+    }
+
+    @GetMapping("/jobs/{jobId}")
+    public ResponseEntity<JobDto> getJob(@PathVariable("jobId") Long id) throws Exception {
+        LOG.info("Received request to get details for job: {}", id);
+        JobDto job = service.getJobById(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(job);
     }
 }

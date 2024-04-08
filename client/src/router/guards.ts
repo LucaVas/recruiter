@@ -1,7 +1,7 @@
 import { isLoggedIn, role } from '@/stores/user';
 
 export const authenticate = () => {
-  if (!isLoggedIn) return { name: 'Login' };
+  if (!isLoggedIn.value) return { name: 'Login' };
 
   return true;
 };

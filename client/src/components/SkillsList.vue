@@ -23,12 +23,11 @@ onMounted(async () => {
 });
 
 const emit = defineEmits<{
-  (e: 'updateSelection', skills: RawSkillDto[]): void
-}>()
+  (e: 'updateSelection', skills: RawSkillDto[]): void;
+}>();
 function updateSelection() {
-  if (selectedSkills.value) emit('updateSelection', selectedSkills.value)
+  if (selectedSkills.value) emit('updateSelection', selectedSkills.value);
 }
-
 </script>
 
 <template>

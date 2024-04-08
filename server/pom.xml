@@ -117,6 +117,7 @@
 	<build>
 		<plugins>
 			<plugin>
+				<!-- necessary to create an executable jar -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>

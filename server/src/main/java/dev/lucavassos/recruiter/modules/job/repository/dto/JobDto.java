@@ -21,7 +21,7 @@ public record JobDto(
         Double salaryBudget,
         Currency currency,
         String description,
-        Double bonusPayPerCV,
+        Double bonusPayPerCv,
         String closureBonus,
         String comments,
         Integer numberOfCandidates,

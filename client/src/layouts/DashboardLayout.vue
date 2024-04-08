@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import StackedLayout from './StackedLayout.vue';
-import { onBeforeMount, ref } from 'vue';
-import { username, role, getMe } from '../stores/user/index';
+import { onBeforeMount, ref, onMounted } from 'vue';
+import { username, role, getMe, isLoggedIn } from '../stores/user/index';
 import { getMenuItems, getRoleTag } from './utils';
 import type { RoleName } from '@/stores/user/types';
 
@@ -71,13 +71,10 @@ const menuItems = ref<MenuItem[]>([
 
 const roleTag = ref('');
 const roleMenuItems = ref<MenuItem[]>();
-onBeforeMount(async () => {
+onMounted(async () => {
   if (!role.value) {
-    await getMe();
-    if (role.value) {
-      roleTag.value = getRoleTag(role.value);
-      roleMenuItems.value = getMenuItems(role.value, menuItems.value);
-    }
+    roleTag.value = getRoleTag(role.value);
+    roleMenuItems.value = getMenuItems(role.value, menuItems.value);
   }
 });
 </script>

@@ -32,6 +32,11 @@ const router = createRouter({
           name: 'UsersView',
           component: () => import('../views/UsersView.vue'),
         },
+        {
+          path: '/jobs/:jobId',
+          name: 'UpdateJob',
+          component: () => import('../views/update-job/UpdateJob.vue'),
+        },
         //     // {
         //     //   path: '/playgrounds',
         //     //   name: 'Playgrounds',

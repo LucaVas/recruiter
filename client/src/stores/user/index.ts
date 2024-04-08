@@ -1,4 +1,4 @@
-import axios, { type AxiosResponse } from 'axios';
+import { type AxiosResponse } from 'axios';
 import type {
   UserSignupForm,
   UserLoginForm,
@@ -15,22 +15,11 @@ import {
   getStoredAccessToken,
   storeAccessToken,
 } from '@/utils/auth';
-import { ApiError } from '@/utils/types';
+import axiosApi from '../api';
 
-const authorizedHeaders = {
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${getStoredAccessToken(localStorage)}`,
-};
 
-const unauthorizedHeaders = {
-  'Content-Type': 'application/json',
-};
-
-const axiosApi = axios.create({
-  baseURL: `http://localhost:8080/api/v1`,
-  timeout: 1000,
-});
-
+// consts
+const api = axiosApi();
 const authToken = ref(getStoredAccessToken(localStorage));
 
 export const userId = ref();
@@ -44,35 +33,17 @@ export const isAdmin = computed(() =>
 
 // functions
 export async function signup(form: UserSignupForm): Promise<AxiosResponse<{ id: number }>> {
-  try {
-    console.log(form);
-    const { data } = await axiosApi.post(`/auth/signup`, form, { headers: unauthorizedHeaders });
-    return data;
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      throw new ApiError(err.response?.data.message);
-    } else {
-      throw new ApiError('An unexpected error occurred');
-    }
-  }
+  const { data } = await api.post(`/auth/signup`, form);
+  return data;
 }
 
 export async function login(form: UserLoginForm): Promise<void> {
-  try {
-    const res: AxiosResponse<AuthUser> = await axiosApi.post(`/auth/login`, form, {
-      headers: authorizedHeaders,
-    });
-    userId.value = res.data.userId;
-    username.value = res.data.username;
-    authToken.value = res.data.token;
-    storeAccessToken(localStorage, authToken.value);
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      throw new ApiError(err.response?.data.message);
-    } else {
-      throw new ApiError('An unexpected error occurred');
-    }
-  }
+  const res: AxiosResponse<AuthUser> = await api.post(`/auth/login`, form);
+  userId.value = res.data.userId;
+  username.value = res.data.username;
+  authToken.value = res.data.token;
+  storeAccessToken(localStorage, authToken.value);
+  await getMe();
 }
 
 export function logout() {
@@ -81,43 +52,17 @@ export function logout() {
 }
 
 export async function approveUser(approvalRequest: ApprovalRequest): Promise<void> {
-  try {
-    await axiosApi.post(`/users/approvals`, approvalRequest, { headers: authorizedHeaders });
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      throw new ApiError(err.response?.data.message);
-    } else {
-      throw new ApiError('An unexpected error occurred');
-    }
-  }
+  await api.post(`/users/approvals`, approvalRequest);
 }
 
 export async function getAllUsers(): Promise<UserDto[]> {
-  try {
-    const { data } = await axiosApi.get('/users', { headers: authorizedHeaders });
-    return data;
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      throw new ApiError(err.response?.data.message);
-    } else {
-      throw new ApiError('An unexpected error occurred');
-    }
-  }
+  const { data } = await api.get('/users');
+  return data;
 }
 
 export async function getMe(): Promise<void> {
-  try {
-    const { data } = (await axiosApi.get('/auth/me', {
-      headers: authorizedHeaders,
-    })) as AxiosResponse<AuthUserInfoDto>;
-    userId.value = data.id;
-    username.value = data.username;
-    role.value = data.roleName;
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      throw new ApiError(err.response?.data.message);
-    } else {
-      throw new ApiError('An unexpected error occurred');
-    }
-  }
+  const { data } = (await api.get('/auth/me')) as AxiosResponse<AuthUserInfoDto>;
+  userId.value = data.id;
+  username.value = data.username;
+  role.value = data.roleName;
 }

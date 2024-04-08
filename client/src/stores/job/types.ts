@@ -6,7 +6,7 @@ export type JobDto = {
   name: string;
   status: JobStatus;
   wantedCvs: number;
-  skills: Set<SkillDto>;
+  skills: SkillDto[];
   contractType: ContractTypeDto;
   experienceRangeMin: number;
   experienceRangeMax: number;
