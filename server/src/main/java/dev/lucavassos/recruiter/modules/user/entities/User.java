@@ -20,7 +20,7 @@ import java.util.*;
 @Entity
 @Builder
 @Data
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -79,9 +79,6 @@ public class User {
     @OneToMany(mappedBy = "recruiter")
     private Set<Candidacy> candidacies = new HashSet<>();
 
-    @OneToMany(mappedBy = "recruiter")
-    private Set<Job> jobs = new HashSet<>();
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -91,9 +88,15 @@ public class User {
     public RoleName getRoleName() {
         return this.getRoles().stream()
                 .findFirst()
-                .map(role -> getRoleName())
+                .map(Role::getName)
                 .orElseThrow(
                         () -> new UnauthorizedException("No role assigned to user.")
                 );
+    }
+
+    public boolean isAdmin() {
+        return this.getRoles().stream()
+                .findFirst()
+                .map(Role::getName).stream().anyMatch(role -> role.equals(RoleName.ROLE_ADMIN));
     }
 }

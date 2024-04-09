@@ -5,8 +5,9 @@ import { ref, onMounted } from 'vue';
 import SkillsDropdown from './SkillsDropdown.vue';
 import type { SkillDto } from '../../stores/skill/types';
 
-const { skills } = defineProps<{
+const { skills, isArchived } = defineProps<{
   skills: SkillDto[];
+  isArchived: boolean;
 }>();
 const updatedSkills = ref<SkillDto[]>([]);
 
@@ -45,10 +46,11 @@ onMounted(() => {
             text
             size="small"
             @click="$emit('removeSkill', data)"
+            :disabled="isArchived"
           />
         </template>
       </Column>
     </DataTable>
-    <SkillsDropdown @addSkill="(skill) => updatedSkills.push(skill)" />
+    <SkillsDropdown :disabled="isArchived" @addSkill="(skill) => updatedSkills.push(skill)" />
   </div>
 </template>

@@ -66,7 +66,7 @@ public class DefaultExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class, DatabaseException.class})
     public ResponseEntity<ApiError> handleException(Exception e,
                                                     HttpServletRequest request) {
         ApiError apiError = new ApiError(

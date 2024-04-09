@@ -1,4 +1,4 @@
-import type { JobDto, JobResponse, NewJob } from './types';
+import type { JobDto, JobResponse, JobStatus, NewJob } from './types';
 import axiosApi from '../api';
 
 const api = axiosApi();
@@ -14,7 +14,10 @@ export async function addJob(newJob: NewJob): Promise<JobResponse> {
 export async function updateJob(updatedJob: JobDto): Promise<JobResponse> {
   const { data } = await api.put(`/jobs/${updatedJob.id}`, updatedJob);
   console.log(data);
-  return data
+  return data;
+}
+export async function changeJobStatus(jobId: number, newStatus: JobStatus): Promise<void> {
+  await api.post(`/jobs/status/${jobId}`, { status: newStatus });
 }
 export async function deleteJob(id: number): Promise<void> {
   await api.delete(`/jobs/${id}`);

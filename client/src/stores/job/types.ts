@@ -1,4 +1,5 @@
 import type { SkillDto } from '../skill/types';
+import type { RecruiterDto } from '../user/types';
 
 export type JobDto = {
   id: number;
@@ -20,6 +21,7 @@ export type JobDto = {
   numberOfCandidates: number;
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
+  recruiter: RecruiterDto;
   createdAt: string;
 };
 

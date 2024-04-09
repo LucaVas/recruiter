@@ -43,7 +43,6 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 25,
                 job.getClosureBonusPaymentDate(),
                 job.getCvRatePaymentDate(),
-                new RecruiterDto(job.getRecruiter().getId(), job.getRecruiter().getUsername()),
                 job.getCreatedAt()
         );
     }

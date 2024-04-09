@@ -7,8 +7,9 @@ import type { JobDto } from '../../stores/job/types';
 import { ref, onMounted } from 'vue';
 import { jobStatuses, contractTypes } from './utils';
 
-const { jobDetails } = defineProps<{
+const { jobDetails, isArchived } = defineProps<{
   jobDetails: JobDto;
+  isArchived: boolean
 }>();
 const updatedJobDetails = ref<Partial<JobDto>>({
   client: '',
@@ -29,7 +30,11 @@ onMounted(() => {
         <InputGroupAddon>
           <i class="pi pi-user"></i>
         </InputGroupAddon>
-        <InputText id="clientName" v-model="updatedJobDetails.client" />
+        <InputText
+          id="clientName"
+          v-model="updatedJobDetails.client"
+          :disabled="isArchived"
+        />
       </InputGroup>
     </div>
 
@@ -37,7 +42,11 @@ onMounted(() => {
       <label for="jobName">Job Name</label>
       <InputGroup>
         <InputGroupAddon> <i class="pi pi-briefcase"></i></InputGroupAddon>
-        <InputText id="jobName" v-model="updatedJobDetails.name" />
+        <InputText
+          id="jobName"
+          v-model="updatedJobDetails.name"
+          :disabled="isArchived"
+        />
       </InputGroup>
     </div>
 
@@ -52,7 +61,7 @@ onMounted(() => {
             optionValue="value"
             id="jobStatus"
             class="w-full"
-            @update:modelValue="(value) => console.log(value.value)"
+            :disabled="isArchived"
           />
         </InputGroup>
       </div>
@@ -66,6 +75,7 @@ onMounted(() => {
             optionLabel="name"
             optionValue="value"
             class="w-full"
+            :disabled="isArchived"
           />
         </InputGroup>
       </div>

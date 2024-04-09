@@ -1,15 +1,13 @@
 package dev.lucavassos.recruiter.modules.job.service;
 
 import dev.lucavassos.recruiter.auth.UserPrincipal;
+import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
-import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
-import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
-import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
-import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
+import dev.lucavassos.recruiter.modules.job.domain.*;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
@@ -24,10 +22,10 @@ import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
-import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.entities.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.utils.Constants;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +36,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -108,25 +105,12 @@ public class JobService {
                             .build()
             );
         } catch (Exception e) {
-            throw new Exception(e.getCause());
+            LOG.error("Database error while updating job: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
         }
-
 
         LOG.info("New job created: [{}]", createdJob);
-
-        // Create new entry in history table
-        try {
-            historyRepository.save(
-                    JobHistory.builder()
-                            .status(createdJob.getStatus())
-                            .bonusPayPerCv(createdJob.getBonusPayPerCv())
-                            .closureBonus(createdJob.getClosureBonus())
-                            .job(createdJob)
-                            .build()
-            );
-        } catch (Exception e) {
-            throw new Exception(e.getCause());
-        }
+        saveJobInHistoryTable(createdJob);
 
         return new JobResponse(
                 createdJob.getId(),
@@ -149,11 +133,11 @@ public class JobService {
         );
 
         User recruiter = getAuthUser();
-
-        if (!recruiter.getRoleName().equals(RoleName.ROLE_ADMIN) && job.getRecruiter() != recruiter) {
+        if (isUserAuthorized(recruiter, job)) {
             LOG.error("User with id {} is not authorized to modify this job", recruiter.getId());
             throw new UnauthorizedException("Recruiter is unauthorized to modify this job");
         }
+
 
         if (request.client() != null && !request.client().equals(job.getClient())) {
             job.setClient(request.client());
@@ -228,29 +212,17 @@ public class JobService {
             throw new RequestValidationException("No updates were made to data.");
         }
 
+        job.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
+
         try {
             repository.save(job);
         } catch (Exception e) {
-            throw new Exception(e.getCause());
+            LOG.error("Database error while updating job: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
         }
-
 
         LOG.info("Job updated: [{}]", job);
-
-        // Create new entry in history table
-        try {
-            historyRepository.save(
-                    JobHistory.builder()
-                            .status(job.getStatus())
-                            .bonusPayPerCv(job.getBonusPayPerCv())
-                            .closureBonus(job.getClosureBonus())
-                            .job(job)
-                            .build()
-            );
-        } catch (Exception e) {
-            throw new Exception(e.getCause());
-        }
-
+        saveJobInHistoryTable(job);
 
         return new JobResponse(
                 job.getId(),
@@ -267,19 +239,28 @@ public class JobService {
                 )
         );
 
+        User recruiter = getAuthUser();
+        if (!isUserAuthorized(recruiter, job)) {
+            LOG.error("User with ID {} is not authorized to modify the job of recruiter with ID {}",
+                    recruiter.getId(), job.getRecruiter().getId());
+            throw new UnauthorizedException("Recruiter is unauthorized to modify this job");
+        }
+
         return jobDtoMapper.apply(job);
     }
 
     @Transactional
-    public void changeJobStatus(Long id, JobStatus status) {
+    public void changeJobStatus(Long id, ChangeJobStatusRequest request) {
         Job job = repository.findOneById(id).orElseThrow(
                 () -> new ResourceNotFoundException(
                         "Job with id [%d] not found".formatted(id)
                 )
         );
 
-        if (status != null && job.getStatus() != status && job.getStatus() != JobStatus.ARCHIVED) {
-            job.setStatus(status);
+        if (request.status() != null && job.getStatus() != request.status() && job.getStatus() != JobStatus.ARCHIVED) {
+            job.setStatus(request.status());
+            job.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
+            saveJobInHistoryTable(job);
         }
 
         repository.save(job);
@@ -313,20 +294,19 @@ public class JobService {
                     return new ResourceNotFoundException("Job with id %d not found".formatted(id));
                 }
         );
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        User user = userRepository.findOneById(userPrincipal.getId()).orElseThrow(
-                () -> {
-                    LOG.error("User with id {} not found", id);
-                    return new ResourceNotFoundException("User not found");
-                }
-        );
+
+        User user = getAuthUser();
+        if (!user.isAdmin()) {
+            LOG.error("User with id {} is not authorized to delete this job", user.getId());
+            throw new UnauthorizedException("User is unauthorized to delete this job");
+        }
 
         if (job.getStatus() != JobStatus.ARCHIVED) {
             job.setStatus(JobStatus.ARCHIVED);
+            job.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
             Job jobDeleted = repository.save(job);
             LOG.info("Job {} deleted successfully", jobDeleted.getId());
+            saveJobInHistoryTable(job);
         }
     }
 
@@ -340,6 +320,29 @@ public class JobService {
                     return new ResourceNotFoundException("User not found");
                 }
         );
+    }
+
+    private boolean isUserAuthorized(User recruiter, Job job) {
+        return recruiter.getRoleName() == RoleName.ROLE_ADMIN ||
+                job.getRecruiter().getId().equals(recruiter.getId());
+    }
+
+    private void saveJobInHistoryTable(Job job) {
+        try {
+            // Create new entry in history table
+            historyRepository.save(
+                    JobHistory.builder()
+                            .status(job.getStatus())
+                            .bonusPayPerCv(job.getBonusPayPerCv())
+                            .closureBonus(job.getClosureBonus())
+                            .job(job)
+                            .build()
+            );
+        } catch (Exception e) {
+            LOG.error("Error while saving job in history table: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
+
     }
 }
 

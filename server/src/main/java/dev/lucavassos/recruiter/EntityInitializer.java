@@ -169,6 +169,7 @@ public class EntityInitializer {
                 .orElseThrow(() -> new IllegalStateException("ContractType PERMANENT does not exist"));
         Set<Skill> skillSet = new HashSet<>(skillRepository.findAll());
         User recruiter = userRepository.findOneByUsername("recruiter").orElseThrow(RuntimeException::new);
+        User recruiter2 = userRepository.findOneByUsername("recruiter2").orElseThrow(RuntimeException::new);
 
         Job job1 = Job.builder()
                 .client("Accenture")
@@ -198,7 +199,7 @@ public class EntityInitializer {
                         2024, 12, 31, 0, 0, 0
                 ))
                 .comments("Test comments")
-                .recruiter(recruiter)
+                .recruiter(recruiter2)
                 .build();
 
         Job job2 = Job.builder()
@@ -381,6 +382,16 @@ public class EntityInitializer {
                 .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_RECRUITER).collect(Collectors.toSet()))
                 .build();
 
+        User recruiter2 = User.builder()
+                .username("recruiter2")
+                .email("recruiter2@mail.com")
+                .password(encoder.encode("Password123"))
+                .mobile("1234567892")
+                .city("Test city 2")
+                .country("India")
+                .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_RECRUITER).collect(Collectors.toSet()))
+                .build();
+
         User admin = User.builder()
                 .username("admin")
                 .email("admin@mail.com")
@@ -392,6 +403,7 @@ public class EntityInitializer {
                 .build();
 
         userRepository.save(recruiter);
+        userRepository.save(recruiter2);
         userRepository.save(admin);
     }
 }

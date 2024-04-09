@@ -99,7 +99,7 @@ public class Job {
     private String comments;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recuiter_id")
+    @JoinColumn(name = "recruiter_id")
     private User recruiter;
 
     @CreationTimestamp

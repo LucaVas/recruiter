@@ -14,6 +14,10 @@ onMounted(async () => {
   loading.value = false;
 });
 
+const { disabled } = defineProps<{
+  disabled: boolean;
+}>();
+
 defineEmits<{
   (e: 'addSkill', skill: SkillDto): void;
 }>();
@@ -30,6 +34,7 @@ defineEmits<{
       optionLabel="name"
       placeholder="Select a Skill"
       class="w-full"
+      :disabled="disabled"
     >
       <template #value="slotProps">
         <div v-if="slotProps.value" class="align-items-center flex">

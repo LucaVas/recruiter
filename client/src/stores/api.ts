@@ -1,7 +1,6 @@
 import { getStoredAccessToken } from '@/utils/auth';
 import { ApiError } from '@/utils/types';
 import axios, { type RawAxiosRequestHeaders } from 'axios';
-import { logout } from './user';
 
 export default () => {
   let headers: RawAxiosRequestHeaders = {
@@ -25,7 +24,9 @@ export default () => {
     },
     (error) => {
       if (axios.isAxiosError(error)) {
-        throw new ApiError(error.response?.data.message);
+        const message = error.response?.data.message;
+        const statusCode = error.response?.data.statusCode;
+        throw new ApiError(message, statusCode);
       }
       return Promise.reject(error);
     }
@@ -40,16 +41,13 @@ export default () => {
     },
     (error) => {
       if (axios.isAxiosError(error)) {
-        // if (error.response?.status === 401) {
-        //   console.log('Error');
-        //   // logout();
-        //   // window.location.href = '/login';
-        // }
-        throw new ApiError(error.response?.data.message);
+        const message = error.response?.data.message;
+        const statusCode = error.response?.status;
+        throw new ApiError(message, statusCode);
       } else if (error.response && error.response.data) {
-        throw new ApiError(error.response.data);
+        throw new ApiError(error.response.data, error.response.statusCode);
       } else {
-        throw new ApiError('An unexpected error occurred');
+        throw new ApiError('An unexpected error occurred', 500);
       }
     }
   );

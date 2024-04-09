@@ -28,7 +28,6 @@ public record JobDto(
         Integer numberOfCandidates,
         LocalDateTime closureBonusPaymentDate,
         LocalDateTime cvRatePaymentDate,
-        RecruiterDto recruiter,
         LocalDateTime createdAt
 ) {
 }

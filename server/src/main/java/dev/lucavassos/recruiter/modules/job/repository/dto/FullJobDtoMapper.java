@@ -46,7 +46,6 @@ public class FullJobDtoMapper implements BiFunction<Job, Set<Candidacy>, JobDto>
                 candidacies.size(),
                 job.getClosureBonusPaymentDate(),
                 job.getCvRatePaymentDate(),
-                new RecruiterDto(job.getRecruiter().getId(), job.getRecruiter().getUsername()),
                 job.getCreatedAt()
         );
     }

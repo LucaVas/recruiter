@@ -7,8 +7,9 @@ import Textarea from 'primevue/textarea';
 import type { JobDto, Currency } from '../../stores/job/types';
 import { ref, onMounted } from 'vue';
 
-const { jobDetails } = defineProps<{
+const { jobDetails, isArchived } = defineProps<{
   jobDetails: JobDto;
+  isArchived: boolean;
 }>();
 const updatedJobDetails = ref<Partial<JobDto>>({
   wantedCvs: 0,
@@ -35,7 +36,12 @@ onMounted(() => {
           <InputGroupAddon>
             <i class="pi pi-file" />
           </InputGroupAddon>
-          <InputNumber id="wantedCvs" v-model="updatedJobDetails.wantedCvs" required />
+          <InputNumber
+            id="wantedCvs"
+            v-model="updatedJobDetails.wantedCvs"
+            required
+            :disabled="isArchived"
+          />
         </InputGroup>
       </div>
       <div class="flex w-full flex-col gap-2">
@@ -48,6 +54,7 @@ onMounted(() => {
             id="noticePeriodInDays"
             v-model="updatedJobDetails.noticePeriodInDays"
             required
+            :disabled="isArchived"
           />
           <InputGroupAddon class="min-w-fit">days</InputGroupAddon>
         </InputGroup>
@@ -63,6 +70,7 @@ onMounted(() => {
             <InputNumber
               id="experienceRangeMin"
               v-model="updatedJobDetails.experienceRangeMin"
+              :disabled="isArchived"
               required
             />
             <InputGroupAddon class="min-w-fit"> Years </InputGroupAddon>
@@ -74,6 +82,7 @@ onMounted(() => {
             <InputNumber
               id="experienceRangeMax"
               v-model="updatedJobDetails.experienceRangeMax"
+              :disabled="isArchived"
               required
             />
             <InputGroupAddon class="min-w-fit"> Years </InputGroupAddon>
@@ -92,6 +101,7 @@ onMounted(() => {
           class="w-full"
           id="salaryBudget"
           v-model="updatedJobDetails.salaryBudget"
+          :disabled="isArchived"
           required
         />
 
@@ -102,6 +112,7 @@ onMounted(() => {
           dropdown-icon="pi pi-angle-down"
           class="min-w-40"
           required
+          :disabled="isArchived"
         />
       </InputGroup>
     </div>
@@ -117,6 +128,7 @@ onMounted(() => {
         placeholder="Tell us what is the job about..."
         style="resize: none"
         required
+        :disabled="isArchived"
       />
     </div>
 
@@ -127,7 +139,7 @@ onMounted(() => {
           <InputGroupAddon>
             <i class="pi pi-wallet" />
           </InputGroupAddon>
-          <InputNumber id="bonusPayPerCv" v-model="updatedJobDetails.bonusPayPerCv" required />
+          <InputNumber id="bonusPayPerCv" v-model="updatedJobDetails.bonusPayPerCv" required :disabled="isArchived" />
         </InputGroup>
       </div>
 
@@ -137,7 +149,7 @@ onMounted(() => {
           <InputGroupAddon>
             <i class="pi pi-money-bill" />
           </InputGroupAddon>
-          <InputText id="closureBonus" v-model="updatedJobDetails.closureBonus" required />
+          <InputText id="closureBonus" v-model="updatedJobDetails.closureBonus" required :disabled="isArchived" />
         </InputGroup>
       </div>
     </div>

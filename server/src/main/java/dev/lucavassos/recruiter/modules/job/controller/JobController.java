@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.job.controller;
 
+import dev.lucavassos.recruiter.modules.job.domain.ChangeJobStatusRequest;
 import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
@@ -38,6 +39,15 @@ public class JobController {
             @RequestBody UpdateJobRequest request) throws Exception {
         LOG.trace("Received request to update job");
         return new ResponseEntity<>(service.updateJob(request), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/jobs/status/{jobId}")
+    public ResponseEntity<?> changeJobStatus(
+            @PathVariable("jobId") Long id,
+            @RequestBody ChangeJobStatusRequest request) throws Exception {
+        LOG.info("Received request to change job status: {}", request);
+        service.changeJobStatus(id, request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/jobs/{jobId}")
