@@ -239,13 +239,6 @@ public class JobService {
                 )
         );
 
-        User recruiter = getAuthUser();
-        if (!isUserAuthorized(recruiter, job)) {
-            LOG.error("User with ID {} is not authorized to modify the job of recruiter with ID {}",
-                    recruiter.getId(), job.getRecruiter().getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to modify this job");
-        }
-
         return jobDtoMapper.apply(job);
     }
 

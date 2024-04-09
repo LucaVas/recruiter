@@ -22,9 +22,9 @@ const router = createRouter({
           component: () => import('../views/NewJob.vue'),
         },
         {
-          path: '/candidacies/job=:jobId',
+          path: '/candidacies/job=:id',
           name: 'NewCandidacy',
-          component: () => import('../views/new-candidacy/NewCandidacy.vue'),
+          component: () => import('../views/candidacy/NewCandidacy.vue'),
         },
         {
           path: '/users',

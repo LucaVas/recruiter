@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
 import type { JobStatus } from '@/stores/job/types';
+import { useRouter } from 'vue-router';
 
-const { status } = defineProps<{
+const router = useRouter();
+const { id, status } = defineProps<{
+  id: number;
   status: JobStatus;
 }>();
 </script>
@@ -15,7 +18,7 @@ const { status } = defineProps<{
       size="small"
       label="Submit Candidacy"
       v-if="status !== 'ARCHIVED'"
-      @click="null"
+      @click="router.push({ name: 'NewCandidacy', params: { id: id } })"
     />
     <Button
       rounded

@@ -232,7 +232,7 @@ onMounted(async () => {
         </Dropdown>
       </template>
     </Column>
-    <Column field="action" header="" class="min-w-10">
+    <Column field="action" header="" class="min-w-fit">
       <template #body="{ data }">
         <ActionButtonsColumn
           :data="data"

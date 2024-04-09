@@ -1,24 +1,24 @@
 <script setup lang="ts">
 import CandidateSection from '@/components/candidacy/candidate/CandidateSection.vue';
+import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast';
-import Divider from 'primevue/divider';
 import { onMounted, ref } from 'vue';
-import { getJobDetails } from '@/stores/job';
+import { getJob } from '@/stores/job';
 import { useRoute, useRouter } from 'vue-router';
-import { getSeverity, getStatusIcon, formatStatus } from '@/components/update-job/utils';
-import type { JobStatus } from '@/stores/job/types';
 import { submitCandidacy } from '@/stores/candidate';
 import { ApiError } from '../../utils/types';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
 import FilesUploader from '@/components/candidacy/FilesUploader.vue';
 import { formToNewCandidate } from './index';
+import type { JobDto } from '../../stores/job/types';
+import Header from '@/components/candidacy/Header.vue';
 
 const router = useRouter();
-const route = useRoute();
-const jobId = ref(route.params.jobId);
+const jobId = ref<number>();
 const toast = useToast();
+const headerModalOpen = ref(false);
 
 const newCandidacyError = ref('');
 const showError = (content: string) => {
@@ -27,11 +27,7 @@ const showError = (content: string) => {
 const showSuccess = (content: string) => {
   toast.add({ severity: 'success', summary: 'Success', detail: content, life: 3000 });
 };
-const jobDetails = ref({
-  name: '',
-  client: '',
-  status: 'OPEN' as JobStatus,
-});
+const job = ref<JobDto>();
 
 // candidacy details
 const candidacyDetails = ref({
@@ -66,29 +62,39 @@ async function submit() {
 }
 
 onMounted(async () => {
-  const job = await getJobDetails(Number(jobId.value));
-  jobDetails.value = {
-    name: job.name,
-    client: job.client,
-    status: job.status,
-  };
+  const route = useRoute();
+  jobId.value = Number(route.params.id);
+  job.value = await getJob(jobId.value);
 });
 </script>
 <template>
   <Toast />
   <div class="flex w-full flex-col gap-8 pb-6">
     <div class="flex h-full w-full flex-col gap-6">
-      <!-- Job information -->
-      <div class="flex w-full items-center gap-2">
-        <Tag
-          :icon="getStatusIcon(jobDetails.status)"
-          :severity="getSeverity(jobDetails.status)"
-          class="h-10 min-w-fit px-4"
-          :value="formatStatus(jobDetails.status)"
+      <div v-if="job">
+        <Header
+          :status="job.status"
+          :client="job.client"
+          :name="job.name"
+          @openModal="headerModalOpen = true"
         />
-        <p>{{ jobDetails.name }} ({{ jobDetails.client }})</p>
+        <CandidacyHiringDetailsModal
+          :visible="headerModalOpen"
+          @close="headerModalOpen = false"
+          :contractType="job.contractType.contractTypeName"
+          :wantedCvs="job.wantedCvs"
+          :candidates="job.numberOfCandidates"
+          :experienceRangeMin="job.experienceRangeMin"
+          :experienceRangeMax="job.experienceRangeMax"
+          :noticePeriodInDays="job.noticePeriodInDays"
+          :salaryBudget="job.salaryBudget"
+          :currency="job.currency"
+          :bonusPayPerCv="job.bonusPayPerCv"
+          :closureBonus="job.closureBonus"
+          :closureBonusPaymentDate="job.closureBonusPaymentDate"
+          :cvRatePaymentDate="job.cvRatePaymentDate"
+        />
       </div>
-      <Divider />
 
       <CandidateSection
         @selectCandidate="(candidateId) => (candidateSelectedId = candidateId)"
@@ -127,7 +133,7 @@ onMounted(async () => {
 
     <div class="flex w-full justify-end">
       <Button
-        v-if="jobDetails.status !== 'ARCHIVED' && !candidateSubmitted"
+        v-if="job?.status !== 'ARCHIVED' && !candidateSubmitted"
         label="Submit"
         size="small"
         @click="submit()"

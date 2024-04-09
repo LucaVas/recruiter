@@ -60,7 +60,7 @@ onMounted(async () => {
       :closureBonusPaymentDate="job.closureBonusPaymentDate"
       :cvRatePaymentDate="job.cvRatePaymentDate"
     />
-    <JobButtons @openModal="modalOpen = true" :status="job.status" />
+    <JobButtons @openModal="modalOpen = true" :id="job.id" :status="job.status" />
     <JobDescription :description="job.description" />
     <JobSkills :skills="job.skills" />
   </div>
