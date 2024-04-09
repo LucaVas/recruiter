@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
-import NewCandidateModal from '../../../new-candidate/NewCandidateModal.vue';
+import NewCandidateModal from './new-candidate/NewCandidateModal.vue';
 import { ref } from 'vue';
 import type { CandidateDto } from '@/stores/candidate/types';
 
@@ -19,12 +19,12 @@ function prePass(newCandidate: CandidateDto) {
 
 <template>
   <div>
-    <div class="text-lg font-semibold">Add a new candidate</div>
     <div class="field p-fluid">
       <Button
         label="New candidate"
         icon="pi pi-user-plus"
         iconPos="right"
+        outlined
         @click="newCandidateModalOpen = true"
       />
     </div>
@@ -36,4 +36,3 @@ function prePass(newCandidate: CandidateDto) {
     />
   </div>
 </template>
-./new-candidate/NewCandidateModal.vue

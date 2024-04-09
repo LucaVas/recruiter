@@ -4,7 +4,6 @@ import TieredMenu from 'primevue/tieredmenu';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import type { JobStatus } from '@/stores/job/types';
-import { formatStatus } from './utils';
 import { formatDate } from '@/utils/dateUtils';
 import { ref } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';
@@ -13,7 +12,7 @@ import { deleteJob, changeJobStatus } from '@/stores/job';
 import { ApiError } from '../../utils/types';
 import DeleteJobModal from '../dashboard-table/DeleteJobModal.vue';
 import { useRouter } from 'vue-router';
-import { getSeverity, getStatusIcon } from './utils';
+import { getSeverity, getStatusIcon, formatStatus } from './utils';
 
 const router = useRouter();
 

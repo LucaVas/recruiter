@@ -28,11 +28,11 @@ public class CandidateController {
                 .body(response);
     }
 
-    @GetMapping("/candidates/pan/{pan}")
-    public ResponseEntity<CandidateResponse> findCandidateByPan(
-            @PathVariable("pan") String pan) throws Exception {
-        LOG.info("New request received for candidate with PAN {}", pan);
-        CandidateResponse response = service.findCandidateByPan(pan);
+    @GetMapping("/candidates/{identifier}")
+    public ResponseEntity<CandidateResponse> findCandidate(
+            @PathVariable("identifier") String panOrEmailOrPhone) throws Exception {
+        LOG.info("New request received to find candidate with identified {}", panOrEmailOrPhone);
+        CandidateResponse response = service.findCandidate(panOrEmailOrPhone);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
     }

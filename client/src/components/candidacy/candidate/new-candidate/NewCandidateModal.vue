@@ -55,7 +55,13 @@ const emits = defineEmits<{
 
 <template>
   <div class="card flex justify-center">
-    <Dialog v-model:visible="visible" modal header="New Candidate" class="max-w-[60rem]">
+    <Dialog
+      v-model:visible="visible"
+      @hide="$emit('close')"
+      modal
+      header="New Candidate"
+      class="max-w-[60rem]"
+    >
       <div class="flex flex-col gap-2">
         <InputGroup>
           <InputGroupAddon>

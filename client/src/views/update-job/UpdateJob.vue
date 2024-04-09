@@ -70,7 +70,11 @@ onBeforeMount(async () => {
       />
       <JobInformation :is-archived="jobDetails.status === 'ARCHIVED'" :job-details="jobDetails" />
       <HiringDetails :is-archived="jobDetails.status === 'ARCHIVED'" :job-details="jobDetails" />
-      <Skills :is-archived="jobDetails.status === 'ARCHIVED'" :skills="jobDetails.skills" @removeSkill="(skill) => deleteSkill(skill)" />
+      <Skills
+        :is-archived="jobDetails.status === 'ARCHIVED'"
+        :skills="jobDetails.skills"
+        @removeSkill="(skill) => deleteSkill(skill)"
+      />
     </div>
     <div v-else class="flex w-full items-center justify-center">
       <ProgressSpinner />
@@ -80,6 +84,7 @@ onBeforeMount(async () => {
         v-if="jobDetails?.status !== 'ARCHIVED'"
         label="Update Job"
         @click="update(jobDetails!)"
+        
       ></Button>
     </div>
   </div>

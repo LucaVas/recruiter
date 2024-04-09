@@ -7,8 +7,8 @@ export async function addCandidate(newCandidate: NewCandidateDto): Promise<Candi
   const { data } = await api.post(`/candidates`, newCandidate);
   return data;
 }
-export async function findCandidateByPan(pan: string): Promise<CandidateResponse> {
-  const { data } = await api.get(`/candidates/pan/${pan}`);
+export async function findCandidate(identifier: string): Promise<CandidateResponse> {
+  const { data } = await api.get(`/candidates/${identifier}`);
   return data;
 }
 export async function submitCandidacy(candidacy: NewCandidacyDto): Promise<void> {

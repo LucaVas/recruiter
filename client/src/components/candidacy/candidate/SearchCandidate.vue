@@ -4,10 +4,9 @@ import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { ref } from 'vue';
-import { findCandidateByPan } from '@/stores/candidate';
+import { findCandidate } from '@/stores/candidate';
 import type { CandidateDto, CandidateResponse } from '@/stores/candidate/types';
 import { ApiError } from '@/utils/types';
-
 
 const emits = defineEmits<{
   (e: 'passError', content: string): void;
@@ -15,12 +14,12 @@ const emits = defineEmits<{
 }>();
 
 const candidateSearchLoading = ref(false);
-const candidatePanSearch = ref('');
+const identifier = ref('');
 
 const searchCandidate = async () => {
   candidateSearchLoading.value = true;
   try {
-    const res = await findCandidateByPan(candidatePanSearch.value) as CandidateResponse;
+    const res = (await findCandidate(identifier.value)) as CandidateResponse;
     emits('passSearchedCandidate', res.candidate);
   } catch (err) {
     if (err instanceof ApiError) emits('passError', err.message);
@@ -31,29 +30,28 @@ const searchCandidate = async () => {
 </script>
 
 <template>
-  <div>
-    <div class="text-lg font-semibold">Search for a candidate</div>
-    <div class="field p-fluid flex gap-2">
+  <div class="flex flex-col gap-2">
+    <label>Search for a candidate</label>
+    <div class="field p-fluid flex flex-col gap-2 sm:flex-row">
       <IconField class="w-full">
         <InputIcon>
           <i class="pi pi-search" />
         </InputIcon>
         <InputText
-          id="candidatePan"
-          v-model="candidatePanSearch"
+          id="identifier"
+          v-model="identifier"
           type="text"
-          placeholder="Candidate PAN"
+          placeholder="Candidate PAN, phone or email"
           required
         />
       </IconField>
       <Button
-        class="w-[10rem]"
         type="button"
         label="Search"
-        icon="pi pi-search"
+        class="w-full sm:w-[10rem]"
         :loading="candidateSearchLoading"
         @click="searchCandidate()"
-        :disabled="candidatePanSearch === ''"
+        :disabled="identifier === ''"
       />
     </div>
   </div>

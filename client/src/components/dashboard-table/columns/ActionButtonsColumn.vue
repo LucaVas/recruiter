@@ -6,7 +6,7 @@ import { ref } from 'vue';
 import { deleteJob } from '@/stores/job/index';
 import type { MenuItem } from 'primevue/menuitem';
 import { ApiError } from '../../../utils/types';
-import { role } from '@/stores/user';
+import { isAdmin } from '@/stores/user';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -18,8 +18,6 @@ const emits = defineEmits<{
   (e: 'reloadTable'): void;
   (e: 'passError', message: string): void;
 }>();
-
-const isAdmin = ref(role.value === 'ROLE_ADMIN');
 
 const getSplitButtonChoices = function (): MenuItem[] {
   return [
@@ -66,7 +64,7 @@ const applyToJob = (jobId: number): void => {
       outlined
       severity="contrast"
       menuButtonIcon="pi pi-angle-down"
-      @click="applyToJob(data.id)"
+      @click="router.push({ name: 'UpdateJob', params: { jobId: data.id } })"
       :model="getSplitButtonChoices()"
     />
 

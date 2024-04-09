@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -193,12 +194,16 @@ public class CandidateService {
 //
 //    }
 
-    public CandidateResponse findCandidateByPan(String pan) {
-        Candidate candidate = this.candidateRepository.findOneByPan(pan).orElseThrow(
-                () -> new ResourceNotFoundException(
-                        "Candidate with PAN [%s] not found".formatted(pan)
-                )
-        );
+    @Transactional
+    public CandidateResponse findCandidate(String panOrEmailOrPhone) {
+
+        // look for pan
+        Candidate candidate = this.candidateRepository.findOneByPanOrPhoneOrEmail(panOrEmailOrPhone)
+                .orElseThrow(
+                () -> {
+                    LOG.info("Candidate with identifier {} not found", panOrEmailOrPhone);
+                    return new ResourceNotFoundException("Candidate not found");
+                });
 
         return new CandidateResponse(
                 candidate.getId(),
