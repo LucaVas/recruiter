@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Navbar from '@/components/navbar/Navbar.vue';
-import type { MenuItem } from './DashboardLayout.vue';
+import type { MenuItem } from './types'
 import { ref } from 'vue';
 
 const { menuItems, role, username } = defineProps<{

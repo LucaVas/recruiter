@@ -5,7 +5,7 @@ import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast';
 import { onMounted, ref } from 'vue';
 import { getJob } from '@/stores/job';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { submitCandidacy } from '@/stores/candidate';
 import { ApiError } from '../../utils/types';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
@@ -13,9 +13,9 @@ import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
 import FilesUploader from '@/components/candidacy/FilesUploader.vue';
 import { formToNewCandidate } from './index';
 import type { JobDto } from '../../stores/job/types';
-import Header from '@/components/candidacy/Header.vue';
+import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
+import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
 
-const router = useRouter();
 const jobId = ref<number>();
 const toast = useToast();
 const headerModalOpen = ref(false);
@@ -72,7 +72,7 @@ onMounted(async () => {
   <div class="flex w-full flex-col gap-8 pb-6">
     <div class="flex h-full w-full flex-col gap-6">
       <div v-if="job">
-        <Header
+        <CandidacyHeader
           :status="job.status"
           :client="job.client"
           :name="job.name"
@@ -109,7 +109,7 @@ onMounted(async () => {
               relevantExperience: details.relevantExperience,
               expectedCtc: details.expectedCtc,
               officialNoticePeriod: details.officialNoticePeriod,
-              actualNoticePeriod: details.actualNoticePeriod,
+              actualNoticePeriod: Number(details.actualNoticePeriod),
               reasonForQuickJoin: details.reasonForQuickJoin,
             })
         "
@@ -131,20 +131,12 @@ onMounted(async () => {
       <FilesUploader />
     </div>
 
-    <div class="flex w-full justify-end">
-      <Button
-        v-if="job?.status !== 'ARCHIVED' && !candidateSubmitted"
-        label="Submit"
-        size="small"
-        @click="submit()"
-        :loading="submittingNewCandidate"
-      ></Button>
-      <Button
-        v-if="candidateSubmitted"
-        label="Back to Dashboard"
-        size="small"
-        @click="router.push({ name: 'Dashboard' })"
-      ></Button>
-    </div>
+    <CandidacyFooter
+      v-if="job"
+      :status="job.status"
+      :candidateSubmitted="candidateSubmitted"
+      :submittingNewCandidate="submittingNewCandidate"
+      @submit="submit()"
+    />
   </div>
 </template>

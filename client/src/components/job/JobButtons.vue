@@ -8,6 +8,9 @@ const { id, status } = defineProps<{
   id: number;
   status: JobStatus;
 }>();
+defineEmits<{
+  (e: 'openModal'): void
+}>()
 </script>
 
 <template>
@@ -30,4 +33,5 @@ const { id, status } = defineProps<{
       @click="$emit('openModal')"
     />
   </div>
+  <Divider />
 </template>

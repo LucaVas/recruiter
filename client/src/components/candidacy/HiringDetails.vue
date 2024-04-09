@@ -12,7 +12,7 @@ const details = ref({
   relevantExperience: 0,
   expectedCtc: 0,
   officialNoticePeriod: 0,
-  actualNoticePeriod: 0,
+  actualNoticePeriod: '',
   reasonForQuickJoin: '',
 });
 
@@ -58,6 +58,7 @@ const emit = defineEmits<{
             required
             :disabled="isArchived"
           />
+          <InputGroupAddon> INR </InputGroupAddon>
         </InputGroup>
       </div>
     </div>
@@ -82,18 +83,18 @@ const emit = defineEmits<{
       </div>
 
       <div class="flex w-full flex-col gap-2">
-        <label class="text-sm" for="actualNoticePeriod">Actual Notice Period (Optional)</label>
+        <label class="text-sm" for="actualNoticePeriod">Actual Notice Period (if different)</label>
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-calendar" />
           </InputGroupAddon>
-          <InputNumber
+          <InputText
             id="actualNoticePeriod"
             v-model="details.actualNoticePeriod"
             @input="emit('input', details)"
-            required
-            :min="0"
             :disabled="isArchived"
+            type="number"
+            :min="0"
           />
           <InputGroupAddon> days </InputGroupAddon>
         </InputGroup>
@@ -110,6 +111,7 @@ const emit = defineEmits<{
           rows="4"
           cols="30"
           placeholder="Reason for quick join"
+          :disabled="details.actualNoticePeriod === ''"
         />
       </div>
     </div>

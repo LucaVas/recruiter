@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MenuItem } from '@/layouts/DashboardLayout.vue';
+import type { MenuItem } from '@/layouts/types';
 import NavbarBody from './NavbarBody.vue';
 import NavbarHeader from './NavbarHeader.vue';
 import NavbarFooter from './NavbarFooter.vue';

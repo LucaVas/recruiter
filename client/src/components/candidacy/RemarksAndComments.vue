@@ -19,7 +19,7 @@ const emit = defineEmits<{
   <div class="flex flex-col gap-8">
     <div class="flex w-full flex-col gap-2">
       <label class="text-sm" for="wantedCvs">Candidacy Remarks</label>
-      <div class="field p-fluid flex w-full">
+      <div class="flex w-full">
         <Textarea
           v-model="details.remarks"
           @input="emit('input', details)"
@@ -31,9 +31,9 @@ const emit = defineEmits<{
       </div>
     </div>
 
-    <div class="flex w-full flex-col gap-2">
+    <div v-if="details.comments" class="flex w-full flex-col gap-2">
       <label class="text-sm" for="wantedCvs">Admin Comments</label>
-      <div class="field p-fluid flex w-full">
+      <div class="flex w-full">
         <Textarea
           v-model="details.comments"
           @input="emit('input', details)"

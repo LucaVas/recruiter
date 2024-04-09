@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { authenticate, showForAdmin } from './guards';
-import DashboardLayout from '@/layouts/DashboardLayout.vue';
+import DashboardLayout from '@/layouts/dashboard/DashboardLayout.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
