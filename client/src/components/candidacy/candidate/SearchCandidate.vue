@@ -11,6 +11,7 @@ import { ApiError } from '@/utils/types';
 const emits = defineEmits<{
   (e: 'passError', content: string): void;
   (e: 'passSearchedCandidate', candidate: CandidateDto): void;
+  (e: 'openNewCandidateModal'): void;
 }>();
 
 const candidateSearchLoading = ref(false);
@@ -31,8 +32,7 @@ const searchCandidate = async () => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <label>Search for a candidate</label>
-    <div class="field p-fluid flex flex-col gap-2 sm:flex-row">
+    <div class="flex flex-col gap-2 sm:flex-row">
       <IconField class="w-full">
         <InputIcon>
           <i class="pi pi-search" />
@@ -41,17 +41,27 @@ const searchCandidate = async () => {
           id="identifier"
           v-model="identifier"
           type="text"
+          class="w-full"
           placeholder="Candidate PAN, phone or email"
           required
         />
       </IconField>
       <Button
-        type="button"
         label="Search"
+        size="small"
         class="w-full sm:w-[10rem]"
         :loading="candidateSearchLoading"
         @click="searchCandidate()"
         :disabled="identifier === ''"
+      />
+      <Button
+        size="small"
+        label="New candidate"
+        icon="pi pi-user-plus"
+        iconPos="right"
+        class="min-w-fit"
+        outlined
+        @click="$emit('openNewCandidateModal')"
       />
     </div>
   </div>

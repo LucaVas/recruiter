@@ -25,7 +25,7 @@ const emit = defineEmits<{
   <div class="flex flex-col gap-8">
     <div class="flex w-full flex-col gap-6 md:flex-row">
       <div class="flex w-full flex-col gap-2">
-        <label for="wantedCvs">Relevant Work Experience</label>
+        <label class="text-sm" for="wantedCvs">Relevant Work Experience</label>
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-calendar" />
@@ -34,7 +34,6 @@ const emit = defineEmits<{
             id="relevantExperience"
             v-model="details.relevantExperience"
             @input="emit('input', details)"
-            placeholder="Relevant work experience"
             required
             :min="0"
             :max="45"
@@ -45,7 +44,7 @@ const emit = defineEmits<{
       </div>
 
       <div class="flex w-full flex-col gap-2">
-        <label for="expectedCtc">Expected CTC</label>
+        <label class="text-sm" for="expectedCtc">Expected CTC</label>
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-money-bill" />
@@ -65,7 +64,7 @@ const emit = defineEmits<{
 
     <div class="flex w-full flex-col gap-6 md:flex-row">
       <div class="flex w-full flex-col gap-2">
-        <label for="officialNoticePeriod">Official Notice Period</label>
+        <label class="text-sm" for="officialNoticePeriod">Official Notice Period</label>
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-calendar" />
@@ -83,7 +82,7 @@ const emit = defineEmits<{
       </div>
 
       <div class="flex w-full flex-col gap-2">
-        <label for="actualNoticePeriod">Actual Notice Period</label>
+        <label class="text-sm" for="actualNoticePeriod">Actual Notice Period (Optional)</label>
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-calendar" />
@@ -102,7 +101,7 @@ const emit = defineEmits<{
     </div>
 
     <div class="flex w-full flex-col gap-2">
-      <label for="wantedCvs">Quick Join Remarks</label>
+      <label class="text-sm" for="wantedCvs">Quick Join Remarks</label>
       <div class="field p-fluid flex w-full">
         <Textarea
           v-model="details.reasonForQuickJoin"

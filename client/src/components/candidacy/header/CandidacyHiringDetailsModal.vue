@@ -45,7 +45,8 @@ defineEmits<{
   <div class="flex justify-center">
     <Dialog
       :visible="visible"
-      @hide="$emit('close')"
+      @update:visible="$emit('close')"
+      closeOnEscape
       modal
       header="Hiring details"
       :style="{ width: '50vw' }"

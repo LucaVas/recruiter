@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CandidateSection from '@/components/candidacy/candidate/CandidateSection.vue';
+import CandidateSection from '@/components/candidacy/CandidateSection.vue';
 import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast';

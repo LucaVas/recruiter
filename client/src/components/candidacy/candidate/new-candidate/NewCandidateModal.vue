@@ -13,7 +13,6 @@ import { addCandidate } from '@/stores/candidate/';
 
 const creatingCandidate = ref(false);
 const newCandidateError = ref('');
-const visible = ref(true);
 export type CandidateDetails = typeof candidateDetails.value;
 const candidateDetails = ref({
   name: '',
@@ -36,8 +35,7 @@ async function createCandidate() {
   if (invalidCandidate(candidateDetails.value, newCandidateError)) return;
   try {
     const payload = toNewCandidate();
-    console.log('Sending:', payload);
-    const res = await addCandidate(toNewCandidate());
+    const res = await addCandidate(payload);
     creatingCandidate.value = false;
     emits('selectCandidate', res.candidate);
   } catch (err) {
@@ -46,6 +44,10 @@ async function createCandidate() {
     creatingCandidate.value = false;
   }
 }
+
+const { visible } = defineProps<{
+  visible: boolean;
+}>();
 
 const emits = defineEmits<{
   (e: 'selectCandidate', selectedCandidate: CandidateDto): void;
@@ -56,8 +58,9 @@ const emits = defineEmits<{
 <template>
   <div class="card flex justify-center">
     <Dialog
-      v-model:visible="visible"
-      @hide="$emit('close')"
+      :visible="visible"
+      @update:visible="$emit('close')"
+      closeOnEscape
       modal
       header="New Candidate"
       class="max-w-[60rem]"
@@ -161,7 +164,7 @@ const emits = defineEmits<{
         newCandidateError
       }}</Message>
 
-      <div class="justify-content-end flex gap-2">
+      <div class="flex justify-end gap-2">
         <Button type="button" label="Cancel" severity="secondary" @click="$emit('close')"></Button>
         <Button type="button" label="Save" @click="createCandidate()"></Button>
       </div>
