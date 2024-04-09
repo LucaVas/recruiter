@@ -22,7 +22,7 @@ export async function changeJobStatus(jobId: number, newStatus: JobStatus): Prom
 export async function deleteJob(id: number): Promise<void> {
   await api.delete(`/jobs/${id}`);
 }
-export async function getJobDetails(id: number): Promise<JobDto> {
+export async function getJob(id: number): Promise<JobDto> {
   const { data } = await api.get(`/jobs/${id}`);
   return data;
 }

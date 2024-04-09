@@ -6,10 +6,13 @@ const { isArchived } = defineProps<{
   isArchived: boolean;
 }>();
 
-const candidacyDetails = ref({
+const details = ref({
   remarks: '',
   comments: '',
 });
+const emit = defineEmits<{
+  (e: 'input', content: typeof details.value): void;
+}>();
 </script>
 
 <template>
@@ -19,7 +22,8 @@ const candidacyDetails = ref({
       <label for="wantedCvs">Candidacy Remarks</label>
       <div class="field p-fluid flex w-full">
         <Textarea
-          v-model="candidacyDetails.remarks"
+          v-model="details.remarks"
+          @input="emit('input', details)"
           class="w-full"
           rows="4"
           cols="30"
@@ -32,7 +36,8 @@ const candidacyDetails = ref({
       <label for="wantedCvs">Admin Comments</label>
       <div class="field p-fluid flex w-full">
         <Textarea
-          v-model="candidacyDetails.comments"
+          v-model="details.comments"
+          @input="emit('input', details)"
           class="w-full"
           rows="4"
           cols="30"

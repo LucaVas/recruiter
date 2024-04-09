@@ -19,8 +19,8 @@ export type JobDto = {
   closureBonus: string;
   comments: string;
   numberOfCandidates: number;
-  closureBonusPaymentDate: Date;
-  cvRatePaymentDate: Date;
+  closureBonusPaymentDate: string;
+  cvRatePaymentDate: string;
   recruiter: RecruiterDto;
   createdAt: string;
 };

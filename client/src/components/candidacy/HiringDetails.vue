@@ -2,22 +2,23 @@
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputNumber from 'primevue/inputnumber';
-import type { Currency } from '../../stores/job/types';
 import { ref } from 'vue';
 
 const { isArchived } = defineProps<{
   isArchived: boolean;
 }>();
 
-const candidacyDetails = ref({
+const details = ref({
   relevantExperience: 0,
   expectedCtc: 0,
   officialNoticePeriod: 0,
   actualNoticePeriod: 0,
   reasonForQuickJoin: '',
-  // remarks: '',
-  // comments: '',
 });
+
+const emit = defineEmits<{
+  (e: 'input', content: typeof details.value): void;
+}>();
 </script>
 
 <template>
@@ -31,7 +32,8 @@ const candidacyDetails = ref({
           </InputGroupAddon>
           <InputNumber
             id="relevantExperience"
-            v-model="candidacyDetails.relevantExperience"
+            v-model="details.relevantExperience"
+            @input="emit('input', details)"
             placeholder="Relevant work experience"
             required
             :min="0"
@@ -50,7 +52,8 @@ const candidacyDetails = ref({
           </InputGroupAddon>
           <InputNumber
             id="expectedCtc"
-            v-model="candidacyDetails.expectedCtc"
+            v-model="details.expectedCtc"
+            @input="emit('input', details)"
             placeholder="Expected CTC"
             :min="0"
             required
@@ -69,7 +72,8 @@ const candidacyDetails = ref({
           </InputGroupAddon>
           <InputNumber
             id="officialNoticePeriod"
-            v-model="candidacyDetails.officialNoticePeriod"
+            v-model="details.officialNoticePeriod"
+            @input="emit('input', details)"
             required
             :min="0"
             :disabled="isArchived"
@@ -86,7 +90,8 @@ const candidacyDetails = ref({
           </InputGroupAddon>
           <InputNumber
             id="actualNoticePeriod"
-            v-model="candidacyDetails.actualNoticePeriod"
+            v-model="details.actualNoticePeriod"
+            @input="emit('input', details)"
             required
             :min="0"
             :disabled="isArchived"
@@ -100,7 +105,8 @@ const candidacyDetails = ref({
       <label for="wantedCvs">Quick Join Remarks</label>
       <div class="field p-fluid flex w-full">
         <Textarea
-          v-model="candidacyDetails.reasonForQuickJoin"
+          v-model="details.reasonForQuickJoin"
+          @input="emit('input', details)"
           class="w-full"
           rows="4"
           cols="30"
