@@ -7,7 +7,7 @@ export async function getAllJobs(): Promise<JobDto[]> {
   const { data } = await api.get(`/jobs`);
   return data;
 }
-export async function addJob(newJob: NewJob): Promise<JobResponse> {
+export async function createJob(newJob: NewJob): Promise<JobResponse> {
   const { data } = await api.post(`/jobs`, newJob);
   return data;
 }

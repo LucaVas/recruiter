@@ -19,16 +19,16 @@ export type JobDto = {
   closureBonus: string;
   comments: string;
   numberOfCandidates: number;
-  closureBonusPaymentDate: string;
-  cvRatePaymentDate: string;
+  closureBonusPaymentDate: Date;
+  cvRatePaymentDate: Date;
   recruiter: RecruiterDto;
   createdAt: string;
 };
 
 export type NewJob = Omit<
   JobDto,
-  'id' | 'skills' | 'comments' | 'numberOfCandidates' | 'createdAt'
->;
+  'id' | 'skills' | 'comments' | 'numberOfCandidates' | 'createdAt' | 'recruiter' | 'contractType'
+> & { contractType: ContractTypeName };
 
 export type JobResponse = { id: number; job: JobDto };
 

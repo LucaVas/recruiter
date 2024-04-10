@@ -10,7 +10,7 @@ import ProgressSpinner from 'primevue/progressspinner';
 import type { JobDto } from '@/stores/job/types';
 import type { SkillDto } from '@/stores/skill/types';
 import { useToast } from 'primevue/usetoast';
-import { getJobDetails, updateJob } from '@/stores/job';
+import { getJob, updateJob } from '@/stores/job';
 import { ApiError } from '@/utils/types';
 
 const jobDetails = ref<JobDto>();
@@ -26,7 +26,7 @@ const showError = (content: string) => {
 async function loadJobData(jobId: number) {
   loading.value = true;
   try {
-    return await getJobDetails(jobId);
+    return await getJob(jobId);
   } catch (err) {
     if (err instanceof ApiError) {
       if (err.statusCode === 401) router.push({ name: 'Dashboard' });
