@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import JobMetadataEntry from './metadata/JobMetadataEntry.vue';
+import JobMetadataEntry from '../metadata/JobMetadataEntry.vue';
 import { formatDate } from '@/utils/dateUtils';
 import type { Currency } from '@/stores/job/types';
 import Dialog from 'primevue/dialog';

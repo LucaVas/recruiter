@@ -1,6 +1,9 @@
-import type { NewCandidacyDto } from "@/stores/candidate/types";
+import type { NewCandidacyDto, RawCandidateDto } from '@/stores/candidate/types';
 
-export function formToNewCandidate(candidacyDetails: any, candidateSelectedId: number): NewCandidacyDto {
+export function formToNewCandidate(
+  candidacyDetails: any,
+  candidateSelectedId: number
+): NewCandidacyDto {
   return {
     ...candidacyDetails,
     jobId: Number(candidacyDetails.jobId),
@@ -11,3 +14,8 @@ export function formToNewCandidate(candidacyDetails: any, candidateSelectedId: n
     actualNoticePeriod: Number(candidacyDetails.actualNoticePeriod),
   };
 }
+
+export type CandidateForm = Omit<RawCandidateDto, 'totalExperience' | 'currentCtc'> & {
+  totalExperience: string;
+  currentCtc: string;
+};

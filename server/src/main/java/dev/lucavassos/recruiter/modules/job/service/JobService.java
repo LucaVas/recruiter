@@ -75,7 +75,7 @@ public class JobService {
                 .findAllById(request.getSkills().stream().map(RawSkillDto::id).collect(Collectors.toSet())));
 
         ContractType contractType = contractTypeRepository
-                .findByContractTypeName(request.getContractType())
+                .findByContractTypeName(request.getContractType().contractTypeName())
                 .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.getContractType())));
 
         User recruiter = getAuthUser();

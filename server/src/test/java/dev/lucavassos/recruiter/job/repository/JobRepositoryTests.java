@@ -36,7 +36,7 @@ public class JobRepositoryTests {
                 .client(randomString(5, 15))
                 .name(jobName)
                 .status(JobStatus.OPEN)
-                .wantedCVs(randomNumber(1, 10))
+                .wantedCvs(randomNumber(1, 10))
                 .experienceRange(1.5)
                 .noticePeriodInDays(randomNumber(1, 20))
                 .salaryBudget(1500.00)

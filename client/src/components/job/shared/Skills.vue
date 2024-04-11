@@ -2,24 +2,36 @@
 import DataTable, { type DataTableRowReorderEvent } from 'primevue/datatable';
 import Column from 'primevue/column';
 import { ref, onMounted } from 'vue';
-import NewJobSkillsDropdown from './NewJobSkillsDropdown.vue';
-import type { SkillDto } from '../../stores/skill/types';
+import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
+import type { RawSkillDto, SkillDto } from '@/stores/skill/types';
 
-const { skills } = defineProps<{
-  skills: SkillDto[];
+const { jobSkills, disabled } = defineProps<{
+  jobSkills: SkillDto[] | RawSkillDto[];
+  disabled: boolean;
 }>();
-const updatedSkills = ref<SkillDto[]>([]);
+
+const skills = ref<RawSkillDto[]>([]);
 
 const onRowReorder = (event: DataTableRowReorderEvent) => {
-  updatedSkills.value = event.value;
+  skills.value = event.value;
 };
 
-defineEmits<{
-  (e: 'removeSkill', skill: SkillDto): void;
+const removeSkill = (skill: RawSkillDto): void => {
+  skills.value.splice(skills.value.indexOf(skill), 1);
+  emits('updateSkills', skills.value);
+};
+
+const addSkill = (skill: RawSkillDto): void => {
+  skills.value.unshift(skill);
+  emits('updateSkills', skills.value);
+};
+
+const emits = defineEmits<{
+  (e: 'updateSkills', skills: RawSkillDto[]): void;
 }>();
 
 onMounted(() => {
-  updatedSkills.value = skills;
+  skills.value = jobSkills;
 });
 </script>
 
@@ -44,12 +56,12 @@ onMounted(() => {
             icon="pi pi-times"
             text
             size="small"
-            @click="$emit('removeSkill', data)"
-          
+            @click="removeSkill(data)"
+            :disabled="disabled"
           />
         </template>
       </Column>
     </DataTable>
-    <NewJobSkillsDropdown @addSkill="(skill) => updatedSkills.push(skill)" />
+    <SkillsDropdown :disabled="disabled" @addSkill="(skill) => addSkill(skill)" />
   </div>
 </template>

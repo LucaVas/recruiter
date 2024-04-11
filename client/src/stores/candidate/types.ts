@@ -33,7 +33,7 @@ export type NewCandidacyDto = Omit<
   'id' | 'job' | 'candidate' | 'recruiter' | 'comments' | 'createdAt'
 > & { jobId: number; candidateId: number };
 
-export type NewCandidateDto = Omit<CandidateDto, 'id' | 'createdAt'>;
+export type RawCandidateDto = Omit<CandidateDto, 'id' | 'createdAt'>;
 
 export type Recruiter = {
   id: number;

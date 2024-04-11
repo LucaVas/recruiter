@@ -4,17 +4,11 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-import { ref } from 'vue';
-import type { NewCandidateDto } from '@/stores/candidate/types';
-import { ApiError } from '@/utils/types';
-import { invalidFields, invalidCandidate } from '.';
-import type { CandidateDto } from '@/stores/candidate/types';
-import { addCandidate } from '@/stores/candidate/';
+import { ref, onMounted } from 'vue';
+import { invalidFields } from '.';
+import type { CandidateForm } from '@/views/candidacy/index';
 
-const creatingCandidate = ref(false);
-const newCandidateError = ref('');
-export type CandidateDetails = typeof candidateDetails.value;
-const candidateDetails = ref({
+const details = ref({
   name: '',
   phone: '',
   email: '',
@@ -23,36 +17,23 @@ const candidateDetails = ref({
   totalExperience: '',
   currentCtc: '',
 });
-function toNewCandidate(): NewCandidateDto {
-  return {
-    ...candidateDetails.value,
-    totalExperience: Number(candidateDetails.value.totalExperience),
-    currentCtc: Number(candidateDetails.value.currentCtc),
-  };
-}
-async function createCandidate() {
-  creatingCandidate.value = true;
-  if (invalidCandidate(candidateDetails.value, newCandidateError)) return;
-  try {
-    const payload = toNewCandidate();
-    const res = await addCandidate(payload);
-    creatingCandidate.value = false;
-    emits('selectCandidate', res.candidate);
-  } catch (err) {
-    if (err instanceof ApiError) newCandidateError.value = err.message;
-  } finally {
-    creatingCandidate.value = false;
-  }
-}
 
-const { visible } = defineProps<{
+
+const { candidate, visible, isUpdate } = defineProps<{
+  candidate: CandidateForm;
   visible: boolean;
+  isUpdate: boolean
 }>();
 
 const emits = defineEmits<{
-  (e: 'selectCandidate', selectedCandidate: CandidateDto): void;
+  (e: 'update', content: typeof details.value): void;
   (e: 'close'): void;
+  (e: 'save'): void;
 }>();
+
+onMounted(() => {
+  details.value = candidate;
+});
 </script>
 
 <template>
@@ -73,8 +54,9 @@ const emits = defineEmits<{
           <InputText
             placeholder="Name"
             autocomplete="off"
-            v-model="candidateDetails.name"
+            v-model="details.name"
             :invalid="invalidFields.name.invalid"
+            @input="emits('update', details)"
           />
         </InputGroup>
 
@@ -84,11 +66,12 @@ const emits = defineEmits<{
           </InputGroupAddon>
           <InputMask
             id="phone"
-            v-model="candidateDetails.phone"
+            v-model="details.phone"
             mask="(999) 999-9999"
             placeholder="Phone"
             :unmask="true"
             :invalid="invalidFields.phone.invalid"
+            @input="emits('update', details)"
           />
         </InputGroup>
 
@@ -100,8 +83,9 @@ const emits = defineEmits<{
             placeholder="Email"
             autocomplete="off"
             type="email"
-            v-model="candidateDetails.email"
+            v-model="details.email"
             :invalid="invalidFields.email.invalid"
+            @input="emits('update', details)"
           />
         </InputGroup>
 
@@ -112,8 +96,9 @@ const emits = defineEmits<{
           <InputText
             placeholder="Pan"
             autocomplete="off"
-            v-model="candidateDetails.pan"
+            v-model="details.pan"
             :invalid="invalidFields.pan.invalid"
+            @input="emits('update', details)"
           />
         </InputGroup>
 
@@ -124,8 +109,9 @@ const emits = defineEmits<{
           <InputText
             placeholder="Education"
             autocomplete="off"
-            v-model="candidateDetails.education"
+            v-model="details.education"
             :invalid="invalidFields.education.invalid"
+            @input="emits('update', details)"
           />
         </InputGroup>
 
@@ -139,8 +125,9 @@ const emits = defineEmits<{
               autocomplete="off"
               type="number"
               min="0"
-              v-model="candidateDetails.totalExperience"
+              v-model="details.totalExperience"
               :invalid="invalidFields.totalExperience.invalid"
+              @input="emits('update', details)"
             />
           </InputGroup>
           <InputGroup>
@@ -152,23 +139,20 @@ const emits = defineEmits<{
               autocomplete="off"
               type="number"
               min="0"
-              v-model="candidateDetails.currentCtc"
+              v-model="details.currentCtc"
               :invalid="invalidFields.currentCtc.invalid"
+              @input="emits('update', details)"
             />
             <InputGroupAddon>INR</InputGroupAddon>
           </InputGroup>
         </div>
       </div>
 
-      <Message v-if="newCandidateError" severity="error" :closable="false" class="w-full">{{
-        newCandidateError
-      }}</Message>
-
       <div class="flex justify-end gap-2">
-        <Button type="button" label="Cancel" severity="secondary" @click="$emit('close')"></Button>
-        <Button type="button" label="Save" @click="createCandidate()"></Button>
+        <Button type="button" label="Cancel" severity="secondary" @click="$emit('close')"/>
+        <Button v-if="isUpdate" type="button" label="Save" @click="emits('save')"/>
+        <Button v-else type="button" label="Create New" @click="emits('create')"/>
       </div>
     </Dialog>
   </div>
 </template>
-../../../stores/candidate/types

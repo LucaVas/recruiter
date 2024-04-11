@@ -1,26 +1,30 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import type { SkillDto } from '../../stores/skill/types';
+import type { RawSkillDto } from '@/stores/skill/types';
 import Dropdown from 'primevue/dropdown';
 import { getAllSkills } from '@/stores/skill';
 
+// variables
 const loading = ref(false);
-const skills = ref<SkillDto[]>();
-const selectedSkill = ref<SkillDto>();
+const skills = ref<RawSkillDto[]>();
+const selectedSkill = ref<RawSkillDto>();
 
+// props
+const { disabled } = defineProps<{
+  disabled: boolean;
+}>();
+
+// emits
+defineEmits<{
+  (e: 'addSkill', skill: RawSkillDto): void;
+}>();
+
+// init
 onMounted(async () => {
   loading.value = true;
   skills.value = await getAllSkills();
   loading.value = false;
 });
-
-const { disabled } = defineProps<{
-  disabled: boolean;
-}>();
-
-defineEmits<{
-  (e: 'addSkill', skill: SkillDto): void;
-}>();
 </script>
 
 <template>

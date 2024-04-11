@@ -1,22 +1,3 @@
-c
-<script setup lang="ts">
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import InputText from 'primevue/inputtext';
-import { ref } from 'vue';
-
-const details = ref({
-  bonusPayPerCv: '',
-  closureBonus: '',
-  cvRatePaymentDate: '',
-  closureBonusPaymentDate: '',
-});
-
-const emit = defineEmits<{
-  (e: 'input', content: typeof details.value): void;
-}>();
-</script>
-
 <template>
   <div class="card flex flex-col gap-8">
     <div class="flex w-full flex-row gap-6">
@@ -32,6 +13,7 @@ const emit = defineEmits<{
             :min="0"
             v-model="details.bonusPayPerCv"
             required
+            :disabled="disabled"
             @input="emit('input', details)"
           />
         </InputGroup>
@@ -42,12 +24,17 @@ const emit = defineEmits<{
           <InputGroupAddon>
             <i class="pi pi-wallet" />
           </InputGroupAddon>
-          <InputText
+          <Calendar
             id="cvRatePaymentDate"
-            type="date"
             v-model="details.cvRatePaymentDate"
+            showIcon
+            :minDate="new Date()"
+            dateFormat="dd/mm/yy"
+            iconDisplay="input"
+            inputId="icondisplay"
             required
-            @input="emit('input', details)"
+            :disabled="disabled"
+            @date-select="emit('input', details)"
           />
         </InputGroup>
       </div>
@@ -63,8 +50,10 @@ const emit = defineEmits<{
           <InputText
             id="closureBonus"
             type="text"
+            :min="0"
             v-model="details.closureBonus"
             required
+            :disabled="disabled"
             @input="emit('input', details)"
           />
         </InputGroup>
@@ -75,15 +64,53 @@ const emit = defineEmits<{
           <InputGroupAddon>
             <i class="pi pi-money-bill" />
           </InputGroupAddon>
-          <InputText
-            id="closureBonus"
-            type="date"
+          <Calendar
+            id="closureBonusPaymentDate"
             v-model="details.closureBonusPaymentDate"
+            showIcon
+            dateFormat="dd/mm/yy"
+            :minDate="new Date()"
+            iconDisplay="input"
+            inputId="icondisplay"
             required
-            @input="emit('input', details)"
+            :disabled="disabled"
+            @date-select="emit('input', details)"
           />
         </InputGroup>
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import InputText from 'primevue/inputtext';
+import Calendar from 'primevue/calendar';
+import { ref, onMounted } from 'vue';
+import type { JobDto, NewJob } from '@/stores/job/types';
+
+// variables
+const details = ref({
+  bonusPayPerCv: '',
+  closureBonus: '',
+  cvRatePaymentDate: '',
+  closureBonusPaymentDate: '',
+});
+
+// props
+const { jobDetails, disabled } = defineProps<{
+  jobDetails: JobDto | NewJob;
+  disabled: boolean;
+}>();
+
+// emits
+const emit = defineEmits<{
+  (e: 'input', content: typeof details.value): void;
+}>();
+
+// init
+onMounted(() => {
+  details.value = jobDetails;
+});
+</script>

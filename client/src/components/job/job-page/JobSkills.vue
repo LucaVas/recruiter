@@ -5,6 +5,9 @@ import Chip from 'primevue/chip';
 const { skills } = defineProps<{
   skills: SkillDto[];
 }>();
+
+
+
 </script>
 
 <template>

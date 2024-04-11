@@ -9,8 +9,9 @@ const { id, status } = defineProps<{
   status: JobStatus;
 }>();
 defineEmits<{
-  (e: 'openModal'): void
-}>()
+  (e: 'openModal'): void;
+  (e: 'deleteJob'): void
+}>();
 </script>
 
 <template>
@@ -31,6 +32,26 @@ defineEmits<{
       outlined
       v-if="status !== 'ARCHIVED'"
       @click="$emit('openModal')"
+    />
+    <Button
+      rounded
+      type="button"
+      size="small"
+      severity="warning"
+      label="Edit"
+      outlined
+      v-if="status !== 'ARCHIVED'"
+      @click="router.push({ name: 'UpdateJob', params: { id: id } })"
+    />
+    <Button
+      rounded
+      type="button"
+      size="small"
+      severity="danger"
+      label="Delete"
+      outlined
+      v-if="status !== 'ARCHIVED'"
+      @click="$emit('deleteJob')"
     />
   </div>
   <Divider />

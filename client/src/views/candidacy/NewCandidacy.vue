@@ -11,14 +11,18 @@ import { ApiError } from '../../utils/types';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
 import FilesUploader from '@/components/candidacy/FilesUploader.vue';
-import { formToNewCandidate } from './index';
+import { formToNewCandidate, CandidateForm } from './index';
 import type { JobDto } from '../../stores/job/types';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
+import type { RawCandidateDto } from '../../stores/candidate/types';
+import { invalidCandidate, toNewCandidate } from '../../components/candidacy/candidate/new-candidate/index';
+import { addCandidate } from '@/stores/candidate/';
 
 const jobId = ref<number>();
 const toast = useToast();
 const headerModalOpen = ref(false);
+const savingCandidate = ref(false)
 
 const newCandidacyError = ref('');
 const showError = (content: string) => {
@@ -41,6 +45,17 @@ const candidacyDetails = ref({
   comments: '',
 });
 
+const candidate = ref<CandidateForm>({
+  name: '',
+  phone: '',
+  email: '',
+  totalExperience: '',
+  education: '',
+  currentCtc: '',
+  pan: '',
+});
+
+
 // candidacy submission
 const candidateSelectedId = ref<number | null>();
 const candidateSubmitted = ref(false);
@@ -58,6 +73,19 @@ async function submit() {
     if (err instanceof ApiError) newCandidacyError.value = err.message;
   } finally {
     submittingNewCandidate.value = false;
+  }
+}
+
+async function createCandidate(candidate: CandidateForm) {
+  savingCandidate.value = true;
+  try {
+    const payload = toNewCandidate(candidate);
+    await addCandidate(payload);
+    savingCandidate.value = false;
+  } catch (err) {
+    if (err instanceof ApiError) showError(err.message);
+  } finally {
+    savingCandidate.value = false;
   }
 }
 
@@ -97,7 +125,8 @@ onMounted(async () => {
       </div>
 
       <CandidateSection
-        @selectCandidate="(candidateId) => (candidateSelectedId = candidateId)"
+        :candidate="candidate"
+        @update="createCandidate(candidate)"
         @passError="(e) => showError(e)"
       />
 

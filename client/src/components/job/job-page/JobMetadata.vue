@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ContractTypeName, JobStatus } from '@/stores/job/types';
-import JobMetadataEntry from './metadata/JobMetadataEntry.vue';
+import JobMetadataEntry from '../metadata/JobMetadataEntry.vue';
 import { capitalize } from '@/utils/stringUtils';
 import { formatDate } from '@/utils/dateUtils';
 

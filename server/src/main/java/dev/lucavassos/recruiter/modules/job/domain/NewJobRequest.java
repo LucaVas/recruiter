@@ -18,7 +18,7 @@ public class NewJobRequest {
     private String client;
     private String name;
     private JobStatus status;
-    private ContractTypeName contractType;
+    private ContractTypeDto contractType;
     private Integer wantedCvs;
     private Integer experienceRangeMin;
     private Integer experienceRangeMax;

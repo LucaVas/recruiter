@@ -1,4 +1,4 @@
-import type { SkillDto } from '../skill/types';
+import type { RawSkillDto, SkillDto } from '../skill/types';
 import type { RecruiterDto } from '../user/types';
 
 export type JobDto = {
@@ -27,8 +27,8 @@ export type JobDto = {
 
 export type NewJob = Omit<
   JobDto,
-  'id' | 'skills' | 'comments' | 'numberOfCandidates' | 'createdAt' | 'recruiter' | 'contractType'
-> & { contractType: ContractTypeName };
+  'id' | 'skills' | 'comments' | 'numberOfCandidates' | 'createdAt' | 'recruiter'
+> & { skills: RawSkillDto[] };
 
 export type JobResponse = { id: number; job: JobDto };
 

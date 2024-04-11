@@ -1,9 +1,9 @@
-import type { CandidateResponse, NewCandidacyDto, NewCandidateDto } from './types';
+import type { CandidateResponse, NewCandidacyDto, RawCandidateDto } from './types';
 import axiosApi from '../api';
 
 const api = axiosApi();
 
-export async function addCandidate(newCandidate: NewCandidateDto): Promise<CandidateResponse> {
+export async function addCandidate(newCandidate: RawCandidateDto): Promise<CandidateResponse> {
   const { data } = await api.post(`/candidates`, newCandidate);
   return data;
 }
