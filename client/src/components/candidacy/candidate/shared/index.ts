@@ -1,7 +1,4 @@
 import { ref, type Ref } from 'vue';
-import type { CandidateDetails } from './NewCandidateModal.vue';
-import type { RawCandidateDto } from '@/stores/candidate/types';
-import type { CandidateForm } from '@/views/candidacy';
 
 const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 const PAN_LENGTH = 10;
@@ -38,7 +35,7 @@ export const invalidFields = ref({
   },
 });
 
-export function invalidCandidate(candidateDetails: CandidateDetails, errorMessage: Ref<string>) {
+export function invalidCandidate(candidateDetails, errorMessage: Ref<string>) {
   if (candidateDetails.name === '') {
     errorMessage.value = invalidFields.value.name.message;
     invalidFields.value.name.invalid = true;
@@ -99,10 +96,6 @@ export function invalidCandidate(candidateDetails: CandidateDetails, errorMessag
   return false;
 }
 
-export function toNewCandidate(details: CandidateForm): RawCandidateDto {
-  return {
-    ...details,
-    totalExperience: Number(details.totalExperience),
-    currentCtc: Number(details.currentCtc),
-  };
-}
+
+
+

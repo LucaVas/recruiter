@@ -1,35 +1,3 @@
-<script setup lang="ts">
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import { ref } from 'vue';
-import { findCandidate } from '@/stores/candidate';
-import type { CandidateDto, CandidateResponse } from '@/stores/candidate/types';
-import { ApiError } from '@/utils/types';
-
-const emits = defineEmits<{
-  (e: 'passError', content: string): void;
-  (e: 'passSearchedCandidate', candidate: CandidateDto): void;
-  (e: 'openNewCandidateModal'): void;
-}>();
-
-const candidateSearchLoading = ref(false);
-const identifier = ref('');
-
-const searchCandidate = async () => {
-  candidateSearchLoading.value = true;
-  try {
-    const res = (await findCandidate(identifier.value)) as CandidateResponse;
-    emits('passSearchedCandidate', res.candidate);
-  } catch (err) {
-    if (err instanceof ApiError) emits('passError', err.message);
-  } finally {
-    candidateSearchLoading.value = false;
-  }
-};
-</script>
-
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex flex-col gap-2 sm:flex-row">
@@ -50,8 +18,8 @@ const searchCandidate = async () => {
         label="Search"
         size="small"
         class="w-full sm:w-[10rem]"
-        :loading="candidateSearchLoading"
-        @click="searchCandidate()"
+        :loading="searching"
+        @click="emits('search', identifier)"
         :disabled="identifier === ''"
       />
       <Button
@@ -61,8 +29,27 @@ const searchCandidate = async () => {
         iconPos="right"
         class="min-w-fit"
         outlined
-        @click="$emit('openNewCandidateModal')"
+        @click="emits('openNewCandidateModal')"
       />
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
+import { ref } from 'vue';
+
+const emits = defineEmits<{
+  (e: 'search', identifier: string): void;
+  (e: 'openNewCandidateModal'): void;
+}>();
+
+const { searching } = defineProps<{
+  searching: boolean;
+}>();
+
+const identifier = ref('');
+</script>

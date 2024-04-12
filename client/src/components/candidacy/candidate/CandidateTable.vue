@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { CandidateDto } from '@/stores/candidate/types';
 import CandidateSingleSelectTable from './CandidateSingleSelectTable.vue';
+import type { RawCandidateDto } from '../../../stores/candidate/types';
 
 const { candidateToDisplay } = defineProps<{
-  candidateToDisplay: CandidateDto;
+  candidateToDisplay: RawCandidateDto;
 }>();
 const emits = defineEmits<{
-  (e: 'passCandidateSelectedId', id: number | null): void;
+  (e: 'selectCandidate', candidate: RawCandidateDto | null): void;
 }>();
 </script>
 
@@ -16,7 +16,7 @@ const emits = defineEmits<{
       :candidates="[candidateToDisplay]"
       @selectCandidate="
         (candidate) =>
-          emits('passCandidateSelectedId', candidate === null ? candidate : candidate.id)
+          emits('selectCandidate', candidate)
       "
     />
   </div>

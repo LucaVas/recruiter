@@ -6,23 +6,27 @@ import Toast from 'primevue/toast';
 import { onMounted, ref } from 'vue';
 import { getJob } from '@/stores/job';
 import { useRoute } from 'vue-router';
-import { submitCandidacy } from '@/stores/candidate';
+import { findCandidate, submitCandidacy } from '@/stores/candidate';
 import { ApiError } from '../../utils/types';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
 import FilesUploader from '@/components/candidacy/FilesUploader.vue';
-import { formToNewCandidate, CandidateForm } from './index';
+import type { CandidateForm } from './index';
 import type { JobDto } from '../../stores/job/types';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
+import { mapFormToNewCandidate } from '@/components/candidacy/candidate/shared/mappers';
+import { createCandidate } from '@/stores/candidate/';
 import type { RawCandidateDto } from '../../stores/candidate/types';
-import { invalidCandidate, toNewCandidate } from '../../components/candidacy/candidate/new-candidate/index';
-import { addCandidate } from '@/stores/candidate/';
+import { generateEmptyCandidateForm } from './utils';
+import { formToNewCandidacy } from './index';
+import CandidacySubmitted from '@/components/candidacy/CandidacySubmitted.vue';
 
 const jobId = ref<number>();
 const toast = useToast();
 const headerModalOpen = ref(false);
-const savingCandidate = ref(false)
+const creatingCandidate = ref(false);
+const job = ref<JobDto>();
 
 const newCandidacyError = ref('');
 const showError = (content: string) => {
@@ -31,7 +35,6 @@ const showError = (content: string) => {
 const showSuccess = (content: string) => {
   toast.add({ severity: 'success', summary: 'Success', detail: content, life: 3000 });
 };
-const job = ref<JobDto>();
 
 // candidacy details
 const candidacyDetails = ref({
@@ -45,26 +48,18 @@ const candidacyDetails = ref({
   comments: '',
 });
 
-const candidate = ref<CandidateForm>({
-  name: '',
-  phone: '',
-  email: '',
-  totalExperience: '',
-  education: '',
-  currentCtc: '',
-  pan: '',
-});
-
-
 // candidacy submission
-const candidateSelectedId = ref<number | null>();
 const candidateSubmitted = ref(false);
 const submittingNewCandidate = ref(false);
+const searchingForCandidate = ref(false);
+const selectedCandidate = ref<(RawCandidateDto & { id: number }) | null>();
+const searchedCandidate = ref<RawCandidateDto & { id: number }>();
+const candidate = ref<CandidateForm>();
 
-async function submit() {
-  if (!candidateSelectedId.value) return;
+async function submit(selectedCandidate: (RawCandidateDto & { id: number }) | null | undefined) {
+  if (!selectedCandidate) return;
   submittingNewCandidate.value = true;
-  const candidacy = formToNewCandidate(candidacyDetails.value, candidateSelectedId.value);
+  const candidacy = formToNewCandidacy(candidacyDetails.value, selectedCandidate.id);
   try {
     await submitCandidacy(candidacy);
     candidateSubmitted.value = true;
@@ -76,29 +71,51 @@ async function submit() {
   }
 }
 
-async function createCandidate(candidate: CandidateForm) {
-  savingCandidate.value = true;
+async function createNewCandidate(candidateForm: CandidateForm) {
+  creatingCandidate.value = true;
   try {
-    const payload = toNewCandidate(candidate);
-    await addCandidate(payload);
-    savingCandidate.value = false;
+    const newCandidate = mapFormToNewCandidate(candidateForm);
+    const res = await createCandidate(newCandidate);
+    searchedCandidate.value = res.candidate;
+    candidate.value = generateEmptyCandidateForm();
   } catch (err) {
     if (err instanceof ApiError) showError(err.message);
   } finally {
-    savingCandidate.value = false;
+    creatingCandidate.value = false;
   }
+}
+
+async function searchCandidate(identifier: string) {
+  searchingForCandidate.value = true;
+  try {
+    const res = await findCandidate(identifier);
+    searchedCandidate.value = { ...res.candidate, id: res.id };
+  } catch (err) {
+    if (err instanceof ApiError) showError(err.message);
+  } finally {
+    searchingForCandidate.value = false;
+  }
+}
+
+function selectCandidate(
+  candidate: RawCandidateDto | null,
+  searchedCandidate: (RawCandidateDto & { id: number }) | undefined
+): void {
+  if (!candidate || !searchedCandidate) return;
+  if (candidate.pan === searchedCandidate.pan) selectedCandidate.value = searchedCandidate;
 }
 
 onMounted(async () => {
   const route = useRoute();
   jobId.value = Number(route.params.id);
   job.value = await getJob(jobId.value);
+  candidate.value = generateEmptyCandidateForm();
 });
 </script>
 <template>
   <Toast />
   <div class="flex w-full flex-col gap-8 pb-6">
-    <div class="flex h-full w-full flex-col gap-6">
+    <div v-if="!candidateSubmitted" class="flex h-full w-full flex-col gap-6">
       <div v-if="job">
         <CandidacyHeader
           :status="job.status"
@@ -125,9 +142,13 @@ onMounted(async () => {
       </div>
 
       <CandidateSection
+        v-if="candidate"
+        :searching="searchingForCandidate"
         :candidate="candidate"
-        @update="createCandidate(candidate)"
-        @passError="(e) => showError(e)"
+        :searchedCandidate="searchedCandidate"
+        @update="(candidateForm) => createNewCandidate(candidateForm)"
+        @searchCandidate="(identifier) => searchCandidate(identifier)"
+        @selectCandidate="(candidate) => selectCandidate(candidate, searchedCandidate)"
       />
 
       <HiringDetails
@@ -160,12 +181,16 @@ onMounted(async () => {
       <FilesUploader />
     </div>
 
+    <div v-else class="flex h-full w-full items-center justify-center">
+      <CandidacySubmitted />
+    </div>
+
     <CandidacyFooter
       v-if="job"
       :status="job.status"
       :candidateSubmitted="candidateSubmitted"
       :submittingNewCandidate="submittingNewCandidate"
-      @submit="submit()"
+      @submit="submit(selectedCandidate)"
     />
   </div>
 </template>

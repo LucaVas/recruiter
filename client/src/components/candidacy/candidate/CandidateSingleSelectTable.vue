@@ -2,13 +2,13 @@
 import { ref } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import type { CandidateDto } from '@/stores/candidate/types';
+import type { RawCandidateDto } from '@/stores/candidate/types';
 
 const { candidates } = defineProps<{
-  candidates?: CandidateDto[];
+  candidates?: RawCandidateDto[];
 }>();
 defineEmits<{
-  (e: 'selectCandidate', selectedCandidate: CandidateDto): void;
+  (e: 'selectCandidate', selectedCandidate: RawCandidateDto | null): void;
 }>();
 
 const selectedCandidate = ref();

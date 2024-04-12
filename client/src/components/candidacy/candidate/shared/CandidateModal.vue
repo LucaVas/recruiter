@@ -5,28 +5,19 @@ import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref, onMounted } from 'vue';
-import { invalidFields } from '.';
+import { invalidFields } from './index';
 import type { CandidateForm } from '@/views/candidacy/index';
+import { generateEmptyCandidateForm } from '@/views/candidacy/utils';
 
-const details = ref({
-  name: '',
-  phone: '',
-  email: '',
-  pan: '',
-  education: '',
-  totalExperience: '',
-  currentCtc: '',
-});
+const details = ref<CandidateForm>();
 
-
-const { candidate, visible, isUpdate } = defineProps<{
+const { candidate, visible } = defineProps<{
   candidate: CandidateForm;
   visible: boolean;
-  isUpdate: boolean
 }>();
 
 const emits = defineEmits<{
-  (e: 'update', content: typeof details.value): void;
+  (e: 'update', content: CandidateForm): void;
   (e: 'close'): void;
   (e: 'save'): void;
 }>();
@@ -39,6 +30,7 @@ onMounted(() => {
 <template>
   <div class="card flex justify-center">
     <Dialog
+      v-if="details"
       :visible="visible"
       @update:visible="$emit('close')"
       closeOnEscape
@@ -149,9 +141,8 @@ onMounted(() => {
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" label="Cancel" severity="secondary" @click="$emit('close')"/>
-        <Button v-if="isUpdate" type="button" label="Save" @click="emits('save')"/>
-        <Button v-else type="button" label="Create New" @click="emits('create')"/>
+        <Button label="Cancel" severity="secondary" @click="$emit('close'); details = generateEmptyCandidateForm()" />
+        <Button label="Save" @click="emits('save'); details = generateEmptyCandidateForm()" />
       </div>
     </Dialog>
   </div>

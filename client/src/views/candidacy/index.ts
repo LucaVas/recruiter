@@ -1,6 +1,6 @@
 import type { NewCandidacyDto, RawCandidateDto } from '@/stores/candidate/types';
 
-export function formToNewCandidate(
+export function formToNewCandidacy(
   candidacyDetails: any,
   candidateSelectedId: number
 ): NewCandidacyDto {

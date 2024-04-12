@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSeverity, getStatusIcon, formatStatus } from '@/components/update-job/utils';
+import { getSeverity, getStatusIcon, formatStatus } from '@/components/job/shared/utils';
 import type { JobStatus } from '@/stores/job/types';
 
 const { status, name, client } = defineProps<{
