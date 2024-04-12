@@ -1,5 +1,5 @@
-import type { RawCandidateDto } from "@/stores/candidate/types";
-import type { CandidateForm } from "@/views/candidacy";
+import type { RawCandidateDto } from '@/stores/candidate/types';
+import type { CandidateForm } from '@/views/new-candidacy';
 
 export function mapFormToNewCandidate(details: CandidateForm): RawCandidateDto {
   return {

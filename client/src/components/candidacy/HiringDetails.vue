@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-import InputNumber from 'primevue/inputnumber';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import type { CandidacyForm } from '@/views/candidacy/mappers';
 
-const { isArchived } = defineProps<{
+const { candidacy, isArchived } = defineProps<{
+  candidacy: CandidacyForm;
   isArchived: boolean;
 }>();
 
 const details = ref({
-  relevantExperience: 0,
-  expectedCtc: 0,
-  officialNoticePeriod: 0,
+  relevantExperience: '',
+  expectedCtc: '',
+  officialNoticePeriod: '',
   actualNoticePeriod: '',
   reasonForQuickJoin: '',
 });
@@ -19,6 +20,14 @@ const details = ref({
 const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
 }>();
+
+onMounted(() => {
+  details.value.relevantExperience = candidacy.relevantExperience;
+  details.value.expectedCtc = candidacy.expectedCtc;
+  details.value.officialNoticePeriod = candidacy.officialNoticePeriod;
+  details.value.actualNoticePeriod = candidacy.actualNoticePeriod;
+  details.value.reasonForQuickJoin = candidacy.reasonForQuickJoin;
+});
 </script>
 
 <template>
@@ -30,7 +39,8 @@ const emit = defineEmits<{
           <InputGroupAddon>
             <i class="pi pi-calendar" />
           </InputGroupAddon>
-          <InputNumber
+          <InputText
+            type="number"
             id="relevantExperience"
             v-model="details.relevantExperience"
             @input="emit('input', details)"
@@ -49,8 +59,9 @@ const emit = defineEmits<{
           <InputGroupAddon>
             <i class="pi pi-money-bill" />
           </InputGroupAddon>
-          <InputNumber
+          <InputText
             id="expectedCtc"
+            type="number"
             v-model="details.expectedCtc"
             @input="emit('input', details)"
             placeholder="Expected CTC"
@@ -70,8 +81,9 @@ const emit = defineEmits<{
           <InputGroupAddon>
             <i class="pi pi-calendar" />
           </InputGroupAddon>
-          <InputNumber
+          <InputText
             id="officialNoticePeriod"
+            type="number"
             v-model="details.officialNoticePeriod"
             @input="emit('input', details)"
             required

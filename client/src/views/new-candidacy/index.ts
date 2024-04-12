@@ -1,4 +1,5 @@
-import type { NewCandidacyDto, RawCandidateDto } from '@/stores/candidate/types';
+import type { NewCandidacyDto } from '@/stores/candidacy/types';
+import type { RawCandidateDto } from '@/stores/candidate/types';
 
 export function formToNewCandidacy(
   candidacyDetails: any,

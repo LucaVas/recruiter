@@ -1,38 +1,39 @@
 <script setup lang="ts">
-import type { JobStatus } from '@/stores/job/types';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
-const { submittingNewCandidate, candidateSubmitted, status } = defineProps<{
-  submittingNewCandidate: boolean;
-  status: JobStatus;
-  candidateSubmitted: boolean;
+const { submittingNewCandidacy, candidacySubmitted, disabled, isUpdate } = defineProps<{
+  submittingNewCandidacy: boolean;
+  disabled: boolean;
+  candidacySubmitted: boolean;
+  isUpdate: boolean
 }>();
 
 defineEmits<{
   (e: 'submit'): void;
+  (e: 'update'): void
 }>();
 </script>
 
 <template>
   <div class="flex w-full justify-between">
     <Button
-        v-if="!candidateSubmitted"
+        v-if="!candidacySubmitted"
         label="Back"
         size="small"
-        :loading="submittingNewCandidate"
+        :loading="submittingNewCandidacy"
         @click="router.go(-1)"
       />
     <div>
       <Button
-        v-if="status !== 'ARCHIVED' && !candidateSubmitted"
-        label="Submit"
+        v-if="!disabled && !candidacySubmitted"
+        :label="isUpdate ? 'Update' : 'Submit'"
         size="small"
-        @click="$emit('submit')"
-        :loading="submittingNewCandidate"
+        @click="isUpdate ? $emit('update') : $emit('submit')"
+        :loading="submittingNewCandidacy"
       />
       <Button
-        v-if="candidateSubmitted"
+        v-if="candidacySubmitted"
         label="Back to Dashboard"
         size="small"
         @click="router.push({ name: 'Dashboard' })"

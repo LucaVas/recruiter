@@ -6,8 +6,8 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref, onMounted } from 'vue';
 import { invalidFields } from './index';
-import type { CandidateForm } from '@/views/candidacy/index';
-import { generateEmptyCandidateForm } from '@/views/candidacy/utils';
+import type { CandidateForm } from '@/views/new-candidacy/index';
+import { generateEmptyCandidateForm } from '@/views/new-candidacy/utils';
 
 const details = ref<CandidateForm>();
 
@@ -141,9 +141,23 @@ onMounted(() => {
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button label="Cancel" severity="secondary" @click="$emit('close'); details = generateEmptyCandidateForm()" />
-        <Button label="Save" @click="emits('save'); details = generateEmptyCandidateForm()" />
+        <Button
+          label="Cancel"
+          severity="secondary"
+          @click="
+            $emit('close');
+            details = generateEmptyCandidateForm();
+          "
+        />
+        <Button
+          label="Save"
+          @click="
+            emits('save');
+            details = generateEmptyCandidateForm();
+          "
+        />
       </div>
     </Dialog>
   </div>
 </template>
+@/views/new-candidacy/index@/views/new-candidacy/utils

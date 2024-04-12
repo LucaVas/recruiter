@@ -13,8 +13,8 @@ const newCandidateModalOpen = ref(false);
 // props
 const { candidate, searchedCandidate, searching } = defineProps<{
   candidate: CandidateForm;
-  searchedCandidate: RawCandidateDto | undefined
-  searching: boolean
+  searchedCandidate: RawCandidateDto | undefined;
+  searching: boolean;
 }>();
 
 // emits
@@ -22,7 +22,7 @@ const emits = defineEmits<{
   (e: 'passError', content: string): void;
   (e: 'selectCandidate', candidate: RawCandidateDto | null): void;
   (e: 'update', content: CandidateForm): void;
-  (e: 'searchCandidate', identifier: string): void
+  (e: 'searchCandidate', identifier: string): void;
 }>();
 
 // init
@@ -39,7 +39,10 @@ onMounted(() => {
       :candidate="details"
       :visible="newCandidateModalOpen"
       @close="newCandidateModalOpen = false"
-      @save="emits('update', details); newCandidateModalOpen = false"
+      @save="
+        emits('update', details);
+        newCandidateModalOpen = false;
+      "
       @update="(candidate) => (details = candidate)"
     />
 

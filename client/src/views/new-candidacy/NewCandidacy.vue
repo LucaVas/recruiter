@@ -6,7 +6,8 @@ import Toast from 'primevue/toast';
 import { onMounted, ref } from 'vue';
 import { getJob } from '@/stores/job';
 import { useRoute } from 'vue-router';
-import { findCandidate, submitCandidacy } from '@/stores/candidate';
+import { findCandidate } from '@/stores/candidate';
+import { submitCandidacy } from '@/stores/candidacy';
 import { ApiError } from '../../utils/types';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
@@ -20,7 +21,7 @@ import { createCandidate } from '@/stores/candidate/';
 import type { RawCandidateDto } from '../../stores/candidate/types';
 import { generateEmptyCandidateForm } from './utils';
 import { formToNewCandidacy } from './index';
-import CandidacySubmitted from '@/components/candidacy/CandidacySubmitted.vue';
+import CandidacySuccess from '@/components/candidacy/CandidacySuccess.vue';
 
 const jobId = ref<number>();
 const toast = useToast();
@@ -126,18 +127,7 @@ onMounted(async () => {
         <CandidacyHiringDetailsModal
           :visible="headerModalOpen"
           @close="headerModalOpen = false"
-          :contractType="job.contractType.contractTypeName"
-          :wantedCvs="job.wantedCvs"
-          :candidates="job.numberOfCandidates"
-          :experienceRangeMin="job.experienceRangeMin"
-          :experienceRangeMax="job.experienceRangeMax"
-          :noticePeriodInDays="job.noticePeriodInDays"
-          :salaryBudget="job.salaryBudget"
-          :currency="job.currency"
-          :bonusPayPerCv="job.bonusPayPerCv"
-          :closureBonus="job.closureBonus"
-          :closureBonusPaymentDate="job.closureBonusPaymentDate"
-          :cvRatePaymentDate="job.cvRatePaymentDate"
+          :job="job"
         />
       </div>
 
@@ -152,6 +142,7 @@ onMounted(async () => {
       />
 
       <HiringDetails
+        :candidacy="candidacyDetails"
         @input="
           (details) =>
             (candidacyDetails = {
@@ -182,14 +173,15 @@ onMounted(async () => {
     </div>
 
     <div v-else class="flex h-full w-full items-center justify-center">
-      <CandidacySubmitted />
+      <CandidacySuccess :message="'Candidacy submitted successfully!'" />
     </div>
 
     <CandidacyFooter
       v-if="job"
-      :status="job.status"
-      :candidateSubmitted="candidateSubmitted"
-      :submittingNewCandidate="submittingNewCandidate"
+      :disabled="job.status === 'ARCHIVED'"
+      :candidacySubmitted="candidateSubmitted"
+      :submittingNewCandidacy="submittingNewCandidate"
+      :isUpdate="false"
       @submit="submit(selectedCandidate)"
     />
   </div>

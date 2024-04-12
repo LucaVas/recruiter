@@ -1,6 +1,8 @@
 package dev.lucavassos.recruiter.modules.candidacy.controller;
 
+import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyResponse;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
+import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.service.CandidacyService;
 import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
 import org.slf4j.Logger;
@@ -20,8 +22,23 @@ public class CandidacyController {
 
     @PostMapping("/candidacies")
     public ResponseEntity<?> addCandidacy(
-            @RequestBody NewCandidacyRequest candidacyRequest) {
-        service.addCandidacy(candidacyRequest);
+            @RequestBody NewCandidacyRequest request) {
+        LOG.info("Received request to add candidacy: {}", request);
+        service.addCandidacy(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/candidacies/{id}")
+    public ResponseEntity<CandidacyResponse> updateCandidacy(
+            @RequestBody UpdateCandidacyRequest request) throws Exception {
+        LOG.info("Received request to update candidacy: {}", request);
+        return ResponseEntity.ok(service.updateCandidacy(request));
+    }
+
+    @GetMapping("/candidacies/{id}")
+    public ResponseEntity<CandidacyResponse> getCandidacy(
+            @PathVariable Long id) {
+        LOG.info("Received request to get candidacy: {}", id);
+        return ResponseEntity.ok(service.getCandidacy(id));
     }
 }

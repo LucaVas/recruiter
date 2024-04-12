@@ -24,7 +24,12 @@ const router = createRouter({
         {
           path: '/candidacies/job=:id',
           name: 'NewCandidacy',
-          component: () => import('../views/candidacy/NewCandidacy.vue'),
+          component: () => import('../views/new-candidacy/NewCandidacy.vue'),
+        },
+        {
+          path: '/candidacies/:id',
+          name: 'Candidacy',
+          component: () => import('../views/candidacy/Candidacy.vue'),
         },
         {
           path: '/users',
