@@ -1,22 +1,12 @@
-import type { RoleName } from '@/stores/user/types';
 import type { MenuItem } from './types';
 
-export function getRoleTag(roleName: RoleName): string {
-  switch (roleName) {
-    case 'ROLE_ADMIN':
-      return 'Admin';
-    case 'ROLE_RECRUITER':
-      return 'Recruiter';
-    default:
-      return '';
-  }
-}
-
-export function getMenuItems(roleName: RoleName, items: MenuItem[]) {
+export function getMenuItems(isAdmin: boolean, items: MenuItem[]) {
   const filteredItems = items
     .map((group) => ({
       ...group,
-      links: group.links.filter((link) => link.privileges.includes(roleName)),
+      links: group.links.filter((link) =>
+        link.privileges.includes(isAdmin ? 'ROLE_ADMIN' : 'ROLE_RECRUITER')
+      ),
     }))
     .filter((group) => group.links.length > 0);
   return filteredItems;

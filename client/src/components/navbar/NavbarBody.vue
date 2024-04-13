@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MenuItem } from '../../layouts/DashboardLayout.vue';
+import type { MenuItem } from '@/layouts/DashboardLayout.vue';
 import NavbarGroup from './NavbarGroup.vue';
 
 const { menuItems } = defineProps<{

@@ -1,18 +1,20 @@
-import { getUserFromToken } from './auth'
+import { getAuthUserFromToken } from './auth';
 
 describe('getUserFromToken', () => {
-  it('should return the user object from a valid JWT token', () => {
+  it('should return the user id from a valid JWT token', () => {
     const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiMTIzNDU2Nzg5MCJ9LCJpYXQiOjE2MzIwMjQwMjMsImV4cCI6MTYzMjAyNzYyM30.5Z8zJfJ6JzJvJzJ6JzJvJzJ6JzJvJzJ6JzJvJzJ6JzJvJzJ6JzJvJzJ6JzJvJzJvJzJ6JzJvJzJ6JzJvJw'
+      'eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MTIzNDU2Nzg5LCJ1c2VyIjp7ImlkIjoxMjM0NTY3ODksInVzZXJuYW1lIjoicmVjcnVpdGVyIiwicm9sZU5hbWUiOiJST0xFX1JFQ1JVSVRFUiJ9fQ.jLmFUopJEItKBwT-K-S91yBDPVjo39UZeVd6aONT-UMOOZ7dhIQMhTMqbve_m9ChWxvghVDKHR15zmZ6FdFeDg';
 
-    const user = getUserFromToken(token)
-    expect(user).toEqual({
-      id: '1234567890',
-    })
-  })
+    const authUser = getAuthUserFromToken(token);
+    expect(authUser).toEqual({
+      id: 123456789,
+      username: 'recruiter',
+      roleName: 'ROLE_RECRUITER',
+    });
+  });
 
   it('should throw an error for an invalid token', () => {
-    const token = 'invalid-token'
-    expect(() => getUserFromToken(token)).toThrow()
-  })
-})
+    const token = 'invalid-token';
+    expect(() => getAuthUserFromToken(token)).toThrow();
+  });
+});

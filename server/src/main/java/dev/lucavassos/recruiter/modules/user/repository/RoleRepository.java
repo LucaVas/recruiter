@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.modules.user.repository;
 
 import dev.lucavassos.recruiter.modules.user.entities.Role;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
+import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

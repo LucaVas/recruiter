@@ -57,37 +57,6 @@ const router = createRouter({
           name: 'UpdateJob',
           component: () => import('../views/update-job/UpdateJob.vue'),
         },
-        //     // {
-        //     //   path: '/playgrounds',
-        //     //   name: 'Playgrounds',
-        //     //   component: () => import('../views/PlaygroundsMapView.vue'),
-        //     // },
-        //     // {
-        //     //   path: '/playgrounds/:id',
-        //     //   name: 'Playground',
-        //     //   component: () => import('../views/PlaygroundView.vue'),
-        //     // },
-        //     // {
-        //     //   path: 'playgrounds/:id/report',
-        //     //   name: 'PlaygroundReport',
-        //     //   component: () => import('../views/NewReportView.vue'),
-        //     // },
-        //     // {
-        //     //   path: '/report',
-        //     //   name: 'NewReport',
-        //     //   component: () => import('../views/NewReportView.vue'),
-        //     // },
-        //     // {
-        //     //   path: 'reports/:id',
-        //     //   name: 'Report',
-        //     //   component: () => import('../views/ReportView.vue'),
-        //     // },
-        //     // {
-        //     //   path: '/myReports',
-        //     //   name: 'MyReports',
-        //     //   beforeEnter: [showForVerified],
-        //     //   component: () => import('../views/MyReportsView.vue'),
-        //     // },
       ],
     },
     // {
@@ -123,7 +92,7 @@ const router = createRouter({
     {
       path: '/:catchAll(.*)',
       name: 'NotFound',
-      component: () => import('../views/signup/SignupView.vue'),
+      component: () => import('../views/not-found/NotFoundPage.vue'),
       meta: {
         requiresAuth: false,
       },

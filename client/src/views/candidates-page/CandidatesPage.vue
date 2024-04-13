@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-import CandidatesTable from '@/components/candidates-table/CandidatesTable.vue';
+import CandidatesTable from '@/components/tables/candidates/CandidatesTable.vue';
 </script>

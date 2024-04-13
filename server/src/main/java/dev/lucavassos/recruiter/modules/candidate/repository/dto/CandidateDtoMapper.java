@@ -10,7 +10,6 @@ public class CandidateDtoMapper implements Function<Candidate, CandidateDto> {
     @Override
     public CandidateDto apply(Candidate candidate) {
         return new CandidateDto(
-                candidate.getId(),
                 candidate.getName(),
                 candidate.getPhone(),
                 candidate.getEmail(),

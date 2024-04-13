@@ -42,7 +42,7 @@ async function update(candidacyForm: CandidacyForm | undefined) {
     await updateCandidacy(candidacy);
     candidacyUpdated.value = true;
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message)
+    if (err instanceof ApiError) showError(err.message);
   } finally {
     updatingCandidacy.value = false;
   }
@@ -109,9 +109,7 @@ onMounted(async () => {
       <FilesUploader />
     </div>
 
-    <div v-else class="flex h-full w-full items-center justify-center">
-      <CandidacySuccess :message="'Candidacy updated!'" />
-    </div>
+    <CandidacySuccess v-else />
 
     <CandidacyFooter
       v-if="job"

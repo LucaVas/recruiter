@@ -7,15 +7,15 @@ import ApproveModal from './ApproveModal.vue';
 import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
-import type { UserDto } from '../../stores/user/types';
-import { ApiError } from '../../utils/types';
+import type { User } from '@/stores/user/types';
+import { ApiError } from '@/utils/types';
 import { formatDate } from './utils';
 import { getAllUsers, approveUser } from '@/stores/user';
 
 const usersTableError = ref('');
 const loading = ref(false);
 const approvingUser = ref(false);
-const users = ref<UserDto[]>();
+const users = ref<User[]>();
 const columns = ref([
   'id',
   'username',
@@ -86,7 +86,7 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <UsersTableHeader @clearFilter="clearFilter()" />
+      <Header :filters="filters" @clearFilter="clearFilter()" />
     </template>
     <template #empty> No users found. </template>
     <template #loading> Loading users, please wait... </template>
@@ -248,3 +248,4 @@ onMounted(async () => {
     </Column>
   </DataTable>
 </template>
+../../../stores/user/types../../../utils/types

@@ -6,16 +6,16 @@ import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
-
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
-import { login } from '@/stores/user';
+import { login } from '@/stores/auth';
+import type { LoginRequest } from '@/stores/auth/types';
 
 const toast = useToast();
 const router = useRouter();
 const loading = ref(false);
 
-const userForm = ref({
+const userForm = ref<LoginRequest>({
   usernameOrEmail: '',
   password: '',
 });

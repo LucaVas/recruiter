@@ -2,7 +2,7 @@ package dev.lucavassos.recruiter.modules.candidacy.domain;
 
 public record NewCandidacyRequest(
         Long jobId,
-        Long candidateId,
+        String candidatePan,
         double relevantExperience,
         double expectedCtc,
         double officialNoticePeriod,

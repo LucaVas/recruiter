@@ -1,6 +1,6 @@
 package dev.lucavassos.recruiter.auth.domain;
 
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
+import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 
 public record AuthUserInfoDto(
         Long id,

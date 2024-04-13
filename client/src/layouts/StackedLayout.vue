@@ -3,9 +3,8 @@ import Navbar from '@/components/navbar/Navbar.vue';
 import type { MenuItem } from './types'
 import { ref } from 'vue';
 
-const { menuItems, role, username } = defineProps<{
+const { menuItems, username } = defineProps<{
   menuItems: MenuItem[];
-  role: string;
   username: string
 }>();
 const menuVisible = ref(false);
@@ -20,7 +19,6 @@ const menuVisible = ref(false);
         :visible="menuVisible"
         :menuItems="menuItems"
         :username="username"
-        :role="role"
       />
     </nav>
 

@@ -3,7 +3,7 @@ package dev.lucavassos.recruiter.security;
 import dev.lucavassos.recruiter.auth.CustomUserDetailsService;
 import dev.lucavassos.recruiter.jwt.JwtAuthenticationFilter;
 import dev.lucavassos.recruiter.jwt.JwtAuthenticationEntryPoint;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
+import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

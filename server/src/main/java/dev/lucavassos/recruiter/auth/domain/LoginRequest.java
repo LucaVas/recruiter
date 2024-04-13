@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.auth;
+package dev.lucavassos.recruiter.auth.domain;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

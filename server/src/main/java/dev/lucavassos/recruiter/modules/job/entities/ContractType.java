@@ -1,7 +1,5 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
-import dev.lucavassos.recruiter.modules.user.entities.ContractTypeName;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,7 +4,6 @@ import PageForm from '@/components/PageForm.vue';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import Dropdown from 'primevue/dropdown';
-import { type UserSignupForm } from '@/stores/user/types';
 import Password from 'primevue/password';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '../../utils/types';
@@ -12,7 +11,8 @@ import Toast from 'primevue/toast';
 import { invalidSignupFields, isValidSignup } from './index';
 import type { RoleName } from '@/stores/user/types';
 import SignupCommentsModal from '@/components/signup/SignupCommentsModal.vue';
-import { signup } from '@/stores/user';
+import { signup } from '@/stores/auth/index';
+import type { SignupRequest } from '@/stores/auth/types';
 
 const toast = useToast();
 const errorMessage = ref('');
@@ -33,7 +33,7 @@ const roles = ref([
   { label: 'Recruiter', value: 'ROLE_RECRUITER' },
   { label: 'Admin', value: 'ROLE_ADMIN' },
 ]);
-const userForm = ref<UserSignupForm>({
+const userForm = ref<SignupRequest>({
   username: '',
   email: '',
   password: '',
@@ -52,8 +52,6 @@ const submitSignup = async () => {
     showError(errorMessage.value);
     return;
   }
-
-  console.log(userForm.value);
 
   loading.value = true;
   try {

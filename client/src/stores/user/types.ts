@@ -1,4 +1,5 @@
-export type UserDto = {
+// backend dtos
+export type User = {
   id: number;
   username: string;
   email: string;
@@ -12,45 +13,26 @@ export type UserDto = {
   approvedOn: Date;
   createdAt: Date;
 };
+export type Recruiter = Pick<User, 'id' | 'username'>;
+export type ApproverDto = Recruiter;
 
-export type RecruiterDto = Pick<UserDto, 'id' | 'username'>;
-export type ApproverDto = RecruiterDto;
-
+// backend domain objects
 export type RoleName = 'ROLE_RECRUITER' | 'ROLE_ADMIN';
-export type Role = {
-  id: number;
-  name: RoleName;
-};
-
-// request to signup
-export type UserSignupForm = Omit<
-  UserDto,
-  'id' | 'roles' | 'approved' | 'approver' | 'approvedOn' | 'createdAt'
-> & {
-  password: string;
-  roleName: RoleName;
-};
-
-// request to login
-export type UserLoginForm = {
-  usernameOrEmail: string;
-  password: string;
-};
-// response from login
-export type AuthUser = {
-  userId: number;
-  username: string;
-  token: string;
-  tokenType: string;
-};
-export type AuthUserInfoDto = {
-  id: number;
-  username: string;
-  roleName: RoleName;
-};
-
-export type ApprovalRequest = {
+export type UserApprovalRequest = {
   userId: number;
   approved: boolean;
   comments: string;
+};
+export type PasswordResetRequest = {
+  newPassword: string
+}
+export type PasswordResetTokenRequest = {
+  email: string;
+  username: string
+}
+
+// frontend types
+export type Role = {
+  id: number;
+  name: RoleName;
 };

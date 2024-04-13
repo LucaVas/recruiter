@@ -24,7 +24,8 @@ public class UserDtoMapper implements Function<User, UserDto> {
                         user.getId(),
                         user.getUsername()
                 ),
-                user.getApprovedOn()
+                user.getApprovedOn(),
+                user.getCreatedAt()
         );
     }
 }

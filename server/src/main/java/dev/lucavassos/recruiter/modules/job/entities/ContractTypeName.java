@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.modules.user.entities;
+package dev.lucavassos.recruiter.modules.job.entities;
 
 public enum ContractTypeName {
     PERMANENT,

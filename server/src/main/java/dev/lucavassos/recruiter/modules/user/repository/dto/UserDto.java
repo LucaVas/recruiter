@@ -16,6 +16,7 @@ public record UserDto(
         String comments,
         Boolean approved,
         ApproverDto approver,
-        LocalDateTime approvedOn
+        LocalDateTime approvedOn,
+        LocalDateTime createdAt
 ) {
 }

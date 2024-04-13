@@ -6,7 +6,7 @@ import Toast from 'primevue/toast';
 import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
-import { ApiError } from '../../utils/types';
+import { ApiError } from '@/utils/types';
 import { formatDate } from './utils';
 import { getAllCandidates, updateCandidate } from '@/stores/candidate';
 import { useToast } from 'primevue/usetoast';
@@ -15,7 +15,7 @@ import { columns } from '.';
 import CandidatesTableHeader from './CandidatesTableHeader.vue';
 import CandidateModal from '@/components/candidacy/candidate/shared/CandidateModal.vue';
 import type { CandidateModalForm } from '../candidacy/candidate/shared/types';
-import type { RawCandidateDto } from '../../stores/candidate/types';
+import type { RawCandidateDto } from '@/stores/candidate/types';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -76,7 +76,7 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <CandidatesTableHeader @clearFilter="clearFilter()" />
+      <Header :filters="filters" @clearFilter="clearFilter()" />
     </template>
     <template #empty> No candidates found. </template>
     <template #loading> Loading candidates, please wait... </template>
@@ -216,7 +216,8 @@ onMounted(async () => {
       candidateToEdit = undefined;
     "
     :isUpdate="true"
-    @update="(candidateForm) => candidateToEdit = candidateForm"
+    @update="(candidateForm) => (candidateToEdit = candidateForm)"
     @save="update(candidateToEdit)"
   />
 </template>
+../../../utils/types../../candidacy/candidate/shared/types../../../stores/candidate/types

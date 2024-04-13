@@ -1,14 +1,14 @@
 package dev.lucavassos.recruiter.auth.service;
 
 
-import dev.lucavassos.recruiter.auth.SignupRequest;
-import dev.lucavassos.recruiter.auth.SignupResponse;
+import dev.lucavassos.recruiter.auth.domain.SignupRequest;
+import dev.lucavassos.recruiter.auth.domain.SignupResponse;
 import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.auth.domain.AuthUserInfoDto;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
+import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;

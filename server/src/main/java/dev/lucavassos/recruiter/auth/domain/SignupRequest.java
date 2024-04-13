@@ -1,7 +1,4 @@
-package dev.lucavassos.recruiter.auth;
-
-import dev.lucavassos.recruiter.modules.user.entities.Role;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
+package dev.lucavassos.recruiter.auth.domain;
 
 public record SignupRequest(
         String username,

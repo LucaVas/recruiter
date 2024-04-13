@@ -51,7 +51,7 @@ public class CandidateHistory {
     private CandidateStatus status;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "candidate_id")
+    @JoinColumn(name = "candidate_pan")
     private Candidate candidate;
 
     @Column(name = "modified_by")

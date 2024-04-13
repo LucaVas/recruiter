@@ -1,11 +1,11 @@
-import type { CandidateDto } from "../candidate/types";
-import type { JobDto } from "../job/types";
-import type { RecruiterDto } from "../user/types";
+import type { CandidateDto } from '../candidate/types';
+import type { JobDto } from '../job/types';
+import type { Recruiter } from '../user/types';
 
 export type CandidacyDto = {
   id: number;
   job: JobDto;
-  recruiter: RecruiterDto;
+  recruiter: Recruiter;
   candidate: CandidateDto;
   relevantExperience: number;
   expectedCtc: number;
@@ -19,12 +19,8 @@ export type CandidacyDto = {
 
 export type UpdateCandidacyRequest = Omit<
   CandidacyDto,
-  | 'job'
-  | 'recruiter'
-  | 'candidate'
-  | 'createdAt'
-  | 'comments'
->
+  'job' | 'recruiter' | 'candidate' | 'createdAt' | 'comments'
+>;
 
 export type NewCandidacyDto = Omit<
   CandidacyDto,
@@ -32,6 +28,6 @@ export type NewCandidacyDto = Omit<
 > & { jobId: number; candidateId: number };
 
 export type CandidacyResponse = {
-    id: number,
-    candidacy: CandidacyDto
-}
+  id: number;
+  candidacy: CandidacyDto;
+};

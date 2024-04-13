@@ -2,13 +2,12 @@
 import Button from 'primevue/button';
 import Avatar from 'primevue/avatar';
 import { useRouter } from 'vue-router';
-import { logout } from '../../stores/user/index';
+import { logout } from '@/stores/auth';
 
 const router = useRouter();
 
-const { username, role } = defineProps<{
+const { username } = defineProps<{
   username: string;
-  role: string;
 }>();
 
 function logOut() {
@@ -27,10 +26,7 @@ function logOut() {
         style="background-color: #ece9fc; color: #2a1261"
         shape="circle"
       />
-      <div class="flex flex-col">
-        <h2 class="font-bold">{{ username }}</h2>
-        <h4 class="font-normal">{{ role }}</h4>
-      </div>
+      <h2 class="font-bold">{{ username }}</h2>
     </div>
     <Button @click="logOut()" size="small" icon="pi pi-sign-out" />
   </div>

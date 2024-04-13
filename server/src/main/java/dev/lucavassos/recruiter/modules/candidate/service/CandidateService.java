@@ -12,9 +12,7 @@ import dev.lucavassos.recruiter.modules.candidate.repository.CandidateHistoryRep
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDtoMapper;
-import dev.lucavassos.recruiter.modules.job.entities.Job;
-import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
+import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.utils.Constants;
@@ -89,7 +87,7 @@ public class CandidateService {
         LOG.info("New candidate created: [{}]", newCandidate);
 
         return new CandidateResponse(
-                newCandidate.getId(),
+                newCandidate.getPan(),
                 dtoMapper.apply(newCandidate)
         );
     }
@@ -161,7 +159,7 @@ public class CandidateService {
         LOG.info("Candidate updated: [{}]", candidate);
 
         return new CandidateResponse(
-                candidate.getId(),
+                candidate.getPan(),
                 dtoMapper.apply(candidate)
         );
 
@@ -179,16 +177,17 @@ public class CandidateService {
                         });
 
         return new CandidateResponse(
-                candidate.getId(),
+                candidate.getPan(),
                 dtoMapper.apply(candidate)
         );
     }
 
-    public void changeCandidateStatus(Long id) {
-        Candidate candidate = this.candidateRepository.findOneById(id).orElseThrow(
-                () -> new ResourceNotFoundException(
-                        "Candidate with id [%d] not found".formatted(id)
-                )
+    public void changeCandidateStatus(String pan) {
+        Candidate candidate = this.candidateRepository.findOneByPan(pan).orElseThrow(
+                () -> {
+                    LOG.error("Candidate with pan {} not found", pan);
+                    return new ResourceNotFoundException("Candidate not found");
+                }
         );
 
         switch (candidate.getStatus()) {

@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.jwt;
 
 import dev.lucavassos.recruiter.auth.CustomUserDetailsService;
-import dev.lucavassos.recruiter.exception.UnauthorizedException;
+import dev.lucavassos.recruiter.auth.domain.AuthUserInfoDto;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,9 +44,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 tokenProvider.validateToken(jwt);
 
-
-                Long userId = tokenProvider.getUserIdFromJWT(jwt);
-                UserDetails userDetails = service.loadUserById(userId);
+                Long authUserId = tokenProvider.getUserIdFromJWT(jwt);
+                UserDetails userDetails = service.loadUserById(authUserId);
 
                 LOG.info("UserDetails: {}" ,userDetails.getAuthorities());
 

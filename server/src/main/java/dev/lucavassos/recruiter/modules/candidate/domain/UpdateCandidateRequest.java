@@ -5,7 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record UpdateCandidateRequest(
-
         @Nullable String name,
         @Nullable String phone,
         @Nullable String email,

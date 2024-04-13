@@ -1,9 +1,6 @@
 package dev.lucavassos.recruiter.modules.user.service;
 
-import dev.lucavassos.recruiter.auth.SignupRequest;
-import dev.lucavassos.recruiter.auth.SignupResponse;
 import dev.lucavassos.recruiter.auth.UserPrincipal;
-import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.entities.PasswordResetToken;

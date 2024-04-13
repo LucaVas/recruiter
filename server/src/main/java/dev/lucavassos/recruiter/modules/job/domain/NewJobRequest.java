@@ -1,9 +1,7 @@
 package dev.lucavassos.recruiter.modules.job.domain;
 
-import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.repository.dto.ContractTypeDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
-import dev.lucavassos.recruiter.modules.user.entities.ContractTypeName;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

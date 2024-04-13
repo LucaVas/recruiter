@@ -26,8 +26,9 @@ import java.util.Set;
 public class Candidate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(length = 10, name = "pan")
+    @Size(min = 10, max = 10)
+    private String pan;
 
     @Column(nullable = false, name = "name")
     private String name;
@@ -48,10 +49,6 @@ public class Candidate {
     @Column(nullable = false, name = "current_ctc")
     @Min(0)
     private double currentCtc;
-
-    @Column(nullable = false, unique = true, length = 10, name = "pan")
-    @Size(min = 10, max = 10)
-    private String pan;
 
     @Column(name = "candidate_status")
     @Enumerated(EnumType.STRING)

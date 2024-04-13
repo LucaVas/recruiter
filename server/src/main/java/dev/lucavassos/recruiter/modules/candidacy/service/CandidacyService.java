@@ -14,19 +14,12 @@ import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDtoMap
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
-import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
-import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
-import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
-import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
-import dev.lucavassos.recruiter.modules.skill.entities.Skill;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
+import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.utils.Constants;
-import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class CandidacyService {
@@ -80,9 +70,9 @@ public class CandidacyService {
                 }
         );
         // find candidate
-        Candidate candidate = candidateRepository.findOneById(candidacy.candidateId()).orElseThrow(
+        Candidate candidate = candidateRepository.findOneByPan(candidacy.candidatePan()).orElseThrow(
                 () -> {
-                    LOG.error("Candidate with ID {} not found", candidacy.candidateId());
+                    LOG.error("Candidate with Pan {} not found", candidacy.candidatePan());
                     return new ResourceNotFoundException("Candidate not found");
                 }
         );

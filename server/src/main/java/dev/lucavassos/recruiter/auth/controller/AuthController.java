@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.auth.controller;
 
 import dev.lucavassos.recruiter.auth.*;
-import dev.lucavassos.recruiter.auth.domain.AuthUserInfoDto;
+import dev.lucavassos.recruiter.auth.domain.*;
 import dev.lucavassos.recruiter.auth.service.AuthService;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.jwt.JwtTokenProvider;
@@ -72,7 +72,10 @@ public class AuthController {
 
         String jwt = tokenProvider.generateToken(auth);
 
-        LoginResponse res = new LoginResponse(userPrincipal.getId(), userPrincipal.getUsername(), jwt, "Bearer");
+        LoginResponse res = new LoginResponse(
+                new AuthUserInfoDto(userPrincipal.getId(), userPrincipal.getUsername(), userPrincipal.getRoleName()),
+                jwt,
+                "Bearer");
         LOG.info("Login successful. Response: {}", res);
 
         return ResponseEntity.ok()

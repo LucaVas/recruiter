@@ -1,7 +1,6 @@
 export interface ApiErrorI {
   message: string;
   statusCode: number;
-  
 }
 
 export class ApiError implements ApiErrorI {

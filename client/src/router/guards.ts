@@ -1,4 +1,4 @@
-import { isLoggedIn, role } from '@/stores/user';
+import { isAdmin, isLoggedIn } from '@/stores/auth';
 
 export const authenticate = () => {
   if (!isLoggedIn.value) return { name: 'Login' };
@@ -7,13 +7,13 @@ export const authenticate = () => {
 };
 
 export const showForAdmin = () => {
-  if (role.value !== 'ROLE_ADMIN') return { name: 'Dashboard' };
+  if (!isAdmin.value) return { name: 'Dashboard' };
 
   return true;
 };
 
 export const hideForAuth = () => {
-  if (role.value === 'ROLE_ADMIN') return { name: 'Dashboard' };
+  if (isLoggedIn.value) return { name: 'Dashboard' };
 
   return true;
 };

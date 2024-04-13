@@ -1,9 +1,8 @@
 package dev.lucavassos.recruiter.jwt;
 
 import dev.lucavassos.recruiter.auth.UserPrincipal;
+import dev.lucavassos.recruiter.auth.domain.AuthUserInfoDto;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
-import dev.lucavassos.recruiter.modules.user.entities.Role;
-import dev.lucavassos.recruiter.modules.user.entities.RoleName;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -11,13 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -36,13 +33,11 @@ public class JwtTokenProvider {
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
-        Boolean isAdmin = userPrincipal.isAdmin();
+        AuthUserInfoDto userInfo = new AuthUserInfoDto(userPrincipal.getId(), userPrincipal.getUsername(), userPrincipal.getRoleName());
 
         HashMap<String, Object> claims = new HashMap<>();
         claims.put("id", userPrincipal.getId());
-        claims.put("sub", userPrincipal.getUsername());
-        claims.put("isAdmin", isAdmin);
-
+        claims.put("user", userInfo);
 
         LOG.info("Generating new token with principal {} and expiry date {}", userPrincipal, expiryDate);
 

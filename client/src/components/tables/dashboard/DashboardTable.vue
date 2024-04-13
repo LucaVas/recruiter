@@ -7,7 +7,6 @@ import Tag from 'primevue/tag';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
 import type { JobDto } from '@/stores/job/types';
-import DashboardTableHeader from './DashboardTableHeader.vue';
 import Toast from 'primevue/toast';
 import {
   filters,
@@ -17,10 +16,11 @@ import {
   getClientIcon,
   formatDate,
   globalFiltersFields,
+  clearFilter,
 } from './utils';
 import { getSkills } from './functions';
 import { useToast } from 'primevue/usetoast';
-import { ApiError } from '../../utils/types';
+import { ApiError } from '@/utils/types';
 import { getAllJobs } from '@/stores/job';
 
 const loading = ref(false);
@@ -70,7 +70,7 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <DashboardTableHeader />
+      <Header :filters="filters" @clearFilter="clearFilter()" />
     </template>
     <template #empty> No jobs found. </template>
     <template #loading> Loading jobs, please wait... </template>
