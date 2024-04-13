@@ -1,38 +1,35 @@
 <script setup lang="ts">
 import DataTable, { type DataTableRowReorderEvent } from 'primevue/datatable';
 import Column from 'primevue/column';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
-import type { RawSkillDto, SkillDto } from '@/stores/skill/types';
+import type { RawSkill } from '@/stores/skill/types';
+import type { Job } from '@/stores/job/types';
 
-const { jobSkills, disabled } = defineProps<{
-  jobSkills: SkillDto[] | RawSkillDto[];
+const { job, disabled } = defineProps<{
+  job: Job;
   disabled: boolean;
 }>();
 
-const skills = ref<RawSkillDto[]>([]);
-
 const onRowReorder = (event: DataTableRowReorderEvent) => {
-  skills.value = event.value;
+  details.value.skills = new Set(event.value);
 };
 
-const removeSkill = (skill: RawSkillDto): void => {
-  skills.value.splice(skills.value.indexOf(skill), 1);
-  emits('updateSkills', skills.value);
+const removeSkill = (skill: RawSkill): void => {
+  details.value.skills.delete(skill);
+  emits('update', details.value);
 };
 
-const addSkill = (skill: RawSkillDto): void => {
-  skills.value.unshift(skill);
-  emits('updateSkills', skills.value);
+const addSkill = (skill: RawSkill): void => {
+  details.value.skills.add(skill);
+  emits('update', details.value);
 };
 
 const emits = defineEmits<{
-  (e: 'updateSkills', skills: RawSkillDto[]): void;
+  (e: 'update', content: Job): void;
 }>();
 
-onMounted(() => {
-  skills.value = jobSkills;
-});
+const details = ref(job);
 </script>
 
 <template>
@@ -41,7 +38,7 @@ onMounted(() => {
     <DataTable
       scrollable
       scrollHeight="15rem"
-      :value="skills"
+      :value="new Array(details.skills)"
       :reorderableColumns="true"
       size="small"
       class="mb-2"

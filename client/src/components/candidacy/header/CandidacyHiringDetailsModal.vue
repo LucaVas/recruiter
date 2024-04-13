@@ -1,25 +1,21 @@
 <script setup lang="ts">
 import JobMetadataEntry from '@/components/job/metadata/JobMetadataEntry.vue';
 import { formatDate } from '@/utils/dateUtils';
-import type { JobDto } from '@/stores/job/types';
+import type { Job } from '@/stores/job/types';
 import Dialog from 'primevue/dialog';
 import { capitalize } from '@/utils/stringUtils';
-import { onMounted, ref } from 'vue';
-
-const details = ref<JobDto>();
+import { ref } from 'vue';
 
 const { visible, job } = defineProps<{
   visible: boolean;
-  job: JobDto;
+  job: Job;
 }>();
 
 defineEmits<{
   (e: 'close'): void;
 }>();
 
-onMounted(() => {
-  details.value = job;
-});
+const details = ref(job);
 </script>
 
 <template>
@@ -40,13 +36,22 @@ onMounted(() => {
           :content="`${capitalize(details.contractType.contractTypeName)} contract`"
         />
         <JobMetadataEntry :icon="'pi-file'" :content="`${details.wantedCvs} CVs wanted`" />
-        <JobMetadataEntry :icon="'pi-users'" :content="`${details.numberOfCandidates} candidates`" />
+        <JobMetadataEntry
+          :icon="'pi-users'"
+          :content="`${details.numberOfCandidates} candidates`"
+        />
         <JobMetadataEntry
           :icon="'pi-calendar'"
           :content="`From ${details.experienceRangeMin} to ${details.experienceRangeMax} years of experience`"
         />
-        <JobMetadataEntry :icon="'pi-clock'" :content="`${details.noticePeriodInDays} days of notice`" />
-        <JobMetadataEntry :icon="'pi-briefcase'" :content="`${details.salaryBudget} ${details.currency}`" />
+        <JobMetadataEntry
+          :icon="'pi-clock'"
+          :content="`${details.noticePeriodInDays} days of notice`"
+        />
+        <JobMetadataEntry
+          :icon="'pi-briefcase'"
+          :content="`${details.salaryBudget} ${details.currency}`"
+        />
         <JobMetadataEntry
           :icon="'pi-money-bill'"
           :content="`${details.bonusPayPerCv} INR per CV paid on ${formatDate(details.cvRatePaymentDate)}`"

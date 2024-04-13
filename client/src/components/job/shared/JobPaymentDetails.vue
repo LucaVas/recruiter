@@ -7,9 +7,8 @@
           <InputGroupAddon>
             <i class="pi pi-wallet" />
           </InputGroupAddon>
-          <InputText
+          <InputNumber
             id="bonusPayPerCv"
-            type="number"
             :min="0"
             v-model="details.bonusPayPerCv"
             required
@@ -47,9 +46,8 @@
           <InputGroupAddon>
             <i class="pi pi-money-bill" />
           </InputGroupAddon>
-          <InputText
+          <InputNumber
             id="closureBonus"
-            type="text"
             :min="0"
             v-model="details.closureBonus"
             required
@@ -85,22 +83,13 @@
 <script setup lang="ts">
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-import InputText from 'primevue/inputtext';
 import Calendar from 'primevue/calendar';
-import { ref, onMounted } from 'vue';
-import type { JobDto, NewJob } from '@/stores/job/types';
-
-// variables
-const details = ref({
-  bonusPayPerCv: '',
-  closureBonus: '',
-  cvRatePaymentDate: '',
-  closureBonusPaymentDate: '',
-});
+import { ref } from 'vue';
+import type { Job, NewJobRequest } from '@/stores/job/types';
 
 // props
 const { jobDetails, disabled } = defineProps<{
-  jobDetails: JobDto | NewJob;
+  jobDetails: Job | NewJobRequest;
   disabled: boolean;
 }>();
 
@@ -109,8 +98,5 @@ const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
 }>();
 
-// init
-onMounted(() => {
-  details.value = jobDetails;
-});
+const details = ref(jobDetails);
 </script>

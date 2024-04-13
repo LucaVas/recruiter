@@ -13,10 +13,10 @@ public record NewCandidateRequest(
         String phone,
         @NotBlank(message = "Email cannot be empty") @Email(message = "Invalid email")
         String email,
-        double totalExperience,
+        Double totalExperience,
         @NotBlank(message = "Education cannot be empty")
         String education,
-        double currentCtc,
+        Double currentCtc,
         @NotBlank(message = "Pan cannot be empty") @Length(min = 10, max = 10)
         String pan
 ) {

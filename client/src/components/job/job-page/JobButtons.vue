@@ -2,6 +2,7 @@
 import Button from 'primevue/button';
 import type { JobStatus } from '@/stores/job/types';
 import { useRouter } from 'vue-router';
+import { isAdmin } from '@/stores/auth';
 
 const router = useRouter();
 const { id, status } = defineProps<{
@@ -40,7 +41,7 @@ defineEmits<{
       severity="warning"
       label="Edit"
       outlined
-      v-if="status !== 'ARCHIVED'"
+      v-if="status !== 'ARCHIVED' && isAdmin"
       @click="router.push({ name: 'UpdateJob', params: { id: id } })"
     />
     <Button
@@ -50,7 +51,7 @@ defineEmits<{
       severity="danger"
       label="Delete"
       outlined
-      v-if="status !== 'ARCHIVED'"
+      v-if="status !== 'ARCHIVED' && isAdmin"
       @click="$emit('deleteJob')"
     />
   </div>

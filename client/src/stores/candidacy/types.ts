@@ -1,12 +1,13 @@
-import type { CandidateDto } from '../candidate/types';
-import type { JobDto } from '../job/types';
+import type { Candidate } from '../candidate/types';
+import type { Job } from '../job/types';
 import type { Recruiter } from '../user/types';
 
-export type CandidacyDto = {
+// backend dtos
+export type Candidacy = {
   id: number;
-  job: JobDto;
+  job: Job;
   recruiter: Recruiter;
-  candidate: CandidateDto;
+  candidate: Candidate;
   relevantExperience: number;
   expectedCtc: number;
   officialNoticePeriod: number;
@@ -17,17 +18,19 @@ export type CandidacyDto = {
   createdAt: Date;
 };
 
+// backend domain objects
 export type UpdateCandidacyRequest = Omit<
-  CandidacyDto,
-  'job' | 'recruiter' | 'candidate' | 'createdAt' | 'comments'
+  Candidacy,
+  'id' | 'job' | 'recruiter' | 'candidate' | 'createdAt'
 >;
-
-export type NewCandidacyDto = Omit<
-  CandidacyDto,
-  'id' | 'job' | 'candidate' | 'recruiter' | 'comments' | 'createdAt'
-> & { jobId: number; candidateId: number };
-
+export type NewCandidacyRequest = Omit<UpdateCandidacyRequest, 'id'> & {
+  jobId: number;
+  candidatePan: string;
+};
 export type CandidacyResponse = {
   id: number;
-  candidacy: CandidacyDto;
+  candidacy: Candidacy;
 };
+
+// frontend types
+export type RawCandidacy = UpdateCandidacyRequest

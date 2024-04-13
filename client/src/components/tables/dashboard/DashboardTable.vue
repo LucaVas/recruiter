@@ -6,26 +6,26 @@ import { onMounted, ref } from 'vue';
 import Tag from 'primevue/tag';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
-import type { JobDto } from '@/stores/job/types';
+import type { Job } from '@/stores/job/types';
 import Toast from 'primevue/toast';
+import { formatDate } from '@/utils/dateUtils';
 import {
   filters,
   initFilters,
   getSeverity,
   getContractType,
   getClientIcon,
-  formatDate,
   globalFiltersFields,
   clearFilter,
+  getSkills,
 } from './utils';
-import { getSkills } from './functions';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { getAllJobs } from '@/stores/job';
 
 const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
-const jobs = ref<JobDto[]>();
+const jobs = ref<Job[]>();
 const statuses = ref(['closed', 'open', 'pending']);
 
 const toast = useToast();

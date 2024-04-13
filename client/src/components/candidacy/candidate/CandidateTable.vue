@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import CandidateSingleSelectTable from './CandidateSingleSelectTable.vue';
-import type { RawCandidateDto } from '../../../stores/candidate/types';
+import type { Candidate } from '../../../stores/candidate/types';
 
 const { candidateToDisplay } = defineProps<{
-  candidateToDisplay: RawCandidateDto;
+  candidateToDisplay: Candidate;
 }>();
 const emits = defineEmits<{
-  (e: 'selectCandidate', candidate: RawCandidateDto | null): void;
+  (e: 'selectCandidate', candidate: Candidate | null): void;
 }>();
 </script>
 

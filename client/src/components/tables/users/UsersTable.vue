@@ -9,7 +9,7 @@ import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
 import type { User } from '@/stores/user/types';
 import { ApiError } from '@/utils/types';
-import { formatDate } from './utils';
+import { formatDate } from '@/utils/dateUtils';
 import { getAllUsers, approveUser } from '@/stores/user';
 
 const usersTableError = ref('');
@@ -47,6 +47,11 @@ async function approve() {
     if (err instanceof ApiError) usersTableError.value = err.message;
   } finally {
     initFilters();
+    approvalRequest.value = {
+      userId: '',
+      approved: false,
+      comments: '',
+    };
     approvingUser.value = false;
   }
   approveModalOpen.value = false;
@@ -248,4 +253,3 @@ onMounted(async () => {
     </Column>
   </DataTable>
 </template>
-../../../stores/user/types../../../utils/types

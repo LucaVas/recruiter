@@ -11,6 +11,7 @@
           v-model="details.client"
           @input="emit('input', details)"
           :disabled="disabled"
+          :invalid="details.client === ''"
         />
       </InputGroup>
     </div>
@@ -24,6 +25,7 @@
           v-model="details.name"
           @input="emit('input', details)"
           :disabled="disabled"
+          :invalid="details.name === ''"
         />
       </InputGroup>
     </div>
@@ -68,20 +70,13 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { jobStatuses, contractTypes } from './utils';
-import type { JobDto, NewJob } from '@/stores/job/types';
-
-const details = ref<Partial<JobDto>>({
-  client: '',
-  name: '',
-  status: 'OPEN',
-  contractType: { contractTypeName: 'PERMANENT' },
-});
+import type { Job, NewJobRequest } from '@/stores/job/types';
 
 // props
 const { jobDetails, disabled } = defineProps<{
-  jobDetails: JobDto | NewJob;
+  jobDetails: Job | NewJobRequest;
   disabled: boolean;
 }>();
 
@@ -90,8 +85,5 @@ const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
 }>();
 
-// init
-onMounted(() => {
-  details.value = jobDetails;
-});
+const details = ref(jobDetails);
 </script>

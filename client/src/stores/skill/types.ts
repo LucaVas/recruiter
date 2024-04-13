@@ -1,9 +1,9 @@
-import type { QuestionDto } from '../question/types';
+import type { Question } from '../question/types';
 
-export type SkillDto = {
+// backend dtos
+export type Skill = {
   id: number;
   name: string;
-  questions: Set<QuestionDto>;
+  questions: Set<Question>;
 };
-
-export type RawSkillDto = Pick<SkillDto, 'id' | 'name'>;
+export type RawSkill = Omit<Skill, 'questions'>;

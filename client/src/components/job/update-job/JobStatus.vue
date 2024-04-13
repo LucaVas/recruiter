@@ -40,7 +40,7 @@ import type { JobStatus } from '@/stores/job/types';
 import { formatDate } from '@/utils/dateUtils';
 import { ref } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';
-import { isAdmin } from '@/stores/user/index';
+import { isAdmin } from '@/stores/auth';
 import DeleteJobModal from '@/components/job/shared/DeleteJobModal.vue';
 import { getSeverity, getStatusIcon, formatStatus } from '../shared/utils';
 

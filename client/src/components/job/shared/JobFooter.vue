@@ -2,30 +2,31 @@
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { visible, jobUpdated, updatingJob } = defineProps<{
+const { visible, saved, saving, isUpdate } = defineProps<{
   visible: boolean;
-  updatingJob: boolean;
-  jobUpdated: boolean;
+  saving: boolean;
+  saved: boolean;
+  isUpdate: boolean
 }>();
 
 defineEmits<{
-  (e: 'update'): void;
+  (e: 'save'): void;
 }>();
 </script>
 
 <template>
   <div class="flex w-full justify-between">
     <Button
-      v-if="!jobUpdated"
+      v-if="!saved"
       label="Back"
       size="small"
-      :loading="updatingJob"
+      :loading="saving"
       @click="router.go(-1)"
     />
     <div>
-      <Button v-if="visible" label="Update Job" @click="$emit('update')" />
+      <Button v-if="!saved" :label="isUpdate ? 'Update Job' : 'Create Job'" @click="$emit('save')" />
       <Button
-        v-if="jobUpdated"
+        v-if="saved"
         label="Back to Dashboard"
         size="small"
         @click="router.push({ name: 'Dashboard' })"

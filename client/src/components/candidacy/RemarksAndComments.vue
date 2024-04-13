@@ -1,18 +1,17 @@
 <script setup lang="ts">
+import type { RawCandidacy } from '@/stores/candidacy/types';
 import Textarea from 'primevue/textarea';
 import { ref } from 'vue';
 
-const { isArchived } = defineProps<{
-  isArchived: boolean;
+const { candidacy } = defineProps<{
+  candidacy: RawCandidacy
 }>();
 
-const details = ref({
-  remarks: '',
-  comments: '',
-});
 const emit = defineEmits<{
-  (e: 'input', content: typeof details.value): void;
+  (e: 'input', content: RawCandidacy): void;
 }>();
+
+const details = ref(candidacy)
 </script>
 
 <template>

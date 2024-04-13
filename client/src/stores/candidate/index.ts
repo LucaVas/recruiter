@@ -1,9 +1,9 @@
-import type { CandidateDto, CandidateResponse, RawCandidateDto } from './types';
+import type { Candidate, CandidateResponse, NewCandidateRequest } from './types';
 import axiosApi from '../api';
 
 const api = axiosApi();
 
-export async function createCandidate(newCandidate: RawCandidateDto): Promise<CandidateResponse> {
+export async function createCandidate(newCandidate: NewCandidateRequest): Promise<CandidateResponse> {
   const { data } = await api.post(`/candidates`, newCandidate);
   return data;
 }
@@ -13,12 +13,12 @@ export async function findCandidate(identifier: string): Promise<CandidateRespon
   return data;
 }
 
-export async function updateCandidate(candidate: RawCandidateDto) {
+export async function updateCandidate(candidate: Candidate) {
   const { data } = await api.put(`/candidates`, candidate);
   return data;
 }
 
-export async function getAllCandidates(): Promise<CandidateDto[]> {
+export async function getAllCandidates(): Promise<Candidate[]> {
   const { data } = await api.get('/candidates');
   return data;
 }

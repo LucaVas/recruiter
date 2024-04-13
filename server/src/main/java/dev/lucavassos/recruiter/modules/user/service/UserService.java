@@ -76,9 +76,11 @@ public class UserService  {
     public List<UserDto> getAllUsers() {
         LOG.info("Request received for all users");
         List<User> users = repository.findAll();
-        LOG.info("Users: {}", users);
+        User user = getAuthUser();
+
         return users
                 .stream()
+                .filter(u -> !u.getId().equals(user.getId()))
                 .map(userDtoMapper)
                 .toList();
 
@@ -156,5 +158,17 @@ public class UserService  {
         updatedUser.setPassword(passwordEncoder.encode(request.newPassword()));
         repository.save(updatedUser);
         tokenRepository.delete(token);
+    }
+
+    private User getAuthUser() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return repository.findOneById(userPrincipal.getId()).orElseThrow(
+                () -> {
+                    LOG.error("User with id {} not found", userPrincipal.getId());
+                    return new ResourceNotFoundException("User not found");
+                }
+        );
     }
 }

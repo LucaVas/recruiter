@@ -1,6 +1,6 @@
-import type { CandidacyDto, UpdateCandidacyRequest } from '@/stores/candidacy/types';
+import type { Candidacy, UpdateCandidacyRequest } from '@/stores/candidacy/types';
 
-export function mapCandidacyToForm(candidacy: CandidacyDto): CandidacyForm {
+export function mapCandidacyToForm(candidacy: Candidacy): CandidacyForm {
   return {
     ...candidacy,
     jobId: candidacy.job.id,
@@ -22,7 +22,7 @@ export function mapFormToCandidacy(candidacyForm: CandidacyForm): UpdateCandidac
 }
 
 export type CandidacyForm = Pick<
-  CandidacyDto,
+  Candidacy,
   'id' | 'candidate' | 'reasonForQuickJoin' | 'remarks' | 'comments' | 'createdAt'
 > & {
   jobId: number;

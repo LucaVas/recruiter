@@ -1,5 +1,5 @@
-export type CandidateDto = {
-  id: number;
+// backend dtos
+export type Candidate = {
   name: string;
   phone: string;
   email: string;
@@ -10,11 +10,10 @@ export type CandidateDto = {
   createdAt: Date;
 };
 
-export type RawCandidateDto = Omit<CandidateDto, 'id' | 'createdAt'>;
+// backend domain objects
+export type CandidateResponse = { pan: string; candidate: Candidate };
+export type NewCandidateRequest = Omit<Candidate, 'createdAt'>
+export type UpdateCandidateRequest = NewCandidateRequest
 
-export type Recruiter = {
-  id: number;
-  username: string;
-};
-export type CandidateResponse = { id: number; candidate: CandidateDto };
-
+// backend enums
+export type CandidateStatus = 'ACTIVE' | 'ARCHIVED'

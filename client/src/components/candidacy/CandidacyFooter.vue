@@ -2,8 +2,8 @@
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
-const { submittingNewCandidacy, candidacySubmitted, disabled, isUpdate } = defineProps<{
-  submittingNewCandidacy: boolean;
+const { submittingCandidacy, candidacySubmitted, disabled, isUpdate } = defineProps<{
+  submittingCandidacy: boolean;
   disabled: boolean;
   candidacySubmitted: boolean;
   isUpdate: boolean
@@ -21,7 +21,7 @@ defineEmits<{
         v-if="!candidacySubmitted"
         label="Back"
         size="small"
-        :loading="submittingNewCandidacy"
+        :loading="submittingCandidacy"
         @click="router.go(-1)"
       />
     <div>
@@ -30,7 +30,7 @@ defineEmits<{
         :label="isUpdate ? 'Update' : 'Submit'"
         size="small"
         @click="isUpdate ? $emit('update') : $emit('submit')"
-        :loading="submittingNewCandidacy"
+        :loading="submittingCandidacy"
       />
       <Button
         v-if="candidacySubmitted"

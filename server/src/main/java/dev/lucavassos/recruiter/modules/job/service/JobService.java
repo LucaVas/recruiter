@@ -14,7 +14,6 @@ import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
 import dev.lucavassos.recruiter.modules.job.repository.ContractTypeRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
-import dev.lucavassos.recruiter.modules.job.repository.dto.FullJobDtoMapper;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
@@ -61,8 +60,6 @@ public class JobService {
     @Autowired
     private JobDtoMapper jobDtoMapper;
     @Autowired
-    private FullJobDtoMapper fullJobDtoMapper;
-    @Autowired
     private SkillDtoMapper skillDtoMapper;
     @Autowired
     private QuestionDtoMapper questionDtoMapper;
@@ -72,11 +69,11 @@ public class JobService {
         LOG.info("Initiating new job creation process...");
 
         Set<Skill> skills = new HashSet<>(skillRepository
-                .findAllById(request.getSkills().stream().map(RawSkillDto::id).collect(Collectors.toSet())));
+                .findAllById(request.skills().stream().map(RawSkillDto::id).collect(Collectors.toSet())));
 
         ContractType contractType = contractTypeRepository
-                .findByContractTypeName(request.getContractType().contractTypeName())
-                .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.getContractType())));
+                .findByContractTypeName(request.contractType().contractTypeName())
+                .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.contractType())));
 
         User recruiter = getAuthUser();
 
@@ -84,23 +81,23 @@ public class JobService {
         try {
             createdJob = repository.save(
                     Job.builder()
-                            .client(request.getClient())
-                            .name(request.getName())
-                            .status(request.getStatus())
+                            .client(request.client())
+                            .name(request.name())
+                            .status(request.status())
                             .contractType(contractType)
-                            .wantedCvs(request.getWantedCvs())
+                            .wantedCvs(request.wantedCvs())
                             .skills(skills)
-                            .experienceRangeMin(request.getExperienceRangeMin())
-                            .experienceRangeMax(request.getExperienceRangeMax())
-                            .noticePeriodInDays(request.getNoticePeriodInDays())
-                            .salaryBudget(request.getSalaryBudget())
-                            .currency(request.getCurrency())
-                            .description(request.getDescription())
-                            .bonusPayPerCv(request.getBonusPayPerCv())
-                            .closureBonus(request.getClosureBonus())
-                            .cvRatePaymentDate(request.getCvRatePaymentDate())
-                            .closureBonusPaymentDate(request.getClosureBonusPaymentDate())
-                            .comments(request.getComments())
+                            .experienceRangeMin(request.experienceRangeMin())
+                            .experienceRangeMax(request.experienceRangeMax())
+                            .noticePeriodInDays(request.noticePeriodInDays())
+                            .salaryBudget(request.salaryBudget())
+                            .currency(request.currency())
+                            .description(request.description())
+                            .bonusPayPerCv(request.bonusPayPerCv())
+                            .closureBonus(request.closureBonus())
+                            .cvRatePaymentDate(request.cvRatePaymentDate())
+                            .closureBonusPaymentDate(request.closureBonusPaymentDate())
+                            .comments(request.comments())
                             .recruiter(recruiter)
                             .build()
             );
@@ -271,7 +268,8 @@ public class JobService {
                 .filter(job -> job.getStatus() != JobStatus.ARCHIVED)
                 .map(job -> {
                     Set<Candidacy> candidacies = new HashSet<>(candidacyRepository.findByJob(job));
-                    return fullJobDtoMapper.apply(job, candidacies);
+                    job.setNumberOfCandidates(candidacies.size());
+                    return jobDtoMapper.apply(job);
                 })
                 .toList();
 

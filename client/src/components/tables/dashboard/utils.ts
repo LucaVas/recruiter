@@ -1,5 +1,7 @@
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import { ref } from 'vue';
+import type { Skill } from '@/stores/skill/types';
+
 
 export const filters = ref();
 export const globalFiltersFields = ref([
@@ -101,12 +103,7 @@ export const getClientIcon = (clientName: string) => {
   }
 };
 
-export const formatDate = (value: string) => {
-  const date = new Date(Date.parse(value));
-  const formattedDate = date.toLocaleDateString('en-US', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-  return formattedDate;
+
+export const getSkills = (skills: Skill[]): string => {
+  return skills.map((skill) => skill.name).join(', ');
 };

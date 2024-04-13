@@ -5,17 +5,16 @@ import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref } from 'vue';
-import { invalidFields } from './index';
-import type { RawCandidateDto } from '@/stores/candidate/types';
+import type { Candidate, NewCandidateRequest } from '@/stores/candidate/types';
 
 const { candidate, visible, isUpdate } = defineProps<{
-  candidate: RawCandidateDto;
+  candidate: Candidate | NewCandidateRequest | undefined;
   visible: boolean;
   isUpdate: boolean
 }>();
 
 const emits = defineEmits<{
-  (e: 'update', content: RawCandidateDto): void;
+  (e: 'update', content: NewCandidateRequest): void;
   (e: 'close'): void;
   (e: 'save'): void;
 }>();
@@ -43,7 +42,7 @@ const candidateForm = ref(candidate)
             placeholder="Name"
             autocomplete="off"
             v-model="candidateForm.name"
-            :invalid="invalidFields.name.invalid"
+            :invalid="candidateForm.name === ''"
             @input="emits('update', candidateForm)"
           />
         </InputGroup>
@@ -58,7 +57,7 @@ const candidateForm = ref(candidate)
             mask="(999) 999-9999"
             placeholder="Phone"
             :unmask="true"
-            :invalid="invalidFields.phone.invalid"
+            :invalid="candidateForm.phone === ''"
             @input="emits('update', candidateForm)"
           />
         </InputGroup>
@@ -72,7 +71,7 @@ const candidateForm = ref(candidate)
             autocomplete="off"
             type="email"
             v-model="candidateForm.email"
-            :invalid="invalidFields.email.invalid"
+            :invalid="candidateForm.email === ''"
             @input="emits('update', candidateForm)"
           />
         </InputGroup>
@@ -85,7 +84,7 @@ const candidateForm = ref(candidate)
             placeholder="Pan"
             autocomplete="off"
             v-model="candidateForm.pan"
-            :invalid="invalidFields.pan.invalid"
+            :invalid="candidateForm.pan === '' || candidateForm.pan.length !== 10"
             @input="isUpdate ? null : emits('update', candidateForm)"
             :disabled="isUpdate"
           />
@@ -99,7 +98,7 @@ const candidateForm = ref(candidate)
             placeholder="Education"
             autocomplete="off"
             v-model="candidateForm.education"
-            :invalid="invalidFields.education.invalid"
+            :invalid="candidateForm.education === ''"
             @input="emits('update', candidateForm)"
           />
         </InputGroup>
@@ -115,7 +114,6 @@ const candidateForm = ref(candidate)
               :min="0"
               :max="50"
               v-model="candidateForm.totalExperience"
-              :invalid="invalidFields.totalExperience.invalid"
               @input="emits('update', candidateForm)"
             />
           </InputGroup>
@@ -128,7 +126,6 @@ const candidateForm = ref(candidate)
               autocomplete="off"
               :min="0"
               v-model="candidateForm.currentCtc"
-              :invalid="invalidFields.currentCtc.invalid"
               @input="emits('update', candidateForm)"
             />
             <InputGroupAddon>INR</InputGroupAddon>

@@ -1,36 +1,18 @@
 <script setup lang="ts">
 import JobMetadataEntry from '../metadata/JobMetadataEntry.vue';
 import { formatDate } from '@/utils/dateUtils';
-import type { Currency } from '@/stores/job/types';
 import Dialog from 'primevue/dialog';
+import type { Job } from '@/stores/job/types';
 
-const {
-  visible,
-  experienceRangeMin,
-  experienceRangeMax,
-  noticePeriodInDays,
-  salaryBudget,
-  currency,
-  bonusPayPerCv,
-  closureBonus,
-  closureBonusPaymentDate,
-  cvRatePaymentDate,
-} = defineProps<{
-  visible: boolean;
-  experienceRangeMin: number;
-  experienceRangeMax: number;
-  noticePeriodInDays: number;
-  salaryBudget: number;
-  currency: Currency;
-  bonusPayPerCv: number;
-  closureBonus: string;
-  closureBonusPaymentDate: string;
-  cvRatePaymentDate: string;
+const { job, visible } = defineProps<{
+  job: Job;
+  visible: boolean
 }>();
 
 defineEmits<{
   (e: 'close'): void;
 }>();
+
 </script>
 
 <template>
@@ -47,17 +29,17 @@ defineEmits<{
       <div class="flex flex-col gap-3">
         <JobMetadataEntry
           :icon="'pi-calendar'"
-          :content="`From ${experienceRangeMin} to ${experienceRangeMax} years of experience`"
+          :content="`From ${job.experienceRangeMin} to ${job.experienceRangeMax} years of experience`"
         />
-        <JobMetadataEntry :icon="'pi-clock'" :content="`${noticePeriodInDays} days of notice`" />
-        <JobMetadataEntry :icon="'pi-briefcase'" :content="`${salaryBudget} ${currency}`" />
+        <JobMetadataEntry :icon="'pi-clock'" :content="`${job.noticePeriodInDays} days of notice`" />
+        <JobMetadataEntry :icon="'pi-briefcase'" :content="`${job.salaryBudget} ${job.currency}`" />
         <JobMetadataEntry
           :icon="'pi-money-bill'"
-          :content="`${bonusPayPerCv} INR per CV paid on ${formatDate(cvRatePaymentDate)}`"
+          :content="`${job.bonusPayPerCv} INR per CV paid on ${formatDate(job.cvRatePaymentDate)}`"
         />
         <JobMetadataEntry
           :icon="'pi-wallet'"
-          :content="`${closureBonus} INR closure bonus paid on ${formatDate(closureBonusPaymentDate)}`"
+          :content="`${job.closureBonus} INR closure bonus paid on ${formatDate(job.closureBonusPaymentDate)}`"
         />
       </div>
       <div class="mt-5 flex justify-end gap-2">

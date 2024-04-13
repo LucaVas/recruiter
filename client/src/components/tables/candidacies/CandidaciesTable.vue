@@ -132,13 +132,13 @@ import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
 import { ApiError } from '@/utils/types';
-import { formatDate } from './utils';
 import { getAllCandidacies } from '@/stores/candidacy';
 import { useToast } from 'primevue/usetoast';
 import { columns } from '.';
 import Header from '../shared/Header.vue';
-import type { CandidacyDto } from '@/stores/candidacy/types';
+import type { Candidacy } from '@/stores/candidacy/types';
 import { useRouter } from 'vue-router';
+import { formatDate } from '@/utils/dateUtils';
 
 const router = useRouter();
 const toast = useToast();
@@ -147,7 +147,7 @@ const showError = (content: string) => {
 };
 
 const loadingTable = ref(false);
-const candidates = ref<CandidacyDto[]>();
+const candidates = ref<Candidacy[]>();
 
 async function initTable() {
   loadingTable.value = true;

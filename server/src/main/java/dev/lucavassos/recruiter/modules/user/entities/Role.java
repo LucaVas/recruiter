@@ -2,16 +2,12 @@ package dev.lucavassos.recruiter.modules.user.entities;
 
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.NaturalId;
+import lombok.*;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -20,7 +16,6 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @NaturalId
     @Column(length = 60)
     private RoleName name;
 }

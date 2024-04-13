@@ -3,20 +3,27 @@ import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
 import { ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
+const showError = (content: string) => {
+  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
+};
 const { visible } = defineProps<{
   visible: boolean;
 }>();
 const comments = ref('');
 const invalidComments = ref(false);
 const error = ref('');
+
 function verifyApproval() {
   if (comments.value === '') {
     invalidComments.value = true;
-    error.value = 'Comments are required.';
+    showError('Comments are required.');
     return;
   }
   emits('approve', comments.value);
+  comments.value = '';
 }
 const emits = defineEmits<{
   (e: 'approve', comments: string): void;
@@ -25,6 +32,7 @@ const emits = defineEmits<{
 </script>
 
 <template>
+  <Toast />
   <div class="card flex justify-center">
     <Dialog :visible="visible" modal header="Confirm approval" :style="{ width: '25rem' }">
       <Textarea

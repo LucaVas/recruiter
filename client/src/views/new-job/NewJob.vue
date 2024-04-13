@@ -1,31 +1,21 @@
 <template>
   <Toast />
   <div class="flex w-full flex-col gap-8 pb-6">
-    <div class="flex h-full w-full flex-col gap-6">
-      <JobInformation
-        :disabled="false"
-        :jobDetails="job"
-        @input="(details) => updateNewJobInformation(details)"
-      />
-      <JobHiringDetails
-        @input="(details) => updateNewJobHiringDetails(details)"
-        :disabled="false"
-        :jobDetails="job"
-      />
+    <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
+      <JobInformation :disabled="false" :jobDetails="job" @input="(details) => (job = details)" />
+      <JobHiringDetails @input="(details) => (job = details)" :disabled="false" :jobDetails="job" />
       <NowJobPaymentDetails
         :disabled="false"
         :jobDetails="job"
-        @input="(details) => updateNewJobPaymentDetails(details)"
+        @input="(details) => (job = details)"
       />
-      <Skills
-        :disabled="false"
-        :jobSkills="job.skills"
-        @updateSkills="(skills) => updateNewJobSkills(skills)"
-      />
+      <Skills :disabled="false" :job="job" @update="(details) => (job = details)" />
     </div>
-    <div class="flex w-full justify-end">
-      <Button label="Create Job" @click="create()" />
+    <div v-else class="flex h-full w-full items-center justify-center">
+      <Success :message="'Job created successfully!'" />
     </div>
+
+    <JobFooter :visible="true" :saving="creatingJob" :saved="jobCreated" :isUpdate="false" @save="create()" />
   </div>
 </template>
 
@@ -36,25 +26,47 @@ import NowJobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue'
 import Skills from '@/components/job/shared/Skills.vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
-import {
-  updateNewJobInformation,
-  updateNewJobHiringDetails,
-  job,
-  updateNewJobPaymentDetails,
-  updateNewJobSkills,
-} from './index';
 import { createJob } from '@/stores/job';
+import type { NewJobRequest } from '@/stores/job/types';
+import { ref } from 'vue';
+import Success from '@/components/Success.vue';
+import JobFooter from '@/components/job/shared/JobFooter.vue';
 
 const toast = useToast();
 const showError = (content: string) => {
   toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
 };
+const jobCreated = ref(false);
+const creatingJob = ref(false);
 
 async function create() {
+  creatingJob.value = true;
   try {
     await createJob(job.value);
+    jobCreated.value = true;
   } catch (e) {
     showError(e as string);
+  } finally {
+    creatingJob.value = false;
   }
 }
+
+const job = ref<NewJobRequest>({
+  client: '',
+  name: '',
+  status: 'OPEN',
+  contractType: { contractTypeName: 'TEMPORARY' },
+  wantedCvs: 0,
+  experienceRangeMin: 0,
+  experienceRangeMax: 0,
+  noticePeriodInDays: 0,
+  skills: [],
+  salaryBudget: 0,
+  currency: 'INR',
+  description: '',
+  bonusPayPerCv: 0,
+  closureBonus: 0,
+  closureBonusPaymentDate: new Date(),
+  cvRatePaymentDate: new Date(),
+});
 </script>

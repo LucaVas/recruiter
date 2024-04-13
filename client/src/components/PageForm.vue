@@ -1,14 +1,3 @@
-<script lang="ts" setup>
-defineProps<{
-  heading: string;
-  formLabel: string;
-}>();
-
-defineEmits<{
-  submit: [];
-}>();
-</script>
-
 <template>
   <div class="flex h-full w-full flex-col items-center justify-center px-6 py-10 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -24,3 +13,14 @@ defineEmits<{
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+defineProps<{
+  heading: string;
+  formLabel: string;
+}>();
+
+defineEmits<{
+  (e: 'submit'): void;
+}>();
+</script>

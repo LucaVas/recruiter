@@ -23,7 +23,7 @@ public record JobDto(
         Currency currency,
         String description,
         Double bonusPayPerCv,
-        String closureBonus,
+        Double closureBonus,
         String comments,
         Integer numberOfCandidates,
         LocalDateTime closureBonusPaymentDate,

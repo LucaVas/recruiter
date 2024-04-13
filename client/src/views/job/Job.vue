@@ -4,15 +4,16 @@ import Toast from 'primevue/toast';
 import { getJobDetails } from './index';
 import { useToast } from 'primevue/usetoast';
 import { useRoute, useRouter } from 'vue-router';
-import type { JobDto } from '@/stores/job/types';
+import type { Job } from '@/stores/job/types';
 import JobTitle from '@/components/job/job-page/JobTitle.vue';
 import JobMetadata from '@/components/job/job-page/JobMetadata.vue';
 import JobButtons from '@/components/job/job-page/JobButtons.vue';
 import JobDescription from '@/components/job/job-page/JobDescription.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import JobHiringDetailsModal from '@/components/job/job-page/JobHiringDetailsModal.vue';
-import { deleteJob } from '@/stores/job';
+import { deleteJob, updateJob } from '@/stores/job';
 import DeleteJobModal from '@/components/job/shared/DeleteJobModal.vue';
+import type JobFooter from '@/components/job/shared/JobFooter.vue';
 
 // constants
 const deletingJob = ref(false);
@@ -32,7 +33,7 @@ const showSuccess = (content: string) => {
 };
 
 // job details
-const job = ref<JobDto>();
+const job = ref<Job>();
 
 // modal
 const modalOpen = ref(false);
@@ -67,27 +68,8 @@ onMounted(async () => {
   <Toast />
   <div v-if="job" class="flex w-full flex-col items-start gap-4">
     <JobTitle :title="job.name" />
-    <JobMetadata
-      :client="job.client"
-      :contractType="job.contractType.contractTypeName"
-      :wantedCvs="job.wantedCvs"
-      :candidates="job.numberOfCandidates"
-      :createdOn="job.createdAt"
-      :status="job.status"
-    />
-    <JobHiringDetailsModal
-      :visible="modalOpen"
-      @close="modalOpen = false"
-      :experienceRangeMin="job.experienceRangeMin"
-      :experienceRangeMax="job.experienceRangeMax"
-      :noticePeriodInDays="job.noticePeriodInDays"
-      :salaryBudget="job.salaryBudget"
-      :currency="job.currency"
-      :bonusPayPerCv="job.bonusPayPerCv"
-      :closureBonus="job.closureBonus"
-      :closureBonusPaymentDate="job.closureBonusPaymentDate"
-      :cvRatePaymentDate="job.cvRatePaymentDate"
-    />
+    <JobMetadata :job="job" />
+    <JobHiringDetailsModal :visible="modalOpen" @close="modalOpen = false" :job="job" />
     <DeleteJobModal
       :deleting="deletingJob"
       :visible="deleteJobModalOpen"

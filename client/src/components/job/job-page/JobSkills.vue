@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import type { SkillDto } from '@/stores/skill/types';
+import type { Skill } from '@/stores/skill/types';
 import Chip from 'primevue/chip';
 
 const { skills } = defineProps<{
-  skills: SkillDto[];
+  skills: Set<Skill>;
 }>();
-
-
-
 </script>
 
 <template>

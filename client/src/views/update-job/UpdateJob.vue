@@ -9,23 +9,23 @@
         :status="jobDetails.status"
         :createdAt="jobDetails.createdAt"
         @delete="delJob(jobDetails.id)"
-        @changeStatus="(status: JobStatus) => changeStatus(jobDetails.id, status)"
-        @passError="(e) => showError(e)"
+        @changeStatus="(status: JobStatus) => changeStatus(jobDetails!.id, status)"
       />
       <JobInformation :disabled="jobDetails.status === 'ARCHIVED'" :jobDetails="jobDetails" />
       <JobHiringDetails :disabled="jobDetails.status === 'ARCHIVED'" :jobDetails="jobDetails" />
       <JobPaymentDetails :disabled="jobDetails.status === 'ARCHIVED'" :jobDetails="jobDetails" />
       <Skills
         :disabled="jobDetails.status === 'ARCHIVED'"
-        :jobSkills="jobDetails.skills"
-        @updateSkills="(skills) => (jobDetails!.skills = skills)"
+        :job="jobDetails"
+        @update="(details) => (jobDetails = details)"
       />
     </div>
-    <UpdateJobFooter
-      :updatingJob="updatingJob"
-      :jobUpdated="jobUpdated"
+    <JobFooter
+      :saving="updatingJob"
+      :saved="jobUpdated"
+      :isUpdate="true"
       :visible="jobDetails.status !== 'ARCHIVED'"
-      @update="update(jobDetails!)"
+      @save="update(jobDetails!)"
     />
   </div>
 </template>
@@ -35,19 +35,18 @@ import JobInformation from '@/components/job/shared/JobInformation.vue';
 import JobHiringDetails from '@/components/job/shared/JobHiringDetails.vue';
 import JobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue';
 import Skills from '@/components/job/shared/Skills.vue';
-import UpdateJobFooter from '@/components/job/update-job/UpdateJobFooter.vue';
+import JobFooter from '@/components/job/shared/JobFooter.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Toast from 'primevue/toast';
 import ProgressSpinner from 'primevue/progressspinner';
-import type { JobDto, JobStatus } from '@/stores/job/types';
+import type { Job, JobStatus } from '@/stores/job/types';
 import { useToast } from 'primevue/usetoast';
 import { getJob, updateJob, deleteJob, changeJobStatus } from '@/stores/job';
 import { ApiError } from '@/utils/types';
-import { formatDate } from '@/utils/dateUtils';
 
 // variables
-const jobDetails = ref<JobDto>();
+const jobDetails = ref<Job>();
 const route = useRoute();
 const jobId = ref(route.params.id);
 const router = useRouter();
@@ -64,12 +63,7 @@ async function loadJobData(jobId: number) {
   loading.value = true;
   try {
     const job = await getJob(jobId);
-    const jobWithDates = {
-      ...job,
-      closureBonusPaymentDate: formatDate(job.closureBonusPaymentDate),
-      cvRatePaymentDate: formatDate(job.cvRatePaymentDate),
-    };
-    return jobWithDates;
+    return job;
   } catch (err) {
     if (err instanceof ApiError) {
       if (err.statusCode === 401) router.push({ name: 'Dashboard' });
@@ -80,7 +74,7 @@ async function loadJobData(jobId: number) {
   }
 }
 
-async function update(job: JobDto) {
+async function update(job: Job) {
   updatingJob.value = true;
   try {
     await updateJob(job);

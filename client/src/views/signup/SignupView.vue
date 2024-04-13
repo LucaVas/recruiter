@@ -8,14 +8,14 @@ import Password from 'primevue/password';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '../../utils/types';
 import Toast from 'primevue/toast';
-import { invalidSignupFields, isValidSignup } from './index';
 import type { RoleName } from '@/stores/user/types';
 import SignupCommentsModal from '@/components/signup/SignupCommentsModal.vue';
 import { signup } from '@/stores/auth/index';
 import type { SignupRequest } from '@/stores/auth/types';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const toast = useToast();
-const errorMessage = ref('');
 const showError = (content: string) => {
   toast.add({ severity: 'error', summary: 'Error', detail: content, life: 3000 });
 };
@@ -48,18 +48,16 @@ const hasSucceeded = ref(false);
 const loading = ref(false);
 
 const submitSignup = async () => {
-  if (!isValidSignup(userForm.value, errorMessage)) {
-    showError(errorMessage.value);
-    return;
-  }
-
   loading.value = true;
   try {
     await signup(userForm.value);
     hasSucceeded.value = true;
-    showSuccess(
-      'You have successfully signed up! An administrator will review your registration and confirm or reject it.'
-    );
+    setTimeout(() => {
+      showSuccess(
+        'You have successfully signed up! An administrator will review your registration and confirm or reject it.'
+      );
+    }, 100);
+    router.push({ name: 'Login' });
   } catch (err) {
     if (err instanceof ApiError) showError(err.message);
     if (err instanceof Error) showError('Something went wrong');
@@ -89,7 +87,7 @@ const submitSignup = async () => {
           required
           placeholder="Username"
           class="md:w-14rem w-full"
-          :invalid="invalidSignupFields.username.invalid"
+          :invalid="userForm.username === ''"
         />
         <!-- email -->
         <InputText
@@ -101,7 +99,7 @@ const submitSignup = async () => {
           required
           placeholder="Email"
           class="md:w-14rem w-full"
-          :invalid="invalidSignupFields.email.invalid"
+          :invalid="userForm.email === ''"
         />
         <!-- password -->
         <Password
@@ -112,20 +110,20 @@ const submitSignup = async () => {
           minlength="8"
           maxlength="64"
           :feedback="false"
+          :invalid="userForm.email === ''"
           required
-          :invalid="invalidSignupFields.password.invalid"
         >
         </Password>
         <!-- mobile -->
         <InputMask
-          id="phone"
+          id="mobile"
           v-model="userForm.mobile"
           mask="(999) 999-9999"
           placeholder="Mobile Number"
           class="md:w-14rem w-full"
           required
           :unmask="true"
-          :invalid="invalidSignupFields.mobile.invalid"
+          :invalid="userForm.mobile === '' || userForm.mobile.length !== 10"
         />
         <!-- city -->
         <InputText
@@ -136,7 +134,7 @@ const submitSignup = async () => {
           maxlength="50"
           class="md:w-14rem w-full"
           required
-          :invalid="invalidSignupFields.city.invalid"
+          :invalid="userForm.city === ''"
         />
         <div class="flex w-full justify-between gap-2">
           <!-- country -->
@@ -149,8 +147,8 @@ const submitSignup = async () => {
             class="w-full"
             :highlightOnSelect="false"
             checkmark
+            :invalid="userForm.country === ''"
             required
-            :invalid="invalidSignupFields.country.invalid"
           />
           <!-- role -->
           <Dropdown
@@ -162,8 +160,8 @@ const submitSignup = async () => {
             placeholder="Your Role"
             :highlightOnSelect="false"
             checkmark
+            :invalid="userForm.roleName === ('' as RoleName)"
             required
-            :invalid="invalidSignupFields.role.invalid"
           />
         </div>
 

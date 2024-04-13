@@ -7,15 +7,12 @@ import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
 import { ApiError } from '@/utils/types';
-import { formatDate } from './utils';
+import { formatDate } from '@/utils/dateUtils';
 import { getAllCandidates, updateCandidate } from '@/stores/candidate';
 import { useToast } from 'primevue/usetoast';
-import type { CandidateDto } from '@/stores/candidate/types';
+import type { Candidate } from '@/stores/candidate/types';
 import { columns } from '.';
-import CandidatesTableHeader from './CandidatesTableHeader.vue';
 import CandidateModal from '@/components/candidacy/candidate/shared/CandidateModal.vue';
-import type { CandidateModalForm } from '../candidacy/candidate/shared/types';
-import type { RawCandidateDto } from '@/stores/candidate/types';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -23,12 +20,12 @@ const showError = (content: string) => {
 };
 
 const loadingTable = ref(false);
-const candidates = ref<CandidateDto[]>();
+const candidates = ref<Candidate[]>();
 const editCandidateModal = ref(false);
-const candidateToEdit = ref<CandidateModalForm>();
+const candidateToEdit = ref<Candidate>();
 const updatingCandidate = ref(false);
 
-async function update(candidateForm: RawCandidateDto) {
+async function update(candidateForm: Candidate) {
   updatingCandidate.value = true;
   try {
     await updateCandidate(candidateForm);
@@ -220,4 +217,3 @@ onMounted(async () => {
     @save="update(candidateToEdit)"
   />
 </template>
-../../../utils/types../../candidacy/candidate/shared/types../../../stores/candidate/types

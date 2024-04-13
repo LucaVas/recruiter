@@ -1,3 +1,3 @@
-import type { RawCandidateDto } from '@/stores/candidate/types';
+import type { Candidate } from '@/stores/candidate/types';
 
-export type CandidateModalForm = RawCandidateDto
+export type CandidateModalForm = Candidate

@@ -65,7 +65,7 @@ public class CandidateService {
             );
         }
 
-        // add a new candidate
+        User recruiter = getAuthUser();
         Candidate newCandidate;
         try {
             newCandidate = candidateRepository.save(
@@ -78,6 +78,7 @@ public class CandidateService {
                             .currentCtc(request.currentCtc())
                             .pan(request.pan())
                             .status(CandidateStatus.ACTIVE)
+                            .recruiter(recruiter)
                             .build()
             );
         } catch (Exception e) {

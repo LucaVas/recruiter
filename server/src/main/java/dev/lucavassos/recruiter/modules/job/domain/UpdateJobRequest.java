@@ -21,7 +21,7 @@ public record UpdateJobRequest (
     Currency currency,
     String description,
     Double bonusPayPerCv,
-    String closureBonus,
+    Double closureBonus,
     LocalDateTime closureBonusPaymentDate,
     LocalDateTime cvRatePaymentDate,
     String comments){

@@ -8,7 +8,7 @@ public record JobHistoryDto(
         Long id,
         JobStatus status,
         Double bonusPayPerCV,
-        String closureBonus,
+        Double closureBonus,
         Long modifiedBy,
         LocalDateTime createdAt
 ) {

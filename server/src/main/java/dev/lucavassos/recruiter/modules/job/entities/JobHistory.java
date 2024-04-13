@@ -40,7 +40,8 @@ public class JobHistory {
     private Double bonusPayPerCv;
 
     @Column(nullable = false, name = "closure_bonus")
-    private String closureBonus;
+    @Min(value = 0, message = "Closure bonus cannot be negative")
+    private Double closureBonus;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "job_id")

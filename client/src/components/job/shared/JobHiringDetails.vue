@@ -1,28 +1,15 @@
 <script setup lang="ts">
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Textarea from 'primevue/textarea';
 import type { Currency } from '@/stores/job/types';
-import { ref, onMounted } from 'vue';
-import type { JobDto, NewJob } from '@/stores/job/types';
-
-// variables
-const details = ref({
-  wantedCvs: '',
-  noticePeriodInDays: '',
-  experienceRangeMin: '',
-  experienceRangeMax: '',
-  salaryBudget: '',
-  currency: 'INR',
-  description: '',
-});
-const currencies = ref<Currency[]>(['INR']);
+import { ref } from 'vue';
+import type { Job, NewJobRequest } from '@/stores/job/types';
 
 // props
 const { jobDetails, disabled } = defineProps<{
-  jobDetails: JobDto | NewJob;
+  jobDetails: Job | NewJobRequest;
   disabled: boolean;
 }>();
 
@@ -31,10 +18,9 @@ const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
 }>();
 
-// init
-onMounted(() => {
-  details.value = jobDetails;
-});
+// variables
+const details = ref(jobDetails);
+const currencies = ref<Currency[]>(['INR']);
 </script>
 
 <template>
@@ -46,9 +32,8 @@ onMounted(() => {
           <InputGroupAddon>
             <i class="pi pi-file" />
           </InputGroupAddon>
-          <InputText
+          <InputNumber
             id="wantedCvs"
-            type="number"
             :min="0"
             v-model="details.wantedCvs"
             required
@@ -63,9 +48,8 @@ onMounted(() => {
           <InputGroupAddon>
             <i class="pi pi-calendar-times" />
           </InputGroupAddon>
-          <InputText
+          <InputNumber
             id="noticePeriodInDays"
-            type="number"
             :min="0"
             v-model="details.noticePeriodInDays"
             required
@@ -83,9 +67,8 @@ onMounted(() => {
         <div class="w-full">
           <InputGroup>
             <InputGroupAddon class="min-w-fit"> From </InputGroupAddon>
-            <InputText
+            <InputNumber
               id="experienceRangeMin"
-              type="number"
               :min="0"
               :max="45"
               v-model="details.experienceRangeMin"
@@ -99,9 +82,8 @@ onMounted(() => {
         <div class="w-full">
           <InputGroup>
             <InputGroupAddon class="min-w-fit"> To </InputGroupAddon>
-            <InputText
+            <InputNumber
               id="experienceRangeMax"
-              type="number"
               :min="0"
               :max="45"
               v-model="details.experienceRangeMax"
@@ -121,10 +103,9 @@ onMounted(() => {
         <InputGroupAddon>
           <i class="pi pi-money-bill" />
         </InputGroupAddon>
-        <InputText
+        <InputNumber
           class="w-full"
           id="salaryBudget"
-          type="number"
           :min="0"
           v-model="details.salaryBudget"
           required
@@ -158,6 +139,7 @@ onMounted(() => {
         required
         :disabled="disabled"
         @input="emit('input', details)"
+        :invalid="details.description === ''"
       />
     </div>
   </div>

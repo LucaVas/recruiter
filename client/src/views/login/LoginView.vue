@@ -30,7 +30,7 @@ const submitLogin = async () => {
     await login(userForm.value);
     router.push({ name: 'Dashboard' });
   } catch (err) {
-    if (err instanceof ApiError) showError('Invalid credentials');
+    if (err instanceof ApiError) showError(err.message);
     if (err instanceof Error) showError('Something went wrong');
   } finally {
     loading.value = false;
@@ -55,6 +55,7 @@ const submitLogin = async () => {
           aria-describedby="username-help"
           placeholder="Email"
           class="w-full"
+          :invalid="userForm.usernameOrEmail === ''"
         />
 
         <Password
@@ -65,6 +66,7 @@ const submitLogin = async () => {
           maxlength="64"
           class="flex flex-col"
           required
+          :invalid="userForm.password === ''"
         />
 
         <div class="grid grid-flow-row auto-rows-max gap-2">

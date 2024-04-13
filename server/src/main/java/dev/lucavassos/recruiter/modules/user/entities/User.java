@@ -18,7 +18,8 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @Builder
-@Data
+@Getter
+@Setter
 @Table(name = "users")
 public class User {
 

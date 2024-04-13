@@ -1,34 +1,30 @@
 <script setup lang="ts">
 import SearchCandidate from './candidate/SearchCandidate.vue';
 import CandidateTable from './candidate/CandidateTable.vue';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import CandidateModal from './candidate/shared/CandidateModal.vue';
-import type { CandidateForm } from '../../views/new-candidacy/index';
-import type { RawCandidateDto } from '../../stores/candidate/types';
-
-// variables
-const details = ref<CandidateForm>();
-const newCandidateModalOpen = ref(false);
+import type { Candidate } from '@/stores/candidate/types';
+import type { NewCandidateRequest } from '@/stores/candidate/types';
 
 // props
-const { candidate, searchedCandidate, searching } = defineProps<{
-  candidate: CandidateForm;
-  searchedCandidate: RawCandidateDto | undefined;
+const { candidate, searchedCandidate, searching, candidateCreated } = defineProps<{
+  candidate: Candidate | NewCandidateRequest;
+  searchedCandidate: Candidate | undefined;
   searching: boolean;
+  candidateCreated: boolean;
 }>();
 
 // emits
 const emits = defineEmits<{
   (e: 'passError', content: string): void;
-  (e: 'selectCandidate', candidate: RawCandidateDto | null): void;
-  (e: 'update', content: CandidateForm): void;
+  (e: 'selectCandidate', candidate: NewCandidateRequest | null): void;
+  (e: 'update', content: NewCandidateRequest): void;
   (e: 'searchCandidate', identifier: string): void;
 }>();
 
-// init
-onMounted(() => {
-  details.value = candidate;
-});
+// variables
+const details = ref(candidate);
+const newCandidateModalOpen = ref(false);
 </script>
 
 <template>
@@ -40,10 +36,7 @@ onMounted(() => {
       :candidate="details"
       :visible="newCandidateModalOpen"
       @close="newCandidateModalOpen = false"
-      @save="
-        emits('update', details);
-        newCandidateModalOpen = false;
-      "
+      @save="emits('update', details); newCandidateModalOpen = false"
       @update="(candidate) => (details = candidate)"
     />
 

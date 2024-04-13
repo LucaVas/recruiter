@@ -9,25 +9,22 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Builder
-@Getter
-@ToString
-public class NewJobRequest {
-    private String client;
-    private String name;
-    private JobStatus status;
-    private ContractTypeDto contractType;
-    private Integer wantedCvs;
-    private Integer experienceRangeMin;
-    private Integer experienceRangeMax;
-    private Integer noticePeriodInDays;
-    private List<RawSkillDto> skills;
-    private Double salaryBudget;
-    private Currency currency;
-    private String description;
-    private Double bonusPayPerCv;
-    private String closureBonus;
-    private LocalDateTime closureBonusPaymentDate;
-    private LocalDateTime cvRatePaymentDate;
-    private String comments;
-}
+public record NewJobRequest (
+        String client,
+        String name,
+        JobStatus status,
+        ContractTypeDto contractType,
+        Integer wantedCvs,
+        Integer experienceRangeMin,
+        Integer experienceRangeMax,
+        Integer noticePeriodInDays,
+        List<RawSkillDto> skills,
+        Double salaryBudget,
+        Currency currency,
+        String description,
+        Double bonusPayPerCv,
+        Double closureBonus,
+        LocalDateTime closureBonusPaymentDate,
+        LocalDateTime cvRatePaymentDate,
+        String comments
+){}

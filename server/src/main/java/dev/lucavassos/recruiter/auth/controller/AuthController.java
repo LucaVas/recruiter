@@ -68,6 +68,13 @@ public class AuthController {
         LOG.info("Authenticated user: {}", auth);
         UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
 
+        userRepository.findApprovedUserById(userPrincipal.getId())
+                .orElseThrow(() -> {
+                    LOG.error("User with ID [{}] is not approved.", userPrincipal.getId());
+                    return new UnauthorizedException("User access is not approved yet.");
+                });
+
+
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String jwt = tokenProvider.generateToken(auth);

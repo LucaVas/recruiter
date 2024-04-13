@@ -1,33 +1,19 @@
 <script setup lang="ts">
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-import { ref, onMounted } from 'vue';
-import type { CandidacyForm } from '@/views/candidacy/mappers';
+import { ref } from 'vue';
+import type { RawCandidacy } from '../../stores/candidacy/types';
 
 const { candidacy, isArchived } = defineProps<{
-  candidacy: CandidacyForm;
+  candidacy: RawCandidacy;
   isArchived: boolean;
 }>();
-
-const details = ref({
-  relevantExperience: '',
-  expectedCtc: '',
-  officialNoticePeriod: '',
-  actualNoticePeriod: '',
-  reasonForQuickJoin: '',
-});
 
 const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
 }>();
 
-onMounted(() => {
-  details.value.relevantExperience = candidacy.relevantExperience;
-  details.value.expectedCtc = candidacy.expectedCtc;
-  details.value.officialNoticePeriod = candidacy.officialNoticePeriod;
-  details.value.actualNoticePeriod = candidacy.actualNoticePeriod;
-  details.value.reasonForQuickJoin = candidacy.reasonForQuickJoin;
-});
+const details = ref(candidacy)
 </script>
 
 <template>
@@ -39,8 +25,7 @@ onMounted(() => {
           <InputGroupAddon>
             <i class="pi pi-calendar" />
           </InputGroupAddon>
-          <InputText
-            type="number"
+          <InputNumber
             id="relevantExperience"
             v-model="details.relevantExperience"
             @input="emit('input', details)"
@@ -59,9 +44,8 @@ onMounted(() => {
           <InputGroupAddon>
             <i class="pi pi-money-bill" />
           </InputGroupAddon>
-          <InputText
+          <InputNumber
             id="expectedCtc"
-            type="number"
             v-model="details.expectedCtc"
             @input="emit('input', details)"
             placeholder="Expected CTC"
@@ -81,9 +65,8 @@ onMounted(() => {
           <InputGroupAddon>
             <i class="pi pi-calendar" />
           </InputGroupAddon>
-          <InputText
+          <InputNumber
             id="officialNoticePeriod"
-            type="number"
             v-model="details.officialNoticePeriod"
             @input="emit('input', details)"
             required
@@ -100,12 +83,11 @@ onMounted(() => {
           <InputGroupAddon>
             <i class="pi pi-calendar" />
           </InputGroupAddon>
-          <InputText
+          <InputNumber
             id="actualNoticePeriod"
             v-model="details.actualNoticePeriod"
             @input="emit('input', details)"
             :disabled="isArchived"
-            type="number"
             :min="0"
           />
           <InputGroupAddon> days </InputGroupAddon>
@@ -123,7 +105,7 @@ onMounted(() => {
           rows="4"
           cols="30"
           placeholder="Reason for quick join"
-          :disabled="details.actualNoticePeriod === ''"
+          :disabled="details.actualNoticePeriod >= details.officialNoticePeriod"
         />
       </div>
     </div>

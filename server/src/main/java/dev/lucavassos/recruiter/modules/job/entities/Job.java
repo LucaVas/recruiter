@@ -87,7 +87,8 @@ public class Job {
     private Double bonusPayPerCv;
 
     @Column(nullable = false)
-    private String closureBonus;
+    @Min(value = 0, message = "Closure bonus cannot be negative")
+    private Double closureBonus;
 
     @Column(nullable = false, name = "cv_rate_payment_date")
     private LocalDateTime cvRatePaymentDate;
@@ -97,6 +98,8 @@ public class Job {
 
     @Column
     private String comments;
+
+    private Integer numberOfCandidates;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recruiter_id")
