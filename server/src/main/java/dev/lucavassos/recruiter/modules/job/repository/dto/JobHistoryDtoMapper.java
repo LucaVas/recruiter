@@ -14,8 +14,8 @@ public class JobHistoryDtoMapper implements Function<JobHistory, JobHistoryDto> 
                 JobHistory.getStatus(),
                 JobHistory.getBonusPayPerCv(),
                 JobHistory.getClosureBonus(),
-                JobHistory.getCreatedAt(),
-                JobHistory.getModifiedAt()
+                JobHistory.getModifiedBy(),
+                JobHistory.getCreatedAt()
         );
     }
 }

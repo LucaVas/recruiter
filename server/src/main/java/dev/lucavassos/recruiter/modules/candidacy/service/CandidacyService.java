@@ -9,10 +9,12 @@ import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyResponse;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
+import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDtoMapper;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
+import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
 import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
@@ -35,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -112,6 +115,19 @@ public class CandidacyService {
                     return new ResourceNotFoundException("Candidacy not found");
                 }
         );
+    }
+
+    @Transactional
+    public List<CandidacyDto> getAllCandidacies() {
+
+        User user = getAuthUser();
+        List<Candidacy> candidacies = candidacyRepository.findAll();
+
+        return candidacies
+                .stream()
+                .filter(candidacy -> user.isAdmin() || candidacy.getRecruiter().getId().equals(user.getId()))
+                .map(candidacy -> candidacyDtoMapper.apply(candidacy))
+                .toList();
     }
 
     @Transactional

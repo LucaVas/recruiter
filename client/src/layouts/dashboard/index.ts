@@ -26,8 +26,15 @@ export const menuItems = ref<MenuItem[]>([
     ],
   },
   {
-    group: 'Candidates',
+    group: 'Candidacies',
     links: [
+      {
+        icon: 'pi pi-list',
+        name: 'My Candidacies',
+        shortcut: '⌘+J',
+        view: 'CandidaciesPage',
+        privileges: ['ROLE_RECRUITER', 'ROLE_ADMIN'],
+      },
       {
         icon: 'pi pi-users',
         name: 'My Candidates',

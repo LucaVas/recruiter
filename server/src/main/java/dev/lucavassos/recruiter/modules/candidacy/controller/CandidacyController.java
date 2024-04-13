@@ -3,14 +3,18 @@ package dev.lucavassos.recruiter.modules.candidacy.controller;
 import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyResponse;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
+import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import dev.lucavassos.recruiter.modules.candidacy.service.CandidacyService;
 import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
+import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/v1")
@@ -40,5 +44,11 @@ public class CandidacyController {
             @PathVariable Long id) {
         LOG.info("Received request to get candidacy: {}", id);
         return ResponseEntity.ok(service.getCandidacy(id));
+    }
+
+    @GetMapping("/candidacies")
+    public ResponseEntity<List<CandidacyDto>> getAllCandidacies() {
+        LOG.info("Received request for candidacies.");
+        return new ResponseEntity<>(service.getAllCandidacies(), HttpStatus.OK);
     }
 }

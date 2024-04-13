@@ -9,7 +9,7 @@ public record JobHistoryDto(
         JobStatus status,
         Double bonusPayPerCV,
         String closureBonus,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        Long modifiedBy,
+        LocalDateTime createdAt
 ) {
 }

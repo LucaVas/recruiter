@@ -1,4 +1,9 @@
-import type { CandidacyResponse, NewCandidacyDto, UpdateCandidacyRequest } from './types';
+import type {
+  CandidacyDto,
+  CandidacyResponse,
+  NewCandidacyDto,
+  UpdateCandidacyRequest,
+} from './types';
 import axiosApi from '../api';
 
 const api = axiosApi();
@@ -16,5 +21,10 @@ export async function updateCandidacy(
 
 export async function getCandidacy(id: number): Promise<CandidacyResponse> {
   const { data } = await api.get(`/candidacies/${id}`);
+  return data;
+}
+
+export async function getAllCandidacies(): Promise<CandidacyDto[]> {
+  const { data } = await api.get(`/candidacies`);
   return data;
 }

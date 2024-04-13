@@ -50,6 +50,10 @@ public class CandidateHistory {
     @Enumerated(EnumType.STRING)
     private CandidateStatus status;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "candidate_id")
+    private Candidate candidate;
+
     @Column(name = "modified_by")
     private Long modifiedBy;
 

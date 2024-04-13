@@ -1,5 +1,5 @@
 import type { RoleName } from '@/stores/user/types';
-import type { MenuItem } from './DashboardLayout.vue';
+import type { MenuItem } from './types';
 
 export function getRoleTag(roleName: RoleName): string {
   switch (roleName) {

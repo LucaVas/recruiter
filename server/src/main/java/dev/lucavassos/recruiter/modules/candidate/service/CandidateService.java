@@ -241,6 +241,7 @@ public class CandidateService {
                             .education(candidate.getEducation())
                             .currentCtc(candidate.getCurrentCtc())
                             .status(candidate.getStatus())
+                            .candidate(candidate)
                             .modifiedBy(user.getId())
                             .build()
             );

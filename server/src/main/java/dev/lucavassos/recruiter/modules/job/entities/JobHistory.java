@@ -46,9 +46,9 @@ public class JobHistory {
     @JoinColumn(name = "job_id")
     private Job job;
 
+    @Column(nullable = false, name = "modified_by")
+    private Long modifiedBy;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime modifiedAt;
 }

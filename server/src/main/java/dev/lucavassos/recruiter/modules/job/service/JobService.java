@@ -110,7 +110,7 @@ public class JobService {
         }
 
         LOG.info("New job created: [{}]", createdJob);
-        saveJobInHistoryTable(createdJob);
+        saveJobInHistoryTable(createdJob, recruiter);
 
         return new JobResponse(
                 createdJob.getId(),
@@ -216,7 +216,7 @@ public class JobService {
 
         try {
             repository.save(job);
-            saveJobInHistoryTable(job);
+            saveJobInHistoryTable(job, recruiter);
         } catch (Exception e) {
             LOG.error("Database error while updating job: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
@@ -250,10 +250,12 @@ public class JobService {
                 )
         );
 
+        User user = getAuthUser();
+
         if (request.status() != null && job.getStatus() != request.status() && job.getStatus() != JobStatus.ARCHIVED) {
             job.setStatus(request.status());
             job.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
-            saveJobInHistoryTable(job);
+            saveJobInHistoryTable(job, user);
         }
 
         repository.save(job);
@@ -299,7 +301,7 @@ public class JobService {
             job.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
             Job jobDeleted = repository.save(job);
             LOG.info("Job {} deleted successfully", jobDeleted.getId());
-            saveJobInHistoryTable(job);
+            saveJobInHistoryTable(job, user);
         }
     }
 
@@ -320,7 +322,7 @@ public class JobService {
                 job.getRecruiter().getId().equals(recruiter.getId());
     }
 
-    private void saveJobInHistoryTable(Job job) {
+    private void saveJobInHistoryTable(Job job, User user) {
         try {
             // Create new entry in history table
             historyRepository.save(
@@ -329,6 +331,7 @@ public class JobService {
                             .bonusPayPerCv(job.getBonusPayPerCv())
                             .closureBonus(job.getClosureBonus())
                             .job(job)
+                            .modifiedBy(user.getId())
                             .build()
             );
         } catch (Exception e) {

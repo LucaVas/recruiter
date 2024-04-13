@@ -190,7 +190,9 @@ public class EntityInitializer {
                 .noticePeriodInDays(90)
                 .salaryBudget(1500.0)
                 .currency(Currency.INR)
-                .description("Description for a Java software engineer job.")
+                .description("We are seeking a talented Java Software Engineer to join our dynamic team. "
+                        + "The ideal candidate will have a strong background in Java development and a passion "
+                        + "for building robust, scalable software solutions.")
                 .bonusPayPerCv(3.7)
                 .closureBonus("200")
                 .cvRatePaymentDate(LocalDateTime.of(
@@ -219,7 +221,9 @@ public class EntityInitializer {
                 .noticePeriodInDays(70)
                 .salaryBudget(2000.0)
                 .currency(Currency.INR)
-                .description("Description for a Python software engineer job.")
+                .description("We are seeking a skilled Python Developer to join our talented team. "
+                        + "The ideal candidate will have a strong foundation in Python programming "
+                        + "and a passion for developing efficient and scalable software solutions.")
                 .bonusPayPerCv(3.7)
                 .closureBonus("260")
                 .cvRatePaymentDate(LocalDateTime.of(
@@ -247,7 +251,9 @@ public class EntityInitializer {
                 .noticePeriodInDays(50)
                 .salaryBudget(1200.0)
                 .currency(Currency.INR)
-                .description("Description for a BA job.")
+                .description("We are seeking a Business Analyst to join our team. "
+                        + "The ideal candidate will have a strong background in data analysis, "
+                        + "experience with Tableau, and a passion for developing data-driven insights.")
                 .bonusPayPerCv(3.0)
                 .closureBonus("230")
                 .cvRatePaymentDate(LocalDateTime.of(
@@ -275,7 +281,9 @@ public class EntityInitializer {
                 .noticePeriodInDays(20)
                 .salaryBudget(2100.00)
                 .currency(Currency.INR)
-                .description("Description for a Mainframe developer job.")
+                .description("We are seeking a Mainframe Developer to join our team. "
+                        + "The ideal candidate will have a strong background in mainframe development, "
+                        + "experience with PL2, and a passion for developing efficient and scalable software solutions.")
                 .bonusPayPerCv(6.0)
                 .closureBonus("400")
                 .cvRatePaymentDate(LocalDateTime.of(
@@ -305,7 +313,10 @@ public class EntityInitializer {
                 .noticePeriodInDays(60)
                 .salaryBudget(3400.00)
                 .currency(Currency.INR)
-                .description("Description for a cloud architect job.")
+                .description("We are seeking a Cloud Architect to join our team. "
+                        + "The ideal candidate will have a strong background in cloud architecture, "
+                        + "experience with AWS and Google Cloud, and a passion for developing efficient "
+                        + "and scalable cloud solutions.")
                 .bonusPayPerCv(8.0)
                 .cvRatePaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
@@ -336,7 +347,7 @@ public class EntityInitializer {
                         .phone("1231231231")
                         .email("john@mail.com")
                         .totalExperience(15.0)
-                        .education("Education for John")
+                        .education("M.I.T.")
                         .currentCtc(2000.0)
                         .pan("1234561232")
                         .status(CandidateStatus.ACTIVE)
@@ -347,7 +358,7 @@ public class EntityInitializer {
                         .phone("1231231232")
                         .email("mary@mail.com")
                         .totalExperience(10.0)
-                        .education("Education for Mary")
+                        .education("London University")
                         .currentCtc(2050.0)
                         .pan("1234561233")
                         .status(CandidateStatus.ACTIVE)
@@ -358,7 +369,7 @@ public class EntityInitializer {
                         .phone("1231231233")
                         .email("micheal@mail.com")
                         .totalExperience(5.0)
-                        .education("Education for Micheal")
+                        .education("Vilnius University")
                         .currentCtc(1370.0)
                         .pan("1234561234")
                         .status(CandidateStatus.ACTIVE)
@@ -369,7 +380,7 @@ public class EntityInitializer {
                         .phone("1231231234")
                         .email("morta@mail.com")
                         .totalExperience(25.0)
-                        .education("Education for Morta")
+                        .education("University of Toronto")
                         .currentCtc(2060.0)
                         .pan("1234561235")
                         .status(CandidateStatus.ACTIVE)
