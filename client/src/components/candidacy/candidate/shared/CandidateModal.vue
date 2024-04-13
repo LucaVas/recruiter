@@ -4,33 +4,29 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { invalidFields } from './index';
-import type { CandidateForm } from '@/views/new-candidacy/index';
-import { generateEmptyCandidateForm } from '@/views/new-candidacy/utils';
+import type { RawCandidateDto } from '@/stores/candidate/types';
 
-const details = ref<CandidateForm>();
-
-const { candidate, visible } = defineProps<{
-  candidate: CandidateForm;
+const { candidate, visible, isUpdate } = defineProps<{
+  candidate: RawCandidateDto;
   visible: boolean;
+  isUpdate: boolean
 }>();
 
 const emits = defineEmits<{
-  (e: 'update', content: CandidateForm): void;
+  (e: 'update', content: RawCandidateDto): void;
   (e: 'close'): void;
   (e: 'save'): void;
 }>();
 
-onMounted(() => {
-  details.value = candidate;
-});
+const candidateForm = ref(candidate)
 </script>
 
 <template>
   <div class="card flex justify-center">
     <Dialog
-      v-if="details"
+      v-if="candidateForm"
       :visible="visible"
       @update:visible="$emit('close')"
       closeOnEscape
@@ -46,9 +42,9 @@ onMounted(() => {
           <InputText
             placeholder="Name"
             autocomplete="off"
-            v-model="details.name"
+            v-model="candidateForm.name"
             :invalid="invalidFields.name.invalid"
-            @input="emits('update', details)"
+            @input="emits('update', candidateForm)"
           />
         </InputGroup>
 
@@ -58,12 +54,12 @@ onMounted(() => {
           </InputGroupAddon>
           <InputMask
             id="phone"
-            v-model="details.phone"
+            v-model="candidateForm.phone"
             mask="(999) 999-9999"
             placeholder="Phone"
             :unmask="true"
             :invalid="invalidFields.phone.invalid"
-            @input="emits('update', details)"
+            @input="emits('update', candidateForm)"
           />
         </InputGroup>
 
@@ -75,9 +71,9 @@ onMounted(() => {
             placeholder="Email"
             autocomplete="off"
             type="email"
-            v-model="details.email"
+            v-model="candidateForm.email"
             :invalid="invalidFields.email.invalid"
-            @input="emits('update', details)"
+            @input="emits('update', candidateForm)"
           />
         </InputGroup>
 
@@ -88,9 +84,10 @@ onMounted(() => {
           <InputText
             placeholder="Pan"
             autocomplete="off"
-            v-model="details.pan"
+            v-model="candidateForm.pan"
             :invalid="invalidFields.pan.invalid"
-            @input="emits('update', details)"
+            @input="isUpdate ? null : emits('update', candidateForm)"
+            :disabled="isUpdate"
           />
         </InputGroup>
 
@@ -101,9 +98,9 @@ onMounted(() => {
           <InputText
             placeholder="Education"
             autocomplete="off"
-            v-model="details.education"
+            v-model="candidateForm.education"
             :invalid="invalidFields.education.invalid"
-            @input="emits('update', details)"
+            @input="emits('update', candidateForm)"
           />
         </InputGroup>
 
@@ -112,28 +109,27 @@ onMounted(() => {
             <InputGroupAddon>
               <i class="pi pi-calendar"></i>
             </InputGroupAddon>
-            <InputText
+            <InputNumber
               placeholder="Total Experience"
               autocomplete="off"
-              type="number"
-              min="0"
-              v-model="details.totalExperience"
+              :min="0"
+              :max="50"
+              v-model="candidateForm.totalExperience"
               :invalid="invalidFields.totalExperience.invalid"
-              @input="emits('update', details)"
+              @input="emits('update', candidateForm)"
             />
           </InputGroup>
           <InputGroup>
             <InputGroupAddon>
               <i class="pi pi-wallet"></i>
             </InputGroupAddon>
-            <InputText
+            <InputNumber
               placeholder="Current CTC"
               autocomplete="off"
-              type="number"
-              min="0"
-              v-model="details.currentCtc"
+              :min="0"
+              v-model="candidateForm.currentCtc"
               :invalid="invalidFields.currentCtc.invalid"
-              @input="emits('update', details)"
+              @input="emits('update', candidateForm)"
             />
             <InputGroupAddon>INR</InputGroupAddon>
           </InputGroup>
@@ -141,23 +137,9 @@ onMounted(() => {
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button
-          label="Cancel"
-          severity="secondary"
-          @click="
-            $emit('close');
-            details = generateEmptyCandidateForm();
-          "
-        />
-        <Button
-          label="Save"
-          @click="
-            emits('save');
-            details = generateEmptyCandidateForm();
-          "
-        />
+        <Button label="Cancel" severity="secondary" @click="$emit('close')" />
+        <Button label="Save" @click="emits('save')" />
       </div>
     </Dialog>
   </div>
 </template>
-@/views/new-candidacy/index@/views/new-candidacy/utils

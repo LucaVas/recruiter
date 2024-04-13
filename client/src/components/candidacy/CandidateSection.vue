@@ -3,7 +3,7 @@ import SearchCandidate from './candidate/SearchCandidate.vue';
 import CandidateTable from './candidate/CandidateTable.vue';
 import { ref, onMounted } from 'vue';
 import CandidateModal from './candidate/shared/CandidateModal.vue';
-import type { CandidateForm } from '../../views/candidacy/index';
+import type { CandidateForm } from '../../views/new-candidacy/index';
 import type { RawCandidateDto } from '../../stores/candidate/types';
 
 // variables
@@ -36,6 +36,7 @@ onMounted(() => {
     <label class="text-sm">Search for a candidate</label>
     <CandidateModal
       v-if="details"
+      :isUpdate="false"
       :candidate="details"
       :visible="newCandidateModalOpen"
       @close="newCandidateModalOpen = false"

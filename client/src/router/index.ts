@@ -32,6 +32,11 @@ const router = createRouter({
           component: () => import('../views/candidacy/Candidacy.vue'),
         },
         {
+          path: '/candidates',
+          name: 'CandidatesPage',
+          component: () => import('../views/candidates-page/CandidatesPage.vue'),
+        },
+        {
           path: '/users',
           beforeEnter: [showForAdmin],
           name: 'UsersView',

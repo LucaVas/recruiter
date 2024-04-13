@@ -1,6 +1,5 @@
-import { ref } from "vue";
-import type { MenuItem } from "../types";
-
+import { ref } from 'vue';
+import type { MenuItem } from '../types';
 
 export const roleTag = ref('');
 export const usernameTag = ref('');
@@ -23,6 +22,18 @@ export const menuItems = ref<MenuItem[]>([
         shortcut: '⌘+N',
         view: 'NewJob',
         privileges: ['ROLE_ADMIN'],
+      },
+    ],
+  },
+  {
+    group: 'Candidates',
+    links: [
+      {
+        icon: 'pi pi-users',
+        name: 'My Candidates',
+        shortcut: '⌘+J',
+        view: 'CandidatesPage',
+        privileges: ['ROLE_RECRUITER', 'ROLE_ADMIN'],
       },
     ],
   },
