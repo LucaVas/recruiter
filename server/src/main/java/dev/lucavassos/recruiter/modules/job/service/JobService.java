@@ -216,13 +216,13 @@ public class JobService {
 
         try {
             repository.save(job);
+            saveJobInHistoryTable(job);
         } catch (Exception e) {
             LOG.error("Database error while updating job: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
 
         LOG.info("Job updated: [{}]", job);
-        saveJobInHistoryTable(job);
 
         return new JobResponse(
                 job.getId(),

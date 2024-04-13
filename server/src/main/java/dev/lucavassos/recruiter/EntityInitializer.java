@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter;
 
+import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
@@ -326,6 +327,9 @@ public class EntityInitializer {
 
     @Transactional
     public void saveCandidates() {
+        User recruiter = userRepository.findOneByUsername("recruiter").orElseThrow(RuntimeException::new);
+        User recruiter2 = userRepository.findOneByUsername("recruiter2").orElseThrow(RuntimeException::new);
+
         Set<Candidate> candidates = new HashSet<>(List.of(
                 Candidate.builder()
                         .name("John")
@@ -335,6 +339,8 @@ public class EntityInitializer {
                         .education("Education for John")
                         .currentCtc(2000.0)
                         .pan("1234561232")
+                        .status(CandidateStatus.ACTIVE)
+                        .recruiter(recruiter)
                         .build(),
                 Candidate.builder()
                         .name("Mary")
@@ -344,6 +350,8 @@ public class EntityInitializer {
                         .education("Education for Mary")
                         .currentCtc(2050.0)
                         .pan("1234561233")
+                        .status(CandidateStatus.ACTIVE)
+                        .recruiter(recruiter2)
                         .build(),
                 Candidate.builder()
                         .name("Micheal")
@@ -353,6 +361,8 @@ public class EntityInitializer {
                         .education("Education for Micheal")
                         .currentCtc(1370.0)
                         .pan("1234561234")
+                        .status(CandidateStatus.ACTIVE)
+                        .recruiter(recruiter)
                         .build(),
                 Candidate.builder()
                         .name("Morta")
@@ -362,6 +372,8 @@ public class EntityInitializer {
                         .education("Education for Morta")
                         .currentCtc(2060.0)
                         .pan("1234561235")
+                        .status(CandidateStatus.ACTIVE)
+                        .recruiter(recruiter2)
                         .build()));
 
         candidateRepository.saveAll(candidates);

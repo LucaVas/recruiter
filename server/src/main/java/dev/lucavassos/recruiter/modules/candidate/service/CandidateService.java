@@ -7,12 +7,17 @@ import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
 import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
 import dev.lucavassos.recruiter.modules.candidate.domain.UpdateCandidateRequest;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
+import dev.lucavassos.recruiter.modules.candidate.entities.CandidateHistory;
+import dev.lucavassos.recruiter.modules.candidate.repository.CandidateHistoryRepository;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDtoMapper;
+import dev.lucavassos.recruiter.modules.job.entities.Job;
+import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
 import dev.lucavassos.recruiter.modules.user.entities.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,6 +36,8 @@ public class CandidateService {
 
     @Autowired
     private CandidateRepository candidateRepository;
+    @Autowired
+    private CandidateHistoryRepository historyRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -141,12 +149,14 @@ public class CandidateService {
             throw new RequestValidationException("No updates were made to the candidate.");
         }
 
+        candidate.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
+
         try {
             this.candidateRepository.save(candidate);
+            saveCandidateInHistoryTable(candidate, user);
         } catch (Exception e) {
             throw new Exception(e.getCause());
         }
-
 
         LOG.info("Candidate updated: [{}]", candidate);
 
@@ -190,10 +200,14 @@ public class CandidateService {
     }
 
     public List<CandidateDto> getAllCandidates() {
+
+        User user = getAuthUser();
+
         List<Candidate> candidates = candidateRepository.findAll();
 
         return candidates
                 .stream()
+                .filter(candidate -> user.isAdmin() || candidate.getRecruiter().getId().equals(user.getId()))
                 .map(candidate -> dtoMapper.apply(candidate))
                 .toList();
     }
@@ -211,7 +225,28 @@ public class CandidateService {
     }
 
     private boolean isUserAuthorized(User recruiter, Candidate candidate) {
-        return recruiter.getRoleName() == RoleName.ROLE_ADMIN;
-//               || candidate.getRecruiter().getId().equals(recruiter.getId());
+        return recruiter.getRoleName() == RoleName.ROLE_ADMIN
+               || candidate.getRecruiter().getId().equals(recruiter.getId());
+    }
+
+    private void saveCandidateInHistoryTable(Candidate candidate, User user) {
+        try {
+            // Create new entry in history table
+            historyRepository.save(
+                    CandidateHistory.builder()
+                            .name(candidate.getName())
+                            .phone(candidate.getPhone())
+                            .email(candidate.getEmail())
+                            .totalExperience(candidate.getTotalExperience())
+                            .education(candidate.getEducation())
+                            .currentCtc(candidate.getCurrentCtc())
+                            .status(candidate.getStatus())
+                            .modifiedBy(user.getId())
+                            .build()
+            );
+        } catch (Exception e) {
+            LOG.error("Error while saving candidate in history table: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
     }
 }
