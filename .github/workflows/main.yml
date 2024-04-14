@@ -36,6 +36,7 @@ jobs:
           echo 'spring.datasource.url=jdbc:postgresql://postgres:5432/recruiter' > config/application.properties
 
       - name: Build with Maven
+        working-directory: server
         run: mvn -B package --file pom.xml
 
       - name: Update dependency graph
