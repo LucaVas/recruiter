@@ -1,31 +1,30 @@
-# Docker multi-stage build
-FROM --platform=linux/amd64 maven:3-jdk-11 as builder
+# Stage 1: Build the Spring Boot application
+FROM --platform=linux/amd64 maven:3.8.3-openjdk-17 AS build
 
-# set workdir as app
+# Set the working directory inside the container
 WORKDIR /app
 
-# copy all files
-COPY . .
+# Copy the Maven project file and source code
+COPY server/pom.xml server/
+COPY server/src server/src
 
-# Just echo so we can see, if everything is there :)
-RUN ls -l
+# Switch to the server folder
+WORKDIR /app/server
 
-# Run Maven build
-RUN mvn clean install
+# Build the application
+RUN mvn -B package -DskipTests
 
-# Just using the build artifact and then removing the build-container
-FROM openjdk:17.0.2-jdk
+# create container
+FROM --platform=linux/amd64 openjdk:17-oracle
 
-VOLUME /tmp
+# Set the working directory inside the container
+WORKDIR /app/server
 
-ARG JAR_FILE=target/recruiter-server.jar
+# Copy the packaged JAR file from the build stage
+COPY --from=build /app/server/target/recruiter-1.0-SNAPSHOT.jar ./recruiter-1.0-SNAPSHOT.jar
 
-ENV JAVA_OPTIONS=""
-
-ADD ${JAR_FILE} app.jar
-
-# expose port 8080
-EXPOSE 8080
+# expose port 3000
+EXPOSE 3000
 
 # Fire up our Spring Boot app by default
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+CMD ["java", "-jar", "recruiter-1.0-SNAPSHOT.jar"]

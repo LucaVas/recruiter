@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: recruiterdb
+      POSTGRES_DB: recruiter
     ports:
       - "5435:5432"
     volumes:
@@ -18,15 +18,10 @@ services:
     build:
       context: .
       dockerfile: ./server/Dockerfile
-      image: recruiter-server:latest
-    env_file:
-      - ./server/src/main/resources/application.yml
     environment:
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: vilnius4kids
-      DB_SSL: false
-      DB_HOST: database
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/recruiter
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
     ports:
       - "3000:3000"
     depends_on:
@@ -37,10 +32,9 @@ services:
     build:
       context: .
       dockerfile: ./client/Dockerfile
-      image: recruiter-client:latest
       args:
         VITE_API_ORIGIN: http://localhost:3001
-        VITE_API_PATH: /api/v1/trpc
+        VITE_API_PATH: /api/v1
     environment:
       API_PROXY_PASS: http://server:3000
     ports:
@@ -49,4 +43,4 @@ services:
       - server
 
 volumes:
-  vilnius4kids-db:
+  recruiter-db:

@@ -1,16 +1,16 @@
 # Stage 1: Build our front end
-FROM --platform=linux/amd64 node:21.0.0-alpine3.18 AS builder
+FROM --platform=linux/amd64 node:18.19.0-alpine3.18 AS builder
 
 WORKDIR /app
 
 # Copy package.json files and install dependencies
-COPY ../package*.json .
-COPY client/package*.json client/
-RUN npm ci
+COPY client/ /app/client/
 
-# Copy over the entire monorepo since we need to access the tRPC server
-# types for the monorepo build
-COPY . .
+# Switch to the client folder
+WORKDIR /app/client
+
+# install dependencies
+RUN npm ci
 
 # While we can pass in environment variables before starting a server,
 # our client application "bakes in" the environment variables at build time.
@@ -31,9 +31,6 @@ COPY . .
 # Here we are specifying that we expect two arguments to be passed in at build time.
 ARG VITE_API_ORIGIN
 ARG VITE_API_PATH
-
-# Switch to the client folder
-WORKDIR /app/client
 
 # Build the client (HTML, CSS, JS, ...)
 RUN npm run build
