@@ -13,7 +13,7 @@ const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
 }>();
 
-const details = ref(candidacy)
+const details = ref(candidacy);
 </script>
 
 <template>

@@ -1,7 +1,4 @@
-import type {
-  User,
-  UserApprovalRequest,
-} from './types';
+import type { User, UserApprovalRequest } from './types';
 import axiosApi from '../api';
 
 // vars

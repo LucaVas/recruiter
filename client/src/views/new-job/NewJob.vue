@@ -9,13 +9,19 @@
         :jobDetails="job"
         @input="(details) => (job = details)"
       />
-      <Skills :disabled="false" :job="job" @update="(details) => (job = details)" />
+      <Skills :disabled="false" :skills="job.skills" @update="(skills) => (job.skills = skills)" />
     </div>
     <div v-else class="flex h-full w-full items-center justify-center">
       <Success :message="'Job created successfully!'" />
     </div>
 
-    <JobFooter :visible="true" :saving="creatingJob" :saved="jobCreated" :isUpdate="false" @save="create()" />
+    <JobFooter
+      :visible="true"
+      :saving="creatingJob"
+      :saved="jobCreated"
+      :isUpdate="false"
+      @save="create()"
+    />
   </div>
 </template>
 
@@ -42,6 +48,7 @@ const creatingJob = ref(false);
 async function create() {
   creatingJob.value = true;
   try {
+    console.log(job.value);
     await createJob(job.value);
     jobCreated.value = true;
   } catch (e) {

@@ -3,7 +3,9 @@ import axiosApi from '../api';
 
 const api = axiosApi();
 
-export async function createCandidate(newCandidate: NewCandidateRequest): Promise<CandidateResponse> {
+export async function createCandidate(
+  newCandidate: NewCandidateRequest
+): Promise<CandidateResponse> {
   const { data } = await api.post(`/candidates`, newCandidate);
   return data;
 }

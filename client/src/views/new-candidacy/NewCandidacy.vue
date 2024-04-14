@@ -49,7 +49,7 @@
       v-if="job"
       :disabled="job.status === 'ARCHIVED'"
       :candidacySubmitted="candidacySubmitted"
-      :submittingNewCandidacy="submittingNewCandidacy"
+      :submittingCandidacy="submittingNewCandidacy"
       :isUpdate="false"
       @submit="submit(selectedCandidate)"
     />
@@ -118,7 +118,7 @@ const searchingForCandidate = ref(false);
 const selectedCandidate = ref<Candidate | null>();
 const searchedCandidate = ref<Candidate>();
 const creatingCandidate = ref(false);
-const candidateCreated = ref(false)
+const candidateCreated = ref(false);
 
 async function submit(selectedCandidate: Candidate | null | undefined) {
   if (!selectedCandidate || !jobId.value) return;
@@ -142,7 +142,7 @@ async function createNewCandidate(candidate: NewCandidateRequest) {
   try {
     const res = await createCandidate(candidate);
     searchedCandidate.value = res.candidate;
-    candidateCreated.value = true
+    candidateCreated.value = true;
   } catch (err) {
     if (err instanceof ApiError) showError(err.message);
   } finally {

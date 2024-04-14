@@ -12,8 +12,8 @@ export type Candidate = {
 
 // backend domain objects
 export type CandidateResponse = { pan: string; candidate: Candidate };
-export type NewCandidateRequest = Omit<Candidate, 'createdAt'>
-export type UpdateCandidateRequest = NewCandidateRequest
+export type NewCandidateRequest = Omit<Candidate, 'createdAt'>;
+export type UpdateCandidateRequest = NewCandidateRequest;
 
 // backend enums
-export type CandidateStatus = 'ACTIVE' | 'ARCHIVED'
+export type CandidateStatus = 'ACTIVE' | 'ARCHIVED';

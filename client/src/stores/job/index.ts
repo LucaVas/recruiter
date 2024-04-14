@@ -9,6 +9,7 @@ export async function getAllJobs(): Promise<Job[]> {
 }
 export async function createJob(newJob: NewJobRequest): Promise<JobResponse> {
   const { data } = await api.post(`/jobs`, newJob);
+  console.log(data);
   return data;
 }
 export async function updateJob(updatedJob: Job): Promise<JobResponse> {

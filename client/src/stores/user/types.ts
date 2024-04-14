@@ -24,12 +24,12 @@ export type UserApprovalRequest = {
   comments: string;
 };
 export type PasswordResetRequest = {
-  newPassword: string
-}
+  newPassword: string;
+};
 export type PasswordResetTokenRequest = {
   email: string;
-  username: string
-}
+  username: string;
+};
 
 // frontend types
 export type Role = {

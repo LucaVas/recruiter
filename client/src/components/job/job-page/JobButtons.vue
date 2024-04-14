@@ -11,7 +11,7 @@ const { id, status } = defineProps<{
 }>();
 defineEmits<{
   (e: 'openModal'): void;
-  (e: 'deleteJob'): void
+  (e: 'deleteJob'): void;
 }>();
 </script>
 

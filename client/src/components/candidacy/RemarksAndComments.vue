@@ -4,14 +4,14 @@ import Textarea from 'primevue/textarea';
 import { ref } from 'vue';
 
 const { candidacy } = defineProps<{
-  candidacy: RawCandidacy
+  candidacy: RawCandidacy;
 }>();
 
 const emit = defineEmits<{
   (e: 'input', content: RawCandidacy): void;
 }>();
 
-const details = ref(candidacy)
+const details = ref(candidacy);
 </script>
 
 <template>

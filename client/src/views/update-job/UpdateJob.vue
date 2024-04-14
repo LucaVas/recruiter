@@ -16,8 +16,8 @@
       <JobPaymentDetails :disabled="jobDetails.status === 'ARCHIVED'" :jobDetails="jobDetails" />
       <Skills
         :disabled="jobDetails.status === 'ARCHIVED'"
-        :job="jobDetails"
-        @update="(details) => (jobDetails = details)"
+        :skills="jobDetails.skills"
+        @update="(skills) => (jobDetails!.skills = skills)"
       />
     </div>
     <JobFooter

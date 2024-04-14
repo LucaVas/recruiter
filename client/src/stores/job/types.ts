@@ -1,4 +1,4 @@
-import type { RawSkill, Skill } from '../skill/types';
+import type { RawSkill } from '../skill/types';
 
 // backend dtos
 export type Job = {
@@ -7,7 +7,7 @@ export type Job = {
   name: string;
   status: JobStatus;
   wantedCvs: number;
-  skills: Set<Skill>;
+  skills: RawSkill[];
   contractType: ContractType;
   experienceRangeMin: number;
   experienceRangeMax: number;
@@ -32,9 +32,6 @@ export type ContractTypeName = 'PERMANENT' | 'TEMPORARY';
 export type Currency = 'INR';
 export type JobStatus = 'OPEN' | 'NO_CV_ACCEPTED' | 'CLOSED' | 'ARCHIVED';
 export type JobResponse = { id: number; job: Job };
-export type NewJobRequest = Omit<
-  Job,
-  'id' | 'skills' | 'comments' | 'numberOfCandidates' | 'createdAt'
-> & { skills: RawSkill[] };
+export type NewJobRequest = Omit<Job, 'id' | 'comments' | 'numberOfCandidates' | 'createdAt'>;
 export type UpdateJobRequest = NewJobRequest & { id: number };
 export type ChangeJobStatusRequest = { jobStatus: JobStatus };

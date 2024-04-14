@@ -14,7 +14,7 @@ import { signup } from '@/stores/auth/index';
 import type { SignupRequest } from '@/stores/auth/types';
 import { useRouter } from 'vue-router';
 
-const router = useRouter()
+const router = useRouter();
 const toast = useToast();
 const showError = (content: string) => {
   toast.add({ severity: 'error', summary: 'Error', detail: content, life: 3000 });

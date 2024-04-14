@@ -14,7 +14,6 @@ declare module 'vue' {
     CandidacyFooter: typeof import('./src/components/candidacy/CandidacyFooter.vue')['default']
     CandidacyHeader: typeof import('./src/components/candidacy/CandidacyHeader.vue')['default']
     CandidacyHiringDetailsModal: typeof import('./src/components/candidacy/header/CandidacyHiringDetailsModal.vue')['default']
-    CandidacySuccess: typeof import('./src/components/candidacy/CandidacySuccess.vue')['default']
     CandidateModal: typeof import('./src/components/candidacy/candidate/shared/CandidateModal.vue')['default']
     CandidateSection: typeof import('./src/components/candidacy/CandidateSection.vue')['default']
     CandidateSingleSelectTable: typeof import('./src/components/candidacy/candidate/CandidateSingleSelectTable.vue')['default']
@@ -39,7 +38,6 @@ declare module 'vue' {
     JobPaymentDetails: typeof import('./src/components/job/shared/JobPaymentDetails.vue')['default']
     JobSkills: typeof import('./src/components/job/job-page/JobSkills.vue')['default']
     JobStatus: typeof import('./src/components/job/update-job/JobStatus.vue')['default']
-    JobSuccess: typeof import('./src/components/job/shared/JobSuccess.vue')['default']
     JobTitle: typeof import('./src/components/job/job-page/JobTitle.vue')['default']
     Message: typeof import('primevue/message')['default']
     MultiSelect: typeof import('primevue/multiselect')['default']
@@ -60,7 +58,6 @@ declare module 'vue' {
     Success: typeof import('./src/components/Success.vue')['default']
     Tag: typeof import('primevue/tag')['default']
     Textarea: typeof import('primevue/textarea')['default']
-    UpdateJobFooter: typeof import('./src/components/job/shared/UpdateJobFooter.vue')['default']
     UsersTable: typeof import('./src/components/tables/users/UsersTable.vue')['default']
   }
 }

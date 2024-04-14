@@ -180,7 +180,7 @@ public class EntityInitializer {
                 .skills(
                         skillSet.stream().filter(
                                 skill -> skill.getName().equals("Java")
-                        ).collect(Collectors.toSet())
+                        ).collect(Collectors.toList())
                 )
                 .contractType(
                         permanentContractType
@@ -213,7 +213,7 @@ public class EntityInitializer {
                 .skills(
                         skillSet.stream().filter(
                                 skill -> skill.getName().equals("Python")
-                        ).collect(Collectors.toSet())
+                        ).collect(Collectors.toList())
                 )
                 .contractType(permanentContractType)
                 .experienceRangeMin(3)
@@ -243,7 +243,7 @@ public class EntityInitializer {
                 .wantedCvs(9)
                 .skills(skillSet.stream().filter(
                                 skill -> skill.getName().equals("Big Data") || skill.getName().equals("Tableau")
-                        ).collect(Collectors.toSet())
+                        ).collect(Collectors.toList())
                 )
                 .contractType(permanentContractType)
                 .experienceRangeMin(2)
@@ -273,7 +273,7 @@ public class EntityInitializer {
                 .wantedCvs(9)
                 .skills(skillSet.stream().filter(
                                 skill -> skill.getName().equals("Critical Thinking") || skill.getName().equals("PL2")
-                        ).collect(Collectors.toSet())
+                        ).collect(Collectors.toList())
                 )
                 .contractType(permanentContractType)
                 .experienceRangeMin(5)
@@ -305,7 +305,7 @@ public class EntityInitializer {
                         skill -> skill.getName().equals("Cloud Architecture")
                         || skill.getName().equals("AWS")
                         || skill.getName().equals("Google Cloud")
-                ).collect(Collectors.toSet())
+                ).collect(Collectors.toList())
                 )
                 .contractType(permanentContractType)
                 .experienceRangeMin(10)

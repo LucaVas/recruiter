@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Skill } from '@/stores/skill/types';
+import type { RawSkill } from '@/stores/skill/types';
 import Chip from 'primevue/chip';
 
 const { skills } = defineProps<{
-  skills: Set<Skill>;
+  skills: RawSkill[];
 }>();
 </script>
 

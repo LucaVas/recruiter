@@ -11,9 +11,8 @@ import JobButtons from '@/components/job/job-page/JobButtons.vue';
 import JobDescription from '@/components/job/job-page/JobDescription.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import JobHiringDetailsModal from '@/components/job/job-page/JobHiringDetailsModal.vue';
-import { deleteJob, updateJob } from '@/stores/job';
+import { deleteJob } from '@/stores/job';
 import DeleteJobModal from '@/components/job/shared/DeleteJobModal.vue';
-import type JobFooter from '@/components/job/shared/JobFooter.vue';
 
 // constants
 const deletingJob = ref(false);

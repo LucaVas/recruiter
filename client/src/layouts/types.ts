@@ -1,4 +1,4 @@
-import type { RoleName } from "@/stores/user/types";
+import type { RoleName } from '@/stores/user/types';
 
 export type MenuItem = {
   group: string;

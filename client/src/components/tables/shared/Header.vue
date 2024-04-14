@@ -13,7 +13,7 @@ defineEmits<{
   (e: 'clearFilter'): void;
 }>();
 
-const dataFilters = ref(filters)
+const dataFilters = ref(filters);
 </script>
 
 <template>

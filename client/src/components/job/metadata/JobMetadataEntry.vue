@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 const { icon, content } = defineProps<{
   icon: string;
   content: string;

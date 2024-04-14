@@ -6,13 +6,12 @@ import type { Job } from '@/stores/job/types';
 
 const { job, visible } = defineProps<{
   job: Job;
-  visible: boolean
+  visible: boolean;
 }>();
 
 defineEmits<{
   (e: 'close'): void;
 }>();
-
 </script>
 
 <template>
@@ -31,7 +30,10 @@ defineEmits<{
           :icon="'pi-calendar'"
           :content="`From ${job.experienceRangeMin} to ${job.experienceRangeMax} years of experience`"
         />
-        <JobMetadataEntry :icon="'pi-clock'" :content="`${job.noticePeriodInDays} days of notice`" />
+        <JobMetadataEntry
+          :icon="'pi-clock'"
+          :content="`${job.noticePeriodInDays} days of notice`"
+        />
         <JobMetadataEntry :icon="'pi-briefcase'" :content="`${job.salaryBudget} ${job.currency}`" />
         <JobMetadataEntry
           :icon="'pi-money-bill'"

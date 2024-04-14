@@ -6,7 +6,7 @@ const { visible, saved, saving, isUpdate } = defineProps<{
   visible: boolean;
   saving: boolean;
   saved: boolean;
-  isUpdate: boolean
+  isUpdate: boolean;
 }>();
 
 defineEmits<{
@@ -16,15 +16,13 @@ defineEmits<{
 
 <template>
   <div class="flex w-full justify-between">
-    <Button
-      v-if="!saved"
-      label="Back"
-      size="small"
-      :loading="saving"
-      @click="router.go(-1)"
-    />
+    <Button v-if="!saved" label="Back" size="small" :loading="saving" @click="router.go(-1)" />
     <div>
-      <Button v-if="!saved" :label="isUpdate ? 'Update Job' : 'Create Job'" @click="$emit('save')" />
+      <Button
+        v-if="!saved"
+        :label="isUpdate ? 'Update Job' : 'Create Job'"
+        @click="$emit('save')"
+      />
       <Button
         v-if="saved"
         label="Back to Dashboard"

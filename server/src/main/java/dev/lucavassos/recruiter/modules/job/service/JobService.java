@@ -68,8 +68,8 @@ public class JobService {
     public JobResponse addJob(NewJobRequest request) throws Exception {
         LOG.info("Initiating new job creation process...");
 
-        Set<Skill> skills = new HashSet<>(skillRepository
-                .findAllById(request.skills().stream().map(RawSkillDto::id).collect(Collectors.toSet())));
+        List<Skill> skills = skillRepository
+                .findAllById(request.skills().stream().map(RawSkillDto::id).collect(Collectors.toList()));
 
         ContractType contractType = contractTypeRepository
                 .findByContractTypeName(request.contractType().contractTypeName())
@@ -197,8 +197,8 @@ public class JobService {
             changes = true;
         }
         if (request.skills() != null) {
-            Set<Skill> skills = new HashSet<>(skillRepository
-                    .findAllById(request.skills().stream().map(RawSkillDto::id).collect(Collectors.toSet())));
+            List<Skill> skills = skillRepository
+                    .findAllById(request.skills().stream().map(RawSkillDto::id).collect(Collectors.toList()));
             if (!skills.equals(job.getSkills())) {
                 job.setSkills(skills);
                 changes = true;

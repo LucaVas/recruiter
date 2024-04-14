@@ -33,4 +33,4 @@ export type CandidacyResponse = {
 };
 
 // frontend types
-export type RawCandidacy = UpdateCandidacyRequest
+export type RawCandidacy = UpdateCandidacyRequest;

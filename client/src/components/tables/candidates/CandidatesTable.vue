@@ -213,7 +213,10 @@ onMounted(async () => {
       candidateToEdit = undefined;
     "
     :isUpdate="true"
-    @update="(candidateForm) => (candidateToEdit = candidateForm)"
+    @update="
+      (candidateForm) =>
+        (candidateToEdit = { ...candidateForm, createdAt: candidateToEdit!.createdAt })
+    "
     @save="update(candidateToEdit)"
   />
 </template>

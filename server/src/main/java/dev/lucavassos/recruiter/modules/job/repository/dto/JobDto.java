@@ -2,10 +2,12 @@ package dev.lucavassos.recruiter.modules.job.repository.dto;
 
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.RecruiterDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 public record JobDto(
@@ -14,7 +16,7 @@ public record JobDto(
         String name,
         JobStatus status,
         Integer wantedCvs,
-        Set<SkillDto> skills,
+        List<RawSkillDto> skills,
         ContractTypeDto contractType,
         Integer experienceRangeMin,
         Integer experienceRangeMax,

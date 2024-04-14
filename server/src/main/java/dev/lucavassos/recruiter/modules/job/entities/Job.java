@@ -17,7 +17,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -53,7 +55,7 @@ public class Job {
             name = "jobs_skills",
             joinColumns = @JoinColumn(name = "job_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
-    private Set<Skill> skills = new HashSet<>();
+    private List<Skill> skills = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_type_id")

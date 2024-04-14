@@ -15,7 +15,14 @@ defineEmits<{
 
 <template>
   <div class="card flex justify-center">
-    <Dialog @update:visible="$emit('closeModal')" close-on-escape :visible="visible" modal header="Are you sure?" :style="{ width: '25rem' }">
+    <Dialog
+      @update:visible="$emit('closeModal')"
+      close-on-escape
+      :visible="visible"
+      modal
+      header="Are you sure?"
+      :style="{ width: '25rem' }"
+    >
       <h3>Please, confirm this job deletion.</h3>
       <Divider />
       <div class="flex justify-end gap-2">

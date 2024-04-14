@@ -1,29 +1,29 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
-const router = useRouter()
+const router = useRouter();
 const { submittingCandidacy, candidacySubmitted, disabled, isUpdate } = defineProps<{
   submittingCandidacy: boolean;
   disabled: boolean;
   candidacySubmitted: boolean;
-  isUpdate: boolean
+  isUpdate: boolean;
 }>();
 
 defineEmits<{
   (e: 'submit'): void;
-  (e: 'update'): void
+  (e: 'update'): void;
 }>();
 </script>
 
 <template>
   <div class="flex w-full justify-between">
     <Button
-        v-if="!candidacySubmitted"
-        label="Back"
-        size="small"
-        :loading="submittingCandidacy"
-        @click="router.go(-1)"
-      />
+      v-if="!candidacySubmitted"
+      label="Back"
+      size="small"
+      :loading="submittingCandidacy"
+      @click="router.go(-1)"
+    />
     <div>
       <Button
         v-if="!disabled && !candidacySubmitted"

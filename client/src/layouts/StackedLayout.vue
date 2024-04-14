@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import Navbar from '@/components/navbar/Navbar.vue';
-import type { MenuItem } from './types'
+import type { MenuItem } from './types';
 import { ref } from 'vue';
 
 const { menuItems, username } = defineProps<{
   menuItems: MenuItem[];
-  username: string
+  username: string;
 }>();
 const menuVisible = ref(false);
 </script>

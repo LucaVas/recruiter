@@ -2,7 +2,6 @@ import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import { ref } from 'vue';
 import type { Skill } from '@/stores/skill/types';
 
-
 export const filters = ref();
 export const globalFiltersFields = ref([
   'id',
@@ -102,7 +101,6 @@ export const getClientIcon = (clientName: string) => {
       return 'placeholder.png';
   }
 };
-
 
 export const getSkills = (skills: Skill[]): string => {
   return skills.map((skill) => skill.name).join(', ');

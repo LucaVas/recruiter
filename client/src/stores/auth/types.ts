@@ -15,7 +15,10 @@ export type LoginResponse = {
   token: string;
   tokenType: string;
 };
-export type SignupRequest = Omit<User, 'id' | 'roles' | 'approved' | 'approver' | 'approvedOn' | 'createdAt'> & {
+export type SignupRequest = Omit<
+  User,
+  'id' | 'roles' | 'approved' | 'approver' | 'approvedOn' | 'createdAt'
+> & {
   password: string;
   roleName: RoleName;
 };

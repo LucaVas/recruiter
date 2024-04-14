@@ -24,7 +24,7 @@ defineEmits<{
           <Divider />
           <NavbarBody @closeMenu="$emit('closeMenu')" :menuItems="menuItems" />
           <Divider />
-          <NavbarFooter :username="username"/>
+          <NavbarFooter :username="username" />
         </div>
       </template>
     </Sidebar>

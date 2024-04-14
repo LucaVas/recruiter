@@ -36,7 +36,10 @@ const newCandidateModalOpen = ref(false);
       :candidate="details"
       :visible="newCandidateModalOpen"
       @close="newCandidateModalOpen = false"
-      @save="emits('update', details); newCandidateModalOpen = false"
+      @save="
+        emits('update', details);
+        newCandidateModalOpen = false;
+      "
       @update="(candidate) => (details = candidate)"
     />
 

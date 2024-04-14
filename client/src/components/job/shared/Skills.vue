@@ -4,32 +4,34 @@ import Column from 'primevue/column';
 import { ref } from 'vue';
 import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
 import type { RawSkill } from '@/stores/skill/types';
-import type { Job } from '@/stores/job/types';
 
-const { job, disabled } = defineProps<{
-  job: Job;
+const { skills, disabled } = defineProps<{
+  skills: RawSkill[];
   disabled: boolean;
 }>();
 
 const onRowReorder = (event: DataTableRowReorderEvent) => {
-  details.value.skills = new Set(event.value);
+  details.value = event.value;
 };
 
 const removeSkill = (skill: RawSkill): void => {
-  details.value.skills.delete(skill);
+  if (!details.value.includes(skill)) return;
+  details.value.splice(details.value.indexOf(skill), 1);
   emits('update', details.value);
 };
 
 const addSkill = (skill: RawSkill): void => {
-  details.value.skills.add(skill);
+  if (details.value.some((s) => s.name === skill.name)) return;
+  details.value.unshift(skill);
+
   emits('update', details.value);
 };
 
 const emits = defineEmits<{
-  (e: 'update', content: Job): void;
+  (e: 'update', content: RawSkill[]): void;
 }>();
 
-const details = ref(job);
+const details = ref(skills);
 </script>
 
 <template>
@@ -38,7 +40,7 @@ const details = ref(job);
     <DataTable
       scrollable
       scrollHeight="15rem"
-      :value="new Array(details.skills)"
+      :value="details"
       :reorderableColumns="true"
       size="small"
       class="mb-2"

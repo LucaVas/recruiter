@@ -1,10 +1,3 @@
-import { ref } from "vue";
+import { ref } from 'vue';
 
-export const columns = ref([
-  'id',
-  'job',
-  'client',
-  'candidate',
-  'recruiter',
-  'createdOn',
-]);
+export const columns = ref(['id', 'job', 'client', 'candidate', 'recruiter', 'createdOn']);

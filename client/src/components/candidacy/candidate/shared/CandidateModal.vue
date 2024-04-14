@@ -10,7 +10,7 @@ import type { Candidate, NewCandidateRequest } from '@/stores/candidate/types';
 const { candidate, visible, isUpdate } = defineProps<{
   candidate: Candidate | NewCandidateRequest | undefined;
   visible: boolean;
-  isUpdate: boolean
+  isUpdate: boolean;
 }>();
 
 const emits = defineEmits<{
@@ -19,7 +19,7 @@ const emits = defineEmits<{
   (e: 'save'): void;
 }>();
 
-const candidateForm = ref(candidate)
+const candidateForm = ref(candidate);
 </script>
 
 <template>

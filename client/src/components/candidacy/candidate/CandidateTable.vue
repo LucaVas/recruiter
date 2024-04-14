@@ -14,10 +14,7 @@ const emits = defineEmits<{
   <div class="field p-fluid">
     <CandidateSingleSelectTable
       :candidates="[candidateToDisplay]"
-      @selectCandidate="
-        (candidate) =>
-          emits('selectCandidate', candidate)
-      "
+      @selectCandidate="(candidate) => emits('selectCandidate', candidate)"
     />
   </div>
 </template>
