@@ -52,6 +52,9 @@ public class RandomUtils {
         return RANDOM.nextBoolean();
     }
 
-    public static Integer randomNumber(int min, int max) { return RANDOM.nextInt(min, max); }
+    public static Integer randomInteger(int min, int max) { return RANDOM.nextInt(min, max); }
 
+    public static Double randomDouble(double min, double max) {
+        return min + (max - min) * RANDOM.nextDouble();
+    }
 }

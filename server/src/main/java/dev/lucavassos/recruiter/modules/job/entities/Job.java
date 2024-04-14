@@ -66,7 +66,7 @@ public class Job {
     private Integer experienceRangeMin;
 
     @Column(nullable = false)
-    @Max(value = 100, message = "Experience range maximum cannot exceed 100")
+    @Max(value = 60, message = "Experience range maximum cannot exceed 60")
     private Integer experienceRangeMax;
 
     @Column(nullable = false)

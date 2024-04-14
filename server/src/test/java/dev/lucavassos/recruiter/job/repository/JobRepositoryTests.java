@@ -1,6 +1,9 @@
 package dev.lucavassos.recruiter.job.repository;
 
+import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
+import dev.lucavassos.recruiter.modules.job.entities.ContractType;
+import dev.lucavassos.recruiter.modules.job.entities.ContractTypeName;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import jakarta.validation.ConstraintViolationException;
@@ -11,8 +14,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
-import static dev.lucavassos.recruiter.testUtils.RandomUtils.randomNumber;
-import static dev.lucavassos.recruiter.testUtils.RandomUtils.randomString;
+import java.time.LocalDateTime;
+
+import static dev.lucavassos.recruiter.testUtils.RandomUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -31,172 +35,264 @@ public class JobRepositoryTests {
     @Test
     public void save_creates_new_job() {
 
-        String jobName = randomString(10, 50);
+        String name = randomString(10, 50);
         Job job = Job.builder()
                 .client(randomString(5, 15))
-                .name(jobName)
+                .name(name)
                 .status(JobStatus.OPEN)
-                .wantedCvs(randomNumber(1, 10))
-                .experienceRange(1.5)
-                .noticePeriodInDays(randomNumber(1, 20))
+                .wantedCvs(randomInteger(1, 10))
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(randomInteger(0, 50))
+                .experienceRangeMax(randomInteger(0, 50))
+                .noticePeriodInDays(randomInteger(1, 20))
                 .salaryBudget(1500.00)
+                .currency(Currency.INR)
                 .description(randomString(10, 100))
-                .bonusPayPerCV(10.5)
-                .closureBonus(randomString(5, 20))
+                .bonusPayPerCv(randomDouble(1, 1000))
+                .closureBonus(randomDouble(1, 1000))
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
                 .build();
 
         Job savedJob = repository.save(job);
 
         Job existsJob = manager.find(Job.class, savedJob.getId());
 
-        assertThat(existsJob.getName()).isEqualTo(jobName);
+        assertThat(existsJob.getName()).isEqualTo(name);
         assertThat(existsJob.getStatus()).isEqualTo(JobStatus.OPEN);
     }
 
     @Test
     public void save_throws_error_if_client_is_invalid() {
-        Job jobWithShortClient = Job.builder()
+        Job job = Job.builder()
                 .client("")
-                .name(randomString(3, 10))
+                .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
-                .wantedCVs(randomNumber(1, 10))
-                .experienceRange(1.5)
-                .noticePeriodInDays(randomNumber(1, 20))
+                .wantedCvs(randomInteger(1, 10))
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(randomInteger(0, 50))
+                .experienceRangeMax(randomInteger(0, 50))
+                .noticePeriodInDays(randomInteger(1, 20))
                 .salaryBudget(1500.00)
+                .currency(Currency.INR)
                 .description(randomString(10, 100))
-                .bonusPayPerCV(10.5)
-                .closureBonus(randomString(5, 20))
+                .bonusPayPerCv(randomDouble(1, 1000))
+                .closureBonus(randomDouble(1, 1000))
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(jobWithShortClient);
+            repository.save(job);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Job client must be at least 1 character long");
     }
 
     @Test
     public void save_throws_error_if_name_is_invalid() {
-        Job jobWithShortName = Job.builder()
-                .client(randomString(3, 10))
+        Job job = Job.builder()
+                .client(randomString(10, 50))
                 .name("")
                 .status(JobStatus.OPEN)
-                .wantedCVs(randomNumber(1, 10))
-                .experienceRange(1.5)
-                .noticePeriodInDays(randomNumber(1, 20))
+                .wantedCvs(randomInteger(1, 10))
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(randomInteger(0, 50))
+                .experienceRangeMax(randomInteger(0, 50))
+                .noticePeriodInDays(randomInteger(1, 20))
                 .salaryBudget(1500.00)
+                .currency(Currency.INR)
                 .description(randomString(10, 100))
-                .bonusPayPerCV(10.5)
-                .closureBonus(randomString(5, 20))
+                .bonusPayPerCv(randomDouble(1, 1000))
+                .closureBonus(randomDouble(1, 1000))
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(jobWithShortName);
+            repository.save(job);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Job name must be at least 1 character long");
     }
 
     @Test
     public void save_throws_error_if_wanted_cvs_is_invalid() {
-        Job jobWithNegativeWantedCvs = Job.builder()
-                .client(randomString(3, 10))
-                .name(randomString(3, 10))
+        Job job = Job.builder()
+                .client(randomString(10, 50))
+                .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
-                .wantedCVs(-1)
-                .experienceRange(1.5)
-                .noticePeriodInDays(randomNumber(1, 20))
+                .wantedCvs(-1)
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(randomInteger(0, 50))
+                .experienceRangeMax(randomInteger(0, 50))
+                .noticePeriodInDays(randomInteger(1, 20))
                 .salaryBudget(1500.00)
+                .currency(Currency.INR)
                 .description(randomString(10, 100))
-                .bonusPayPerCV(10.5)
-                .closureBonus(randomString(5, 20))
+                .bonusPayPerCv(randomDouble(1, 1000))
+                .closureBonus(randomDouble(1, 1000))
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(jobWithNegativeWantedCvs);
+            repository.save(job);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Wanted CVs cannot be negative");
     }
 
     @Test
-    public void save_throws_error_if_experience_range_is_invalid() {
-        Job jobWithNegativeBonusPayPerCV = Job.builder()
-                .client(randomString(3, 10))
-                .name(randomString(3, 10))
+    public void save_throws_error_if_experience_range_min_is_invalid() {
+        Job job = Job.builder()
+                .client(randomString(10, 50))
+                .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
-                .wantedCVs(randomNumber(1,5))
-                .experienceRange(-1.5)
-                .noticePeriodInDays(randomNumber(1, 20))
+                .wantedCvs(randomInteger(1, 10))
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(-1)
+                .experienceRangeMax(randomInteger(0, 50))
+                .noticePeriodInDays(randomInteger(1, 20))
                 .salaryBudget(1500.00)
+                .currency(Currency.INR)
                 .description(randomString(10, 100))
-                .bonusPayPerCV(10.5)
-                .closureBonus(randomString(5, 20))
+                .bonusPayPerCv(randomDouble(1, 1000))
+                .closureBonus(randomDouble(1, 1000))
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(jobWithNegativeBonusPayPerCV);
+            repository.save(job);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("Experience range cannot be negative");
+                .hasMessageContaining("Experience range minimum cannot be negative");
+    }
+
+    @Test
+    public void save_throws_error_if_experience_range_max_is_invalid() {
+        Job job = Job.builder()
+                .client(randomString(10, 50))
+                .name(randomString(10, 50))
+                .status(JobStatus.OPEN)
+                .wantedCvs(randomInteger(1, 10))
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(randomInteger(0, 50))
+                .experienceRangeMax(61)
+                .noticePeriodInDays(randomInteger(1, 20))
+                .salaryBudget(1500.00)
+                .currency(Currency.INR)
+                .description(randomString(10, 100))
+                .bonusPayPerCv(randomDouble(1, 1000))
+                .closureBonus(randomDouble(1, 1000))
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
+                .build();
+
+        assertThatThrownBy(() -> {
+            repository.save(job);
+        }).isInstanceOf(ConstraintViolationException.class)
+                .hasMessageContaining("Experience range maximum cannot exceed 60");
     }
 
     @Test
     public void save_throws_error_if_notice_period_is_invalid() {
-        Job jobWithNegativeBonusPayPerCV = Job.builder()
-                .client(randomString(3, 10))
-                .name(randomString(3, 10))
+        Job job = Job.builder()
+                .client(randomString(10, 50))
+                .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
-                .wantedCVs(randomNumber(1,5))
-                .experienceRange(1.5)
+                .wantedCvs(randomInteger(1, 10))
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(randomInteger(0, 50))
+                .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(-1)
                 .salaryBudget(1500.00)
+                .currency(Currency.INR)
                 .description(randomString(10, 100))
-                .bonusPayPerCV(10.5)
-                .closureBonus(randomString(5, 20))
+                .bonusPayPerCv(randomDouble(1, 1000))
+                .closureBonus(randomDouble(1, 1000))
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(jobWithNegativeBonusPayPerCV);
+            repository.save(job);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Notice period cannot be negative");
     }
 
     @Test
     public void save_throws_error_if_salary_budget_is_invalid() {
-        Job jobWithNegativeBonusPayPerCV = Job.builder()
-                .client(randomString(3, 10))
-                .name(randomString(3, 10))
+        Job job = Job.builder()
+                .client(randomString(10, 50))
+                .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
-                .wantedCVs(randomNumber(1,5))
-                .experienceRange(1.5)
-                .noticePeriodInDays(randomNumber(1, 5))
-                .salaryBudget(-1500.00)
+                .wantedCvs(randomInteger(1, 10))
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(randomInteger(0, 50))
+                .experienceRangeMax(randomInteger(0, 50))
+                .noticePeriodInDays(randomInteger(1, 20))
+                .salaryBudget(-1.0)
+                .currency(Currency.INR)
                 .description(randomString(10, 100))
-                .bonusPayPerCV(10.5)
-                .closureBonus(randomString(5, 20))
+                .bonusPayPerCv(randomDouble(1, 1000))
+                .closureBonus(randomDouble(1, 1000))
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(jobWithNegativeBonusPayPerCV);
+            repository.save(job);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Salary budget cannot be negative");
     }
 
     @Test
     public void save_throws_error_if_bonus_pay_per_CV_is_invalid() {
-        Job jobWithNegativeBonusPayPerCV = Job.builder()
-                .client(randomString(3, 10))
-                .name(randomString(3, 10))
+        Job job = Job.builder()
+                .client(randomString(10, 50))
+                .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
-                .wantedCVs(randomNumber(1,5))
-                .experienceRange(1.5)
-                .noticePeriodInDays(randomNumber(1, 5))
+                .wantedCvs(randomInteger(1, 10))
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(randomInteger(0, 50))
+                .experienceRangeMax(randomInteger(0, 50))
+                .noticePeriodInDays(randomInteger(1, 20))
                 .salaryBudget(1500.00)
+                .currency(Currency.INR)
                 .description(randomString(10, 100))
-                .bonusPayPerCV(-10.5)
-                .closureBonus(randomString(5, 20))
+                .bonusPayPerCv(-1.0)
+                .closureBonus(randomDouble(1, 1000))
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(jobWithNegativeBonusPayPerCV);
+            repository.save(job);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Bonus pay per CV cannot be negative");
+    }
+
+    @Test
+    public void save_throws_error_if_closure_bonus_is_invalid() {
+        Job job = Job.builder()
+                .client(randomString(10, 50))
+                .name(randomString(10, 50))
+                .status(JobStatus.OPEN)
+                .wantedCvs(randomInteger(1, 10))
+                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .experienceRangeMin(randomInteger(0, 50))
+                .experienceRangeMax(randomInteger(0, 50))
+                .noticePeriodInDays(randomInteger(1, 20))
+                .salaryBudget(1500.00)
+                .currency(Currency.INR)
+                .description(randomString(10, 100))
+                .bonusPayPerCv(randomDouble(1, 1000))
+                .closureBonus(-1.0)
+                .closureBonusPaymentDate(LocalDateTime.now())
+                .cvRatePaymentDate(LocalDateTime.now())
+                .build();
+
+        assertThatThrownBy(() -> {
+            repository.save(job);
+        }).isInstanceOf(ConstraintViolationException.class)
+                .hasMessageContaining("Closure bonus cannot be negative");
     }
 }
