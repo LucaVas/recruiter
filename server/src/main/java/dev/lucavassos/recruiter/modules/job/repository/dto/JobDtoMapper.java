@@ -19,6 +19,7 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 job.getClient(),
                 job.getName(),
                 job.getStatus(),
+                new ContractTypeDto(job.getContractType().getContractTypeName()),
                 job.getWantedCvs(),
                 job.getSkills().stream()
                         .map(skill -> new RawSkillDto(
@@ -37,7 +38,6 @@ public class JobDtoMapper implements Function<Job, JobDto> {
 //                                        )).collect(Collectors.toSet())
 //                        ))
 //                        .collect(Collectors.toSet()),
-                new ContractTypeDto(job.getContractType().getContractTypeName()),
                 job.getExperienceRangeMin(),
                 job.getExperienceRangeMax(),
                 job.getNoticePeriodInDays(),

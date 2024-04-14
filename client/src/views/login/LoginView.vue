@@ -55,7 +55,6 @@ const submitLogin = async () => {
           aria-describedby="username-help"
           placeholder="Email"
           class="w-full"
-          :invalid="userForm.usernameOrEmail === ''"
         />
 
         <Password
@@ -66,7 +65,6 @@ const submitLogin = async () => {
           maxlength="64"
           class="flex flex-col"
           required
-          :invalid="userForm.password === ''"
         />
 
         <div class="grid grid-flow-row auto-rows-max gap-2">

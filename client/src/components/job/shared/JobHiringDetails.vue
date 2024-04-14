@@ -70,7 +70,6 @@ const currencies = ref<Currency[]>(['INR']);
             <InputNumber
               id="experienceRangeMin"
               :min="0"
-              :max="45"
               v-model="details.experienceRangeMin"
               required
               :disabled="disabled"
@@ -85,7 +84,6 @@ const currencies = ref<Currency[]>(['INR']);
             <InputNumber
               id="experienceRangeMax"
               :min="0"
-              :max="45"
               v-model="details.experienceRangeMax"
               required
               :disabled="disabled"

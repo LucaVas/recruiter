@@ -4,7 +4,7 @@
     <ProgressSpinner />
   </div>
   <div v-else class="flex w-full flex-col gap-8 pb-6">
-    <div class="flex h-full w-full flex-col gap-6">
+    <div v-if="!jobUpdated" class="flex h-full w-full flex-col gap-6">
       <JobStatus
         :status="jobDetails.status"
         :createdAt="jobDetails.createdAt"
@@ -20,6 +20,7 @@
         @update="(skills) => (jobDetails!.skills = skills)"
       />
     </div>
+    <Success v-else :message="'Job updated successfully!'" />
     <JobFooter
       :saving="updatingJob"
       :saved="jobUpdated"
@@ -44,6 +45,7 @@ import type { Job, JobStatus } from '@/stores/job/types';
 import { useToast } from 'primevue/usetoast';
 import { getJob, updateJob, deleteJob, changeJobStatus } from '@/stores/job';
 import { ApiError } from '@/utils/types';
+import Success from '@/components/Success.vue';
 
 // variables
 const jobDetails = ref<Job>();

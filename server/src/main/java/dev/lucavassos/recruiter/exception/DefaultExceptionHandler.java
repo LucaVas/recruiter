@@ -1,17 +1,23 @@
 package dev.lucavassos.recruiter.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class DefaultExceptionHandler {
@@ -84,9 +90,19 @@ public class DefaultExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleException(MethodArgumentNotValidException e,
                                                     HttpServletRequest request) {
+        BindingResult bindingResult = e.getBindingResult();
+        Map<String, String> errors = new HashMap<>();
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("One of more fields are invalid:\n");
+        errors.forEach((key, value) -> sb.append("- ").append(value).append("\n"));
+
         ApiError apiError = new ApiError(
                 request.getRequestURI(),
-                "One or more fields are invalid",
+                sb.toString(),
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now()
         );
@@ -111,4 +127,21 @@ public class DefaultExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException e, HttpServletRequest request) {
+        StringBuilder errorMessage = new StringBuilder();
+        e.getConstraintViolations().forEach(violation -> {
+            errorMessage.append(violation.getPropertyPath())
+                    .append(": ")
+                    .append(violation.getMessage())
+                    .append("; ");
+        });
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                errorMessage.toString(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
 }

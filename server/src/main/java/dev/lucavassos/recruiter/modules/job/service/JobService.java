@@ -130,7 +130,7 @@ public class JobService {
         );
 
         User recruiter = getAuthUser();
-        if (isUserAuthorized(recruiter, job)) {
+        if (!isUserAuthorized(recruiter, job)) {
             LOG.error("User with id {} is not authorized to modify this job", recruiter.getId());
             throw new UnauthorizedException("Recruiter is unauthorized to modify this job");
         }

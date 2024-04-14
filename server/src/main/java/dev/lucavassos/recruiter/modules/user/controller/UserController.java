@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.user.controller;
 import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.service.UserService;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
+import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class UserController {
 
     @PostMapping("/users/approvals")
     public ResponseEntity<?> approveUser(
-            @RequestBody UserApprovalRequest request) {
+            @Valid @RequestBody UserApprovalRequest request) {
         LOG.info("Received request to approve users.");
         service.approveUser(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -45,7 +46,7 @@ public class UserController {
     @PostMapping("/resetEmail/{token}")
     public ResponseEntity<?> verify(
             @PathVariable("token") String token,
-            @RequestBody PasswordResetRequest request) throws BadRequestException {
+            @Valid @RequestBody PasswordResetRequest request) throws BadRequestException {
         service.resetPassword(token, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

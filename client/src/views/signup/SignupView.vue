@@ -87,7 +87,6 @@ const submitSignup = async () => {
           required
           placeholder="Username"
           class="md:w-14rem w-full"
-          :invalid="userForm.username === ''"
         />
         <!-- email -->
         <InputText
@@ -99,7 +98,6 @@ const submitSignup = async () => {
           required
           placeholder="Email"
           class="md:w-14rem w-full"
-          :invalid="userForm.email === ''"
         />
         <!-- password -->
         <Password
@@ -110,7 +108,6 @@ const submitSignup = async () => {
           minlength="8"
           maxlength="64"
           :feedback="false"
-          :invalid="userForm.email === ''"
           required
         >
         </Password>
@@ -123,7 +120,6 @@ const submitSignup = async () => {
           class="md:w-14rem w-full"
           required
           :unmask="true"
-          :invalid="userForm.mobile === '' || userForm.mobile.length !== 10"
         />
         <!-- city -->
         <InputText
@@ -134,7 +130,6 @@ const submitSignup = async () => {
           maxlength="50"
           class="md:w-14rem w-full"
           required
-          :invalid="userForm.city === ''"
         />
         <div class="flex w-full justify-between gap-2">
           <!-- country -->
@@ -147,7 +142,6 @@ const submitSignup = async () => {
             class="w-full"
             :highlightOnSelect="false"
             checkmark
-            :invalid="userForm.country === ''"
             required
           />
           <!-- role -->
@@ -160,7 +154,6 @@ const submitSignup = async () => {
             placeholder="Your Role"
             :highlightOnSelect="false"
             checkmark
-            :invalid="userForm.roleName === ('' as RoleName)"
             required
           />
         </div>

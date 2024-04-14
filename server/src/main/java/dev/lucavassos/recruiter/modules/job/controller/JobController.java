@@ -6,6 +6,7 @@ import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.service.JobService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +27,14 @@ public class JobController {
 
     @PostMapping("/jobs")
     public ResponseEntity<JobResponse> addJob(
-            @RequestBody NewJobRequest request) throws Exception {
+            @Valid @RequestBody NewJobRequest request) throws Exception {
         LOG.info("Received request to add new job: {}", request);
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }
 
     @PutMapping("/jobs/{jobId}")
     public ResponseEntity<JobResponse> updateJob(
-            @RequestBody UpdateJobRequest request) throws Exception {
+            @Valid @RequestBody UpdateJobRequest request) throws Exception {
         LOG.trace("Received request to update job");
         return new ResponseEntity<>(service.updateJob(request), HttpStatus.CREATED);
     }
@@ -41,7 +42,7 @@ public class JobController {
     @PostMapping("/jobs/status/{jobId}")
     public ResponseEntity<?> changeJobStatus(
             @PathVariable("jobId") Long id,
-            @RequestBody ChangeJobStatusRequest request) throws Exception {
+            @Valid @RequestBody ChangeJobStatusRequest request) throws Exception {
         LOG.info("Received request to change job status: {}", request);
         service.changeJobStatus(id, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

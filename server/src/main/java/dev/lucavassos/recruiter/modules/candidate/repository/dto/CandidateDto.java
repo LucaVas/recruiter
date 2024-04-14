@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.candidate.repository.dto;
 
-
 import java.time.LocalDateTime;
 
 public record CandidateDto(

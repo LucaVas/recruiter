@@ -23,7 +23,7 @@ public class ContractType {
 
     @Enumerated(EnumType.STRING)
     @NaturalId
-    @Column(length = 60, name = "contract_type_name")
+    @Column(length = 20, name = "contract_type_name")
     private ContractTypeName contractTypeName;
 
     @OneToMany(mappedBy = "contractType", cascade = CascadeType.ALL, orphanRemoval = true)

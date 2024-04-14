@@ -1,7 +1,16 @@
 package dev.lucavassos.recruiter.modules.user.domain;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 public record PasswordResetTokenRequest(
+
+        @NotBlank(message = "Email cannot be empty")
+        @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Invalid email")
         String email,
+
+        @NotBlank(message = "Username cannot be empty")
+        @Pattern(regexp = "^[a-zA-Z0-9_\\-.]+$", message = "Invalid username. It can contain only letters, numbers, underscores, hyphens and dots")
         String username
 ) {
 }

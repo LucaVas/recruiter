@@ -7,6 +7,7 @@ import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import dev.lucavassos.recruiter.modules.candidacy.service.CandidacyService;
 import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class CandidacyController {
 
     @PostMapping("/candidacies")
     public ResponseEntity<?> addCandidacy(
-            @RequestBody NewCandidacyRequest request) {
+            @Valid @RequestBody NewCandidacyRequest request) {
         LOG.info("Received request to add candidacy: {}", request);
         service.addCandidacy(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -34,7 +35,7 @@ public class CandidacyController {
 
     @PutMapping("/candidacies/{id}")
     public ResponseEntity<CandidacyResponse> updateCandidacy(
-            @RequestBody UpdateCandidacyRequest request) throws Exception {
+            @Valid @RequestBody UpdateCandidacyRequest request) throws Exception {
         LOG.info("Received request to update candidacy: {}", request);
         return ResponseEntity.ok(service.updateCandidacy(request));
     }
