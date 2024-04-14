@@ -97,11 +97,11 @@ jobs:
           retention-days: 7
 
 
-  # aws-deploy:
-  #   needs: test
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/prod'
-  #   env:
+  gcloud-deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/prod'
+    # env:
   #     NODE_ENV: production
   #     TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
   #     TOKEN_EXPIRES_IN: ${{ vars.TOKEN_EXPIRATION }}
@@ -120,19 +120,17 @@ jobs:
   #     AWS_LIGHTSAIL_SERVICE: ${{ vars.AWS_LIGHTSAIL_SERVICE }}
   #     CLIENT_IMAGE_TAG: client-${{ github.sha }}
   #     SERVER_IMAGE_TAG: server-${{ github.sha }}
-  #   steps:
-  #     - name: Check out repository
-  #       uses: actions/checkout@v4
+    # check out the repository and authenticate to Google Cloud. 
+    steps:
+     - name: 'Checkout'
+       uses: 'actions/checkout@v4'
 
-  #     - name: Setup aws lightsail cli
-  #       run: |
-  #         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  #         unzip awscliv2.zip
-  #         sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
-  #         which aws
-  #         aws --version
-  #         sudo curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o "/usr/local/bin/lightsailctl"
-  #         sudo chmod +x /usr/local/bin/lightsailctl
+     - name: 'Google auth'
+       id: 'auth'
+       uses: 'google-github-actions/auth@v1'
+       with:
+         workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
+         service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}'
 
   #     - name: Configure AWS credentials
   #       uses: aws-actions/configure-aws-credentials@v4
