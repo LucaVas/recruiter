@@ -1,7 +1,16 @@
 server:
-    port: 8080
+    port: 3000
     error:
         include-message: always
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+    endpoint:
+        health:
+            show-details: always
 
 spring:
     jpa:

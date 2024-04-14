@@ -80,6 +80,10 @@ public class SecurityConfig {
                                         "api/v*/auth/signup/**",
                                         "api/v*/resetEmail/**"
                                 ).permitAll()
+                                .requestMatchers(
+                                        "/actuator/health",
+                                        "/actuator/info"
+                                ).permitAll()
                                 .anyRequest().authenticated()
                 )
                 // disable session
