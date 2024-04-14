@@ -56,13 +56,36 @@ jobs:
         working-directory: client
         run: npm run lint
 
-      - name: Test client (unit)
+      - name: Install Playwright Browsers
         working-directory: client
-        run: npm run test:unit
+        run: npx playwright install --with-deps chromium
 
       - name: Run server
-        working-directory: server
+        working-directory: server/target
         run: java -jar recruiter-1.0-SNAPSHOT.jar
+
+      - name: Build front end for E2E tests
+        working-directory: client
+        run: npm run build
+        env:
+          VITE_API_ORIGIN: http://localhost:3000
+          VITE_API_PATH: /api/v1/
+
+      - name: Health probe
+        uses: Jtalk/url-health-check-action@v4
+        with:
+          max-attempts: 5
+          retry-delay: 5s
+          url: http://localhost:3000/api/v1/health
+
+      - name: Readiness probe
+        uses: Jtalk/url-health-check-action@v4
+        with:
+          max-attempts: 5
+          retry-delay: 5s
+          url: http://localhost:3000/api/v1/ready
+
+      
 
 
 
