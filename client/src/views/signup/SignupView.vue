@@ -91,7 +91,7 @@ const submitSignup = async () => {
         <!-- email -->
         <InputText
           type="email"
-          id="email "
+          id="email"
           v-model="userForm.email"
           minlength="3"
           maxlength="50"
@@ -134,6 +134,7 @@ const submitSignup = async () => {
         <div class="flex w-full justify-between gap-2">
           <!-- country -->
           <Dropdown
+            data-testid="countryDropdown"
             v-model="userForm.country"
             :options="countries"
             optionLabel="label"
@@ -146,6 +147,7 @@ const submitSignup = async () => {
           />
           <!-- role -->
           <Dropdown
+            data-testid="roleDropdown"
             v-model="userForm.roleName"
             :options="roles"
             optionLabel="label"

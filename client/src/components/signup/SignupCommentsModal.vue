@@ -28,7 +28,6 @@ defineEmits<{
       <Divider />
       <div class="flex justify-end gap-2">
         <Button
-          type="button"
           label="Cancel"
           severity="danger"
           size="small"
@@ -37,7 +36,7 @@ defineEmits<{
           @click="$emit('closeModal')"
         ></Button>
         <Button
-          type="button"
+          id="confirmSignupButton"
           size="small"
           icon="pi pi-check"
           severity="success"

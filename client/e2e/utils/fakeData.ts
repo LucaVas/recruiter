@@ -5,11 +5,11 @@ const usernamePool = 'abcdefghijklmnopqrstuvwxyz1234567890_';
 const phonePool = '1234567890';
 
 export const fakeRecruiter = () => ({
-  name: random.name(),
   email: random.email(),
   username: random.string({ pool: usernamePool }),
-  password: 'Password123.',
-  mobile: random.phone({ pool: phonePool }),
+  password: 'Password123!',
+  mobile: random.phone({ pool: phonePool, length: 10 }),
   city: random.city(),
   country: 'India',
+  roleName: 'RECRUITER'
 });
