@@ -9,6 +9,7 @@ import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyResponse;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
+import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyId;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDtoMapper;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
@@ -77,11 +78,17 @@ public class CandidacyService {
                 }
         );
 
-        // save all into a new candidacy
+        if (candidacyRepository.existsByJobAndCandidate(job, candidate)) {
+            LOG.error("Candidacy already exists for job {} and candidate {}", job, candidate);
+            throw new RequestValidationException("Candidacy already exists");
+        }
+
+        CandidacyId candidacyId = new CandidacyId(candidate.getPan(), job.getId());
         Candidacy newCandidacy = Candidacy.builder()
+                .id(candidacyId)
                 .job(job)
-                .recruiter(recruiter)
                 .candidate(candidate)
+                .recruiter(recruiter)
                 .relevantExperience(candidacy.relevantExperience())
                 .expectedCtc(candidacy.expectedCtc())
                 .officialNoticePeriod(candidacy.officialNoticePeriod())
@@ -95,13 +102,27 @@ public class CandidacyService {
     }
 
     @Transactional
-    public CandidacyResponse getCandidacy(Long id) {
-        return candidacyRepository.findOneById(id)
+    public CandidacyResponse getCandidacy(Long jobId, String pan) {
+
+        Job job = jobRepository.findOneById(jobId).orElseThrow(
+                () -> {
+                    LOG.error("Job with id {} not found", jobId);
+                    return new ResourceNotFoundException("Job not found");
+                }
+        );
+        Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
+                () -> {
+                    LOG.error("Candidate with pan {} not found", pan);
+                    return new ResourceNotFoundException("Candidate not found");
+                }
+        );
+
+        return candidacyRepository.findByJobAndCandidate(job, candidate)
                 .map(candidacy ->
-                        new CandidacyResponse(candidacy.getId(), candidacyDtoMapper.apply(candidacy))
+                        new CandidacyResponse(candidacyDtoMapper.apply(candidacy))
         ).orElseThrow(
                 () -> {
-                    LOG.error("Candidacy with ID {} not found", id);
+                    LOG.error("Candidacy with job {} and candidate {} not found", job, candidate);
                     return new ResourceNotFoundException("Candidacy not found");
                 }
         );
@@ -121,16 +142,31 @@ public class CandidacyService {
     }
 
     @Transactional
-    public CandidacyResponse updateCandidacy(UpdateCandidacyRequest request) throws Exception {
+    public CandidacyResponse updateCandidacy(Long jobId, String pan, UpdateCandidacyRequest request) {
 
         boolean changes = false;
-        Long id = request.id();
-        LOG.info("Updating candidacy with id {}", id);
+        LOG.info("Updating candidacy with jobId {} and pan {}", jobId, pan);
 
-        Candidacy candidacy = candidacyRepository.findOneById(id).orElseThrow(
+        Job job = jobRepository.findOneById(jobId).orElseThrow(
                 () -> {
-                    LOG.error("Candidacy with id [{}] not found.", id);
-                    throw new ResourceNotFoundException(
+                    LOG.error("Job with id [{}] not found.", jobId);
+                    return new ResourceNotFoundException(
+                            "Job not found.");
+                }
+        );
+
+        Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
+                () -> {
+                    LOG.error("Candidate with pan [{}] not found.", pan);
+                    return new ResourceNotFoundException(
+                            "Candidate not found.");
+                }
+        );
+
+        Candidacy candidacy = candidacyRepository.findByJobAndCandidate(job, candidate).orElseThrow(
+                () -> {
+                    LOG.error("Candidacy with job ID {} and candidate pan {} not found.", jobId, pan);
+                    return new ResourceNotFoundException(
                             "Candidacy not found.");
                 }
         );
@@ -187,7 +223,6 @@ public class CandidacyService {
         LOG.info("Candidacy updated: [{}]", candidacy);
 
         return new CandidacyResponse(
-                candidacy.getId(),
                 candidacyDtoMapper.apply(candidacy)
         );
 

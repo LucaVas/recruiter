@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdateCandidacyRequest(
-        @NotNull Long id,
 
         @NotNull(message = "Relevant experience cannot be empty")
         @Min(value = 0, message = "Relevant experience must be a positive number")

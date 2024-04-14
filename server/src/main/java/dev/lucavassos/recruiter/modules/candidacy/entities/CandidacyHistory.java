@@ -22,6 +22,13 @@ public class CandidacyHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "job_id", referencedColumnName = "job_id"),
+            @JoinColumn(name = "candidate_pan", referencedColumnName = "candidate_pan")
+    })
+    private Candidacy candidacy;
+
     @Column(nullable = false, name = "relevant_experience")
     @Min(0)
     private double relevantExperience;
@@ -46,10 +53,6 @@ public class CandidacyHistory {
 
     @Column(name = "comments")
     private String comments;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "candidacy_id")
-    private Candidacy candidacy;
 
     @Column(name = "modified_by")
     private Long modifiedBy;

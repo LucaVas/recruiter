@@ -28,7 +28,8 @@ const showError = (content: string) => {
 
 // candidacy details
 const candidacy = ref<RawCandidacy>();
-const candidacyId = ref<number>();
+const jobId = ref<number>();
+const pan = ref<string>();
 
 // candidacy submission
 const candidacyUpdated = ref(false);
@@ -36,13 +37,12 @@ const updatingCandidacy = ref(false);
 const candidate = ref<Candidate>();
 
 async function update(
-  candidacyId: number | undefined,
   candidacy: UpdateCandidacyRequest | undefined
 ) {
-  if (!candidacy || !candidacyId) return;
+  if (!candidacy || !jobId.value || pan.value === undefined) return;
   updatingCandidacy.value = true;
   try {
-    await updateCandidacy(candidacyId, candidacy);
+    await updateCandidacy(jobId.value, pan.value, candidacy);
     candidacyUpdated.value = true;
   } catch (err) {
     if (err instanceof ApiError) showError(err.message);
@@ -53,8 +53,9 @@ async function update(
 
 onMounted(async () => {
   const route = useRoute();
-  candidacyId.value = Number(route.params.id);
-  const res = await getCandidacy(candidacyId.value);
+  jobId.value = Number(route.params.jobId);
+  pan.value = route.params.pan as string
+  const res = await getCandidacy(jobId.value, pan.value);
   candidate.value = res.candidacy.candidate;
   candidacy.value = res.candidacy;
   job.value = res.candidacy.job;
@@ -104,7 +105,7 @@ onMounted(async () => {
       :candidacySubmitted="candidacyUpdated"
       :submittingCandidacy="updatingCandidacy"
       :isUpdate="true"
-      @update="update(candidacyId, candidacy)"
+      @update="update(candidacy)"
     />
   </div>
 </template>

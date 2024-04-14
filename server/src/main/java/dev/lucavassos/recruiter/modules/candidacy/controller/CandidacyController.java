@@ -5,8 +5,6 @@ import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import dev.lucavassos.recruiter.modules.candidacy.service.CandidacyService;
-import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
-import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,18 +31,21 @@ public class CandidacyController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/candidacies/{id}")
+    @PutMapping("/candidacies/job={jobId}&candidate={pan}")
     public ResponseEntity<CandidacyResponse> updateCandidacy(
+            @PathVariable Long jobId,
+            @PathVariable String pan,
             @Valid @RequestBody UpdateCandidacyRequest request) throws Exception {
         LOG.info("Received request to update candidacy: {}", request);
-        return ResponseEntity.ok(service.updateCandidacy(request));
+        return ResponseEntity.ok(service.updateCandidacy(jobId, pan, request));
     }
 
-    @GetMapping("/candidacies/{id}")
+    @GetMapping("/candidacies/job={jobId}&candidate={pan}")
     public ResponseEntity<CandidacyResponse> getCandidacy(
-            @PathVariable Long id) {
-        LOG.info("Received request to get candidacy: {}", id);
-        return ResponseEntity.ok(service.getCandidacy(id));
+            @PathVariable Long jobId,
+            @PathVariable String pan) {
+        LOG.info("Received request to get candidacy with job ID {} and candidate pan {}", jobId, pan);
+        return ResponseEntity.ok(service.getCandidacy(jobId, pan));
     }
 
     @GetMapping("/candidacies")

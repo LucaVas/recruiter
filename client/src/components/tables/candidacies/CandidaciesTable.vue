@@ -21,19 +21,6 @@
     <template #empty> No candidacies found. </template>
     <template #loading> Loading candidacies, please wait... </template>
 
-    <Column field="id" header="ID" dataType="numeric" class="min-w-16">
-      <template #body="{ data }">
-        {{ data.id }}
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter"
-          placeholder="Search by user id"
-        />
-      </template>
-    </Column>
     <Column field="job" header="Job" class="min-w-52">
       <template #body="{ data }">
         <div class="flex items-center gap-3">
@@ -115,7 +102,7 @@
             label="Edit"
             class="h-8 min-w-fit"
             rounded
-            @click="router.push({ name: 'Candidacy', params: { id: data.id } })"
+            @click="router.push({ name: 'Candidacy', params: { jobId: data.job.id, pan: data.candidate.pan } })"
           />
         </div>
       </template>

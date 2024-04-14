@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public record CandidacyDto(
-        Long id,
         JobDto job,
         RecruiterDto recruiter,
         CandidateDto candidate,

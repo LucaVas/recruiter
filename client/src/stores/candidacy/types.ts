@@ -4,7 +4,6 @@ import type { Recruiter } from '../user/types';
 
 // backend dtos
 export type Candidacy = {
-  id: number;
   job: Job;
   recruiter: Recruiter;
   candidate: Candidate;
@@ -21,14 +20,13 @@ export type Candidacy = {
 // backend domain objects
 export type UpdateCandidacyRequest = Omit<
   Candidacy,
-  'id' | 'job' | 'recruiter' | 'candidate' | 'createdAt'
+  'job' | 'recruiter' | 'candidate' | 'createdAt'
 >;
-export type NewCandidacyRequest = Omit<UpdateCandidacyRequest, 'id'> & {
+export type NewCandidacyRequest = UpdateCandidacyRequest & {
   jobId: number;
   candidatePan: string;
 };
 export type CandidacyResponse = {
-  id: number;
   candidacy: Candidacy;
 };
 

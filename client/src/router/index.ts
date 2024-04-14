@@ -27,7 +27,7 @@ const router = createRouter({
           component: () => import('../views/new-candidacy/NewCandidacy.vue'),
         },
         {
-          path: '/candidacies/:id',
+          path: '/candidacies/job=:jobId&candidate=:pan',
           name: 'Candidacy',
           component: () => import('../views/candidacy/Candidacy.vue'),
         },

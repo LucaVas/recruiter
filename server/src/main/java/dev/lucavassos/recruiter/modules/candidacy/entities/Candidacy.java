@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,21 +24,22 @@ import java.time.LocalDateTime;
 @Table(name="candidacies")
 public class Candidacy {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    CandidacyId id;
 
+    @MapsId("jobId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id")
     private Job job;
 
+    @MapsId("candidatePan")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "candidate_pan")
+    private Candidate candidate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recuiter_id")
     private User recruiter;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "candidate_id")
-    private Candidate candidate;
 
     @Column(nullable = false, name = "relevant_experience")
     @Min(0)
@@ -62,6 +65,9 @@ public class Candidacy {
 
     @Column(name = "comments")
     private String comments;
+
+    @OneToMany(mappedBy = "candidacy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CandidacyHistory> candidacyHistories;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

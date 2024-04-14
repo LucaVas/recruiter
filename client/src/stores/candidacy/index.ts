@@ -13,15 +13,16 @@ export async function submitCandidacy(candidacy: NewCandidacyRequest): Promise<v
 }
 
 export async function updateCandidacy(
-  id: number,
+  jobId: number,
+  pan: string,
   candidacy: UpdateCandidacyRequest
 ): Promise<CandidacyResponse> {
-  const { data } = await api.put(`/candidacies/${id}`, candidacy);
+  const { data } = await api.put(`/candidacies/job=${jobId}&candidate=${pan}`, candidacy);
   return data;
 }
 
-export async function getCandidacy(id: number): Promise<CandidacyResponse> {
-  const { data } = await api.get(`/candidacies/${id}`);
+export async function getCandidacy(jobId: number, pan: string): Promise<CandidacyResponse> {
+  const { data } = await api.get(`/candidacies/job=${jobId}&candidate=${pan}`);
   return data;
 }
 
