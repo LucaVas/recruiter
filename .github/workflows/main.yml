@@ -62,7 +62,7 @@ jobs:
 
       - name: Run server
         working-directory: server/target
-        run: java -jar recruiter-1.0-SNAPSHOT.jar
+        run: java -jar recruiter-1.0-SNAPSHOT.jar &
 
       - name: Build front end for E2E tests
         working-directory: client
