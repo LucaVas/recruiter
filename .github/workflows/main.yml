@@ -45,6 +45,10 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+
       - name: Type check client
         working-directory: client
         run: npm run typecheck
