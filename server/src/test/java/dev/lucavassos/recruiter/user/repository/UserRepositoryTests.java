@@ -88,7 +88,7 @@ public class UserRepositoryTests {
                 .username(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("1234567890")
+                .mobile("0000000000")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -97,7 +97,7 @@ public class UserRepositoryTests {
                 .username(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("1234567890")
+                .mobile("0000000000")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
