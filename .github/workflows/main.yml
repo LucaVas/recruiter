@@ -63,7 +63,7 @@ jobs:
       - name: Run server
         working-directory: server/target
         env:
-          DB_HOST: postgres:5432
+          DB_HOST: localhost
           DB_NAME: recruiter-test-db
           DB_USER: postgres
           DB_PASSWORD: postgres
