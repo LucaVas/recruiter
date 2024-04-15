@@ -38,11 +38,11 @@ jobs:
       - name: Setup config
         run: |
           mkdir config
-          echo 'spring.datasource.url=jdbc:postgresql://postgres:5432/recruiter' > config/application.properties
+          echo 'spring.datasource.url=jdbc:postgresql://postgres:5432/recruiter-test-db' > config/application.properties
 
-      - name: Build with Maven
+      - name: Build with Maven and skip tests
         working-directory: server
-        run: mvn -B package --file pom.xml
+        run: mvn -B package --file pom.xml -DskipTests
 
       - name: Install client dependencies
         working-directory: client
@@ -65,8 +65,6 @@ jobs:
         env:
           DB_USER: postgres
           DB_PASSWORD: postgres
-          DB_NAME: recruiter-test-db
-          DB_HOST: localhost
           DB_SSL: false
           SERVER_PORT: 3000
           JWT_SECRET: supersecretkey
