@@ -11,7 +11,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: recruiter
+          POSTGRES_DB: recruiter-test-db
         ports:
           - 5432:5432
         options: >-
@@ -62,6 +62,14 @@ jobs:
 
       - name: Run server
         working-directory: server/target
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: recruiter-test-db
+          DB_HOST: localhost
+          DB_SSL: false
+          SERVER_PORT: 3000
+          JWT_SECRET: supersecretkey
         run: java -jar recruiter-1.0-SNAPSHOT.jar &
 
       - name: Build front end for E2E tests
@@ -121,16 +129,16 @@ jobs:
   #     CLIENT_IMAGE_TAG: client-${{ github.sha }}
   #     SERVER_IMAGE_TAG: server-${{ github.sha }}
     # check out the repository and authenticate to Google Cloud. 
-    steps:
-     - name: 'Checkout'
-       uses: 'actions/checkout@v4'
+    # steps:
+    #  - name: 'Checkout'
+    #    uses: 'actions/checkout@v4'
 
-     - name: 'Google auth'
-       id: 'auth'
-       uses: 'google-github-actions/auth@v1'
-       with:
-         workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
-         service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}'
+    #  - name: 'Google auth'
+    #    id: 'auth'
+    #    uses: 'google-github-actions/auth@v1'
+    #    with:
+    #      workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
+    #      service_account: '${{ secrets.WIF_SERVICE_ACCOUNT }}'
 
   #     - name: Configure AWS credentials
   #       uses: aws-actions/configure-aws-credentials@v4
