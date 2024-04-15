@@ -63,7 +63,7 @@ jobs:
           DB_PASSWORD: postgres
           SERVER_PORT: 3000
           JWT_SECRET: supersecretkey
-        run: java -jar recruiter-1.0-SNAPSHOT.jar 
+        run: java -jar recruiter-1.0-SNAPSHOT.jar &
 
       - name: Build front end for E2E tests
         working-directory: client
