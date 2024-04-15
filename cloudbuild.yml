@@ -26,7 +26,6 @@
     args: ['run', 'deploy', 'recruiter-api',
       '--image', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-api',
       '--region', 'europe-west1',
-      '--service-account', 'recruiter-db@recruiter-420314.iam.gserviceaccount.com',
       '--allow-unauthenticated']
 
 # Deploy client container to Cloud Run
@@ -35,5 +34,4 @@
     args: ['run', 'deploy', 'recruiter-client',
       '--image', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-client',
       '--region', 'europe-west1',
-      '--service-account', 'recruiter-db@recruiter-420314.iam.gserviceaccount.com',
       '--allow-unauthenticated']
