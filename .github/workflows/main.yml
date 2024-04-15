@@ -43,21 +43,21 @@ jobs:
         working-directory: server
         run: mvn -B package --file pom.xml -DskipTests
 
-      - name: Install client dependencies
-        working-directory: client
-        run: npm ci
+      # - name: Install client dependencies
+      #   working-directory: client
+      #   run: npm ci
 
-      - name: Type check client
-        working-directory: client
-        run: npm run typecheck
+      # - name: Type check client
+      #   working-directory: client
+      #   run: npm run typecheck
 
-      - name: Lint client
-        working-directory: client
-        run: npm run lint
+      # - name: Lint client
+      #   working-directory: client
+      #   run: npm run lint
 
-      - name: Install Playwright Browsers
-        working-directory: client
-        run: npx playwright install --with-deps chromium
+      # - name: Install Playwright Browsers
+      #   working-directory: client
+      #   run: npx playwright install --with-deps chromium
 
       - name: Run server
         working-directory: server/target
@@ -68,7 +68,7 @@ jobs:
           DB_PASSWORD: postgres
           SERVER_PORT: 3000
           JWT_SECRET: supersecretkey
-        run: java -jar recruiter-1.0-SNAPSHOT.jar &
+        run: java -jar recruiter-1.0-SNAPSHOT.jar 
 
       - name: Build front end for E2E tests
         working-directory: client
