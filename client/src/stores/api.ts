@@ -1,3 +1,4 @@
+import { apiBase } from '@/config';
 import { getStoredAccessToken } from '@/utils/auth';
 import { ApiError } from '@/utils/types';
 import axios, { type RawAxiosRequestHeaders } from 'axios';
@@ -13,7 +14,7 @@ export default () => {
     headers = { ...headers, Authorization: `Bearer ${accessToken}` };
 
   const instance = axios.create({
-    baseURL: `http://localhost:3000/api/v1`,
+    baseURL: apiBase,
     timeout: 1000,
     headers: headers,
   });

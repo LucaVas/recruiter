@@ -25,9 +25,7 @@ spring:
         show-sql: true
     datasource:
         platform: postgres
-        url: jdbc:postgresql://${DB_HOST}/${DB_NAME}
-        username: ${DB_USER}
-        password: ${DB_PASSWORD}
+        url: jdbc:postgresql://${DB_HOST}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}&sslmode=require
         driverClassName: org.postgresql.Driver
 
 cors:
