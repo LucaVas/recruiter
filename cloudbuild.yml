@@ -1,28 +1,30 @@
  steps:
  # Build the server container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t',
-      'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-api:$COMMIT_SHA',
-      '-f', './server/Dockerfile', '.']
+    args: ['build', '--platform linux/amd64', '-t',
+      'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-api',
+      '-f', 'server/Dockerfile', '.']
 
 # Build the client container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t',
-      'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-client:$COMMIT_SHA',
-      '-f', './client/Dockerfile', '.']
+    args: ['build', '--platform linux/amd64', '-t',
+      'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-client',
+      '--build-arg', 'VITE_API_ORIGIN=https://recruiter-api-yklq5atc4q-ew.a.run.app',
+      '--build-arg', 'VITE_API_PATH=/api/v1',
+      '-f', 'client/Dockerfile', '.']
 
 # Push the server container image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-api:$COMMIT_SHA']
+    args: ['push', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-api']
 # Push the client container image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-client:$COMMIT_SHA']
+    args: ['push', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-client']
 
 # Deploy server container to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args: ['run', 'deploy', 'recruiter-api',
-      '--image', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-api:$COMMIT_SHA',
+      '--image', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-api',
       '--region', 'europe-west1',
       '--service-account', 'recruiter-db@recruiter-420314.iam.gserviceaccount.com',
       '--allow-unauthenticated']
@@ -31,7 +33,7 @@
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args: ['run', 'deploy', 'recruiter-client',
-      '--image', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-client:$COMMIT_SHA',
+      '--image', 'asia-southeast1-docker.pkg.dev/recruiter-420314/recruiter-registry/recruiter-client',
       '--region', 'europe-west1',
       '--service-account', 'recruiter-db@recruiter-420314.iam.gserviceaccount.com',
       '--allow-unauthenticated']

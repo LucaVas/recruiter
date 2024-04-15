@@ -4,7 +4,7 @@ FROM --platform=linux/amd64 node:18.19.0-alpine3.18 AS builder
 WORKDIR /app
 
 # Copy package.json files and install dependencies
-COPY . /app/client/
+COPY client/ /app/client/
 
 # Switch to the client folder
 WORKDIR /app/client
@@ -53,7 +53,7 @@ COPY --from=builder app/client/dist /usr/share/nginx/html
 ENV NGINX_ENVSUBST_OUTPUT_DIR '/etc/nginx/conf.d'
 
 # Copy the Nginx configuration
-COPY /nginx/default.conf.template /etc/nginx/templates/default.conf.template
+COPY client/nginx/default.conf.template /etc/nginx/templates/default.conf.template
 
 # Expose port 80 to the outside
 EXPOSE 80
