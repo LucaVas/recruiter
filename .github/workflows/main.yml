@@ -105,10 +105,10 @@ jobs:
           retention-days: 7
 
 
-  gcloud-deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/prod'
+  # gcloud-deploy:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/prod'
     # env:
   #     NODE_ENV: production
   #     TOKEN_KEY: ${{ secrets.TOKEN_KEY }}
