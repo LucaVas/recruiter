@@ -34,31 +34,25 @@ jobs:
         with:
           node-version: '20'
 
-      # override spring.datasource.url
-      # - name: Setup config
-      #   run: |
-      #     mkdir config
-      #     echo 'spring.datasource.url=jdbc:postgresql://postgres:5432/recruiter-test-db' > config/application.properties
-
       - name: Build with Maven and skip tests
         working-directory: server
         run: mvn -B package --file pom.xml -DskipTests
 
-      # - name: Install client dependencies
-      #   working-directory: client
-      #   run: npm ci
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
 
-      # - name: Type check client
-      #   working-directory: client
-      #   run: npm run typecheck
+      - name: Type check client
+        working-directory: client
+        run: npm run typecheck
 
-      # - name: Lint client
-      #   working-directory: client
-      #   run: npm run lint
+      - name: Lint client
+        working-directory: client
+        run: npm run lint
 
-      # - name: Install Playwright Browsers
-      #   working-directory: client
-      #   run: npx playwright install --with-deps chromium
+      - name: Install Playwright Browsers
+        working-directory: client
+        run: npx playwright install --with-deps chromium
 
       - name: Run server
         working-directory: server/target
