@@ -1,5 +1,5 @@
 server:
-    port: 3000
+    port: ${SERVER_PORT}
     error:
         include-message: always
 
@@ -25,9 +25,9 @@ spring:
         show-sql: true
     datasource:
         platform: postgres
-        url: jdbc:postgresql://localhost:5432/recruiter
-        username: postgres
-        password: postgres
+        url: jdbc:postgresql://${DB_HOST}/${DB_NAME}
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
         driverClassName: org.postgresql.Driver
 
 cors:
@@ -37,5 +37,5 @@ cors:
     exposed-headers: "*"
 
 jwt:
-    jwtSecret: superSecretKeySuperSecretKeySuperSecretKeySuperSecretKeySuperSecretKeySuperSecretKey
+    jwtSecret: ${JWT_SECRET}
     jwtExpirationInMs: 216000000
