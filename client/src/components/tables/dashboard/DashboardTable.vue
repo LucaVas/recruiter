@@ -77,6 +77,15 @@ onMounted(async () => {
     <template #empty> No jobs found. </template>
     <template #loading> Loading jobs, please wait... </template>
 
+    <Column field="action" header="" class="min-w-fit">
+      <template #body="{ data }">
+        <ActionButtonsColumn
+          :data="data"
+          @reload-table="initTable()"
+          @pass-error="(message) => showError(message)"
+        />
+      </template>
+    </Column>
     <Column field="client" header="Client" class="min-w-52">
       <template #body="{ data }">
         <div class="flex items-center gap-3">
@@ -219,15 +228,6 @@ onMounted(async () => {
             <Tag :value="slotProps.option" :severity="getSeverity(slotProps.option)" />
           </template>
         </Dropdown>
-      </template>
-    </Column>
-    <Column field="action" header="" class="min-w-fit">
-      <template #body="{ data }">
-        <ActionButtonsColumn
-          :data="data"
-          @reload-table="initTable()"
-          @pass-error="(message) => showError(message)"
-        />
       </template>
     </Column>
   </DataTable>
