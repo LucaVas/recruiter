@@ -11,18 +11,20 @@ const menuVisible = ref(false);
 </script>
 
 <template>
-  <div class="flex h-screen">
-    <nav class="w-20 border border-r-slate-400 bg-slate-100 p-2 text-center">
-      <Button icon="pi pi-bars" @click="menuVisible = true" />
-      <Navbar
-        @closeMenu="menuVisible = false"
-        :visible="menuVisible"
-        :menuItems="menuItems"
-        :username="username"
-      />
-    </nav>
+  <div class="flex h-screen flex-col md:flex-row">
+    <div class="h-20 w-full p-2 md:relative md:h-full md:w-20 bg-slate-50/80 fixed">
+      <nav class="flex items-center justify-end md:justify-center">
+        <Button icon="pi pi-bars" @click="menuVisible = true" />
+      </nav>
+    </div>
+    <Navbar
+      @closeMenu="menuVisible = false"
+      :visible="menuVisible"
+      :menuItems="menuItems"
+      :username="username"
+    />
 
-    <main class="flex flex-1 items-start justify-center overflow-auto p-8">
+    <main class="flex flex-1 items-start justify-center overflow-auto p-5 pt-20 md:pt-5">
       <RouterView />
     </main>
   </div>

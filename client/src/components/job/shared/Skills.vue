@@ -37,6 +37,7 @@ const details = ref(skills);
 <template>
   <div class="flex flex-col gap-2">
     <label for="skills">Skills</label>
+    <SkillsDropdown :disabled="disabled" @addSkill="(skill) => addSkill(skill)" />
     <DataTable
       scrollable
       scrollHeight="15rem"
@@ -61,6 +62,5 @@ const details = ref(skills);
         </template>
       </Column>
     </DataTable>
-    <SkillsDropdown :disabled="disabled" @addSkill="(skill) => addSkill(skill)" />
   </div>
 </template>

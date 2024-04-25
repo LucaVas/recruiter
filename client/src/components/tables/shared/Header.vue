@@ -20,7 +20,7 @@ const dataFilters = ref(filters);
 
 <template>
   <div class="flex flex-col items-center justify-between sm:flex-row gap-3">
-    <div class="flex flex-row items-center justify-between w-full p-0">
+    <div class="flex flex-row items-center justify-between md:justify-start md:gap-4 w-full p-0">
       <Button
         type="button"
         icon="pi pi-filter-slash"

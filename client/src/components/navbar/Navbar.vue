@@ -16,7 +16,7 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="card flex justify-center">
+  <div class="flex justify-center">
     <Sidebar :visible="visible">
       <template #container>
         <div class="flex h-full flex-col justify-between px-4 py-6">

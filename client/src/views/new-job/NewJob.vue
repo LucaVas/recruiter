@@ -9,8 +9,15 @@
         :jobDetails="job"
         @input="(details) => (job = details)"
       />
-      <Skills :disabled="false" :skills="job.skills" @update="(skills) => (job.skills = skills)" />
-      <Questions :disabled="false" :skills="job.skills" />
+      <div class="space-y-3">
+        <label>Skills & Questions</label>
+        <SkillsDropdown :disabled="false" @addSkill="(skill: Skill) => addSkill(skill)" />
+        <Questions
+          :disabled="false"
+          :skills="job.skills"
+          @removeSkill="(skill: Skill) => removeSkill(skill)"
+        />
+      </div>
     </div>
     <div v-else class="flex h-full w-full items-center justify-center">
       <Success :message="'Job created successfully!'" />
@@ -30,7 +37,6 @@
 import JobInformation from '@/components/job/shared/JobInformation.vue';
 import JobHiringDetails from '@/components/job/shared/JobHiringDetails.vue';
 import NowJobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue';
-import Skills from '@/components/job/shared/Skills.vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { createJob } from '@/stores/job';
@@ -38,6 +44,7 @@ import type { NewJobRequest } from '@/stores/job/types';
 import { ref } from 'vue';
 import Success from '@/components/Success.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
+import type { Skill } from '../../stores/skill/types';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -57,6 +64,16 @@ async function create() {
     creatingJob.value = false;
   }
 }
+
+const removeSkill = (skill: Skill): void => {
+  if (!job.value.skills.includes(skill)) return;
+  job.value.skills.splice(job.value.skills.indexOf(skill), 1);
+};
+
+const addSkill = (skill: Skill): void => {
+  if (job.value.skills.some((s) => s.name === skill.name)) return;
+  job.value.skills.unshift(skill);
+};
 
 const job = ref<NewJobRequest>({
   client: '',
