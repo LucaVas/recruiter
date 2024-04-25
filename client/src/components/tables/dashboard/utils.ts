@@ -4,7 +4,6 @@ import type { Skill } from '@/stores/skill/types';
 
 export const filters = ref();
 export const globalFiltersFields = ref([
-  'id',
   'client',
   'name',
   'experienceRange',
@@ -19,7 +18,6 @@ export const globalFiltersFields = ref([
 export const initFilters = () => {
   filters.value = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    id: { value: null, matchMode: FilterMatchMode.EQUALS },
     client: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],

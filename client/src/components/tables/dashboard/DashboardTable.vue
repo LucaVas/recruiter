@@ -22,11 +22,13 @@ import {
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { getAllJobs } from '@/stores/job';
+import Header from '../shared/Header.vue';
 
 const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
 const jobs = ref<Job[]>();
 const statuses = ref(['closed', 'open', 'pending']);
+const showAllColumns = ref(false)
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -70,24 +72,11 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <Header :filters="filters" @clearFilter="clearFilter()" />
+      <Header :filters="filters" :showColumns="showAllColumns" @clearFilter="clearFilter()" @showOrHideColumns="showAllColumns = !showAllColumns" />
     </template>
     <template #empty> No jobs found. </template>
     <template #loading> Loading jobs, please wait... </template>
 
-    <Column field="id" header="ID" dataType="numeric" class="min-w-16">
-      <template #body="{ data }">
-        {{ data.id }}
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter"
-          placeholder="Search by job id"
-        />
-      </template>
-    </Column>
     <Column field="client" header="Client" class="min-w-52">
       <template #body="{ data }">
         <div class="flex items-center gap-3">
@@ -117,7 +106,7 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="skills" header="Skills" class="min-w-52">
+    <Column field="skills" header="Skills" class="min-w-52" v-if="showAllColumns">
       <template #body="{ data }">
         {{ getSkills(data.skills) }}
       </template>
@@ -130,7 +119,7 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="contractType" header="Contract" class="min-w-20">
+    <Column field="contractType" header="Contract" class="min-w-20" v-if="showAllColumns">
       <template #body="{ data }">
         <Tag
           :value="data.contractType.contractTypeName"
@@ -153,7 +142,7 @@ onMounted(async () => {
         </MultiSelect>
       </template>
     </Column>
-    <Column field="experienceRange" header="Experience" class="min-w-20">
+    <Column field="experienceRange" header="Experience" class="min-w-20" v-if="showAllColumns">
       <template #body="{ data }">
         {{ data.experienceRangeMin }}-{{ data.experienceRangeMax }} years
       </template>
@@ -166,7 +155,7 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="salaryBudget" header="Salary Budget" class="min-w-44">
+    <Column field="salaryBudget" header="Salary Budget" class="min-w-44" v-if="showAllColumns">
       <template #body="{ data }"> {{ data.salaryBudget }} {{ data.currency }} </template>
       <template #filter="{ filterModel }">
         <InputText
@@ -177,7 +166,7 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="noticePeriodInDays" header="Notice Period" dataType="numeric" class="min-w-40">
+    <Column field="noticePeriodInDays" header="Notice Period" dataType="numeric" class="min-w-40" v-if="showAllColumns">
       <template #body="{ data }"> {{ data.noticePeriodInDays }} days </template>
       <template #filter="{ filterModel }">
         <InputText
@@ -201,7 +190,7 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="creationDate" header="Creation Date" dataType="date" class="min-w-40">
+    <Column field="creationDate" header="Creation Date" dataType="date" class="min-w-40" v-if="showAllColumns">
       <template #body="{ data }">
         {{ formatDate(data.createdAt) }}
       </template>
