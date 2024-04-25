@@ -10,6 +10,7 @@
         @input="(details) => (job = details)"
       />
       <Skills :disabled="false" :skills="job.skills" @update="(skills) => (job.skills = skills)" />
+      <Questions :disabled="false" :skills="job.skills" />
     </div>
     <div v-else class="flex h-full w-full items-center justify-center">
       <Success :message="'Job created successfully!'" />
@@ -48,7 +49,6 @@ const creatingJob = ref(false);
 async function create() {
   creatingJob.value = true;
   try {
-    console.log(job.value);
     await createJob(job.value);
     jobCreated.value = true;
   } catch (e) {

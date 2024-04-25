@@ -1,4 +1,4 @@
-import type { RawSkill } from '../skill/types';
+import type { Skill } from '../skill/types';
 
 // backend dtos
 export type Job = {
@@ -7,7 +7,7 @@ export type Job = {
   name: string;
   status: JobStatus;
   wantedCvs: number;
-  skills: RawSkill[];
+  skills: Skill[];
   contractType: ContractType;
   experienceRangeMin: number;
   experienceRangeMax: number;

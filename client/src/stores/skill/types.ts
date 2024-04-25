@@ -4,6 +4,5 @@ import type { Question } from '../question/types';
 export type Skill = {
   id: number;
   name: string;
-  questions: Set<Question>;
+  questions: Question[];
 };
-export type RawSkill = Omit<Skill, 'questions'>;

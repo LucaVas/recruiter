@@ -4,9 +4,13 @@ import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMappe
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDtoMapper;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,16 +26,21 @@ public class SkillService {
     @Autowired
     private RawSkillDtoMapper rawSkillDtoMapper;
     @Autowired
+    private SkillDtoMapper skillDtoMapper;
+    @Autowired
     private QuestionDtoMapper questionDtoMapper;
 
     @Transactional
-    public List<RawSkillDto> getAllSkills() {
-        LOG.info("Retrieving {} skills", 1000);
+    public List<SkillDto> getAllSkills() {
 
-        List<RawSkillDto> skills =
-                skillRepository.findAll()
+        Pageable limit = PageRequest.of(0,10);
+        LOG.info("Retrieving {} skills", limit.getPageSize());
+
+
+        List<SkillDto> skills =
+                skillRepository.findAll(limit)
                         .stream()
-                        .map(skill -> rawSkillDtoMapper.apply(skill)
+                        .map(skill -> skillDtoMapper.apply(skill)
                         )
                         .toList();
 

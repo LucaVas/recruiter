@@ -19,6 +19,7 @@ declare module 'vue' {
     CandidateSingleSelectTable: typeof import('./src/components/candidacy/candidate/CandidateSingleSelectTable.vue')['default']
     CandidatesTable: typeof import('./src/components/tables/candidates/CandidatesTable.vue')['default']
     CandidateTable: typeof import('./src/components/candidacy/candidate/CandidateTable.vue')['default']
+    copy: typeof import('./src/components/job/shared/Skills copy.vue')['default']
     DashboardTable: typeof import('./src/components/tables/dashboard/DashboardTable.vue')['default']
     DeleteJobModal: typeof import('./src/components/job/shared/DeleteJobModal.vue')['default']
     Divider: typeof import('primevue/divider')['default']
@@ -27,6 +28,7 @@ declare module 'vue' {
     HiringDetails: typeof import('./src/components/candidacy/HiringDetails.vue')['default']
     InputMask: typeof import('primevue/inputmask')['default']
     InputNumber: typeof import('primevue/inputnumber')['default']
+    InputSwitch: typeof import('primevue/inputswitch')['default']
     JobButtons: typeof import('./src/components/job/job-page/JobButtons.vue')['default']
     JobDescription: typeof import('./src/components/job/job-page/JobDescription.vue')['default']
     JobFooter: typeof import('./src/components/job/shared/JobFooter.vue')['default']
@@ -47,6 +49,7 @@ declare module 'vue' {
     NavbarGroup: typeof import('./src/components/navbar/NavbarGroup.vue')['default']
     NavbarHeader: typeof import('./src/components/navbar/NavbarHeader.vue')['default']
     PageForm: typeof import('./src/components/PageForm.vue')['default']
+    Questions: typeof import('./src/components/job/shared/Questions.vue')['default']
     RemarksAndComments: typeof import('./src/components/candidacy/RemarksAndComments.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -58,6 +61,7 @@ declare module 'vue' {
     Success: typeof import('./src/components/Success.vue')['default']
     Tag: typeof import('primevue/tag')['default']
     Textarea: typeof import('primevue/textarea')['default']
+    Tree: typeof import('primevue/tree')['default']
     UsersTable: typeof import('./src/components/tables/users/UsersTable.vue')['default']
   }
 }

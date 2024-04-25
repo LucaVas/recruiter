@@ -3,10 +3,10 @@ import DataTable, { type DataTableRowReorderEvent } from 'primevue/datatable';
 import Column from 'primevue/column';
 import { ref } from 'vue';
 import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
-import type { RawSkill } from '@/stores/skill/types';
+import type { Skill } from '@/stores/skill/types';
 
 const { skills, disabled } = defineProps<{
-  skills: RawSkill[];
+  skills: Skill[];
   disabled: boolean;
 }>();
 
@@ -14,13 +14,13 @@ const onRowReorder = (event: DataTableRowReorderEvent) => {
   details.value = event.value;
 };
 
-const removeSkill = (skill: RawSkill): void => {
+const removeSkill = (skill: Skill): void => {
   if (!details.value.includes(skill)) return;
   details.value.splice(details.value.indexOf(skill), 1);
   emits('update', details.value);
 };
 
-const addSkill = (skill: RawSkill): void => {
+const addSkill = (skill: Skill): void => {
   if (details.value.some((s) => s.name === skill.name)) return;
   details.value.unshift(skill);
 
@@ -28,7 +28,7 @@ const addSkill = (skill: RawSkill): void => {
 };
 
 const emits = defineEmits<{
-  (e: 'update', content: RawSkill[]): void;
+  (e: 'update', content: Skill[]): void;
 }>();
 
 const details = ref(skills);

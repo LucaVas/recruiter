@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.skill.controller;
 
 import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import dev.lucavassos.recruiter.modules.skill.service.SkillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class SkillController {
 
 
     @GetMapping("/skills")
-    public ResponseEntity<List<RawSkillDto>> getAllSkills() {
+    public ResponseEntity<List<SkillDto>> getAllSkills() {
         LOG.info("Received request for all skills.");
         return new ResponseEntity<>(service.getAllSkills(), HttpStatus.OK);
     }

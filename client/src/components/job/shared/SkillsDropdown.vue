@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import type { RawSkill } from '@/stores/skill/types';
+import type { Skill } from '@/stores/skill/types';
 import Dropdown from 'primevue/dropdown';
 import { getAllSkills } from '@/stores/skill';
 
 // variables
 const loading = ref(false);
-const skills = ref<RawSkill[]>();
-const selectedSkill = ref<RawSkill>();
+const skills = ref<Skill[]>();
+const selectedSkill = ref<Skill>();
 
 // props
 const { disabled } = defineProps<{
@@ -16,7 +16,7 @@ const { disabled } = defineProps<{
 
 // emits
 defineEmits<{
-  (e: 'addSkill', skill: RawSkill): void;
+  (e: 'addSkill', skill: Skill): void;
 }>();
 
 // init
