@@ -25,7 +25,7 @@ const currencies = ref<Currency[]>(['INR']);
 
 <template>
   <div class="flex flex-col gap-8">
-    <div class="flex w-full flex-row gap-6">
+    <div class="flex w-full flex-col sm:flex-row gap-6">
       <div class="flex w-full flex-col gap-2">
         <label class="text-sm" for="wantedCvs">Wanted CVs</label>
         <InputGroup>
@@ -63,7 +63,7 @@ const currencies = ref<Currency[]>(['INR']);
 
     <div class="flex w-full flex-col gap-2">
       <label class="text-sm" for="experienceRange">Experience range</label>
-      <div class="flex flex-row gap-6">
+      <div class="flex flex-col sm:flex-row gap-6">
         <div class="w-full">
           <InputGroup>
             <InputGroupAddon class="min-w-fit"> From </InputGroupAddon>
@@ -111,12 +111,12 @@ const currencies = ref<Currency[]>(['INR']);
           @input="emit('input', details)"
         />
 
-        <InputGroupAddon class="min-w-fit">Currency</InputGroupAddon>
+        <InputGroupAddon class="min-w-fit hidden sm:visible">Currency</InputGroupAddon>
         <Dropdown
           v-model="details.currency"
           :options="currencies"
           dropdown-icon="pi pi-angle-down"
-          class="min-w-40"
+          class="min-w-fit"
           @change="emit('input', details)"
           required
           :disabled="disabled"

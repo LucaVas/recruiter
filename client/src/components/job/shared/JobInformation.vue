@@ -30,7 +30,7 @@
       </InputGroup>
     </div>
 
-    <div class="flex w-full flex-row gap-6">
+    <div class="flex w-full flex-col sm:flex-row gap-6">
       <div class="flex w-full flex-col gap-2">
         <label class="text-sm" for="jobStatus">Job Status</label>
         <InputGroup>
