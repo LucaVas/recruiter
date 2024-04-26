@@ -24,6 +24,7 @@
 		<jsonwebtoken.version>0.11.5</jsonwebtoken.version>
 		<postgresql.version>42.7.2</postgresql.version>
 		<prometheus-client.version>0.16.0</prometheus-client.version>
+		<microemeter.version>1.12.5</microemeter.version>
 	</properties>
 
 	<dependencies>
@@ -117,7 +118,16 @@
 			<artifactId>simpleclient</artifactId>
 			<version>${prometheus-client.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+			<version>${micrometer.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+			<version>${micrometer.version}</version>
+		</dependency>
 
 		<!-- testing -->
 		<dependency>

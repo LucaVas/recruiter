@@ -2,11 +2,13 @@ package dev.lucavassos.recruiter.monitoring;
 
 import io.prometheus.client.Counter;
 import io.prometheus.client.Histogram;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
 import static dev.lucavassos.recruiter.utils.DateTimeUtils.durationInSecondsBetweenNowAnd;
 
+@Component
 public class MonitoringProcessor {
 
     private final Counter jobsCounter;
