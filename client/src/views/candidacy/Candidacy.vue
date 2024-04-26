@@ -36,9 +36,7 @@ const candidacyUpdated = ref(false);
 const updatingCandidacy = ref(false);
 const candidate = ref<Candidate>();
 
-async function update(
-  candidacy: UpdateCandidacyRequest | undefined
-) {
+async function update(candidacy: UpdateCandidacyRequest | undefined) {
   if (!candidacy || !jobId.value || pan.value === undefined) return;
   updatingCandidacy.value = true;
   try {
@@ -54,7 +52,7 @@ async function update(
 onMounted(async () => {
   const route = useRoute();
   jobId.value = Number(route.params.jobId);
-  pan.value = route.params.pan as string
+  pan.value = route.params.pan as string;
   const res = await getCandidacy(jobId.value, pan.value);
   candidate.value = res.candidacy.candidate;
   candidacy.value = res.candidacy;
@@ -109,3 +107,4 @@ onMounted(async () => {
     />
   </div>
 </template>
+@/stores/job/schema @/stores/candidate/schema @/stores/candidacy/schema@/stores/candidacy/schema

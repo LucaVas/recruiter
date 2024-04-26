@@ -1,4 +1,4 @@
-import type { ContractTypeName, JobStatus } from '@/stores/job/types';
+import type { ContractTypeName, JobStatus } from '@/stores/job/schema';
 import { ref } from 'vue';
 
 export const jobStatuses = ref<{ name: string; value: JobStatus }[]>([

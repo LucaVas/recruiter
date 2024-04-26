@@ -22,3 +22,4 @@ const { job } = defineProps<{
     <JobMetadataEntry :icon="'pi-info-circle'" :content="job.status" />
   </div>
 </template>
+@/stores/job/schema

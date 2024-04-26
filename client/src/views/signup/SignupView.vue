@@ -201,3 +201,4 @@ const submitSignup = async () => {
     </PageForm>
   </div>
 </template>
+@/stores/user/schema @/stores/auth/schema

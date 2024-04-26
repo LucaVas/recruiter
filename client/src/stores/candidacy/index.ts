@@ -3,7 +3,7 @@ import type {
   CandidacyResponse,
   NewCandidacyRequest,
   UpdateCandidacyRequest,
-} from './types';
+} from './schema';
 import axiosApi from '../api';
 
 const api = axiosApi();

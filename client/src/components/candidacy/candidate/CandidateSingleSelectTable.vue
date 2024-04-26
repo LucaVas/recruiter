@@ -29,3 +29,4 @@ const selectedCandidate = ref();
     <Column field="currentCtc" header="Current CTC"></Column>
   </DataTable>
 </template>
+@/stores/candidate/schema

@@ -94,3 +94,4 @@ const job = ref<NewJobRequest>({
   cvRatePaymentDate: new Date(),
 });
 </script>
+@/stores/job/schema

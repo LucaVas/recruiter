@@ -85,3 +85,4 @@ onMounted(async () => {
     <JobSkills :skills="job.skills" />
   </div>
 </template>
+@/stores/job/schema

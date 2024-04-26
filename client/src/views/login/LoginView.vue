@@ -107,3 +107,4 @@ const submitLogin = async () => {
     </PageForm>
   </div>
 </template>
+@/stores/auth/schema

@@ -140,3 +140,4 @@ const candidateForm = ref(candidate);
     </Dialog>
   </div>
 </template>
+@/stores/candidate/schema

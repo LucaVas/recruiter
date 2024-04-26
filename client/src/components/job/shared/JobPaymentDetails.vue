@@ -1,6 +1,6 @@
 <template>
   <div class="card flex flex-col gap-8">
-    <div class="flex w-full flex-col sm:flex-row gap-6">
+    <div class="flex w-full flex-col gap-6 sm:flex-row">
       <div class="flex w-full flex-col gap-2">
         <label class="text-sm" for="wantedCvs">Bonus Pay per CV</label>
         <InputGroup>
@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <div class="flex w-full flex-col sm:flex-row gap-6">
+    <div class="flex w-full flex-col gap-6 sm:flex-row">
       <div class="flex w-full flex-col gap-2">
         <label class="text-sm" for="wantedCvs">Closure Bonus</label>
         <InputGroup>
@@ -100,3 +100,4 @@ const emit = defineEmits<{
 
 const details = ref(jobDetails);
 </script>
+@/stores/job/schema

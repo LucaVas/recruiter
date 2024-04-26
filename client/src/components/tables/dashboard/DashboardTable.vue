@@ -28,7 +28,7 @@ const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
 const jobs = ref<Job[]>();
 const statuses = ref(['closed', 'open', 'pending']);
-const showAllColumns = ref(false)
+const showAllColumns = ref(false);
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -72,7 +72,12 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <Header :filters="filters" :showColumns="showAllColumns" @clearFilter="clearFilter()" @showOrHideColumns="showAllColumns = !showAllColumns" />
+      <Header
+        :filters="filters"
+        :showColumns="showAllColumns"
+        @clearFilter="clearFilter()"
+        @showOrHideColumns="showAllColumns = !showAllColumns"
+      />
     </template>
     <template #empty> No jobs found. </template>
     <template #loading> Loading jobs, please wait... </template>
@@ -175,7 +180,13 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="noticePeriodInDays" header="Notice Period" dataType="numeric" class="min-w-40" v-if="showAllColumns">
+    <Column
+      field="noticePeriodInDays"
+      header="Notice Period"
+      dataType="numeric"
+      class="min-w-40"
+      v-if="showAllColumns"
+    >
       <template #body="{ data }"> {{ data.noticePeriodInDays }} days </template>
       <template #filter="{ filterModel }">
         <InputText
@@ -199,7 +210,13 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="creationDate" header="Creation Date" dataType="date" class="min-w-40" v-if="showAllColumns">
+    <Column
+      field="creationDate"
+      header="Creation Date"
+      dataType="date"
+      class="min-w-40"
+      v-if="showAllColumns"
+    >
       <template #body="{ data }">
         {{ formatDate(data.createdAt) }}
       </template>
@@ -232,3 +249,4 @@ onMounted(async () => {
     </Column>
   </DataTable>
 </template>
+@/stores/job/schema

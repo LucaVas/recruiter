@@ -160,3 +160,4 @@ onMounted(async () => {
   await initTable();
 });
 </script>
+@/stores/candidacy/schema

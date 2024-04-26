@@ -251,3 +251,4 @@ onMounted(async () => {
     </Column>
   </DataTable>
 </template>
+@/stores/user/schema

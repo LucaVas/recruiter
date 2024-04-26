@@ -16,7 +16,7 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="flex w-full items-center sm:justify-normal justify-around gap-2">
+  <div class="flex w-full items-center justify-around gap-2 sm:justify-normal">
     <Button
       type="button"
       size="small"
@@ -40,7 +40,7 @@ defineEmits<{
         size="small"
         icon="pi pi-eye"
         outlined
-        class="block sm:hidden min-w-max"
+        class="block min-w-max sm:hidden"
         v-if="status !== 'ARCHIVED'"
         @click="$emit('openModal')"
       />
@@ -64,7 +64,7 @@ defineEmits<{
         severity="warning"
         icon="pi pi-file-edit"
         outlined
-        class="visible sm:hidden min-w-max"
+        class="visible min-w-max sm:hidden"
         v-if="status !== 'ARCHIVED' && isAdmin"
         @click="router.push({ name: 'UpdateJob', params: { id: id } })"
       />
@@ -87,7 +87,7 @@ defineEmits<{
         severity="danger"
         icon="pi pi-trash"
         outlined
-        class="block sm:hidden min-w-max"
+        class="block min-w-max sm:hidden"
         v-if="status !== 'ARCHIVED' && isAdmin"
         @click="$emit('deleteJob')"
       />
@@ -95,3 +95,4 @@ defineEmits<{
   </div>
   <Divider />
 </template>
+@/stores/job/schema

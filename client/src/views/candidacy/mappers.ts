@@ -1,4 +1,4 @@
-import type { Candidacy, UpdateCandidacyRequest } from '@/stores/candidacy/types';
+import type { Candidacy, UpdateCandidacyRequest } from '@/stores/candidacy/schema';
 
 export function mapCandidacyToForm(candidacy: Candidacy): CandidacyForm {
   return {

@@ -104,3 +104,4 @@ const getSplitButtonChoices = function (): MenuItem[] {
   return splitButtonChoices.value.filter((choice) => choice.condition);
 };
 </script>
+@/stores/job/schema

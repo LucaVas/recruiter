@@ -1,4 +1,4 @@
-import type { User, UserApprovalRequest } from './types';
+import type { User, UserApprovalRequest } from './schema';
 import axiosApi from '../api';
 
 // vars

@@ -1,11 +1,15 @@
-import type { RoleName, User } from '../user/types';
+import type { RoleName, User } from '../user/schema';
+import {z} from 'zod';
+
+export const AuthUserInfoDtoSchema = z.object({
+  id: z.number(),
+  username: z.string(),
+  roleName: z.enum(['ROLE_USER', 'ROLE_ADMIN']),
+});
+export type AuthUserInfoDto = z.infer<typeof AuthUserInfoDtoSchema>;
+
 
 // backend domain objects
-export type AuthUserInfoDto = {
-  id: number;
-  username: string;
-  roleName: RoleName;
-};
 export type LoginRequest = {
   usernameOrEmail: string;
   password: string;

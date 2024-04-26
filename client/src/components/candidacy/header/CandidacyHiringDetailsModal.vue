@@ -73,3 +73,4 @@ const details = ref(job);
     </Dialog>
   </div>
 </template>
+@/stores/job/schema

@@ -56,3 +56,4 @@ defineEmits<{
     </Dialog>
   </div>
 </template>
+@/stores/job/schema

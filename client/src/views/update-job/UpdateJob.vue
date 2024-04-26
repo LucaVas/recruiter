@@ -115,3 +115,4 @@ onMounted(async () => {
   jobDetails.value = await loadJobData(Number(jobId.value));
 });
 </script>
+@/stores/job/schema

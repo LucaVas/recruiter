@@ -224,3 +224,4 @@ onMounted(async () => {
     @save="update(candidateToEdit)"
   />
 </template>
+@/stores/candidate/schema

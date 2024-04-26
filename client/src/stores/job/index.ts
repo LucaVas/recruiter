@@ -1,4 +1,4 @@
-import type { Job, JobResponse, JobStatus, NewJobRequest } from './types';
+import type { Job, JobResponse, JobStatus, NewJobRequest } from './schema';
 import axiosApi from '../api';
 
 const api = axiosApi();

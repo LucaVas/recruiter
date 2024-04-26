@@ -1,4 +1,4 @@
-import type { NewCandidacyRequest } from '@/stores/candidacy/types';
+import type { NewCandidacyRequest } from '@/stores/candidacy/schema';
 
 export function formToNewCandidacy(
   candidacyDetails: any,

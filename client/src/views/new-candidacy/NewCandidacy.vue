@@ -176,3 +176,5 @@ onMounted(async () => {
   job.value = await getJob(jobId.value);
 });
 </script>
+../../stores/job/schema ../../stores/candidate/schema../../stores/candidate/schema
+../../stores/candidacy/schema

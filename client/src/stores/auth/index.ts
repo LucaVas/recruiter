@@ -13,7 +13,7 @@ import type {
   LoginResponse,
   SignupRequest,
   SignupResponse,
-} from './types';
+} from './schema';
 import { computed, ref } from 'vue';
 
 // vars
