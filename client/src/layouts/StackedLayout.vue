@@ -13,7 +13,7 @@ const menuVisible = ref(false);
 <template>
   <div class="flex h-screen flex-col md:flex-row">
     <div class="h-20 w-full p-2 md:relative md:h-full md:w-20 bg-slate-50/90 fixed">
-      <nav class="flex items-center w-full h-full justify-end md:justify-center">
+      <nav class="flex items-center sm:items-start w-full h-full justify-end md:justify-center">
         <Button icon="pi pi-bars" @click="menuVisible = true" />
       </nav>
     </div>

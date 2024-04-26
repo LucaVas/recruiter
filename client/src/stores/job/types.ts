@@ -18,7 +18,7 @@ export type Job = {
   bonusPayPerCv: number;
   closureBonus: number;
   comments: string;
-  numberOfCandidates: number;
+  numberOfCandidates: number | null;
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
   createdAt: string;

@@ -17,7 +17,7 @@ const { job } = defineProps<{
       :content="`${capitalize(job.contractType.contractTypeName)} contract`"
     />
     <JobMetadataEntry :icon="'pi-file'" :content="`${job.wantedCvs} CVs wanted`" />
-    <JobMetadataEntry :icon="'pi-users'" :content="`${job.numberOfCandidates} candidates`" />
+    <JobMetadataEntry :icon="'pi-users'" :content="`${job.numberOfCandidates ?? 0} candidates`" />
     <JobMetadataEntry :icon="'pi-calendar'" :content="formatDate(job.createdAt)" />
     <JobMetadataEntry :icon="'pi-info-circle'" :content="job.status" />
   </div>

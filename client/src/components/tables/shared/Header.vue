@@ -19,8 +19,10 @@ const dataFilters = ref(filters);
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-between sm:flex-row gap-3">
-    <div class="flex flex-row items-center justify-between md:justify-start md:gap-4 w-full p-0">
+  <div
+    class="flex flex-col items-start justify-start gap-3 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <div class="flex w-full flex-row items-center justify-start gap-4 p-0">
       <Button
         type="button"
         icon="pi pi-filter-slash"
@@ -35,12 +37,17 @@ const dataFilters = ref(filters);
         @click="$emit('showOrHideColumns')"
       />
     </div>
-    <div class="flex items-center justify-end">
+    <div class="flex w-full items-center sm:justify-end">
       <IconField iconPosition="left">
         <InputIcon>
           <i class="pi pi-search" />
         </InputIcon>
-        <InputText v-model="dataFilters['global'].value" placeholder="Keyword Search" />
+        <InputText
+          v-model="dataFilters['global'].value"
+          size="small"
+          placeholder="Keyword Search"
+          class="w-80"
+        />
       </IconField>
     </div>
   </div>
