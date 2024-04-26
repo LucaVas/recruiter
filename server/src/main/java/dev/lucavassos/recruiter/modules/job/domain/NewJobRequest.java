@@ -1,24 +1,21 @@
 package dev.lucavassos.recruiter.modules.job.domain;
 
-import dev.lucavassos.recruiter.modules.job.repository.dto.ContractTypeDto;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
+import dev.lucavassos.recruiter.modules.client.entities.Client;
+import dev.lucavassos.recruiter.modules.job.entities.ContractType;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 public record NewJobRequest (
-        @NotBlank(message = "Client cannot be empty") String client,
+        @NotNull(message = "Client cannot be empty") Client client,
 
         @NotBlank(message = "Name cannot be empty") String name,
 
         @NotNull(message = "Status cannot be empty") JobStatus status,
 
-        @NotNull(message = "Contracy type cannot be empty") ContractTypeDto contractType,
+        @NotNull(message = "Contracy type cannot be empty") ContractType contractType,
 
         @NotNull(message = "Wanted CVs cannot be empty")
         @Min(value = 1, message = "Wanted CVs number must be greater than 0")
@@ -38,7 +35,7 @@ public record NewJobRequest (
         @Min(value = 0, message = "Notice period in days must be a positive number")
         Integer noticePeriodInDays,
 
-        List<RawSkillDto> skills,
+        List<SkillDto> skills,
 
         @NotNull(message = "Salary budget cannot be empty")
         @Min(value = 1, message = "Salary budget must be a greater than 0")

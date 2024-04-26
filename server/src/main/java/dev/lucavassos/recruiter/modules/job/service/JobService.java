@@ -7,75 +7,60 @@ import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
+import dev.lucavassos.recruiter.modules.client.entities.Client;
+import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
 import dev.lucavassos.recruiter.modules.job.domain.*;
-import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
-import dev.lucavassos.recruiter.modules.job.repository.ContractTypeRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
-import org.apache.coyote.BadRequestException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class JobService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JobService.class);
 
-    @Autowired
-    private JobRepository repository;
-    @Autowired
-    private JobHistoryRepository historyRepository;
-    @Autowired
-    private CandidacyRepository candidacyRepository;
-    @Autowired
-    private SkillRepository skillRepository;
-    @Autowired
-    private ContractTypeRepository contractTypeRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JobDtoMapper jobDtoMapper;
-    @Autowired
-    private SkillDtoMapper skillDtoMapper;
-    @Autowired
-    private QuestionDtoMapper questionDtoMapper;
-    @Autowired
-    private MonitoringProcessor monitoringProcessor;
+    private final JobRepository repository;
+    private final JobHistoryRepository historyRepository;
+    private final CandidacyRepository candidacyRepository;
+    private final SkillRepository skillRepository;
+    private final UserRepository userRepository;
+    private final JobDtoMapper jobDtoMapper;
+    private final MonitoringProcessor monitoringProcessor;
+    private final ClientRepository clientRepository;
 
     @Transactional
     public JobResponse addJob(NewJobRequest request) throws Exception {
         LOG.info("Initiating new job creation process...");
 
         List<Skill> skills = skillRepository
-                .findAllById(request.skills().stream().map(RawSkillDto::id).collect(Collectors.toList()));
+                .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toList()));
 
-        ContractType contractType = contractTypeRepository
-                .findByContractTypeName(request.contractType().contractTypeName())
-                .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.contractType())));
+        Client client = clientRepository
+                .findById(request.client().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
         User recruiter = getAuthUser();
 
@@ -83,10 +68,10 @@ public class JobService {
         try {
             createdJob = repository.save(
                     Job.builder()
-                            .client(request.client())
+                            .client(client)
                             .name(request.name())
                             .status(request.status())
-                            .contractType(contractType)
+                            .contractType(request.contractType())
                             .wantedCvs(request.wantedCvs())
                             .skills(skills)
                             .experienceRangeMin(request.experienceRangeMin())
@@ -103,6 +88,8 @@ public class JobService {
                             .recruiter(recruiter)
                             .build()
             );
+            client.setJobs(List.of(createdJob));
+            clientRepository.save(client);
         } catch (Exception e) {
             LOG.error("Database error while updating job: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
@@ -132,6 +119,9 @@ public class JobService {
                         "Job with id [%d] not found.".formatted(id)
                 )
         );
+        Client client = clientRepository
+                .findById(request.client().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
         User recruiter = getAuthUser();
         if (!isUserAuthorized(recruiter, job)) {
@@ -141,7 +131,7 @@ public class JobService {
 
 
         if (request.client() != null && !request.client().equals(job.getClient())) {
-            job.setClient(request.client());
+            job.setClient(client);
             changes = true;
         }
         if (request.name() != null && !request.name().equals(job.getName())) {
@@ -152,12 +142,8 @@ public class JobService {
             job.setStatus(request.status());
             changes = true;
         }
-        if (request.contractType() != null && !request.contractType().contractTypeName().equals(job.getContractType().getContractTypeName())) {
-            ContractType contractType = contractTypeRepository
-                    .findByContractTypeName(request.contractType().contractTypeName())
-                    .orElseThrow(() -> new BadRequestException(String.format("Contract type %s not available", request.contractType())));
-
-            job.setContractType(contractType);
+        if (request.contractType() != null && !request.contractType().equals(job.getContractType())) {
+            job.setContractType(request.contractType());
             changes = true;
         }
         if (request.wantedCvs() != null && !request.wantedCvs().equals(job.getWantedCvs())) {
@@ -202,7 +188,7 @@ public class JobService {
         }
         if (request.skills() != null) {
             List<Skill> skills = skillRepository
-                    .findAllById(request.skills().stream().map(RawSkillDto::id).collect(Collectors.toList()));
+                    .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toList()));
             if (!skills.equals(job.getSkills())) {
                 job.setSkills(skills);
                 changes = true;
@@ -328,7 +314,7 @@ public class JobService {
                             .bonusPayPerCv(job.getBonusPayPerCv())
                             .closureBonus(job.getClosureBonus())
                             .job(job)
-                            .modifiedBy(user.getId())
+                            .updater(user)
                             .build()
             );
         } catch (Exception e) {

@@ -3,23 +3,23 @@ package dev.lucavassos.recruiter;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
+import dev.lucavassos.recruiter.modules.client.domain.Industry;
+import dev.lucavassos.recruiter.modules.client.entities.Client;
+import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
-import dev.lucavassos.recruiter.modules.job.repository.ContractTypeRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
-import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
-import dev.lucavassos.recruiter.modules.job.entities.ContractTypeName;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,25 +30,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Component
 public class EntityInitializer {
 
-    @Autowired
-    private JobRepository jobRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private ContractTypeRepository contractTypeRepository;
-    @Autowired
-    private SkillRepository skillRepository;
-    @Autowired
-    private QuestionRepository questionRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CandidateRepository candidateRepository;
-    @Autowired
-    private PasswordEncoder encoder;
+    private final JobRepository jobRepository;
+    private final RoleRepository roleRepository;
+    private final SkillRepository skillRepository;
+    private final UserRepository userRepository;
+    private final CandidateRepository candidateRepository;
+    private final PasswordEncoder encoder;
+    private final ClientRepository clientRepository;
 
     @Transactional
     public void createRoles() {
@@ -60,13 +52,12 @@ public class EntityInitializer {
     }
 
     @Transactional
-    public void createContractTypes() {
+    public void createClients() {
+        Client accenture = Client.builder().name("Accenture").industry(Industry.IT).build();
+        Client ibm = Client.builder().name("IBM").industry(Industry.IT).build();
+        Client infosys = Client.builder().name("Infosys").industry(Industry.IT).build();
 
-        ContractType permanent = ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build();
-        ContractType temporary = ContractType.builder().contractTypeName(ContractTypeName.TEMPORARY).build();
-
-        contractTypeRepository.save(permanent);
-        contractTypeRepository.save(temporary);
+        clientRepository.saveAll(List.of(accenture, ibm, infosys));
     }
 
     @Transactional
@@ -155,40 +146,28 @@ public class EntityInitializer {
                 )))
                 .build();
 
-        skillRepository.save(javaSkill);
-        skillRepository.save(pythonSkill);
-        skillRepository.save(tableauSkill);
-        skillRepository.save(bigDataSkill);
-        skillRepository.save(pL2Skill);
-        skillRepository.save(criticalThinkingSkill);
-        skillRepository.save(cloudArchitectureSkill);
-        skillRepository.save(awsSkill);
-        skillRepository.save(googleCloudSkill);
+        skillRepository.saveAll(List.of(javaSkill, pythonSkill, tableauSkill, bigDataSkill, pL2Skill, criticalThinkingSkill, cloudArchitectureSkill, awsSkill, googleCloudSkill));
 
     }
 
     @Transactional
     public void saveJobs() {
-        // Retrieve or create the ContractType entity for permanent
-        ContractType permanentContractType = contractTypeRepository.findByContractTypeName(ContractTypeName.PERMANENT)
-                .orElseThrow(() -> new IllegalStateException("ContractType PERMANENT does not exist"));
-        Set<Skill> skillSet = new HashSet<>(skillRepository.findAll());
+        Set<Client> clients = new HashSet<>(clientRepository.findAll());
+        Set<Skill> skills = new HashSet<>(skillRepository.findAll());
         User recruiter = userRepository.findOneByUsername("recruiter").orElseThrow(RuntimeException::new);
         User recruiter2 = userRepository.findOneByUsername("recruiter2").orElseThrow(RuntimeException::new);
 
         Job job1 = Job.builder()
-                .client("Accenture")
+                .client(clients.stream().filter(client -> client.getName().equals("Accenture")).findFirst().orElseThrow(RuntimeException::new))
                 .name("Software engineer")
                 .status(JobStatus.OPEN)
                 .wantedCvs(5)
                 .skills(
-                        skillSet.stream().filter(
+                        skills.stream().filter(
                                 skill -> skill.getName().equals("Java")
                         ).collect(Collectors.toList())
                 )
-                .contractType(
-                        permanentContractType
-                )
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(1)
                 .experienceRangeMax(2)
                 .noticePeriodInDays(90)
@@ -210,16 +189,16 @@ public class EntityInitializer {
                 .build();
 
         Job job2 = Job.builder()
-                .client("IBM")
+                .client(clients.stream().filter(client -> client.getName().equals("IBM")).findFirst().orElseThrow(RuntimeException::new))
                 .name("Software developer")
                 .status(JobStatus.OPEN)
                 .wantedCvs(5)
                 .skills(
-                        skillSet.stream().filter(
+                        skills.stream().filter(
                                 skill -> skill.getName().equals("Python")
                         ).collect(Collectors.toList())
                 )
-                .contractType(permanentContractType)
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(3)
                 .experienceRangeMax(5)
                 .noticePeriodInDays(70)
@@ -241,15 +220,15 @@ public class EntityInitializer {
                 .build();
 
         Job job3 = Job.builder()
-                .client("IBM")
+                .client(clients.stream().filter(client -> client.getName().equals("IBM")).findFirst().orElseThrow(RuntimeException::new))
                 .name("Business analyst")
                 .status(JobStatus.OPEN)
                 .wantedCvs(9)
-                .skills(skillSet.stream().filter(
+                .skills(skills.stream().filter(
                                 skill -> skill.getName().equals("Big Data") || skill.getName().equals("Tableau")
                         ).collect(Collectors.toList())
                 )
-                .contractType(permanentContractType)
+                .contractType(ContractType.TEMPORARY)
                 .experienceRangeMin(2)
                 .experienceRangeMax(3)
                 .noticePeriodInDays(50)
@@ -271,15 +250,15 @@ public class EntityInitializer {
                 .build();
 
         Job job4 = Job.builder()
-                .client("Infosys")
+                .client(clients.stream().filter(client -> client.getName().equals("Infosys")).findFirst().orElseThrow(RuntimeException::new))
                 .name("Mainframe developer")
                 .status(JobStatus.OPEN)
                 .wantedCvs(9)
-                .skills(skillSet.stream().filter(
+                .skills(skills.stream().filter(
                                 skill -> skill.getName().equals("Critical Thinking") || skill.getName().equals("PL2")
                         ).collect(Collectors.toList())
                 )
-                .contractType(permanentContractType)
+                .contractType(ContractType.TEMPORARY)
                 .experienceRangeMin(5)
                 .experienceRangeMax(7)
                 .noticePeriodInDays(20)
@@ -301,17 +280,17 @@ public class EntityInitializer {
                 .build();
 
         Job job5 = Job.builder()
-                .client("Accenture")
+                .client(clients.stream().filter(client -> client.getName().equals("Accenture")).findFirst().orElseThrow(RuntimeException::new))
                 .name("Cloud architect")
                 .status(JobStatus.OPEN)
                 .wantedCvs(9)
-                .skills(skillSet.stream().filter(
+                .skills(skills.stream().filter(
                         skill -> skill.getName().equals("Cloud Architecture")
                         || skill.getName().equals("AWS")
                         || skill.getName().equals("Google Cloud")
                 ).collect(Collectors.toList())
                 )
-                .contractType(permanentContractType)
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(10)
                 .experienceRangeMax(12)
                 .noticePeriodInDays(60)
@@ -333,11 +312,7 @@ public class EntityInitializer {
                 .recruiter(recruiter)
                 .build();
 
-        jobRepository.save(job1);
-        jobRepository.save(job2);
-        jobRepository.save(job3);
-        jobRepository.save(job4);
-        jobRepository.save(job5);
+        jobRepository.saveAll(List.of(job1, job2, job3, job4, job5));
     }
 
     @Transactional

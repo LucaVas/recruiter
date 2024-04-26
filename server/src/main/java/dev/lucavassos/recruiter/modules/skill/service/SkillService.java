@@ -2,8 +2,6 @@ package dev.lucavassos.recruiter.modules.skill.service;
 
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDtoMapper;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
 import org.slf4j.Logger;
@@ -23,8 +21,6 @@ public class SkillService {
 
     @Autowired
     private SkillRepository skillRepository;
-    @Autowired
-    private RawSkillDtoMapper rawSkillDtoMapper;
     @Autowired
     private SkillDtoMapper skillDtoMapper;
     @Autowired

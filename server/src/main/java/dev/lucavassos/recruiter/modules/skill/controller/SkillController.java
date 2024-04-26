@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.skill.controller;
 
-import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import dev.lucavassos.recruiter.modules.skill.service.SkillService;
 import org.slf4j.Logger;

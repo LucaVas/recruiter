@@ -4,6 +4,7 @@ import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
+import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -47,9 +48,15 @@ public class JobHistory {
     @JoinColumn(name = "job_id")
     private Job job;
 
-    @Column(nullable = false, name = "modified_by")
-    private Long modifiedBy;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User updater;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Column(nullable = false, name = "created_dtime")
+    private LocalDateTime createdDTime;
+
+    @UpdateTimestamp
+    @Column(nullable = false, name = "modified_dtime")
+    private LocalDateTime modifiedDTime;
 }

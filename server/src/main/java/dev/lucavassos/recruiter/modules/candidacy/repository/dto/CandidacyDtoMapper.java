@@ -34,7 +34,7 @@ public class CandidacyDtoMapper implements Function<Candidacy, CandidacyDto> {
                 candidacy.getReasonForQuickJoin(),
                 candidacy.getRemarks(),
                 candidacy.getComments(),
-                candidacy.getCreatedAt()
+                candidacy.getCreatedDTime()
         );
     }
 }

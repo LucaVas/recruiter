@@ -58,5 +58,10 @@ public class CandidateHistory {
     private Long modifiedBy;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Column(updatable = false, name = "created_dtime")
+    private LocalDateTime createdDTime;
+
+    @UpdateTimestamp
+    @Column(name = "modified_dtime")
+    private LocalDateTime modifiedDTime;
 }

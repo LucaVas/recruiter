@@ -65,7 +65,7 @@ public class UserService  {
 
         user.setApproved(request.approved());
         user.setComments(request.commments());
-        user.setApprovedOn(LocalDateTime.now());
+        user.setApprovedDTime(LocalDateTime.now());
         user.setApprover(approver);
 
         User approvedUser = repository.save(user);
@@ -149,7 +149,7 @@ public class UserService  {
                         );
 
         LocalDateTime now = LocalDateTime.now();
-        if (ChronoUnit.MINUTES.between(token.getCreatedAt(), now) > 15) {
+        if (ChronoUnit.MINUTES.between(token.getCreatedDTime(), now) > 15) {
             LOG.error("Token expired.");
             throw new BadRequestException("Invalid token. Please request a new one.");
         }

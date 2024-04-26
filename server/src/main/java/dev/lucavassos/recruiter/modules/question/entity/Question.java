@@ -31,10 +31,12 @@ public class Question {
     private Boolean active = true;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Column(updatable = false, name = "created_dtime")
+    private LocalDateTime createdDTime;
 
     @UpdateTimestamp
-    private LocalDateTime modifiedAt;
+    @Column(name = "modified_dtime")
+    private LocalDateTime modifiedDTime;
 
     public Question(String text) {
         this.text = text;

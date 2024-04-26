@@ -1,6 +1,7 @@
-package dev.lucavassos.recruiter.modules.skill.entities;
+package dev.lucavassos.recruiter.modules.client.entities;
 
-import dev.lucavassos.recruiter.modules.question.entity.Question;
+import dev.lucavassos.recruiter.modules.client.domain.Industry;
+import dev.lucavassos.recruiter.modules.job.entities.Job;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -11,32 +12,35 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name="skills")
-public class Skill {
+@Table(name="clients")
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Size(min = 1, message = "Skill name must be at least 1 character long")
+    @Column(nullable = false, name = "name")
+    @Size(min = 1, message = "Job name must be at least 1 character long")
     private String name;
 
+    @Column(nullable = false, name = "industry")
+    @Enumerated(EnumType.STRING)
+    private Industry industry;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "skills_questions",
-            joinColumns = @JoinColumn(name = "skill_id"),
-            inverseJoinColumns = @JoinColumn(name = "question_id"))
-    private Set<Question> questions = new HashSet<>();
+    @OneToMany(
+            mappedBy = "client",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Job> jobs = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")

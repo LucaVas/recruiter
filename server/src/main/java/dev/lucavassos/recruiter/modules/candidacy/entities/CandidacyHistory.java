@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -58,5 +59,10 @@ public class CandidacyHistory {
     private Long modifiedBy;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Column(updatable = false, name = "created_dtime")
+    private LocalDateTime createdDTime;
+
+    @UpdateTimestamp
+    @Column(name = "modified_dtime")
+    private LocalDateTime modifiedDTime;
 }

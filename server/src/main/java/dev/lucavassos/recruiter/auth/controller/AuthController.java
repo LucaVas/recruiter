@@ -9,6 +9,7 @@ import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +28,15 @@ import java.time.Instant;
 
 @RestController
 @RequestMapping(value = "api/v1/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
-    @Autowired
-    AuthenticationManager authenticationManager;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    JwtTokenProvider tokenProvider;
-    @Autowired
-    MonitoringProcessor monitoringProcessor;
-
-    @Autowired
-    AuthService service;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final JwtTokenProvider tokenProvider;
+    private final MonitoringProcessor monitoringProcessor;
+    private final AuthService service;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {

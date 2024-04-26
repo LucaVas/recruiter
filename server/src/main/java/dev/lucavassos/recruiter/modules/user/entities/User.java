@@ -72,18 +72,20 @@ public class User {
     @JoinColumn(name = "approver_id")
     private User approver;
 
-    @Column(updatable = false)
+    @Column(updatable = false, name = "approved_dtime")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime approvedOn;
+    private LocalDateTime approvedDTime;
 
     @OneToMany(mappedBy = "recruiter")
     private Set<Candidacy> candidacies = new HashSet<>();
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Column(updatable = false, name = "created_dtime")
+    private LocalDateTime createdDTime;
 
     @UpdateTimestamp
-    private LocalDateTime modifiedAt;
+    @Column(name = "modified_dtime")
+    private LocalDateTime modifiedDTime;
 
     public RoleName getRoleName() {
         return this.getRoles().stream()

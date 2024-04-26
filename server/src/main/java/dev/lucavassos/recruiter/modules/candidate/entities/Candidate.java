@@ -62,9 +62,11 @@ public class Candidate {
     private User recruiter;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Column(updatable = false, name = "created_dtime")
+    private LocalDateTime createdDTime;
 
     @UpdateTimestamp
-    private LocalDateTime modifiedAt;
+    @Column(name = "modified_dtime")
+    private LocalDateTime modifiedDTime;
 
 }

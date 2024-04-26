@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.modules.user.entities;
+package dev.lucavassos.recruiter.modules.client.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,35 +8,31 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name="password_reset_tokens")
-public class PasswordResetToken {
+@Table(name="clients_error_logs")
+public class ClientErrorLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String tokenString;
+    @Column(nullable = false, name = "name")
+    private String description;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(nullable = false, name = "code")
+    private Integer code;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
+    @Column(nullable = false, name = "created_dtime")
     private LocalDateTime createdDTime;
 
     @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    private LocalDateTime modifiedDTime;
+    @Column(nullable = false, name = "updated_dtime")
+    private LocalDateTime updatedDTime;
 }

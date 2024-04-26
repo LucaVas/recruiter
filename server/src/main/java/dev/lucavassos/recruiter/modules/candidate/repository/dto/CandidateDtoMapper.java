@@ -17,7 +17,7 @@ public class CandidateDtoMapper implements Function<Candidate, CandidateDto> {
                 candidate.getEducation(),
                 candidate.getCurrentCtc(),
                 candidate.getPan(),
-                candidate.getCreatedAt()
+                candidate.getCreatedDTime()
         );
     }
 }

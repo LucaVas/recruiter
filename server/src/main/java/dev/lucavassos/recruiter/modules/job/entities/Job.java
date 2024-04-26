@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
+import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
@@ -34,9 +35,8 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "client")
-    @Size(min = 1, message = "Job client must be at least 1 character long")
-    private String client;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Client client;
 
     @Column(nullable = false, name = "name")
     @Size(min = 1, message = "Job name must be at least 1 character long")
@@ -57,8 +57,8 @@ public class Job {
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skills = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contract_type_id")
+    @Column(nullable = false, name = "contract_type")
+    @Enumerated(EnumType.STRING)
     private ContractType contractType;
 
     @Column(nullable = false)
@@ -108,8 +108,10 @@ public class Job {
     private User recruiter;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Column(nullable = false, name = "created_dtime")
+    private LocalDateTime createdDTime;
 
     @UpdateTimestamp
-    private LocalDateTime modifiedAt;
+    @Column(nullable = false, name = "updated_dtime")
+    private LocalDateTime updatedDTime;
 }

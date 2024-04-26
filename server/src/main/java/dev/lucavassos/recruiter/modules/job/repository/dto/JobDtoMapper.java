@@ -1,10 +1,7 @@
 package dev.lucavassos.recruiter.modules.job.repository.dto;
 
 import dev.lucavassos.recruiter.modules.job.entities.Job;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.RawSkillDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
-import dev.lucavassos.recruiter.modules.user.repository.dto.RecruiterDto;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -17,27 +14,11 @@ public class JobDtoMapper implements Function<Job, JobDto> {
         return new JobDto(
                 job.getId(),
                 job.getClient(),
+                job.getSkills().stream().map(skill -> new SkillDto(skill.getId(), skill.getName())).collect(Collectors.toList()),
                 job.getName(),
                 job.getStatus(),
-                new ContractTypeDto(job.getContractType().getContractTypeName()),
+                job.getContractType(),
                 job.getWantedCvs(),
-                job.getSkills().stream()
-                        .map(skill -> new RawSkillDto(
-                                skill.getId(),
-                                skill.getName()
-                        ))
-                        .collect(Collectors.toList()),
-//                job.getSkills().stream()
-//                        .map(skill -> new SkillDto(
-//                                skill.getId(),
-//                                skill.getName(),
-//                                skill.getQuestions().stream()
-//                                        .map(question -> new QuestionDto(
-//                                                question.getId(),
-//                                                question.getText()
-//                                        )).collect(Collectors.toSet())
-//                        ))
-//                        .collect(Collectors.toSet()),
                 job.getExperienceRangeMin(),
                 job.getExperienceRangeMax(),
                 job.getNoticePeriodInDays(),
@@ -50,7 +31,7 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 job.getNumberOfCandidates(),
                 job.getClosureBonusPaymentDate(),
                 job.getCvRatePaymentDate(),
-                job.getCreatedAt()
+                job.getCreatedDTime()
         );
     }
 }

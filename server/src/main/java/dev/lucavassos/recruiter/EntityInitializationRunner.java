@@ -1,21 +1,21 @@
 package dev.lucavassos.recruiter;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 public class EntityInitializationRunner implements ApplicationRunner {
 
-    @Autowired
-    private EntityInitializer entityInitializer;
+    private final EntityInitializer entityInitializer;
 
     @Override
     public void run(ApplicationArguments args) {
         entityInitializer.createRoles();
         entityInitializer.createUsers();
-        entityInitializer.createContractTypes();
+        entityInitializer.createClients();
         entityInitializer.saveSkills();
         entityInitializer.saveJobs();
         entityInitializer.saveCandidates();

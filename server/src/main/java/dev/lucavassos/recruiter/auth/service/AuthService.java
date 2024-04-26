@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.auth.service;
 
-
 import dev.lucavassos.recruiter.auth.domain.SignupRequest;
 import dev.lucavassos.recruiter.auth.domain.SignupResponse;
 import dev.lucavassos.recruiter.auth.UserPrincipal;
@@ -13,9 +12,9 @@ import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,18 +23,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 
+@RequiredArgsConstructor
 @Service
 public class AuthService {
     private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-    @Autowired
-    MonitoringProcessor monitoringProcessor;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final MonitoringProcessor monitoringProcessor;
 
     @Transactional
     public SignupResponse signup(SignupRequest request) {
