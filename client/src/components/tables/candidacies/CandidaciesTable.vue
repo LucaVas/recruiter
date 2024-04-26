@@ -16,11 +16,33 @@
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <Header :filters="filters" @clearFilter="clearFilter()" />
+      <Header
+        :showColumns="showAllColumns"
+        :filters="filters"
+        @clearFilter="clearFilter()"
+        @showOrHideColumns="showAllColumns = !showAllColumns"
+      />
     </template>
     <template #empty> No candidacies found. </template>
     <template #loading> Loading candidacies, please wait... </template>
 
+    <Column field="action" header="" class="min-w-10">
+      <template #body="{ data }">
+        <div class="flex gap-2">
+          <Button
+            label="Edit"
+            class="h-8 min-w-fit"
+            rounded
+            @click="
+              router.push({
+                name: 'Candidacy',
+                params: { jobId: data.job.id, pan: data.candidate.pan },
+              })
+            "
+          />
+        </div>
+      </template>
+    </Column>
     <Column field="job" header="Job" class="min-w-52">
       <template #body="{ data }">
         <div class="flex items-center gap-3">
@@ -66,7 +88,7 @@
         />
       </template>
     </Column>
-    <Column field="recruiter" header="Recruiter" class="min-w-52">
+    <Column field="recruiter" header="Recruiter" class="min-w-52" v-if="showAllColumns">
       <template #body="{ data }">
         <div class="flex items-center gap-3">
           {{ data.recruiter.username }}
@@ -92,19 +114,6 @@
           class="p-column-filter"
           placeholder="Search by submission date"
         />
-      </template>
-    </Column>
-
-    <Column field="action" header="" class="min-w-10">
-      <template #body="{ data }">
-        <div class="flex gap-2">
-          <Button
-            label="Edit"
-            class="h-8 min-w-fit"
-            rounded
-            @click="router.push({ name: 'Candidacy', params: { jobId: data.job.id, pan: data.candidate.pan } })"
-          />
-        </div>
       </template>
     </Column>
   </DataTable>
@@ -135,7 +144,7 @@ const showError = (content: string) => {
 
 const loadingTable = ref(false);
 const candidates = ref<Candidacy[]>();
-
+const showAllColumns = ref(false);
 async function initTable() {
   loadingTable.value = true;
   try {

@@ -3,6 +3,7 @@ import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
 import Toast from 'primevue/toast';
+import Header from '../shared/Header.vue';
 import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
@@ -24,6 +25,7 @@ const candidates = ref<Candidate[]>();
 const editCandidateModal = ref(false);
 const candidateToEdit = ref<Candidate>();
 const updatingCandidate = ref(false);
+const showAllColumns = ref(false);
 
 async function update(candidateForm: Candidate) {
   updatingCandidate.value = true;
@@ -73,22 +75,29 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <Header :filters="filters" @clearFilter="clearFilter()" />
+      <Header
+        :showColumns="showAllColumns"
+        :filters="filters"
+        @clearFilter="clearFilter()"
+        @showOrHideColumns="showAllColumns = !showAllColumns"
+      />
     </template>
     <template #empty> No candidates found. </template>
     <template #loading> Loading candidates, please wait... </template>
 
-    <Column field="id" header="ID" dataType="numeric" class="min-w-16">
+    <Column field="action" header="" class="min-w-10">
       <template #body="{ data }">
-        {{ data.id }}
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter"
-          placeholder="Search by user id"
-        />
+        <div class="flex gap-2">
+          <Button
+            label="Edit"
+            class="h-8 min-w-fit"
+            rounded
+            @click="
+              candidateToEdit = data;
+              editCandidateModal = true;
+            "
+          />
+        </div>
       </template>
     </Column>
     <Column field="name" header="Name" class="min-w-52">
@@ -130,7 +139,12 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="totalExperience" header="Total Experience" class="min-w-52">
+    <Column
+      field="totalExperience"
+      header="Total Experience"
+      class="min-w-52"
+      v-if="showAllColumns"
+    >
       <template #body="{ data }"> {{ data.totalExperience }} </template>
       <template #filter="{ filterModel }">
         <InputText
@@ -141,7 +155,12 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="education" header="Education" class="max-w-52 truncate text-nowrap">
+    <Column
+      field="education"
+      header="Education"
+      class="max-w-52 truncate text-nowrap"
+      v-if="showAllColumns"
+    >
       <template #body="{ data }"> {{ data.education }} </template>
       <template #filter="{ filterModel }">
         <InputText
@@ -152,7 +171,7 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="currentCtc" header="Current CTC" class="min-w-52">
+    <Column field="currentCtc" header="Current CTC" class="min-w-52" v-if="showAllColumns">
       <template #body="{ data }"> {{ data.currentCtc }} </template>
       <template #filter="{ filterModel }">
         <InputText
@@ -187,23 +206,8 @@ onMounted(async () => {
         />
       </template>
     </Column>
-
-    <Column field="action" header="" class="min-w-10">
-      <template #body="{ data }">
-        <div class="flex gap-2">
-          <Button
-            label="Edit"
-            class="h-8 min-w-fit"
-            rounded
-            @click="
-              candidateToEdit = data;
-              editCandidateModal = true;
-            "
-          />
-        </div>
-      </template>
-    </Column>
   </DataTable>
+
   <CandidateModal
     v-if="candidateToEdit"
     :candidate="candidateToEdit"
