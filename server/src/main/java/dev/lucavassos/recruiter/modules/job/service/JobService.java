@@ -24,6 +24,7 @@ import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +63,8 @@ public class JobService {
     private SkillDtoMapper skillDtoMapper;
     @Autowired
     private QuestionDtoMapper questionDtoMapper;
+    @Autowired
+    private MonitoringProcessor monitoringProcessor;
 
     @Transactional
     public JobResponse addJob(NewJobRequest request) throws Exception {
@@ -107,6 +110,8 @@ public class JobService {
 
         LOG.info("New job created: [{}]", createdJob);
         saveJobInHistoryTable(createdJob, recruiter);
+
+        monitoringProcessor.incrementJobsCounter();
 
         return new JobResponse(
                 createdJob.getId(),

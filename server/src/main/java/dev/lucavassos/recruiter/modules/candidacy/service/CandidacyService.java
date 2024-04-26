@@ -20,6 +20,7 @@ import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,8 @@ public class CandidacyService {
     private CandidacyRepository candidacyRepository;
     @Autowired
     private CandidacyDtoMapper candidacyDtoMapper;
+    @Autowired
+    MonitoringProcessor monitoringProcessor;
 
     @Transactional
     public void addCandidacy(NewCandidacyRequest candidacy) {
@@ -97,6 +100,7 @@ public class CandidacyService {
                 .build();
 
         candidacyRepository.save(newCandidacy);
+        monitoringProcessor.incrementCandidaciesCounter();
 
     }
 

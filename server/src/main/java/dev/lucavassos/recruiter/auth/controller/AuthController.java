@@ -7,6 +7,7 @@ import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.jwt.JwtTokenProvider;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
 
 @RestController
 @RequestMapping(value = "api/v1/auth")
@@ -37,14 +40,19 @@ public class AuthController {
     PasswordEncoder passwordEncoder;
     @Autowired
     JwtTokenProvider tokenProvider;
+    @Autowired
+    MonitoringProcessor monitoringProcessor;
 
     @Autowired
     AuthService service;
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
+        Instant start = Instant.now();
         LOG.info("Received request for signup");
+
         SignupResponse res = service.signup(request);
+        monitoringProcessor.observeGetSignupTime(start);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(res);
@@ -52,7 +60,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request) {
+        Instant start = Instant.now();
         LOG.info("New login request received: {}", request);
+
         Authentication auth;
         try {
             auth = authenticationManager.authenticate(
@@ -83,8 +93,9 @@ public class AuthController {
                 new AuthUserInfoDto(userPrincipal.getId(), userPrincipal.getUsername(), userPrincipal.getRoleName()),
                 jwt,
                 "Bearer");
-        LOG.info("Login successful. Response: {}", res);
 
+        LOG.info("Login successful. Response: {}", res);
+        monitoringProcessor.observeGetLoginTime(start);
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, res.token())
                 .body(res);

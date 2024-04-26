@@ -12,6 +12,7 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class AuthService {
     RoleRepository roleRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    MonitoringProcessor monitoringProcessor;
 
     @Transactional
     public SignupResponse signup(SignupRequest request) {
@@ -72,6 +75,7 @@ public class AuthService {
         User userSaved = userRepository.save(user);
 
         LOG.info("New user created: [{}]", userSaved);
+        monitoringProcessor.incrementUsersCounter();
 
         return new SignupResponse(user.getId());
     }

@@ -15,6 +15,7 @@ import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDtoMap
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ public class CandidateService {
     private UserRepository userRepository;
     @Autowired
     private CandidateDtoMapper dtoMapper;
+    @Autowired
+    MonitoringProcessor monitoringProcessor;
 
     public CandidateResponse addCandidate(NewCandidateRequest request) throws Exception {
         LOG.info("Adding a new candidate");
@@ -85,6 +88,7 @@ public class CandidateService {
         }
 
         LOG.info("New candidate created: [{}]", newCandidate);
+        monitoringProcessor.incrementCandidatesCounter();
 
         return new CandidateResponse(
                 newCandidate.getPan(),

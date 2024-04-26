@@ -23,6 +23,7 @@
 		<maven.compiler.target>17</maven.compiler.target>
 		<jsonwebtoken.version>0.11.5</jsonwebtoken.version>
 		<postgresql.version>42.7.2</postgresql.version>
+		<prometheus-client.version>0.16.0</prometheus-client.version>
 	</properties>
 
 	<dependencies>
@@ -109,6 +110,14 @@
 			<version>${jsonwebtoken.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Monitoring -->
+		<dependency>
+			<groupId>io.prometheus</groupId>
+			<artifactId>simpleclient</artifactId>
+			<version>${prometheus-client.version}</version>
+		</dependency>
+
 
 		<!-- testing -->
 		<dependency>
