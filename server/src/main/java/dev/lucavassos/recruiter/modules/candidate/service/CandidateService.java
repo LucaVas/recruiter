@@ -15,7 +15,6 @@ import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDtoMap
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import dev.lucavassos.recruiter.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,8 +146,6 @@ public class CandidateService {
         if (!changes) {
             throw new RequestValidationException("No updates were made to the candidate.");
         }
-
-        candidate.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
 
         try {
             this.candidateRepository.save(candidate);

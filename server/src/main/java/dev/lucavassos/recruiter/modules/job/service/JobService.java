@@ -24,7 +24,6 @@ import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import dev.lucavassos.recruiter.utils.Constants;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -208,9 +207,6 @@ public class JobService {
         if (!changes) {
             throw new RequestValidationException("No updates were made to data.");
         }
-
-        job.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
-
         try {
             repository.save(job);
             saveJobInHistoryTable(job, recruiter);
@@ -251,7 +247,6 @@ public class JobService {
 
         if (request.status() != null && job.getStatus() != request.status() && job.getStatus() != JobStatus.ARCHIVED) {
             job.setStatus(request.status());
-            job.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
             saveJobInHistoryTable(job, user);
         }
 
@@ -296,7 +291,6 @@ public class JobService {
 
         if (job.getStatus() != JobStatus.ARCHIVED) {
             job.setStatus(JobStatus.ARCHIVED);
-            job.setModifiedAt(LocalDateTime.now(Constants.UTC_OFFSET));
             Job jobDeleted = repository.save(job);
             LOG.info("Job {} deleted successfully", jobDeleted.getId());
             saveJobInHistoryTable(job, user);
