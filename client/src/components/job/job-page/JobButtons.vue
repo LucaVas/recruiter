@@ -16,44 +16,82 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="flex w-full items-center gap-2">
+  <div class="flex w-full items-center sm:justify-normal justify-around gap-2">
     <Button
-      rounded
       type="button"
       size="small"
-      label="Submit Candidacy"
+      label="Apply"
       v-if="status !== 'ARCHIVED'"
       @click="router.push({ name: 'NewCandidacy', params: { id: id } })"
     />
-    <Button
-      rounded
-      type="button"
-      size="small"
-      label="View Details"
-      outlined
-      v-if="status !== 'ARCHIVED'"
-      @click="$emit('openModal')"
-    />
-    <Button
-      rounded
-      type="button"
-      size="small"
-      severity="warning"
-      label="Edit"
-      outlined
-      v-if="status !== 'ARCHIVED' && isAdmin"
-      @click="router.push({ name: 'UpdateJob', params: { id: id } })"
-    />
-    <Button
-      rounded
-      type="button"
-      size="small"
-      severity="danger"
-      label="Delete"
-      outlined
-      v-if="status !== 'ARCHIVED' && isAdmin"
-      @click="$emit('deleteJob')"
-    />
+    <div>
+      <Button
+        rounded
+        type="button"
+        size="small"
+        label="View Details"
+        outlined
+        class="hidden sm:block"
+        v-if="status !== 'ARCHIVED'"
+        @click="$emit('openModal')"
+      />
+      <Button
+        type="button"
+        size="small"
+        icon="pi pi-eye"
+        outlined
+        class="block sm:hidden min-w-max"
+        v-if="status !== 'ARCHIVED'"
+        @click="$emit('openModal')"
+      />
+    </div>
+
+    <div>
+      <Button
+        rounded
+        type="button"
+        size="small"
+        severity="warning"
+        label="Edit"
+        outlined
+        class="hidden sm:block"
+        v-if="status !== 'ARCHIVED' && isAdmin"
+        @click="router.push({ name: 'UpdateJob', params: { id: id } })"
+      />
+      <Button
+        type="button"
+        size="small"
+        severity="warning"
+        icon="pi pi-file-edit"
+        outlined
+        class="visible sm:hidden min-w-max"
+        v-if="status !== 'ARCHIVED' && isAdmin"
+        @click="router.push({ name: 'UpdateJob', params: { id: id } })"
+      />
+    </div>
+    <div>
+      <Button
+        rounded
+        type="button"
+        size="small"
+        severity="danger"
+        label="Delete"
+        outlined
+        class="hidden sm:block"
+        v-if="status !== 'ARCHIVED' && isAdmin"
+        @click="$emit('deleteJob')"
+      />
+      <Button
+        type="button"
+        size="small"
+        severity="danger"
+        icon="pi pi-trash"
+        outlined
+        class="block sm:hidden min-w-max"
+        v-if="status !== 'ARCHIVED' && isAdmin"
+        @click="$emit('deleteJob')"
+      />
+    </div>
   </div>
   <Divider />
 </template>
