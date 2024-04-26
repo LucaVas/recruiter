@@ -5,7 +5,7 @@
       <div v-if="job">
         <CandidacyHeader
           :status="job.status"
-          :client="job.client"
+          :client="job.client.name"
           :name="job.name"
           @openModal="headerModalOpen = true"
         />
@@ -66,18 +66,18 @@ import { getJob } from '@/stores/job';
 import { useRoute } from 'vue-router';
 import { findCandidate } from '@/stores/candidate';
 import { submitCandidacy } from '@/stores/candidacy';
-import { ApiError } from '../../utils/types';
+import { ApiError } from '@/utils/types';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
 import FilesUploader from '@/components/candidacy/FilesUploader.vue';
-import type { Job } from '../../stores/job/types';
+import type { Job } from '@/stores/job/schema';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
 import { createCandidate } from '@/stores/candidate/';
-import type { Candidate } from '../../stores/candidate/types';
+import type { Candidate } from '@/stores/candidate/schema';
 import Success from '@/components/Success.vue';
-import type { RawCandidacy } from '../../stores/candidacy/types';
-import type { NewCandidateRequest } from '../../stores/candidate/types';
+import type { RawCandidacy } from '@/stores/candidacy/schema';
+import type { NewCandidateRequest } from '@/stores/candidate/schema';
 
 const jobId = ref<number>();
 const toast = useToast();
@@ -176,5 +176,3 @@ onMounted(async () => {
   job.value = await getJob(jobId.value);
 });
 </script>
-../../stores/job/schema ../../stores/candidate/schema../../stores/candidate/schema
-../../stores/candidacy/schema

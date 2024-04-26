@@ -7,7 +7,7 @@ import ApproveModal from './ApproveModal.vue';
 import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
-import type { User } from '@/stores/user/types';
+import type { User } from '@/stores/user/schema';
 import { ApiError } from '@/utils/types';
 import { formatDate } from '@/utils/dateUtils';
 import { getAllUsers, approveUser } from '@/stores/user';
@@ -251,4 +251,3 @@ onMounted(async () => {
     </Column>
   </DataTable>
 </template>
-@/stores/user/schema

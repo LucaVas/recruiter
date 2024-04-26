@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { Skill } from '@/stores/skill/types';
-import Tree, { type TreeSelectionKeys } from 'primevue/tree';
-import type { TreeNode } from 'primevue/treenode';
-import { computed, ref } from 'vue';
+import type { Skill } from '@/stores/skill/schema';
+
+import { ref } from 'vue';
 
 const { skills, disabled } = defineProps<{
   skills: Skill[];

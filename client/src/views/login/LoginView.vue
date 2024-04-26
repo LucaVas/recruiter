@@ -9,7 +9,7 @@ import Button from 'primevue/button';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { login } from '@/stores/auth';
-import type { LoginRequest } from '@/stores/auth/types';
+import type { LoginRequest } from '@/stores/auth/schema';
 
 const toast = useToast();
 const router = useRouter();

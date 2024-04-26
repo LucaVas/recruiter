@@ -7,7 +7,7 @@
     <div v-if="!jobUpdated" class="flex h-full w-full flex-col gap-6">
       <JobStatus
         :status="jobDetails.status"
-        :createdAt="jobDetails.createdAt"
+        :createdAt="jobDetails.createdDTime"
         @delete="delJob(jobDetails.id)"
         @changeStatus="(status: JobStatus) => changeStatus(jobDetails!.id, status)"
       />
@@ -41,7 +41,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Toast from 'primevue/toast';
 import ProgressSpinner from 'primevue/progressspinner';
-import type { Job, JobStatus } from '@/stores/job/types';
+import type { Job, JobStatus } from '@/stores/job/schema';
 import { useToast } from 'primevue/usetoast';
 import { getJob, updateJob, deleteJob, changeJobStatus } from '@/stores/job';
 import { ApiError } from '@/utils/types';
@@ -115,4 +115,3 @@ onMounted(async () => {
   jobDetails.value = await loadJobData(Number(jobId.value));
 });
 </script>
-@/stores/job/schema

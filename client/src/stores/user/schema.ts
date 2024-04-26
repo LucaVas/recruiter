@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
+export const roleNameSchema = z.enum(['ROLE_RECRUITER', 'ROLE_ADMIN']);
 export const roleSchema = z.object({
   id: z.number(),
-  name: z.enum(['ROLE_RECRUITER', 'ROLE_ADMIN']),
+  name: roleNameSchema,
 });
 export const recruiterSchema = z.object({
   id: z.number(),
@@ -30,7 +31,8 @@ export type Recruiter = z.infer<typeof recruiterSchema>;
 export type ApproverDto = Recruiter;
 
 // backend domain objects
-export type RoleName = z.infer<typeof roleSchema>;
+export type Role = z.infer<typeof roleSchema>;
+export type RoleName = z.infer<typeof roleNameSchema>;
 export type UserApprovalRequest = {
   userId: number;
   approved: boolean;
@@ -44,8 +46,3 @@ export type PasswordResetTokenRequest = {
   username: string;
 };
 
-// frontend types
-export type Role = {
-  id: number;
-  name: RoleName;
-};

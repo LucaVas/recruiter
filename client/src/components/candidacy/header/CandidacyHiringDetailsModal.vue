@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import JobMetadataEntry from '@/components/job/metadata/JobMetadataEntry.vue';
 import { formatDate } from '@/utils/dateUtils';
-import type { Job } from '@/stores/job/types';
+import type { Job } from '@/stores/job/schema';
 import Dialog from 'primevue/dialog';
 import { capitalize } from '@/utils/stringUtils';
 import { ref } from 'vue';
@@ -33,7 +33,7 @@ const details = ref(job);
       <div class="flex flex-col gap-3">
         <JobMetadataEntry
           :icon="'pi-briefcase'"
-          :content="`${capitalize(details.contractType.contractTypeName)} contract`"
+          :content="`${capitalize(details.contractType)} contract`"
         />
         <JobMetadataEntry :icon="'pi-file'" :content="`${details.wantedCvs} CVs wanted`" />
         <JobMetadataEntry

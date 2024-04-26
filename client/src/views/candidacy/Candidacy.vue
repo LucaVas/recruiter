@@ -9,14 +9,14 @@ import { useRoute } from 'vue-router';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
 import FilesUploader from '@/components/candidacy/FilesUploader.vue';
-import type { Job } from '@/stores/job/types';
+import type { Job } from '@/stores/job/schema';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
 import Success from '@/components/Success.vue';
 import { ApiError } from '@/utils/types';
-import type { Candidate } from '@/stores/candidate/types';
-import type { RawCandidacy } from '@/stores/candidacy/types';
-import type { UpdateCandidacyRequest } from '@/stores/candidacy/types';
+import type { Candidate } from '@/stores/candidate/schema';
+import type { RawCandidacy } from '@/stores/candidacy/schema';
+import type { UpdateCandidacyRequest } from '@/stores/candidacy/schema';
 
 const toast = useToast();
 const headerModalOpen = ref(false);
@@ -66,7 +66,7 @@ onMounted(async () => {
       <div v-if="job">
         <CandidacyHeader
           :status="job.status"
-          :client="job.client"
+          :client="job.client.name"
           :name="job.name"
           @openModal="headerModalOpen = true"
         />

@@ -3,9 +3,9 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Dropdown from 'primevue/dropdown';
 import Textarea from 'primevue/textarea';
-import type { Currency } from '@/stores/job/types';
+import type { Currency } from '@/stores/job/schema';
 import { ref } from 'vue';
-import type { Job, NewJobRequest } from '@/stores/job/types';
+import type { Job, NewJobRequest } from '@/stores/job/schema';
 
 // props
 const { jobDetails, disabled } = defineProps<{

@@ -2,7 +2,7 @@
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref } from 'vue';
-import type { RawCandidacy } from '../../stores/candidacy/types';
+import type { RawCandidacy } from '@/stores/candidacy/schema';
 
 const { candidacy, isArchived } = defineProps<{
   candidacy: RawCandidacy;

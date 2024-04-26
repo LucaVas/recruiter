@@ -85,7 +85,7 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Calendar from 'primevue/calendar';
 import { ref } from 'vue';
-import type { Job, NewJobRequest } from '@/stores/job/types';
+import type { Job, NewJobRequest } from '@/stores/job/schema';
 
 // props
 const { jobDetails, disabled } = defineProps<{

@@ -5,7 +5,7 @@ import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref } from 'vue';
-import type { Candidate, NewCandidateRequest } from '@/stores/candidate/types';
+import type { Candidate, NewCandidateRequest } from '@/stores/candidate/schema';
 
 const { candidate, visible, isUpdate } = defineProps<{
   candidate: Candidate | NewCandidateRequest | undefined;

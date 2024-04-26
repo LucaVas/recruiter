@@ -1,4 +1,4 @@
-import type { Skill } from './types';
+import type { Skill } from './schema';
 import axiosApi from '../api';
 
 const api = axiosApi();

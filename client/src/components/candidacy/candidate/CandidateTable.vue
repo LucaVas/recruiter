@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CandidateSingleSelectTable from './CandidateSingleSelectTable.vue';
-import type { Candidate } from '../../../stores/candidate/types';
+import type { Candidate } from '@/stores/candidate/schema';
 
 const { candidateToDisplay } = defineProps<{
   candidateToDisplay: Candidate;

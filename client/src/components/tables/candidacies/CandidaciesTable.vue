@@ -132,7 +132,7 @@ import { getAllCandidacies } from '@/stores/candidacy';
 import { useToast } from 'primevue/usetoast';
 import { columns } from '.';
 import Header from '../shared/Header.vue';
-import type { Candidacy } from '@/stores/candidacy/types';
+import type { Candidacy } from '@/stores/candidacy/schema';
 import { useRouter } from 'vue-router';
 import { formatDate } from '@/utils/dateUtils';
 

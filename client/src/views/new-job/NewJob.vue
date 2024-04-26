@@ -40,11 +40,12 @@ import NowJobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { createJob } from '@/stores/job';
-import type { NewJobRequest } from '@/stores/job/types';
+import type { NewJobRequest } from '@/stores/job/schema';
 import { ref } from 'vue';
 import Success from '@/components/Success.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
-import type { Skill } from '../../stores/skill/types';
+import type { Skill } from '@/stores/skill/schema';
+import type { Client } from '@/stores/client/schema';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -71,15 +72,15 @@ const removeSkill = (skill: Skill): void => {
 };
 
 const addSkill = (skill: Skill): void => {
-  if (job.value.skills.some((s) => s.name === skill.name)) return;
+  if (job.value.skills.some((s: Skill) => s.name === skill.name)) return;
   job.value.skills.unshift(skill);
 };
 
 const job = ref<NewJobRequest>({
-  client: '',
+  client: {} as Client,
   name: '',
   status: 'OPEN',
-  contractType: { contractTypeName: 'TEMPORARY' },
+  contractType: 'TEMPORARY',
   wantedCvs: 0,
   experienceRangeMin: 0,
   experienceRangeMax: 0,

@@ -3,8 +3,8 @@ import SearchCandidate from './candidate/SearchCandidate.vue';
 import CandidateTable from './candidate/CandidateTable.vue';
 import { ref } from 'vue';
 import CandidateModal from './candidate/shared/CandidateModal.vue';
-import type { Candidate } from '@/stores/candidate/types';
-import type { NewCandidateRequest } from '@/stores/candidate/types';
+import type { Candidate } from '@/stores/candidate/schema';
+import type { NewCandidateRequest } from '@/stores/candidate/schema';
 
 // props
 const { candidate, searchedCandidate, searching, candidateCreated } = defineProps<{

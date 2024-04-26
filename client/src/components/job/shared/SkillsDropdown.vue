@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import type { Skill } from '@/stores/skill/types';
+import type { Skill } from '@/stores/skill/schema';
 import Dropdown from 'primevue/dropdown';
 import { getAllSkills } from '@/stores/skill';
 

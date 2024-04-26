@@ -8,10 +8,10 @@
         </InputGroupAddon>
         <InputText
           id="clientName"
-          v-model="details.client"
+          v-model="details.client.name"
           @input="emit('input', details)"
           :disabled="disabled"
-          :invalid="details.client === ''"
+          :invalid="details.client.name === ''"
         />
       </InputGroup>
     </div>
@@ -51,7 +51,7 @@
         <label class="text-sm" for="jobStatus">Contract type</label>
         <InputGroup>
           <Dropdown
-            v-model="details.contractType.contractTypeName"
+            v-model="details.contractType"
             :options="contractTypes"
             optionLabel="name"
             optionValue="value"
@@ -72,7 +72,7 @@ import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import { ref } from 'vue';
 import { jobStatuses, contractTypes } from './utils';
-import type { Job, NewJobRequest } from '@/stores/job/types';
+import type { Job, NewJobRequest } from '@/stores/job/schema';
 
 // props
 const { jobDetails, disabled } = defineProps<{
@@ -87,4 +87,3 @@ const emit = defineEmits<{
 
 const details = ref(jobDetails);
 </script>
-@/stores/job/schema

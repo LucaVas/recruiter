@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getSeverity, getStatusIcon, formatStatus } from '@/components/job/shared/utils';
-import type { JobStatus } from '@/stores/job/types';
+import type { JobStatus } from '@/stores/job/schema';
 
 const { status, name, client } = defineProps<{
   status: JobStatus;

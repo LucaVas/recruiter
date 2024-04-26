@@ -1,6 +1,6 @@
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import { ref } from 'vue';
-import type { Skill } from '@/stores/skill/types';
+import type { Skill } from '@/stores/skill/schema';
 
 export const filters = ref();
 export const globalFiltersFields = ref([

@@ -8,10 +8,10 @@ import Password from 'primevue/password';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '../../utils/types';
 import Toast from 'primevue/toast';
-import type { RoleName } from '@/stores/user/types';
+import type { RoleName } from '@/stores/user/schema';
 import SignupCommentsModal from '@/components/signup/SignupCommentsModal.vue';
 import { signup } from '@/stores/auth/index';
-import type { SignupRequest } from '@/stores/auth/types';
+import type { SignupRequest } from '@/stores/auth/schema';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -201,4 +201,3 @@ const submitSignup = async () => {
     </PageForm>
   </div>
 </template>
-@/stores/user/schema @/stores/auth/schema

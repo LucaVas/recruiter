@@ -22,7 +22,7 @@ export type Candidacy = z.infer<typeof candidacySchema>;
 // backend domain objects
 export type UpdateCandidacyRequest = Omit<
   Candidacy,
-  'job' | 'recruiter' | 'candidate' | 'createdAt'
+  'job' | 'recruiter' | 'candidate' | 'createdDTime'
 >;
 export type NewCandidacyRequest = UpdateCandidacyRequest & {
   jobId: number;

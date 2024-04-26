@@ -4,7 +4,7 @@ import Toast from 'primevue/toast';
 import { getJobDetails } from './index';
 import { useToast } from 'primevue/usetoast';
 import { useRoute, useRouter } from 'vue-router';
-import type { Job } from '@/stores/job/types';
+import type { Job } from '@/stores/job/schema';
 import JobTitle from '@/components/job/job-page/JobTitle.vue';
 import JobMetadata from '@/components/job/job-page/JobMetadata.vue';
 import JobButtons from '@/components/job/job-page/JobButtons.vue';

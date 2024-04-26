@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Job } from '@/stores/job/types';
+import type { Job } from '@/stores/job/schema';
 import JobMetadataEntry from '../metadata/JobMetadataEntry.vue';
 import { capitalize } from '@/utils/stringUtils';
 import { formatDate } from '@/utils/dateUtils';
@@ -11,15 +11,14 @@ const { job } = defineProps<{
 
 <template>
   <div class="flex w-full flex-col gap-2">
-    <JobMetadataEntry :icon="'pi-building'" :content="job.client" />
+    <JobMetadataEntry :icon="'pi-building'" :content="job.client.name" />
     <JobMetadataEntry
       :icon="'pi-briefcase'"
-      :content="`${capitalize(job.contractType.contractTypeName)} contract`"
+      :content="`${capitalize(job.contractType)} contract`"
     />
     <JobMetadataEntry :icon="'pi-file'" :content="`${job.wantedCvs} CVs wanted`" />
     <JobMetadataEntry :icon="'pi-users'" :content="`${job.numberOfCandidates ?? 0} candidates`" />
-    <JobMetadataEntry :icon="'pi-calendar'" :content="formatDate(job.createdAt)" />
+    <JobMetadataEntry :icon="'pi-calendar'" :content="formatDate(job.createdDTime)" />
     <JobMetadataEntry :icon="'pi-info-circle'" :content="job.status" />
   </div>
 </template>
-@/stores/job/schema

@@ -11,7 +11,7 @@ import { ApiError } from '@/utils/types';
 import { formatDate } from '@/utils/dateUtils';
 import { getAllCandidates, updateCandidate } from '@/stores/candidate';
 import { useToast } from 'primevue/usetoast';
-import type { Candidate } from '@/stores/candidate/types';
+import type { Candidate } from '@/stores/candidate/schema';
 import { columns } from '.';
 import CandidateModal from '@/components/candidacy/candidate/shared/CandidateModal.vue';
 
@@ -219,7 +219,7 @@ onMounted(async () => {
     :isUpdate="true"
     @update="
       (candidateForm) =>
-        (candidateToEdit = { ...candidateForm, createdAt: candidateToEdit!.createdAt })
+        (candidateToEdit = { ...candidateForm, createdDTime: candidateToEdit!.createdDTime })
     "
     @save="update(candidateToEdit)"
   />

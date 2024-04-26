@@ -38,6 +38,6 @@ export type JobStatus = z.infer<typeof jobStatusSchema>;
 
 // backend domain objects
 export type JobResponse = { id: number; job: Job };
-export type NewJobRequest = Omit<Job, 'id' | 'comments' | 'numberOfCandidates' | 'createdAt'>;
+export type NewJobRequest = Omit<Job, 'id' | 'comments' | 'numberOfCandidates' | 'createdDTime'>;
 export type UpdateJobRequest = NewJobRequest & { id: number };
 export type ChangeJobStatusRequest = { jobStatus: JobStatus };

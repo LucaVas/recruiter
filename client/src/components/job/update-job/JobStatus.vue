@@ -36,7 +36,7 @@ import Tag from 'primevue/tag';
 import TieredMenu from 'primevue/tieredmenu';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
-import type { JobStatus } from '@/stores/job/types';
+import type { JobStatus } from '@/stores/job/schema';
 import { formatDate } from '@/utils/dateUtils';
 import { ref } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';

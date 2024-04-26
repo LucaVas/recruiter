@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RawCandidacy } from '@/stores/candidacy/types';
+import type { RawCandidacy } from '@/stores/candidacy/schema';
 import Textarea from 'primevue/textarea';
 import { ref } from 'vue';
 

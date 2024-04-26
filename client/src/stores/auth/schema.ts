@@ -1,10 +1,10 @@
-import type { RoleName, User } from '../user/schema';
+import { roleNameSchema, type RoleName, type User } from '../user/schema';
 import {z} from 'zod';
 
 export const AuthUserInfoDtoSchema = z.object({
   id: z.number(),
   username: z.string(),
-  roleName: z.enum(['ROLE_USER', 'ROLE_ADMIN']),
+  roleName: roleNameSchema,
 });
 export type AuthUserInfoDto = z.infer<typeof AuthUserInfoDtoSchema>;
 
@@ -21,7 +21,7 @@ export type LoginResponse = {
 };
 export type SignupRequest = Omit<
   User,
-  'id' | 'roles' | 'approved' | 'approver' | 'approvedOn' | 'createdAt'
+  'id' | 'roles' | 'approved' | 'approver' | 'approvedDTime' | 'createdDTime'
 > & {
   password: string;
   roleName: RoleName;

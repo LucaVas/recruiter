@@ -23,7 +23,7 @@ export function mapFormToCandidacy(candidacyForm: CandidacyForm): UpdateCandidac
 
 export type CandidacyForm = Pick<
   Candidacy,
-  'candidate' | 'reasonForQuickJoin' | 'remarks' | 'comments' | 'createdAt'
+  'candidate' | 'reasonForQuickJoin' | 'remarks' | 'comments' | 'createdDTime'
 > & {
   jobId: number;
   relevantExperience: string;

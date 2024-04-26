@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
-import type { JobStatus } from '@/stores/job/types';
+import type { JobStatus } from '@/stores/job/schema';
 import { useRouter } from 'vue-router';
 import { isAdmin } from '@/stores/auth';
 
