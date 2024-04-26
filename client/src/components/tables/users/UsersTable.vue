@@ -17,7 +17,6 @@ const loading = ref(false);
 const approvingUser = ref(false);
 const users = ref<User[]>();
 const columns = ref([
-  'id',
   'username',
   'email',
   'mobile',
@@ -29,6 +28,7 @@ const columns = ref([
   'approver',
   'approvedOn',
 ]);
+const showAllColumns = ref(false);
 const approvalRequest = ref({
   userId: '',
   approved: false,
@@ -91,24 +91,73 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <Header :filters="filters" @clearFilter="clearFilter()" />
+      <Header
+        :showColumns="showAllColumns"
+        :filters="filters"
+        @clearFilter="clearFilter()"
+        @showOrHideColumns="showAllColumns = !showAllColumns"
+      />
     </template>
     <template #empty> No users found. </template>
     <template #loading> Loading users, please wait... </template>
 
-    <Column field="id" header="ID" dataType="numeric" class="min-w-16">
+    <Column field="action" header="Approve" class="min-w-20">
       <template #body="{ data }">
-        {{ data.id }}
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter"
-          placeholder="Search by user id"
+        <ApproveModal
+          :visible="approveModalOpen"
+          @closeModal="approveModalOpen = false"
+          @approve="
+            (comments) => {
+              approvalRequest.comments = comments;
+              approvalRequest.approved = !data.approved;
+              approvalRequest.userId = data.id;
+              approve();
+            }
+          "
         />
+        <div class="flex gap-2">
+          <Button
+            v-if="!data.approved"
+            icon="pi pi-check"
+            severity="success"
+            class="h-8 w-8"
+            rounded
+            @click="approveModalOpen = true"
+          />
+          <Button
+            v-else
+            icon="pi pi-times"
+            severity="danger"
+            rounded
+            class="h-8 w-8"
+            @click="approveModalOpen = true"
+          />
+        </div>
       </template>
     </Column>
+    <Column
+      field="approved"
+      header="Approved"
+      dataType="boolean"
+      class="text-center"
+      bodyClass="text-center"
+      style="min-width: 8rem"
+    >
+      <template #body="{ data }">
+        <i
+          class="pi"
+          :class="{
+            'pi-check-circle text-green-500 ': data.approved,
+            'pi-times-circle text-red-500': !data.approved,
+          }"
+        ></i>
+      </template>
+      <template #filter="{ filterModel }">
+        <label for="verified-filter" class="font-bold"> Approved </label>
+        <TriStateCheckbox v-model="filterModel.value" inputId="verified-filter" />
+      </template>
+    </Column>
+
     <Column field="username" header="Username" class="min-w-52">
       <template #body="{ data }">
         <div class="flex items-center gap-3">
@@ -148,7 +197,7 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="city" header="City" class="min-w-52">
+    <Column field="city" header="City" class="min-w-52" v-if="showAllColumns">
       <template #body="{ data }"> {{ data.city }} </template>
       <template #filter="{ filterModel }">
         <InputText
@@ -159,7 +208,7 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="country" header="Country" class="min-w-52">
+    <Column field="country" header="Country" class="min-w-52" v-if="showAllColumns">
       <template #body="{ data }"> {{ data.country }} </template>
       <template #filter="{ filterModel }">
         <InputText
@@ -181,7 +230,13 @@ onMounted(async () => {
         />
       </template>
     </Column>
-    <Column field="approvedOn" header="Approved On" dataType="date" class="min-w-40">
+    <Column
+      field="approvedOn"
+      header="Approved On"
+      dataType="date"
+      class="min-w-40"
+      v-if="showAllColumns"
+    >
       <template #body="{ data }">
         {{ formatDate(data.approvedOn) }}
       </template>
@@ -192,63 +247,6 @@ onMounted(async () => {
           class="p-column-filter"
           placeholder="Search by approved date"
         />
-      </template>
-    </Column>
-    <Column
-      field="approved"
-      header="Approved"
-      dataType="boolean"
-      class="text-center"
-      bodyClass="text-center"
-      style="min-width: 8rem"
-    >
-      <template #body="{ data }">
-        <i
-          class="pi"
-          :class="{
-            'pi-check-circle text-green-500 ': data.approved,
-            'pi-times-circle text-red-500': !data.approved,
-          }"
-        ></i>
-      </template>
-      <template #filter="{ filterModel }">
-        <label for="verified-filter" class="font-bold"> Approved </label>
-        <TriStateCheckbox v-model="filterModel.value" inputId="verified-filter" />
-      </template>
-    </Column>
-
-    <Column field="action" header="" class="min-w-10">
-      <template #body="{ data }">
-        <ApproveModal
-          :visible="approveModalOpen"
-          @closeModal="approveModalOpen = false"
-          @approve="
-            (comments) => {
-              approvalRequest.comments = comments;
-              approvalRequest.approved = !data.approved;
-              approvalRequest.userId = data.id;
-              approve();
-            }
-          "
-        />
-        <div class="flex gap-2">
-          <Button
-            v-if="!data.approved"
-            icon="pi pi-check"
-            severity="success"
-            class="h-8 w-8"
-            rounded
-            @click="approveModalOpen = true"
-          />
-          <Button
-            v-else
-            icon="pi pi-times"
-            severity="danger"
-            rounded
-            class="h-8 w-8"
-            @click="approveModalOpen = true"
-          />
-        </div>
       </template>
     </Column>
   </DataTable>
