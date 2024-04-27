@@ -1,7 +1,7 @@
-package dev.lucavassos.recruiter.modules.skill.entities;
+package dev.lucavassos.recruiter.modules.candidacy.entities;
 
+import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,16 +16,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name="skills")
-public class Skill {
+@Table(name="candidacy_comments")
+public class CandidacyComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Size(min = 1, message = "Skill name must be at least 1 character long")
-    private String name;
+    @Column(nullable = false, name = "text")
+    private String text;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Candidacy candidacy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")

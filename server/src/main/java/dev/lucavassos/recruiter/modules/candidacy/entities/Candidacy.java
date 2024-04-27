@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -38,7 +38,7 @@ public class Candidacy {
     private Candidate candidate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recuiter_id")
+    @JoinColumn(name = "recruiter_id")
     private User recruiter;
 
     @Column(nullable = false, name = "relevant_experience")
@@ -63,11 +63,15 @@ public class Candidacy {
     @Column(name = "remarks")
     private String remarks;
 
-    @Column(name = "comments")
-    private String comments;
-
     @OneToMany(mappedBy = "candidacy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CandidacyHistory> candidacyHistories;
+
+    @OneToMany(
+            mappedBy = "candidacy",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<CandidacyComment> comments = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")

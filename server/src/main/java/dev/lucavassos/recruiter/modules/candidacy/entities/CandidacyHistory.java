@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy.entities;
 
+import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -23,13 +24,6 @@ public class CandidacyHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "job_id", referencedColumnName = "job_id"),
-            @JoinColumn(name = "candidate_pan", referencedColumnName = "candidate_pan")
-    })
-    private Candidacy candidacy;
-
     @Column(nullable = false, name = "relevant_experience")
     @Min(0)
     private double relevantExperience;
@@ -52,11 +46,17 @@ public class CandidacyHistory {
     @Column(name = "remarks")
     private String remarks;
 
-    @Column(name = "comments")
-    private String comments;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "job_id", referencedColumnName = "job_id"),
+            @JoinColumn(name = "candidate_pan", referencedColumnName = "candidate_pan")
+    })
+    private Candidacy candidacy;
 
-    @Column(name = "modified_by")
-    private Long modifiedBy;
+    // relation to user who modified the candidacy
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User modifiedBy;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")

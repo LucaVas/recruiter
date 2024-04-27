@@ -44,13 +44,13 @@ public class JobHistory {
     @Min(value = 0, message = "Closure bonus cannot be negative")
     private Double closureBonus;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "job_id")
     private Job job;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private User updater;
+    private User modifiedBy;
 
     @CreationTimestamp
     @Column(nullable = false, name = "created_dtime")
