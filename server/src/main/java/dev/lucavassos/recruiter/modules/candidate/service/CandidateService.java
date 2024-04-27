@@ -243,7 +243,7 @@ public class CandidateService {
                             .currentCtc(candidate.getCurrentCtc())
                             .status(candidate.getStatus())
                             .candidate(candidate)
-                            .modifiedBy(user.getId())
+                            .modifiedBy(user)
                             .build()
             );
         } catch (Exception e) {

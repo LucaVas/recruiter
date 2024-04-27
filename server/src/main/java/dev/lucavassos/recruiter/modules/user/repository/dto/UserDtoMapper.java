@@ -18,14 +18,15 @@ public class UserDtoMapper implements Function<User, UserDto> {
                 user.getCity(),
                 user.getCountry(),
                 user.getRoles(),
-                user.getComments(),
                 user.isApproved(),
                 new ApproverDto(
                         user.getId(),
                         user.getUsername()
                 ),
                 user.getApprovedDTime(),
-                user.getCreatedDTime()
+                user.getCreatedDTime(),
+                user.getModifiedDTime()
+
         );
     }
 }

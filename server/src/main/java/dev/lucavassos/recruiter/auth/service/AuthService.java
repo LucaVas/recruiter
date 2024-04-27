@@ -59,7 +59,6 @@ public class AuthService {
                 .mobile(request.mobile())
                 .city(request.city())
                 .country(request.country())
-                .comments(request.comments())
                 .build();
 
         LOG.info("Role: {}", request.roleName());

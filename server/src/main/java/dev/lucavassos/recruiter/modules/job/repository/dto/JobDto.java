@@ -14,16 +14,16 @@ public record JobDto(
         @NotNull Long id,
 
         Client client,
-        List<SkillDto> skills,
-
 
         @NotBlank(message = "Name cannot be empty") String name,
         @NotNull(message = "Status cannot be empty") JobStatus status,
-        @NotNull(message = "Contracy type cannot be empty") ContractType contractType,
 
         @NotNull(message = "Wanted CVs cannot be empty")
         @Min(value = 1, message = "Wanted CVs number must be greater than 0")
         Integer wantedCvs,
+
+        List<SkillDto> skills,
+        @NotNull(message = "Contracy type cannot be empty") ContractType contractType,
 
         @NotNull(message = "Experience range minimum cannot be empty")
         @Min(value = 0, message = "Experience range minimum must be a positive number")
@@ -54,14 +54,14 @@ public record JobDto(
         @Min(value = 1, message = "Closure bonus must be greater than 0")
         Double closureBonus,
 
-        String comments,
+        @Future(message = "Closure bonus payment date must be in the future") LocalDateTime closureBonusPaymentDate,
+        @Future(message = "CV rate payment date must be in the future") LocalDateTime cvRatePaymentDate,
 
         @NotNull(message = "Number of candidates cannot be empty")
         @Min(value = 0, message = "Number of candidates must be a positive number")
         Integer numberOfCandidates,
 
-        @Future(message = "Closure bonus payment date must be in the future") LocalDateTime closureBonusPaymentDate,
-        @Future(message = "CV rate payment date must be in the future") LocalDateTime cvRatePaymentDate,
-        LocalDateTime createdDTime
+        LocalDateTime createdDTime,
+        LocalDateTime modifiedDTime
 ) {
 }

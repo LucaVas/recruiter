@@ -19,7 +19,7 @@ public record CandidacyDto(
         Double actualNoticePeriod,
         String reasonForQuickJoin,
         String remarks,
-        String comments,
-        LocalDateTime createdAt
+        LocalDateTime createdDTime,
+        LocalDateTime modifiedDTime
 ) {
 }

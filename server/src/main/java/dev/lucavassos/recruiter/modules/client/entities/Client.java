@@ -1,7 +1,6 @@
 package dev.lucavassos.recruiter.modules.client.entities;
 
 import dev.lucavassos.recruiter.modules.client.domain.Industry;
-import dev.lucavassos.recruiter.modules.job.entities.Job;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,8 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -34,13 +32,6 @@ public class Client {
     @Column(nullable = false, name = "industry")
     @Enumerated(EnumType.STRING)
     private Industry industry;
-
-    @OneToMany(
-            mappedBy = "client",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<Job> jobs = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")

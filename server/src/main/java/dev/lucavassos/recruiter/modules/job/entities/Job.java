@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
-import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
@@ -10,23 +9,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter
+@Setter
 @Builder
 @Table(name="jobs")
 public class Job {
@@ -35,7 +30,8 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id")
     private Client client;
 
     @Column(nullable = false, name = "name")
@@ -98,9 +94,6 @@ public class Job {
     @Column(nullable = false, name = "closure_bonus_payment_date")
     private LocalDateTime closureBonusPaymentDate;
 
-    @Column
-    private String comments;
-
     private Integer numberOfCandidates;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -112,6 +105,6 @@ public class Job {
     private LocalDateTime createdDTime;
 
     @UpdateTimestamp
-    @Column(nullable = false, name = "updated_dtime")
-    private LocalDateTime updatedDTime;
+    @Column(nullable = false, name = "modified_dtime")
+    private LocalDateTime modifiedDTime;
 }

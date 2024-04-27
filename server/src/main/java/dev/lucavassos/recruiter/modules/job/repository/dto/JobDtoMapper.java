@@ -14,11 +14,11 @@ public class JobDtoMapper implements Function<Job, JobDto> {
         return new JobDto(
                 job.getId(),
                 job.getClient(),
-                job.getSkills().stream().map(skill -> new SkillDto(skill.getId(), skill.getName())).collect(Collectors.toList()),
                 job.getName(),
                 job.getStatus(),
-                job.getContractType(),
                 job.getWantedCvs(),
+                job.getSkills().stream().map(skill -> new SkillDto(skill.getId(), skill.getName(), skill.getCreatedDTime(), skill.getModifiedDTime())).collect(Collectors.toList()),
+                job.getContractType(),
                 job.getExperienceRangeMin(),
                 job.getExperienceRangeMax(),
                 job.getNoticePeriodInDays(),
@@ -27,11 +27,11 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 job.getDescription(),
                 job.getBonusPayPerCv(),
                 job.getClosureBonus(),
-                job.getComments(),
-                job.getNumberOfCandidates(),
-                job.getClosureBonusPaymentDate(),
                 job.getCvRatePaymentDate(),
-                job.getCreatedDTime()
+                job.getClosureBonusPaymentDate(),
+                job.getNumberOfCandidates(),
+                job.getCreatedDTime(),
+                job.getModifiedDTime()
         );
     }
 }

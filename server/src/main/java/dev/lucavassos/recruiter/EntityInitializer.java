@@ -12,6 +12,7 @@ import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
+import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
@@ -41,14 +42,14 @@ public class EntityInitializer {
     private final CandidateRepository candidateRepository;
     private final PasswordEncoder encoder;
     private final ClientRepository clientRepository;
+    private final QuestionRepository questionRepository;
 
     @Transactional
     public void createRoles() {
         Role recruiter = Role.builder().name(RoleName.ROLE_RECRUITER).build();
         Role admin = Role.builder().name(RoleName.ROLE_ADMIN).build();
 
-        roleRepository.save(recruiter);
-        roleRepository.save(admin);
+        roleRepository.saveAll(List.of(recruiter, admin));
     }
 
     @Transactional
@@ -61,93 +62,146 @@ public class EntityInitializer {
     }
 
     @Transactional
+    public void saveQuestions() {
+
+        List<Job> jobs = jobRepository.findAll();
+        List<Skill> skills = skillRepository.findAll();
+
+        questionRepository.saveAll(List.of(
+                Question.builder().text("What are the key features of Java?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Software engineer")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Java")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Explain the difference between JDK, JRE, and JVM.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Software engineer")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Java")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("How do you handle exceptions in Java?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Software developer")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Java")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Describe the purpose of interfaces in Java.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Software developer")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Java")).findFirst().orElseThrow())
+                        .build(),
+
+                Question.builder().text("What are the main features of Python?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Software engineer")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Python")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Explain the difference between Python 2 and Python 3.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Software developer")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Python")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("How do you handle exceptions in Python?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Software engineer")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Python")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Describe the purpose of list comprehension in Python.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Software developer")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Python")).findFirst().orElseThrow())
+                        .build(),
+
+                Question.builder().text("How to create calculated fields in Tableau?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Tableau")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("What is a tableau extract?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Tableau")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("How to create a dashboard?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Tableau")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Explain Tableau's data blending feature.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Tableau")).findFirst().orElseThrow())
+                        .build(),
+
+                Question.builder().text("What is Hadoop's role in big data?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Big Data")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Explain MapReduce in brief.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Big Data")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("What are the components of Apache Spark?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Big Data")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Describe HDFS and its significance.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Big Data")).findFirst().orElseThrow())
+                        .build(),
+
+                Question.builder().text("What is cloud computing and its benefits?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Cloud Architecture")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Explain the difference between IaaS, PaaS, and SaaS.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Cloud Architecture")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("How does auto-scaling work in cloud environments?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Cloud Architecture")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Describe the role of load balancers in cloud architecture.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Cloud Architecture")).findFirst().orElseThrow())
+                        .build(),
+
+                Question.builder().text("What are the core services provided by AWS?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("AWS")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Explain the difference between EC2 and S3.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("AWS")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("How does AWS Lambda function work?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("AWS")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Describe the purpose of AWS IAM (Identity and Access Management).").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("AWS")).findFirst().orElseThrow())
+                        .build(),
+
+                Question.builder().text("What are the core services provided by Google Cloud Platform (GCP)?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Google Cloud")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Explain the difference between Compute Engine and App Engine on GCP.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Google Cloud")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("How does Google Cloud Functions work?").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Google Cloud")).findFirst().orElseThrow())
+                        .build(),
+                Question.builder().text("Describe the purpose of IAM roles in Google Cloud.").active(true)
+                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .skill(skills.stream().filter(s -> s.getName().equals("Google Cloud")).findFirst().orElseThrow())
+                        .build()
+        ));
+    }
+
+    @Transactional
     public void saveSkills() {
-
-
-        Skill javaSkill = Skill.builder()
-                .name("Java")
-                .questions(new HashSet<>(List.of(
-                        Question.builder().text("What are the key features of Java?").active(true).build(),
-                        Question.builder().text("Explain the difference between JDK, JRE, and JVM.").active(true).build(),
-                        Question.builder().text("How do you handle exceptions in Java?").active(true).build(),
-                        Question.builder().text("Describe the purpose of interfaces in Java.").active(true).build()
-                )))
-                .build();
-        Skill pythonSkill = Skill.builder()
-                .name("Python")
-                .questions(new HashSet<>(List.of(
-                        Question.builder().text("What are the main features of Python?").active(true).build(),
-                        Question.builder().text("Explain the difference between Python 2 and Python 3.").active(true).build(),
-                        Question.builder().text("How do you handle exceptions in Python?").active(true).build(),
-                        Question.builder().text("Describe the purpose of list comprehension in Python.").active(true).build()
-                )))
-                .build();
-        Skill tableauSkill = Skill.builder()
-                .name("Tableau")
-                .questions(new HashSet<>(List.of(
-                        Question.builder().text("How to create calculated fields in Tableau?").active(true).build(),
-                        Question.builder().text("What is a tableau extract?").active(true).build(),
-                        Question.builder().text("How to create a dashboard?").active(true).build(),
-                        Question.builder().text("Explain Tableau's data blending feature.").active(true).build()
-                )))
-                .build();
-        Skill bigDataSkill = Skill.builder()
-                .name("Big Data")
-                .questions(new HashSet<>(List.of(
-                        Question.builder().text("What is Hadoop's role in big data?").active(true).build(),
-                        Question.builder().text("Explain MapReduce in brief.").active(true).build(),
-                        Question.builder().text("What are the components of Apache Spark?").active(true).build(),
-                        Question.builder().text("Describe HDFS and its significance.").active(true).build()
-                )))
-                .build();
-        Skill pL2Skill = Skill.builder()
-                .name("PL/SQL")
-                .questions(new HashSet<>(List.of(
-                        Question.builder().text("What are PL/SQL cursors used for?").active(true).build(),
-                        Question.builder().text("Explain triggers in PL/SQL.").active(true).build(),
-                        Question.builder().text("How to handle exceptions in PL/SQL?").active(true).build(),
-                        Question.builder().text("Describe the purpose of packages in PL/SQL.").active(true).build()
-                )))
-                .build();
-        Skill criticalThinkingSkill = Skill.builder()
-                .name("Critical Thinking")
-                .questions(new HashSet<>(List.of(
-                        Question.builder().text("Define deductive and inductive reasoning.").active(true).build(),
-                        Question.builder().text("Explain the importance of evidence in arguments.").active(true).build(),
-                        Question.builder().text("What is the difference between correlation and causation?").active(true).build(),
-                        Question.builder().text("How can bias affect critical thinking?").active(true).build()
-                )))
-                .build();
-        Skill cloudArchitectureSkill = Skill.builder()
-                .name("Cloud Architecture")
-                .questions(new HashSet<>(List.of(
-                        Question.builder().text("What is cloud computing and its benefits?").active(true).build(),
-                        Question.builder().text("Explain the difference between IaaS, PaaS, and SaaS.").active(true).build(),
-                        Question.builder().text("How does auto-scaling work in cloud environments?").active(true).build(),
-                        Question.builder().text("Describe the role of load balancers in cloud architecture.").active(true).build()
-                )))
-                .build();
-        Skill awsSkill = Skill.builder()
-                .name("AWS")
-                .questions(new HashSet<>(List.of(
-                        Question.builder().text("What are the core services provided by AWS?").active(true).build(),
-                        Question.builder().text("Explain the difference between EC2 and S3.").active(true).build(),
-                        Question.builder().text("How does AWS Lambda function work?").active(true).build(),
-                        Question.builder().text("Describe the purpose of AWS IAM (Identity and Access Management).").active(true).build()
-                )))
-                .build();
-        Skill googleCloudSkill = Skill.builder()
-                .name("Google Cloud")
-                .questions(new HashSet<>(List.of(
-                        Question.builder().text("What are the core services provided by Google Cloud Platform (GCP)?").active(true).build(),
-                        Question.builder().text("Explain the difference between Compute Engine and App Engine on GCP.").active(true).build(),
-                        Question.builder().text("How does Google Cloud Functions work?").active(true).build(),
-                        Question.builder().text("Describe the purpose of IAM roles in Google Cloud.").active(true).build()
-                )))
-                .build();
-
-        skillRepository.saveAll(List.of(javaSkill, pythonSkill, tableauSkill, bigDataSkill, pL2Skill, criticalThinkingSkill, cloudArchitectureSkill, awsSkill, googleCloudSkill));
-
+        skillRepository.saveAll(List.of(
+            Skill.builder().name("Java").build(),
+            Skill.builder().name("Python").build(),
+            Skill.builder().name("Tableau").build(),
+            Skill.builder().name("Big Data").build(),
+            Skill.builder().name("PL/SQL").build(),
+            Skill.builder().name("Critical Thinking").build(),
+            Skill.builder().name("Cloud Architecture").build(),
+            Skill.builder().name("AWS").build(),
+            Skill.builder().name("Google Cloud").build()
+        ));
     }
 
     @Transactional
@@ -184,7 +238,7 @@ public class EntityInitializer {
                 .closureBonusPaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
                 ))
-                .comments("Test comments")
+
                 .recruiter(recruiter2)
                 .build();
 
@@ -215,7 +269,6 @@ public class EntityInitializer {
                 .closureBonusPaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
                 ))
-                .comments("Test comments")
                 .recruiter(recruiter)
                 .build();
 
@@ -245,7 +298,6 @@ public class EntityInitializer {
                 .closureBonusPaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
                 ))
-                .comments("Test comments")
                 .recruiter(recruiter)
                 .build();
 
@@ -275,7 +327,6 @@ public class EntityInitializer {
                 .closureBonusPaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
                 ))
-                .comments("Test comments")
                 .recruiter(recruiter)
                 .build();
 
@@ -308,7 +359,6 @@ public class EntityInitializer {
                         2024, 12, 31, 0, 0, 0
                 ))
                 .closureBonus(700.0)
-                .comments("Test comments")
                 .recruiter(recruiter)
                 .build();
 
@@ -406,8 +456,6 @@ public class EntityInitializer {
                 .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_ADMIN).collect(Collectors.toSet()))
                 .build();
 
-        userRepository.save(recruiter);
-        userRepository.save(recruiter2);
-        userRepository.save(admin);
+        userRepository.saveAll(List.of(recruiter, recruiter2, admin));
     }
 }

@@ -84,11 +84,9 @@ public class JobService {
                             .closureBonus(request.closureBonus())
                             .cvRatePaymentDate(request.cvRatePaymentDate())
                             .closureBonusPaymentDate(request.closureBonusPaymentDate())
-                            .comments(request.comments())
                             .recruiter(recruiter)
                             .build()
             );
-            client.setJobs(List.of(createdJob));
             clientRepository.save(client);
         } catch (Exception e) {
             LOG.error("Database error while updating job: {}", e.getMessage());
@@ -180,10 +178,6 @@ public class JobService {
         }
         if (request.closureBonus() != null && !request.closureBonus().equals(job.getClosureBonus())) {
             job.setClosureBonus(request.closureBonus());
-            changes = true;
-        }
-        if (request.comments() != null && !request.comments().equals(job.getComments())) {
-            job.setComments(request.comments());
             changes = true;
         }
         if (request.skills() != null) {
@@ -314,7 +308,7 @@ public class JobService {
                             .bonusPayPerCv(job.getBonusPayPerCv())
                             .closureBonus(job.getClosureBonus())
                             .job(job)
-                            .updater(user)
+                            .modifiedBy(user)
                             .build()
             );
         } catch (Exception e) {

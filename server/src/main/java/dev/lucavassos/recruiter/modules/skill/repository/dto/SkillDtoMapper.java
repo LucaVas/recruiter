@@ -11,6 +11,9 @@ public class SkillDtoMapper implements Function<Skill, SkillDto> {
     public SkillDto apply(Skill skill) {
         return new SkillDto(
                 skill.getId(),
-                skill.getName());
+                skill.getName(),
+                skill.getCreatedDTime(),
+                skill.getModifiedDTime()
+        );
     }
 }

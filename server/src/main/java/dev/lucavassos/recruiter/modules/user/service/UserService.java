@@ -64,7 +64,6 @@ public class UserService  {
                 );
 
         user.setApproved(request.approved());
-        user.setComments(request.commments());
         user.setApprovedDTime(LocalDateTime.now());
         user.setApprover(approver);
 

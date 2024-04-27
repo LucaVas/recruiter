@@ -13,10 +13,10 @@ public record UserDto(
         String city,
         String country,
         Set<Role> roles,
-        String comments,
         Boolean approved,
         ApproverDto approver,
-        LocalDateTime approvedOn,
-        LocalDateTime createdAt
+        LocalDateTime approvedDTime,
+        LocalDateTime createdDTime,
+        LocalDateTime updatedDTime
 ) {
 }
