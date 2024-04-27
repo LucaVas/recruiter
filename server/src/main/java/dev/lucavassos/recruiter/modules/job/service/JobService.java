@@ -59,8 +59,14 @@ public class JobService {
                 .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toList()));
 
         Client client = clientRepository
-                .findById(request.client().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
+                .finaByName(request.client().name())
+                .orElse(
+                        clientRepository.save(
+                                Client.builder()
+                                        .name(request.client().name())
+                                        .industry(request.client().industry())
+                                        .build()
+                ));
 
         User recruiter = getAuthUser();
 

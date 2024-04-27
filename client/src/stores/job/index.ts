@@ -5,6 +5,7 @@ const api = axiosApi();
 
 export async function getAllJobs(): Promise<Job[]> {
   const { data } = await api.get(`/jobs`);
+  console.log(data)
   return data;
 }
 export async function createJob(newJob: NewJobRequest): Promise<JobResponse> {

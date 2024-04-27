@@ -12,11 +12,21 @@ const industrySchema = z.enum([
   'OTHER',
 ]);
 
+export const industries = [
+  { name: 'IT', value: 'IT' },
+  { name: 'Finance', value: 'FINANCE' },
+  { name: 'Healthcare', value: 'HEALTHCARE' },
+  { name: 'Education', value: 'EDUCATION' },
+  { name: 'Marketing', value: 'MARKETING' },
+  { name: 'Sales', value: 'SALES' },
+  { name: 'Human Resources', value: 'HUMAN_RESOURCES' },
+  { name: 'Engineering', value: 'ENGINEERING' },
+  { name: 'Other', value: 'OTHER' },
+];
+
 export const clientSchema = z.object({
-  id: z.number(),
   name: z.string(),
   industry: industrySchema,
-  createdDTime: z.date(),
 });
 
 export type Industry = z.infer<typeof industrySchema>;

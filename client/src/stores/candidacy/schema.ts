@@ -1,29 +1,31 @@
-import { candidateSchema } from '../candidate/schema';
-import { jobSchema } from '../job/schema';
-import { recruiterSchema } from '../user/schema';
 import {z} from 'zod';
 
 const candidacySchema = z.object({
-  job: jobSchema,
-  recruiter: recruiterSchema,
-  candidate: candidateSchema,
-  relevantExperience: z.number(),
-  expectedCtc: z.number(),
-  officialNoticePeriod: z.number(),
-  actualNoticePeriod: z.number(),
+  id: z.number(),
+  relevantExperience: z.number().min(0),
+  expectedCtc: z.number().min(0),
+  officialNoticePeriod: z.number().min(0),
+  actualNoticePeriod: z.number().min(0),
   reasonForQuickJoin: z.string(),
   remarks: z.string(),
-  comments: z.string(),
+  modifiedDTime: z.date(),
   createdDTime: z.date(),
 });
 export type Candidacy = z.infer<typeof candidacySchema>;
 
+const candidacyCommentSchema = z.object({
+  id: z.number(),
+  text: z.string(),
+  createdDTime: z.date(),
+  modifiedDTime: z.date()
+})
+export type candidacyComment = z.infer<typeof candidacyCommentSchema>;
+
 // request
 export const updateCandidacyRequestSchema = candidacySchema.omit({
-  job: true,
-  recruiter: true,
-  candidate: true,
+  id: true,
   createdDTime: true,
+  modifiedDTime: true,
 });
 export type UpdateCandidacyRequest = z.infer<typeof updateCandidacyRequestSchema>;
 

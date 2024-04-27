@@ -1,19 +1,43 @@
 <template>
   <div class="card flex flex-col gap-8">
+    <ClientModal
+      v-if="details"
+      :isUpdate="false"
+      :client="details.client"
+      :visible="clientModalOpen"
+      @close="clientModalOpen = false"
+      @save="
+        (client: Client) => {
+          details.client = client;
+          clientModalOpen = false;
+        }
+      "
+    />
     <div class="flex w-full flex-col gap-2">
       <label class="text-sm" for="clientName">Client Name</label>
-      <InputGroup>
-        <InputGroupAddon>
-          <i class="pi pi-user"></i>
-        </InputGroupAddon>
-        <InputText
-          id="clientName"
-          v-model="details.client.name"
-          @input="emit('input', details)"
-          :disabled="disabled"
-          :invalid="details.client.name === ''"
+      <div class="flex sm:flex-row gap-3">
+        <InputGroup>
+          <InputGroupAddon>
+            <i class="pi pi-user"></i>
+          </InputGroupAddon>
+          <InputText
+            id="clientName"
+            v-model="details.client.name"
+            @input="emit('input', details)"
+            :disabled="disabled"
+            :invalid="details.client.name === ''"
+          />
+        </InputGroup>
+        <Button
+          size="small"
+          label="New client"
+          icon="pi pi-user-plus"
+          iconPos="right"
+          class="min-w-fit"
+          outlined
+          @click="clientModalOpen = true"
         />
-      </InputGroup>
+      </div>
     </div>
 
     <div class="flex w-full flex-col gap-2">
@@ -70,9 +94,11 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import ClientModal from '@/components/client/ClientModal.vue';
 import { ref } from 'vue';
 import { jobStatuses, contractTypes } from './utils';
 import type { Job, NewJobRequest } from '@/stores/job/schema';
+import type { Client } from '@/stores/client/schema';
 
 // props
 const { jobDetails, disabled } = defineProps<{
@@ -85,5 +111,6 @@ const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
 }>();
 
+const clientModalOpen = ref(false);
 const details = ref(jobDetails);
 </script>

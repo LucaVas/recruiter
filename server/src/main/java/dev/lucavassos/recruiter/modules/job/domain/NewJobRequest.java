@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.job.domain;
 
 import dev.lucavassos.recruiter.modules.client.entities.Client;
+import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.constraints.*;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record NewJobRequest (
-        @NotNull(message = "Client cannot be empty") Client client,
+        @NotNull(message = "Client cannot be empty") ClientDto client,
 
         @NotBlank(message = "Name cannot be empty") String name,
 

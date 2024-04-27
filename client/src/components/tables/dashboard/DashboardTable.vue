@@ -94,8 +94,8 @@ onMounted(async () => {
     <Column field="client" header="Client" class="min-w-52">
       <template #body="{ data }">
         <div class="flex items-center gap-3">
-          <img :src="`src/assets/images/clients/${getClientIcon(data.client)}`" class="w-5" />
-          {{ data.client }}
+          <img :src="`src/assets/images/clients/${getClientIcon(data.client.name)}`" class="w-5" />
+          {{ data.client.name }}
         </div>
       </template>
       <template #filter="{ filterModel }">
@@ -136,8 +136,8 @@ onMounted(async () => {
     <Column field="contractType" header="Contract" class="min-w-20" v-if="showAllColumns">
       <template #body="{ data }">
         <Tag
-          :value="data.contractType.contractTypeName"
-          :severity="getContractType(data.contractType.contractTypeName)"
+          :value="data.contractType"
+          :severity="getContractType(data.contractType)"
         />
       </template>
       <template #filter="{ filterModel }">
@@ -218,7 +218,7 @@ onMounted(async () => {
       v-if="showAllColumns"
     >
       <template #body="{ data }">
-        {{ formatDate(data.createdAt) }}
+        {{ formatDate(data.createdDTime) }}
       </template>
       <template #filter="{ filterModel }">
         <InputText
