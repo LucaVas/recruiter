@@ -1,4 +1,4 @@
-import { roleNameSchema, type RoleName, type User } from '../user/schema';
+import { roleNameSchema } from '../user/schema';
 import {z} from 'zod';
 
 export const AuthUserInfoDtoSchema = z.object({
@@ -9,21 +9,25 @@ export const AuthUserInfoDtoSchema = z.object({
 export type AuthUserInfoDto = z.infer<typeof AuthUserInfoDtoSchema>;
 
 
-// backend domain objects
-export type LoginRequest = {
-  usernameOrEmail: string;
-  password: string;
-};
+// request
+export const loginRequestSchema = z.object({
+  usernameOrEmail: z.string(),
+  password: z.string(),
+});
+export type LoginRequest = z.infer<typeof loginRequestSchema>;
+
+export const signupRequestSchema = z.object({
+  username: z.string(),
+  email: z.string(),
+  password: z.string(),
+  roleName: roleNameSchema,
+});
+export type SignupRequest = z.infer<typeof signupRequestSchema>;
+
+// response
+export type SignupResponse = { id: number };
 export type LoginResponse = {
   user: AuthUserInfoDto;
   token: string;
   tokenType: string;
 };
-export type SignupRequest = Omit<
-  User,
-  'id' | 'roles' | 'approved' | 'approver' | 'approvedDTime' | 'createdDTime'
-> & {
-  password: string;
-  roleName: RoleName;
-};
-export type SignupResponse = { id: number };

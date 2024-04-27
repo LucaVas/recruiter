@@ -16,18 +16,24 @@ const candidacySchema = z.object({
   comments: z.string(),
   createdDTime: z.date(),
 });
-// backend dtos
 export type Candidacy = z.infer<typeof candidacySchema>;
 
-// backend domain objects
-export type UpdateCandidacyRequest = Omit<
-  Candidacy,
-  'job' | 'recruiter' | 'candidate' | 'createdDTime'
->;
-export type NewCandidacyRequest = UpdateCandidacyRequest & {
-  jobId: number;
-  candidatePan: string;
-};
+// request
+export const updateCandidacyRequestSchema = candidacySchema.omit({
+  job: true,
+  recruiter: true,
+  candidate: true,
+  createdDTime: true,
+});
+export type UpdateCandidacyRequest = z.infer<typeof updateCandidacyRequestSchema>;
+
+export const newCandidacyRequestSchema = updateCandidacyRequestSchema.extend({
+  jobId: z.number(),
+  candidatePan: z.string(),
+});
+export type NewCandidacyRequest = z.infer<typeof newCandidacyRequestSchema>;
+
+// response
 export type CandidacyResponse = {
   candidacy: Candidacy;
 };

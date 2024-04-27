@@ -7,12 +7,14 @@ import {
   getStoredAccessToken,
   storeAccessToken,
 } from '@/utils/auth';
-import type {
-  AuthUserInfoDto,
-  LoginRequest,
-  LoginResponse,
-  SignupRequest,
-  SignupResponse,
+import {
+  loginRequestSchema,
+  signupRequestSchema,
+  type AuthUserInfoDto,
+  type LoginRequest,
+  type LoginResponse,
+  type SignupRequest,
+  type SignupResponse,
 } from './schema';
 import { computed, ref } from 'vue';
 
@@ -33,10 +35,12 @@ export const isAdmin = computed(() =>
 
 // functions
 export async function signup(request: SignupRequest): Promise<SignupResponse> {
+  signupRequestSchema.parse(request);
   const res = (await api.post(`/auth/signup`, request)).data as SignupResponse;
   return res;
 }
 export async function login(request: LoginRequest): Promise<void> {
+  loginRequestSchema.parse(request);
   const res = (await api.post(`/auth/login`, request)).data as LoginResponse;
   authToken.value = res.token;
   storeAccessToken(localStorage, res.token);

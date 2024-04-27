@@ -33,16 +33,21 @@ export type ApproverDto = Recruiter;
 // backend domain objects
 export type Role = z.infer<typeof roleSchema>;
 export type RoleName = z.infer<typeof roleNameSchema>;
-export type UserApprovalRequest = {
-  userId: number;
-  approved: boolean;
-  comments: string;
-};
-export type PasswordResetRequest = {
-  newPassword: string;
-};
-export type PasswordResetTokenRequest = {
-  email: string;
-  username: string;
-};
+
+export const userApprovalRequestSchema = z.object({
+  userId: z.number(),
+  approved: z.boolean(),
+  comments: z.string(),
+});
+export type UserApprovalRequest = z.infer<typeof userApprovalRequestSchema>;
+
+export const userUpdateRequestSchema = z.object({ newPassword: z.string() });
+export type PasswordResetRequest = z.infer<typeof userUpdateRequestSchema>;
+
+export const passwordResetTokenRequestSchema = z.object({
+  email: z.string().email(),
+  username: z.string(),
+});
+export type PasswordResetTokenRequest = z.infer<typeof passwordResetTokenRequestSchema>;
+
 

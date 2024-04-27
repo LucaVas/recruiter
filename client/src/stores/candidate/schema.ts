@@ -15,10 +15,18 @@ export const candidateSchema = z.object({
 // backend dtos
 export type Candidate = z.infer<typeof candidateSchema>;
 
-// backend domain objects
+//request
+export const newCandidateRequestSchema = candidateSchema.omit({
+  createdDTime: true,
+});
+export type NewCandidateRequest = z.infer<typeof newCandidateRequestSchema>;
+
+export const updateCandidateRequestSchema = newCandidateRequestSchema;
+export type UpdateCandidateRequest = z.infer<typeof updateCandidateRequestSchema>;
+
+// response
 export type CandidateResponse = { pan: string; candidate: Candidate };
-export type NewCandidateRequest = Omit<Candidate, 'createdDTime'>;
-export type UpdateCandidateRequest = NewCandidateRequest;
+
 
 // backend enums
 export type CandidateStatus = z.infer<typeof candidateStatusSchema>;

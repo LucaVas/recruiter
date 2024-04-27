@@ -37,7 +37,25 @@ export type Currency = z.infer<typeof currencySchema>;
 export type JobStatus = z.infer<typeof jobStatusSchema>;
 
 // backend domain objects
+export const newJobRequestSchema = jobSchema.omit({
+  id: true,
+  comments: true,
+  numberOfCandidates: true,
+  createdDTime: true,
+});
+export type NewJobRequest = z.infer<typeof newJobRequestSchema>;
+
+export const updateJobRequestSchema = newJobRequestSchema.extend({
+  id: z.number(),
+});
+export type UpdateJobRequest = z.infer<typeof updateJobRequestSchema>;
+
+export const changeJobStatusRequestSchema = z.object({
+  status: jobStatusSchema,
+});
+export type ChangeJobStatusRequest = z.infer<typeof changeJobStatusRequestSchema>;
+
+export const deleteJobSchema = z.number();
+export type DeleteJob = z.infer<typeof deleteJobSchema>;
+// response
 export type JobResponse = { id: number; job: Job };
-export type NewJobRequest = Omit<Job, 'id' | 'comments' | 'numberOfCandidates' | 'createdDTime'>;
-export type UpdateJobRequest = NewJobRequest & { id: number };
-export type ChangeJobStatusRequest = { jobStatus: JobStatus };
