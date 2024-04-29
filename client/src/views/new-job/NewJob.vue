@@ -20,7 +20,18 @@
       </div>
       <div class="space-y-3">
         <label>Questions</label>
-        <QuestionsSearch />
+        <QuestionsSearch @createNewQuestion="openQuestionModal = true" />
+        <QuestionModal
+          :visible="openQuestionModal"
+          :isUpdate="false"
+          @close="openQuestionModal = false"
+          @save="
+            (question) => {
+              console.log(question);
+              openQuestionModal = false;
+            }
+          "
+        />
       </div>
     </div>
     <div v-else class="flex h-full w-full items-center justify-center">
@@ -52,6 +63,7 @@ import Success from '@/components/Success.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
 import type { Skill } from '@/stores/skill/schema';
 import type { Client } from '@/stores/client/schema';
+import QuestionModal from '@/components/question/QuestionModal.vue';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -59,6 +71,7 @@ const showError = (content: string) => {
 };
 const jobCreated = ref(false);
 const creatingJob = ref(false);
+const openQuestionModal = ref(false);
 
 async function create() {
   creatingJob.value = true;

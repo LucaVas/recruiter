@@ -54,6 +54,7 @@ declare module 'vue' {
     NavbarGroup: typeof import('./src/components/navbar/NavbarGroup.vue')['default']
     NavbarHeader: typeof import('./src/components/navbar/NavbarHeader.vue')['default']
     PageForm: typeof import('./src/components/PageForm.vue')['default']
+    QuestionModal: typeof import('./src/components/question/QuestionModal.vue')['default']
     Questions: typeof import('./src/components/job/shared/Questions.vue')['default']
     QuestionSearch: typeof import('./src/components/question/QuestionSearch.vue')['default']
     RemarksAndComments: typeof import('./src/components/candidacy/RemarksAndComments.vue')['default']

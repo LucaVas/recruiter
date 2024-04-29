@@ -1,32 +1,21 @@
-import { z } from "zod";
-
-export const candidateStatusSchema = z.enum(['ACTIVE', 'ARCHIVED']);
-export const candidateSchema = z.object({
-  name: z.string(),
-  phone: z.string(),
-  email: z.string(),
-  totalExperience: z.number(),
-  education: z.string(),
-  currentCtc: z.number(),
-  pan: z.string(),
-  createdDTime: z.date(),
-});
+export type candidateStatus = 'ACTIVE' | 'ARCHIVED';
 
 // backend dtos
-export type Candidate = z.infer<typeof candidateSchema>;
+export type Candidate = {
+  pan: string;
+  name: string;
+  phone: string;
+  email: string;
+  totalExperience: number;
+  education: string;
+  currentCtc: number;
+  createdDTime: Date;
+  updatedDTime: Date;
+};
 
 //request
-export const newCandidateRequestSchema = candidateSchema.omit({
-  createdDTime: true,
-});
-export type NewCandidateRequest = z.infer<typeof newCandidateRequestSchema>;
-
-export const updateCandidateRequestSchema = newCandidateRequestSchema;
-export type UpdateCandidateRequest = z.infer<typeof updateCandidateRequestSchema>;
+export type NewCandidateRequest = Omit<Candidate, 'createdDTime' | 'updatedDTime'>;
+export type UpdateCandidateRequest = NewCandidateRequest
 
 // response
 export type CandidateResponse = { pan: string; candidate: Candidate };
-
-
-// backend enums
-export type CandidateStatus = z.infer<typeof candidateStatusSchema>;

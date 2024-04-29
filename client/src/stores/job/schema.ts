@@ -1,61 +1,39 @@
-import { clientSchema } from '../client/schema';
-import { z } from 'zod';
-import { skillSchema } from '../skill/schema';
-
-const contractTypeSchema = z.enum(['PERMANENT', 'TEMPORARY']);
-const currencySchema = z.enum(['INR']);
-const jobStatusSchema = z.enum(['OPEN', 'NO_CV_ACCEPTED', 'CLOSED', 'ARCHIVED']);
-
-export const jobSchema = z.object({
-  id: z.number(),
-  client: clientSchema,
-  name: z.string(),
-  status: jobStatusSchema,
-  wantedCvs: z.number(),
-  skills: z.array(skillSchema),
-  contractType: contractTypeSchema,
-  experienceRangeMin: z.number(),
-  experienceRangeMax: z.number(),
-  noticePeriodInDays: z.number(),
-  salaryBudget: z.number(),
-  currency: currencySchema,
-  description: z.string(),
-  bonusPayPerCv: z.number(),
-  closureBonus: z.number(),
-  comments: z.string(),
-  numberOfCandidates: z.number().nullable(),
-  closureBonusPaymentDate: z.date(),
-  cvRatePaymentDate: z.date(),
-  createdDTime: z.date()
-});
-
+import type { Client } from '../client/schema';
+import type { Skill } from '../skill/schema';
 
 // backend dtos
-export type Job = z.infer<typeof jobSchema>;
-export type ContractType = z.infer<typeof contractTypeSchema>;
-export type Currency = z.infer<typeof currencySchema>;
-export type JobStatus = z.infer<typeof jobStatusSchema>;
+export type Job = {
+  id: number;
+  client: Client;
+  name: string;
+  status: JobStatus;
+  wantedCvs: number;
+  skills: Skill[];
+  contractType: ContractType;
+  experienceRangeMin: number;
+  experienceRangeMax: number;
+  noticePeriodInDays: number;
+  salaryBudget: number;
+  currency: Currency;
+  description: string;
+  bonusPayPerCv: number;
+  closureBonus: number;
+  comments: string;
+  numberOfCandidates: number | null;
+  closureBonusPaymentDate: Date;
+  cvRatePaymentDate: Date;
+  createdDTime: Date;
+};
+
+export type ContractType = 'PERMANENT' | 'TEMPORARY';
+export type Currency = 'INR';
+export type JobStatus = 'OPEN' | 'NO_CV_ACCEPTED' | 'CLOSED' | 'ARCHIVED';
 
 // backend domain objects
-export const newJobRequestSchema = jobSchema.omit({
-  id: true,
-  comments: true,
-  numberOfCandidates: true,
-  createdDTime: true,
-});
-export type NewJobRequest = z.infer<typeof newJobRequestSchema>;
+export type NewJobRequest = Omit<Job, 'id' | 'comments' | 'numberOfCandidates' | 'createdDTime'>;
+export type UpdateJobRequest = NewJobRequest;
+export type ChangeJobStatusRequest = { status: JobStatus };
+export type DeleteJob = { id: number };
 
-export const updateJobRequestSchema = newJobRequestSchema.extend({
-  id: z.number(),
-});
-export type UpdateJobRequest = z.infer<typeof updateJobRequestSchema>;
-
-export const changeJobStatusRequestSchema = z.object({
-  status: jobStatusSchema,
-});
-export type ChangeJobStatusRequest = z.infer<typeof changeJobStatusRequestSchema>;
-
-export const deleteJobSchema = z.number();
-export type DeleteJob = z.infer<typeof deleteJobSchema>;
 // response
 export type JobResponse = { id: number; job: Job };

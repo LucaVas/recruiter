@@ -1,28 +1,18 @@
-import { roleNameSchema } from '../user/schema';
-import {z} from 'zod';
-
-export const AuthUserInfoDtoSchema = z.object({
-  id: z.number(),
-  username: z.string(),
-  roleName: roleNameSchema,
-});
-export type AuthUserInfoDto = z.infer<typeof AuthUserInfoDtoSchema>;
+export type AuthUserInfoDto = {
+  id: number;
+  username: string;
+  roleName: string;
+};
 
 
 // request
-export const loginRequestSchema = z.object({
-  usernameOrEmail: z.string(),
-  password: z.string(),
-});
-export type LoginRequest = z.infer<typeof loginRequestSchema>;
-
-export const signupRequestSchema = z.object({
-  username: z.string(),
-  email: z.string(),
-  password: z.string(),
-  roleName: roleNameSchema,
-});
-export type SignupRequest = z.infer<typeof signupRequestSchema>;
+export type LoginRequest = { usernameOrEmail: string; password: string };
+export type SignupRequest = {
+  username: string;
+  email: string;
+  password: string;
+  roleName: string;
+};
 
 // response
 export type SignupResponse = { id: number };

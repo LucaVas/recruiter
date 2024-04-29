@@ -12,7 +12,7 @@ import { getAllClients } from '@/stores/client';
 const loading = ref(false);
 
 const { question, visible, isUpdate } = defineProps<{
-  question: Question | undefined;
+  question?: Question | undefined;
   visible: boolean;
   isUpdate: boolean;
 }>();
