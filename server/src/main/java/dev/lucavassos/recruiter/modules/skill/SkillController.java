@@ -1,7 +1,6 @@
-package dev.lucavassos.recruiter.modules.skill.controller;
+package dev.lucavassos.recruiter.modules.skill;
 
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
-import dev.lucavassos.recruiter.modules.skill.service.SkillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

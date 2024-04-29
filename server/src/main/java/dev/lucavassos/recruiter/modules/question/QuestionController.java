@@ -1,6 +1,5 @@
-package dev.lucavassos.recruiter.modules.question.controller;
+package dev.lucavassos.recruiter.modules.question;
 
-import dev.lucavassos.recruiter.modules.question.QuestionService;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

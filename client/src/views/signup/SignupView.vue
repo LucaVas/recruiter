@@ -41,7 +41,6 @@ const userForm = ref<SignupRequest>({
   city: '',
   country: '',
   roleName: '' as RoleName,
-  comments: '',
 });
 
 const hasSucceeded = ref(false);
@@ -161,7 +160,7 @@ const submitSignup = async () => {
         </div>
 
         <!-- comments -->
-        <SignupCommentsModal
+        <!-- <SignupCommentsModal
           :visible="signupCommentsModalOpen"
           @closeModal="signupCommentsModalOpen = false"
           @continueSignup="
@@ -171,7 +170,7 @@ const submitSignup = async () => {
               submitSignup();
             }
           "
-        />
+        /> -->
         <div class="grid gap-2">
           <Button
             type="submit"

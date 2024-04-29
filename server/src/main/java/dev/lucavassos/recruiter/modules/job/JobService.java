@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.modules.job.service;
+package dev.lucavassos.recruiter.modules.job;
 
 import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.DatabaseException;

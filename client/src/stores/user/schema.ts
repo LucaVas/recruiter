@@ -12,6 +12,7 @@ export type User = {
   approver: Recruiter;
   approvedDTime: Date;
   createdDTime: Date;
+  modifiedDTime: Date;
 };
 
 export type Recruiter = Pick<User, 'id' | 'username'>;

@@ -1,17 +1,15 @@
-package dev.lucavassos.recruiter.modules.candidate.controller;
+package dev.lucavassos.recruiter.modules.candidate;
 
 import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateResponse;
 import dev.lucavassos.recruiter.modules.candidate.domain.UpdateCandidateRequest;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
-import dev.lucavassos.recruiter.modules.candidate.service.CandidateService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

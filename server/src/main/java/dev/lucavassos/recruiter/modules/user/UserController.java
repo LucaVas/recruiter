@@ -1,7 +1,6 @@
-package dev.lucavassos.recruiter.modules.user.controller;
+package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.modules.user.domain.*;
-import dev.lucavassos.recruiter.modules.user.service.UserService;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;

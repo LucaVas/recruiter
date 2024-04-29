@@ -1,5 +1,11 @@
+import type { Candidate } from '../candidate/schema';
+import type { Job } from '../job/schema';
+import type { Recruiter } from '../user/schema';
+
 export type Candidacy = {
-  id: number;
+  job: Job;
+  recruiter: Recruiter;
+  candidate: Candidate;
   relevantExperience: number;
   expectedCtc: number;
   officialNoticePeriod: number;

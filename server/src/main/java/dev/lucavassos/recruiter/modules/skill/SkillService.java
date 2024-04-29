@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.modules.skill.service;
+package dev.lucavassos.recruiter.modules.skill;
 
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;

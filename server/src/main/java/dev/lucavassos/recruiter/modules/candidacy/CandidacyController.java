@@ -1,10 +1,9 @@
-package dev.lucavassos.recruiter.modules.candidacy.controller;
+package dev.lucavassos.recruiter.modules.candidacy;
 
 import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyResponse;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
-import dev.lucavassos.recruiter.modules.candidacy.service.CandidacyService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

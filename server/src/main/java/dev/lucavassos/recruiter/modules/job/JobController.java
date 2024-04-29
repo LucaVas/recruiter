@@ -1,11 +1,10 @@
-package dev.lucavassos.recruiter.modules.job.controller;
+package dev.lucavassos.recruiter.modules.job;
 
 import dev.lucavassos.recruiter.modules.job.domain.ChangeJobStatusRequest;
 import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
-import dev.lucavassos.recruiter.modules.job.service.JobService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.modules.user.service;
+package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;

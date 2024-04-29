@@ -18,11 +18,11 @@ export type Job = {
   description: string;
   bonusPayPerCv: number;
   closureBonus: number;
-  comments: string;
-  numberOfCandidates: number | null;
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
+  numberOfCandidates: number | null;
   createdDTime: Date;
+  modifiedDTime: Date;
 };
 
 export type ContractType = 'PERMANENT' | 'TEMPORARY';
@@ -30,7 +30,10 @@ export type Currency = 'INR';
 export type JobStatus = 'OPEN' | 'NO_CV_ACCEPTED' | 'CLOSED' | 'ARCHIVED';
 
 // backend domain objects
-export type NewJobRequest = Omit<Job, 'id' | 'comments' | 'numberOfCandidates' | 'createdDTime'>;
+export type NewJobRequest = Omit<
+  Job,
+  'id' | 'comments' | 'numberOfCandidates' | 'createdDTime' | 'modifiedDTime'
+>;
 export type UpdateJobRequest = NewJobRequest;
 export type ChangeJobStatusRequest = { status: JobStatus };
 export type DeleteJob = { id: number };

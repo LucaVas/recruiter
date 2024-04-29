@@ -11,7 +11,11 @@ export type SignupRequest = {
   username: string;
   email: string;
   password: string;
+  mobile: string;
+  city: string;
+  country: string;
   roleName: string;
+  comments: string;
 };
 
 // response

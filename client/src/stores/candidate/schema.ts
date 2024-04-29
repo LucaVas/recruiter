@@ -1,4 +1,4 @@
-export type candidateStatus = 'ACTIVE' | 'ARCHIVED';
+export type CandidateStatus = 'ACTIVE' | 'ARCHIVED';
 
 // backend dtos
 export type Candidate = {
@@ -9,12 +9,13 @@ export type Candidate = {
   totalExperience: number;
   education: string;
   currentCtc: number;
+  status: CandidateStatus,
   createdDTime: Date;
-  updatedDTime: Date;
+  modifiedDTime: Date;
 };
 
 //request
-export type NewCandidateRequest = Omit<Candidate, 'createdDTime' | 'updatedDTime'>;
+export type NewCandidateRequest = Omit<Candidate, 'createdDTime' | 'modifiedDTime'>;
 export type UpdateCandidateRequest = NewCandidateRequest
 
 // response
