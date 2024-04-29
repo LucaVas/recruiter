@@ -82,7 +82,8 @@ onMounted(async () => {
       :status="job.status"
     />
     <JobDescription :description="job.description" />
-    <JobSkills :skills="job.skills" />
+    <h3 class="text-lg font-medium">Skills</h3>
+
+    <JobSkills :isNewJob="false" :skills="job.skills" />
   </div>
 </template>
-@/stores/job/schema

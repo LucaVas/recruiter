@@ -59,7 +59,7 @@ public class JobService {
                 .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toList()));
 
         Client client = clientRepository
-                .finaByName(request.client().name())
+                .findByName(request.client().name())
                 .orElse(
                         clientRepository.save(
                                 Client.builder()

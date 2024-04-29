@@ -11,7 +11,6 @@ import axiosApi from '../api';
 const api = axiosApi();
 
 export async function submitCandidacy(candidacy: NewCandidacyRequest): Promise<void> {
-  newCandidacyRequestSchema.parse(candidacy);
   await api.post(`/candidacies`, candidacy);
 }
 
@@ -20,7 +19,6 @@ export async function updateCandidacy(
   pan: string,
   candidacy: UpdateCandidacyRequest
 ): Promise<CandidacyResponse> {
-  updateCandidacyRequestSchema.parse(candidacy);
   const { data } = await api.put(`/candidacies/job=${jobId}&candidate=${pan}`, candidacy);
   return data;
 }

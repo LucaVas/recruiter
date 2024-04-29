@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.question.entity;
 
+import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import jakarta.persistence.*;
@@ -37,8 +38,8 @@ public class Question {
     private Skill skill;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id")
-    private Job job;
+    @JoinColumn(name = "client_id")
+    private Client client;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")

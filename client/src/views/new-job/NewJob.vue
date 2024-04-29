@@ -10,13 +10,17 @@
         @input="(details) => (job = details)"
       />
       <div class="space-y-3">
-        <label>Skills & Questions</label>
+        <label>Skills</label>
         <SkillsDropdown :disabled="false" @addSkill="(skill: Skill) => addSkill(skill)" />
-        <Questions
-          :disabled="false"
+        <JobSkills
+          :isNewJob="true"
+          @remove="(skill: Skill) => removeSkill(skill)"
           :skills="job.skills"
-          @removeSkill="(skill: Skill) => removeSkill(skill)"
         />
+      </div>
+      <div class="space-y-3">
+        <label>Questions</label>
+        <QuestionsSearch />
       </div>
     </div>
     <div v-else class="flex h-full w-full items-center justify-center">
@@ -37,6 +41,8 @@
 import JobInformation from '@/components/job/shared/JobInformation.vue';
 import JobHiringDetails from '@/components/job/shared/JobHiringDetails.vue';
 import NowJobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue';
+import JobSkills from '@/components/job/job-page/JobSkills.vue';
+import QuestionsSearch from '@/components/question/QuestionSearch.vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { createJob } from '@/stores/job';

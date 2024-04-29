@@ -6,7 +6,6 @@ const api = axiosApi();
 export async function createCandidate(
   newCandidate: NewCandidateRequest
 ): Promise<CandidateResponse> {
-  newCandidateRequestSchema.parse(newCandidate);
   const { data } = await api.post(`/candidates`, newCandidate);
   return data;
 }
@@ -17,7 +16,6 @@ export async function findCandidate(identifier: string): Promise<CandidateRespon
 }
 
 export async function updateCandidate(candidate: Candidate) {
-  updateCandidateRequestSchema.parse(candidate);
   const { data } = await api.put(`/candidates`, candidate);
   return data;
 }

@@ -64,126 +64,126 @@ public class EntityInitializer {
     @Transactional
     public void saveQuestions() {
 
-        List<Job> jobs = jobRepository.findAll();
+        List<Client> clients = clientRepository.findAll();
         List<Skill> skills = skillRepository.findAll();
 
         questionRepository.saveAll(List.of(
                 Question.builder().text("What are the key features of Java?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Software engineer")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Java")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Explain the difference between JDK, JRE, and JVM.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Software engineer")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Accenture")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Java")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("How do you handle exceptions in Java?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Software developer")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Java")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Describe the purpose of interfaces in Java.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Software developer")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Infosys")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Java")).findFirst().orElseThrow())
                         .build(),
 
                 Question.builder().text("What are the main features of Python?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Software engineer")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Infosys")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Python")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Explain the difference between Python 2 and Python 3.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Software developer")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Python")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("How do you handle exceptions in Python?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Software engineer")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Python")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Describe the purpose of list comprehension in Python.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Software developer")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Accenture")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Python")).findFirst().orElseThrow())
                         .build(),
 
                 Question.builder().text("How to create calculated fields in Tableau?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Accenture")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Tableau")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("What is a tableau extract?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Tableau")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("How to create a dashboard?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Infosys")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Tableau")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Explain Tableau's data blending feature.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Tableau")).findFirst().orElseThrow())
                         .build(),
 
                 Question.builder().text("What is Hadoop's role in big data?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Accenture")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Big Data")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Explain MapReduce in brief.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Accenture")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Big Data")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("What are the components of Apache Spark?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Big Data")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Describe HDFS and its significance.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Business analyst")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Big Data")).findFirst().orElseThrow())
                         .build(),
 
                 Question.builder().text("What is cloud computing and its benefits?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Infosys")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Cloud Architecture")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Explain the difference between IaaS, PaaS, and SaaS.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Cloud Architecture")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("How does auto-scaling work in cloud environments?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Accenture")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Cloud Architecture")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Describe the role of load balancers in cloud architecture.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Accenture")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Cloud Architecture")).findFirst().orElseThrow())
                         .build(),
 
                 Question.builder().text("What are the core services provided by AWS?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("AWS")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Explain the difference between EC2 and S3.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("AWS")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("How does AWS Lambda function work?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Infosys")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("AWS")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Describe the purpose of AWS IAM (Identity and Access Management).").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Infosys")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("AWS")).findFirst().orElseThrow())
                         .build(),
 
                 Question.builder().text("What are the core services provided by Google Cloud Platform (GCP)?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Google Cloud")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Explain the difference between Compute Engine and App Engine on GCP.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Accenture")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Google Cloud")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("How does Google Cloud Functions work?").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Google Cloud")).findFirst().orElseThrow())
                         .build(),
                 Question.builder().text("Describe the purpose of IAM roles in Google Cloud.").active(true)
-                        .job(jobs.stream().filter(j -> j.getName().equals("Cloud architect")).findFirst().orElseThrow())
+                        .client(clients.stream().filter(j -> j.getName().equals("Infosys")).findFirst().orElseThrow())
                         .skill(skills.stream().filter(s -> s.getName().equals("Google Cloud")).findFirst().orElseThrow())
                         .build()
         ));
