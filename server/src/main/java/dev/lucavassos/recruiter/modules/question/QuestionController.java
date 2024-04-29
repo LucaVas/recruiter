@@ -19,12 +19,11 @@ public class QuestionController {
     @Autowired
     private QuestionService service;
 
-    @GetMapping("/questions/client={client}&skill={skill}")
+    @GetMapping("/questions/search=q?{clientOrSkill}")
     public ResponseEntity<List<QuestionDto>> getQuestions(
-            @PathVariable("client") String clientName,
-            @PathVariable("skill") String skillName) throws Exception {
-        LOG.info("Received request to get questions for client {} and skill {}", clientName, skillName);
-        List<QuestionDto> questions = service.getQuestionsByClientAndSkill(clientName, skillName);
+            @PathVariable("clientOrSkill") String clientOrSkill) throws Exception {
+        LOG.info("Received request to get questions for client / skill {}", clientOrSkill);
+        List<QuestionDto> questions = service.getQuestionsByClientOrSkill(clientOrSkill);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(questions);

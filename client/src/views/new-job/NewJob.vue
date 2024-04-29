@@ -20,7 +20,11 @@
       </div>
       <div class="space-y-3">
         <label>Questions</label>
-        <QuestionsSearch @createNewQuestion="openQuestionModal = true" />
+        <QuestionsSearch
+          @createNewQuestion="openQuestionModal = true"
+          @searchQuestions="(clientOrSkill) => search(clientOrSkill)"
+        />
+        {{ questions }}
         <QuestionModal
           :visible="openQuestionModal"
           :isUpdate="false"
@@ -64,6 +68,8 @@ import JobFooter from '@/components/job/shared/JobFooter.vue';
 import type { Skill } from '@/stores/skill/schema';
 import type { Client } from '@/stores/client/schema';
 import QuestionModal from '@/components/question/QuestionModal.vue';
+import { searchQuestions } from '@/stores/question';
+import { Question } from '../../stores/question/schema';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -72,6 +78,8 @@ const showError = (content: string) => {
 const jobCreated = ref(false);
 const creatingJob = ref(false);
 const openQuestionModal = ref(false);
+const searchingQuestions = ref(false);
+const questions = ref<Question[]>();
 
 async function create() {
   creatingJob.value = true;
@@ -82,6 +90,17 @@ async function create() {
     showError(e as string);
   } finally {
     creatingJob.value = false;
+  }
+}
+
+async function search(clientOrSkill: string) {
+  searchingQuestions.value = true;
+  try {
+    questions.value = await searchQuestions(clientOrSkill);
+  } catch (e) {
+    showError(e as string);
+  } finally {
+    searchingQuestions.value = false;
   }
 }
 
