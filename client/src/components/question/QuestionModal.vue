@@ -87,7 +87,7 @@ onMounted(async () => {
 
         <InputGroup>
           <InputGroupAddon>
-            <i class="pi pi-building"></i>
+            <i class="pi pi-wrench"></i>
           </InputGroupAddon>
           <Dropdown
             v-model="questionForm.skillId"

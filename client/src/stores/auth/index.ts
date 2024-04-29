@@ -8,8 +8,6 @@ import {
   storeAccessToken,
 } from '@/utils/auth';
 import {
-  loginRequestSchema,
-  signupRequestSchema,
   type AuthUserInfoDto,
   type LoginRequest,
   type LoginResponse,

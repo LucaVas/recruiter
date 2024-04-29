@@ -107,6 +107,7 @@ const candidate = ref<NewCandidateRequest>({
   totalExperience: 0,
   education: '',
   currentCtc: 0,
+  
 });
 
 // candidacy submission

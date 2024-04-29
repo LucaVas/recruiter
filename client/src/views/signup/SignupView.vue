@@ -41,6 +41,7 @@ const userForm = ref<SignupRequest>({
   city: '',
   country: '',
   roleName: '' as RoleName,
+  comments: '',
 });
 
 const hasSucceeded = ref(false);

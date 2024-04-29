@@ -1,12 +1,13 @@
 <template>
   <div class="flex flex-col gap-2">
-    <div class="flex flex-row gap-3">
+    <div class="flex flex-row gap-3 w-full">
       <InputText
         id="question-input"
         v-model="clientOrSkill"
         @input="searchQuestion(clientOrSkill)"
+        class="w-full"
       />
-      <Button label="New Question" @click="$emit('createNewQuestion')" />
+      <Button label="New" icon="pi pi-plus" @click="$emit('createNewQuestion')" class="min-w-fit" />
     </div>
     <small id="question-input-help"
       >Type companies or skills related to the question you want to add.</small

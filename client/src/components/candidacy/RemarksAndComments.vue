@@ -30,7 +30,7 @@ const details = ref(candidacy);
       </div>
     </div>
 
-    <div v-if="details.comments" class="flex w-full flex-col gap-2">
+    <!-- <div v-if="details.comments" class="flex w-full flex-col gap-2">
       <label class="text-sm" for="wantedCvs">Admin Comments</label>
       <div class="flex w-full">
         <Textarea
@@ -42,7 +42,6 @@ const details = ref(candidacy);
           placeholder="Admin comments"
         />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
-@/stores/candidacy/schema

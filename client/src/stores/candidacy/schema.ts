@@ -24,7 +24,7 @@ export type candidacyComment = {
 };
 
 // request
-export type UpdateCandidacyRequest = Omit<Candidacy, 'id' | 'createdDTime' | 'modifiedDTime'>;
+export type UpdateCandidacyRequest = Omit<Candidacy, 'id' | 'createdDTime' | 'modifiedDTime' | 'recruiter' | 'job' | 'candidate'>;
 export type NewCandidacyRequest = UpdateCandidacyRequest & { jobId: number; candidatePan: string };
 
 // response
@@ -33,4 +33,4 @@ export type CandidacyResponse = {
 };
 
 // frontend types
-export type RawCandidacy = UpdateCandidacyRequest;
+export type RawCandidacy = Omit<Candidacy, 'job' | 'recruiter' | 'candidate' | 'createdDTime' | 'modifiedDTime'>;

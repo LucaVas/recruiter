@@ -1,6 +1,4 @@
 import {
-  newCandidacyRequestSchema,
-  updateCandidacyRequestSchema,
   type Candidacy,
   type CandidacyResponse,
   type NewCandidacyRequest,

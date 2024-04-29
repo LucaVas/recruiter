@@ -16,7 +16,11 @@ export function getAuthUsernameFromToken(token: string): string {
 }
 
 export function getAuthRoleFromToken(token: string): RoleName {
-  return getAuthUserFromToken(token).roleName;
+  const role = getAuthUserFromToken(token).roleName;
+  if (role !== 'ROLE_ADMIN' && role !== 'ROLE_RECRUITER') {
+    throw new Error('Invalid role found in token');
+  }
+  return role;
 }
 
 // token
