@@ -6,6 +6,6 @@ const api = axiosApi();
 
 // functions
 export async function searchQuestions(clientOrSkill: string): Promise<Question[]> {
-  const { data } = await api.get(`/questions/search=q?${clientOrSkill}`);
+  const { data } = await api.get(`/questions/search?clientOrSkill=${clientOrSkill}`);
   return data;
 }

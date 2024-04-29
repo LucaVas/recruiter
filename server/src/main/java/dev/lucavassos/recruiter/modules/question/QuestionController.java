@@ -19,9 +19,9 @@ public class QuestionController {
     @Autowired
     private QuestionService service;
 
-    @GetMapping("/questions/search=q?{clientOrSkill}")
+    @GetMapping(path = "/questions/search")
     public ResponseEntity<List<QuestionDto>> getQuestions(
-            @PathVariable("clientOrSkill") String clientOrSkill) throws Exception {
+            @RequestParam("clientOrSkill") String clientOrSkill) throws Exception {
         LOG.info("Received request to get questions for client / skill {}", clientOrSkill);
         List<QuestionDto> questions = service.getQuestionsByClientOrSkill(clientOrSkill);
         return ResponseEntity
