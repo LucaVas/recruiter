@@ -1,16 +1,13 @@
-import { z } from 'zod';
-
-const industrySchema = z.enum([
-  'IT',
-  'FINANCE',
-  'HEALTHCARE',
-  'EDUCATION',
-  'MARKETING',
-  'SALES',
-  'HUMAN_RESOURCES',
-  'ENGINEERING',
-  'OTHER',
-]);
+type Industry =
+  | 'IT'
+  | 'FINANCE'
+  | 'HEALTHCARE'
+  | 'EDUCATION'
+  | 'MARKETING'
+  | 'SALES'
+  | 'HUMAN_RESOURCES'
+  | 'ENGINEERING'
+  | 'OTHER';
 
 export const industries = [
   { name: 'IT', value: 'IT' },
@@ -24,10 +21,11 @@ export const industries = [
   { name: 'Other', value: 'OTHER' },
 ];
 
-export const clientSchema = z.object({
-  name: z.string(),
-  industry: industrySchema,
-});
+export type Client = {
+  id: number;
+  name: string;
+  industry: Industry;
+  createdDTime: Date;
+  modifiedDTime: Date;
+};
 
-export type Industry = z.infer<typeof industrySchema>;
-export type Client = z.infer<typeof clientSchema>;

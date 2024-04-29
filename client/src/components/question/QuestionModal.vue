@@ -6,9 +6,8 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref, onMounted } from 'vue';
 import type { Question, QuestionForm } from '@/stores/question/schema';
-import { Client } from '../../stores/client/schema';
-import { Skill } from '../../stores/skill/schema';
 import { getAllSkills } from '@/stores/skill';
+import { getAllClients } from '@/stores/client';
 
 const loading = ref(false);
 
@@ -20,7 +19,7 @@ const { question, visible, isUpdate } = defineProps<{
 
 const emits = defineEmits<{
   (e: 'close'): void;
-  (e: 'save', content: Question): void;
+  (e: 'save', content: QuestionForm): void;
 }>();
 
 const questionForm = ref<QuestionForm>({
@@ -31,8 +30,8 @@ const questionForm = ref<QuestionForm>({
   skillId: 0,
 });
 
-const clients = ref<Client[]>([]);
-const skills = ref<Skill[]>([]);
+const clients = ref<{ name: string; label: number }[]>();
+const skills = ref<{ name: string; label: number }[]>();
 
 onMounted(async () => {
   loading.value = true;
@@ -41,7 +40,7 @@ onMounted(async () => {
       name: c.name,
       label: c.id,
     }));
-    skills.value = await getAllSkills().map((s) => ({
+    skills.value = (await getAllSkills()).map((s) => ({
       name: s.name,
       label: s.id,
     }));
@@ -83,11 +82,7 @@ onMounted(async () => {
           <InputGroupAddon>
             <i class="pi pi-briefcase"></i>
           </InputGroupAddon>
-          <InputText
-            placeholder="Division"
-            autocomplete="off"
-            v-model="questionForm.division"
-          />
+          <InputText placeholder="Division" autocomplete="off" v-model="questionForm.division" />
         </InputGroup>
 
         <InputGroup>
