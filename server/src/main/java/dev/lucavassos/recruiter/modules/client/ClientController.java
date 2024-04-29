@@ -22,7 +22,7 @@ public class ClientController {
     private ClientService service;
 
 
-    @GetMapping("/skills")
+    @GetMapping("/clients")
     public ResponseEntity<List<ClientDto>> getAllClients() {
         LOG.info("Received request for all clients.");
         return new ResponseEntity<>(service.getAllClients(), HttpStatus.OK);

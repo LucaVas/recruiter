@@ -30,7 +30,7 @@ public class Question {
     @Size(min = 1, message = "Question text must be at least 1 character long")
     private String text;
 
-    @Column(nullable = false, name = "answer")
+    @Column(nullable = false, name = "answer", length = 500)
     @Size(min = 1, message = "Question answer must be at least 1 character long")
     private String answer;
 
