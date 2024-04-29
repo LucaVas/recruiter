@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.job.entities;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
+import dev.lucavassos.recruiter.modules.question.entity.Question;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
@@ -99,6 +100,13 @@ public class Job {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recruiter_id")
     private User recruiter;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "jobs_questions",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "question_id"))
+    private List<Question> questions = new ArrayList<>();
 
     @CreationTimestamp
     @Column(nullable = false, name = "created_dtime")

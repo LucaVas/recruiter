@@ -9,6 +9,9 @@
       paginator
       :rows="5"
       :rowsPerPageOptions="[5, 10, 20, 50]"
+      @update:selection="
+        () => (selectedQuestions ? $emit('selectQuestions', selectedQuestions) : null)
+      "
     >
       <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
       <Column field="text" header="Question"></Column>
@@ -24,6 +27,10 @@ import { ref } from 'vue';
 
 const { questions } = defineProps<{
   questions: Question[] | undefined;
+}>();
+
+defineEmits<{
+  (e: 'selectQuestions', questions: Question[]): void;
 }>();
 
 const selectedQuestions = ref<Question[]>();

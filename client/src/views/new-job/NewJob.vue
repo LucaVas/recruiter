@@ -19,12 +19,6 @@
         />
       </div>
       <div class="space-y-3">
-        <label>Questions</label>
-        <QuestionsSearch
-          @createNewQuestion="openQuestionModal = true"
-          @searchQuestions="(clientOrSkill) => search(clientOrSkill)"
-        />
-        <QuestionsTable :questions="questions" />
         <QuestionModal
           :visible="openQuestionModal"
           :isUpdate="false"
@@ -35,6 +29,15 @@
               openQuestionModal = false;
             }
           "
+        />
+        <label>Questions</label>
+        <QuestionsSearch
+          @createNewQuestion="openQuestionModal = true"
+          @searchQuestions="(clientOrSkill) => search(clientOrSkill)"
+        />
+        <QuestionsTable
+          :questions="questions"
+          @selectQuestions="(questions) => { job.questions = questions }"
         />
       </div>
     </div>
@@ -47,7 +50,7 @@
       :saving="creatingJob"
       :saved="jobCreated"
       :isUpdate="false"
-      @save="create()"
+      @save="create(job)"
     />
   </div>
 </template>
@@ -82,10 +85,11 @@ const openQuestionModal = ref(false);
 const searchingQuestions = ref(false);
 const questions = ref<Question[]>();
 
-async function create() {
+async function create(job: NewJobRequest) {
   creatingJob.value = true;
   try {
-    await createJob(job.value);
+    console.log(job)
+    // await createJob(job.value);
     jobCreated.value = true;
   } catch (e) {
     showError(e as string);
@@ -130,6 +134,7 @@ const job = ref<NewJobRequest>({
   description: '',
   bonusPayPerCv: 0,
   closureBonus: 0,
+  questions: [],
   closureBonusPaymentDate: new Date(),
   cvRatePaymentDate: new Date(),
 });

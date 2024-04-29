@@ -16,6 +16,8 @@ import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
+import dev.lucavassos.recruiter.modules.question.entity.Question;
+import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
@@ -50,6 +52,7 @@ public class JobService {
     private final JobDtoMapper jobDtoMapper;
     private final MonitoringProcessor monitoringProcessor;
     private final ClientRepository clientRepository;
+    private final QuestionRepository questionRepository;
 
     @Transactional
     public JobResponse addJob(NewJobRequest request) throws Exception {
@@ -67,6 +70,9 @@ public class JobService {
                                         .industry(request.client().industry())
                                         .build()
                 ));
+
+        List<Question> questions = questionRepository
+                .findAllById(request.questionIds());
 
         User recruiter = getAuthUser();
 
@@ -91,6 +97,7 @@ public class JobService {
                             .cvRatePaymentDate(request.cvRatePaymentDate())
                             .closureBonusPaymentDate(request.closureBonusPaymentDate())
                             .recruiter(recruiter)
+                            .questions(questions)
                             .build()
             );
             clientRepository.save(client);
