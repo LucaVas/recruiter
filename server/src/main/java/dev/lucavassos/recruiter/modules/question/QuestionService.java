@@ -38,7 +38,7 @@ public class QuestionService {
         Skill skill = skillRepository.findByName(skillName)
                 .orElseThrow(() -> new ResourceNotFoundException("Skill not found: " + skillName));
 
-        List<Question> questions = questionRepository.findByClientAndSkill(client.getId(), skill.getId());
+        List<Question> questions = questionRepository.findAll();
 
         List<QuestionDto> questionDtos = questions.stream()
                 .map(questionDtoMapper)

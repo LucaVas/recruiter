@@ -26,12 +26,19 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "text")
     @Size(min = 1, message = "Question text must be at least 1 character long")
     private String text;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "answer")
+    @Size(min = 1, message = "Question answer must be at least 1 character long")
+    private String answer;
+
+    @Column(nullable = false, name = "active")
     private Boolean active = true;
+
+    @Column(name = "division")
+    private String division;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "skill_id")

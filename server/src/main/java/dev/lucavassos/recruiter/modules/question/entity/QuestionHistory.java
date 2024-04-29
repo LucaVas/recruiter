@@ -30,8 +30,14 @@ public class QuestionHistory {
     @Size(min = 1, message = "Question text must be at least 1 character long")
     private String text;
 
+    @Column(nullable = false, name = "answer")
+    private String answer;
+
     @Column(nullable = false)
     private Boolean active = true;
+
+    @Column(name = "division")
+    private String division;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "question_id")
