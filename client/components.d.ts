@@ -57,6 +57,7 @@ declare module 'vue' {
     QuestionModal: typeof import('./src/components/question/QuestionModal.vue')['default']
     Questions: typeof import('./src/components/job/shared/Questions.vue')['default']
     QuestionSearch: typeof import('./src/components/question/QuestionSearch.vue')['default']
+    QuestionsTable: typeof import('./src/components/question/QuestionsTable.vue')['default']
     RemarksAndComments: typeof import('./src/components/candidacy/RemarksAndComments.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

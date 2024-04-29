@@ -6,15 +6,16 @@
           id="question-input"
           v-model="clientOrSkill"
           @keypress="
-            ($event) =>
-              $event.key === 'Enter' && clientOrSkill !== ''
-                ? $emit('searchQuestions', clientOrSkill)
-                : null
+            ($event) => {
+              if ($event.key === 'Enter' && clientOrSkill !== '') {
+                $emit('searchQuestions', clientOrSkill);
+              }
+            }
           "
           class="w-full"
         />
         <Button
-        outlined
+          outlined
           icon="pi pi-search"
           @click="clientOrSkill !== '' ? $emit('searchQuestions', clientOrSkill) : null"
         />
@@ -28,7 +29,7 @@
       />
       <Button icon="pi pi-plus" @click="$emit('createNewQuestion')" class="min-w-fit md:hidden" />
     </div>
-    <small id="question-input-help"
+    <small id="question-input-help" v-show="clientOrSkill === ''" class="text-gray-500"
       >Type client name or skill related to the questions you want to add.</small
     >
   </div>

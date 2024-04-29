@@ -24,7 +24,7 @@
           @createNewQuestion="openQuestionModal = true"
           @searchQuestions="(clientOrSkill) => search(clientOrSkill)"
         />
-        {{ questions }}
+        <QuestionsTable :questions="questions" />
         <QuestionModal
           :visible="openQuestionModal"
           :isUpdate="false"
@@ -69,7 +69,8 @@ import type { Skill } from '@/stores/skill/schema';
 import type { Client } from '@/stores/client/schema';
 import QuestionModal from '@/components/question/QuestionModal.vue';
 import { searchQuestions } from '@/stores/question';
-import { Question } from '../../stores/question/schema';
+import { type Question } from '@/stores/question/schema';
+import QuestionsTable from '@/components/question/QuestionsTable.vue';
 
 const toast = useToast();
 const showError = (content: string) => {
