@@ -1,10 +1,17 @@
 package dev.lucavassos.recruiter.modules.question;
 
+import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.exception.ServerException;
+import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
+import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
+import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
+import dev.lucavassos.recruiter.modules.question.domain.NewQuestionRequest;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
 import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
+import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -29,10 +36,6 @@ public class QuestionService {
     public List<QuestionDto> getQuestionsByClientOrSkill(String clientOrSkill) {
         LOG.info("Retrieving questions for client / skill {}", clientOrSkill);
 
-//        Client client = clientRepository.findByName(clientOrSkill);
-//        Skill skill = skillRepository.findByName(skillName)
-//                .orElseThrow(() -> new ResourceNotFoundException("Skill not found: " + skillName));
-
         List<Question> questions = questionRepository.findByClientNameOrSkillName(clientOrSkill);
 
         List<QuestionDto> questionDtos = questions.stream()
@@ -42,6 +45,36 @@ public class QuestionService {
         LOG.info("{} questions retrieved: {}", questionDtos.size(), questionDtos);
 
         return questionDtos;
+    }
+
+    @Transactional
+    public QuestionDto createQuestion(NewQuestionRequest request) {
+        LOG.info("Creating new question");
+
+        Client client = clientRepository.findById(request.clientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
+        Skill skill = skillRepository.findById(request.skillId())
+                .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
+
+        Question question;
+        try {
+            question = Question.builder()
+                    .text(request.text())
+                    .answer(request.answer())
+                    .client(client)
+                    .skill(skill)
+                    .active(true)
+                    .build();
+            questionRepository.save(question);
+        } catch (Exception e) {
+            throw new ServerException(e.getMessage());
+        }
+
+        QuestionDto questionDto = questionDtoMapper.apply(question);
+
+        LOG.info("Question created: {}", questionDto);
+
+        return questionDto;
     }
 
 }

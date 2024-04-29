@@ -25,7 +25,7 @@
           @close="openQuestionModal = false"
           @save="
             (question) => {
-              console.log(question);
+              createAndAddQuestion(question);
               openQuestionModal = false;
             }
           "
@@ -37,7 +37,11 @@
         />
         <QuestionsTable
           :questions="questions"
-          @selectQuestions="(questions) => { job.questions = questions }"
+          @selectQuestions="
+            (questions) => {
+              job.questions = questions;
+            }
+          "
         />
       </div>
     </div>
@@ -74,6 +78,8 @@ import QuestionModal from '@/components/question/QuestionModal.vue';
 import { searchQuestions } from '@/stores/question';
 import { type Question } from '@/stores/question/schema';
 import QuestionsTable from '@/components/question/QuestionsTable.vue';
+import { createQuestion } from '@/stores/question/index';
+import { type QuestionForm } from '@/stores/question/schema';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -88,8 +94,7 @@ const questions = ref<Question[]>();
 async function create(job: NewJobRequest) {
   creatingJob.value = true;
   try {
-    console.log(job)
-    // await createJob(job.value);
+    await createJob(job);
     jobCreated.value = true;
   } catch (e) {
     showError(e as string);
@@ -97,6 +102,15 @@ async function create(job: NewJobRequest) {
     creatingJob.value = false;
   }
 }
+
+const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
+  try {
+    const newQuestion = await createQuestion(question);
+    job.value.questions.push(newQuestion);
+  } catch (e) {
+    showError(e as string);
+  }
+};
 
 async function search(clientOrSkill: string) {
   searchingQuestions.value = true;
