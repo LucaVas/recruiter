@@ -1,13 +1,32 @@
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex w-full flex-row gap-3">
-      <InputText
-        id="question-input"
-        v-model="clientOrSkill"
-        @keypress="($event) => $event.key === 'Enter' ? $emit('searchQuestions', clientOrSkill) : null"
-        class="w-full"
+      <InputGroup class="flex w-full flex-row">
+        <InputText
+          id="question-input"
+          v-model="clientOrSkill"
+          @keypress="
+            ($event) =>
+              $event.key === 'Enter' && clientOrSkill !== ''
+                ? $emit('searchQuestions', clientOrSkill)
+                : null
+          "
+          class="w-full"
+        />
+        <Button
+        outlined
+          icon="pi pi-search"
+          @click="clientOrSkill !== '' ? $emit('searchQuestions', clientOrSkill) : null"
+        />
+      </InputGroup>
+
+      <Button
+        label="New"
+        icon="pi pi-plus"
+        @click="$emit('createNewQuestion')"
+        class="hidden min-w-fit md:block"
       />
-      <Button label="New" icon="pi pi-plus" @click="$emit('createNewQuestion')" class="min-w-fit" />
+      <Button icon="pi pi-plus" @click="$emit('createNewQuestion')" class="min-w-fit md:hidden" />
     </div>
     <small id="question-input-help"
       >Type client name or skill related to the questions you want to add.</small
@@ -16,6 +35,9 @@
 </template>
 
 <script setup lang="ts">
+import InputGroup from 'primevue/inputgroup';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
 import { ref } from 'vue';
 
 defineEmits<{
