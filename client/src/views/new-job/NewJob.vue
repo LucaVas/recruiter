@@ -30,19 +30,30 @@
             }
           "
         />
-        <label>Questions</label>
-        <QuestionsSearch
-          @createNewQuestion="openQuestionModal = true"
-          @searchQuestions="(clientOrSkill) => search(clientOrSkill)"
+        <QuestionSearchModal
+          :visible="openQuestionSearchModal"
+          @close="openQuestionSearchModal = false"
         />
-        <QuestionsTable
+        <label>Questions</label>
+
+        <div class="flex flex-row gap-3">
+          <Button label="Search" class="w-full" outlined icon="pi pi-search" @click="openQuestionSearchModal = true" />
+          <Button
+            label="New"
+            icon="pi pi-plus"
+            @click="openQuestionModal = true"
+            class="hidden min-w-fit md:block"
+          />
+          <Button icon="pi pi-plus" @click="openQuestionModal = true" class="min-w-fit md:hidden" />
+        </div>
+        <!-- <QuestionsTable
           :questions="questions"
           @selectQuestions="
             (questions) => {
               job.questions = questions;
             }
           "
-        />
+        /> -->
       </div>
     </div>
     <div v-else class="flex h-full w-full items-center justify-center">
@@ -64,7 +75,7 @@ import JobInformation from '@/components/job/shared/JobInformation.vue';
 import JobHiringDetails from '@/components/job/shared/JobHiringDetails.vue';
 import NowJobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
-import QuestionsSearch from '@/components/question/QuestionSearch.vue';
+import QuestionSearchModal from '@/components/question/QuestionSearchModal.vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { createJob } from '@/stores/job';
@@ -75,7 +86,6 @@ import JobFooter from '@/components/job/shared/JobFooter.vue';
 import type { Skill } from '@/stores/skill/schema';
 import type { Client } from '@/stores/client/schema';
 import QuestionModal from '@/components/question/QuestionModal.vue';
-import { searchQuestions } from '@/stores/question';
 import { type Question } from '@/stores/question/schema';
 import QuestionsTable from '@/components/question/QuestionsTable.vue';
 import { createQuestion } from '@/stores/question/index';
@@ -88,7 +98,7 @@ const showError = (content: string) => {
 const jobCreated = ref(false);
 const creatingJob = ref(false);
 const openQuestionModal = ref(false);
-const searchingQuestions = ref(false);
+const openQuestionSearchModal = ref(false);
 const questions = ref<Question[]>();
 
 async function create(job: NewJobRequest) {
@@ -111,17 +121,6 @@ const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
     showError(e as string);
   }
 };
-
-async function search(clientOrSkill: string) {
-  searchingQuestions.value = true;
-  try {
-    questions.value = await searchQuestions(clientOrSkill);
-  } catch (e) {
-    showError(e as string);
-  } finally {
-    searchingQuestions.value = false;
-  }
-}
 
 const removeSkill = (skill: Skill): void => {
   if (!job.value.skills.includes(skill)) return;
