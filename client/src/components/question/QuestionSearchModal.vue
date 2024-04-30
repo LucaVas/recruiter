@@ -41,12 +41,15 @@
         >
       </div>
       <div class="mt-3 h-72 space-y-2 overflow-auto">
-        <QuestionSearchModalPanel
-          v-for="question in questions"
-          :key="question.id"
-          :question="question"
-          @selectOrUnselectQuestion="(question) => selectedQuestions.push(question)"
-        />
+        <div v-if="questions.length > 0">
+          <QuestionSearchModalPanel
+            v-for="question in questions"
+            :key="question.id"
+            :question="question"
+            @selectOrUnselectQuestion="(question) => selectedQuestions.push(question)"
+          />
+        </div>
+        <div v-else>No questions found or searched yet.</div>
       </div>
       <template #footer>
         <div class="flex justify-end gap-2">
@@ -134,7 +137,7 @@ const showError = (message: string) => {
 };
 
 const searchingQuestions = ref(false);
-const questions = ref<Question[]>();
+const questions = ref<Question[]>([]);
 const selectedQuestions = ref<Question[]>([]);
 const clientOrSkill = ref('');
 </script>

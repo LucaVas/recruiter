@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Panel toggleable>
+    <Panel toggleable collapsed>
       <template #header>
         <div class="align-center flex gap-2">
           <Checkbox
@@ -46,9 +46,9 @@ defineEmits<{
 }>();
 
 const questionSelected = ref();
-const menu = ref(null);
+const menu = ref();
 
-const toggle = (event) => {
+const toggle = (event: Event) => {
   if (menu.value) menu.value.toggle(event);
 };
 const items = ref([
