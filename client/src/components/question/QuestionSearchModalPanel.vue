@@ -3,13 +3,18 @@
     <Panel toggleable>
       <template #header>
         <div class="align-center flex gap-2">
+          <Checkbox
+            v-model="questionSelected"
+            @change="$emit('selectOrUnselectQuestion', question)"
+            name="questionSelected"
+            binary
+            variant="filled"
+          />
           <span class="font-bold">{{ question.text }} </span>
         </div>
       </template>
       <template #icons>
-        <button class="p-panel-header-icon p-link mr-2" @click="toggle">
-          <span class="pi pi-cog"></span>
-        </button>
+        <Button icon="pi pi-cog" class="p-panel-header-icon p-link mr-2" @click="toggle" unstyled />
         <Menu ref="menu" id="config_menu" :model="items" popup />
       </template>
       <p class="m-0">
@@ -28,13 +33,19 @@
 import Panel from 'primevue/panel';
 import Button from 'primevue/button';
 import Menu from 'primevue/menu';
-import { Question } from '../../stores/question/schema';
+import Checkbox from 'primevue/checkbox';
+import { type Question } from '../../stores/question/schema';
 import { ref } from 'vue';
 
 const { question } = defineProps<{
   question: Question;
 }>();
 
+defineEmits<{
+  (event: 'selectOrUnselectQuestion', question: Question): void;
+}>();
+
+const questionSelected = ref();
 const menu = ref(null);
 
 const toggle = (event) => {

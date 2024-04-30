@@ -33,13 +33,33 @@
           >Type client name or skill related to the questions you want to add.</small
         >
       </div>
-      <div class="mt-3 h-72 overflow-auto space-y-2">
+      <div class="mt-3 h-72 space-y-2 overflow-auto">
         <QuestionSearchModalPanel
           v-for="question in questions"
           :key="question.id"
           :question="question"
+          @selectOrUnselectQuestion="(question) => selectedQuestions.push(question)"
         />
       </div>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button
+            label="Cancel"
+            class="min-w-fit"
+            @click="$emit('close')"
+            icon="pi pi-times"
+            size="small"
+            outlined
+          />
+          <Button
+            label="Add"
+            class="min-w-fit"
+            @click="$emit('selectOrUnselectQuestions', selectedQuestions)"
+            icon="pi pi-check"
+            size="small"
+          />
+        </div>
+      </template>
     </Dialog>
   </div>
 </template>
@@ -60,6 +80,7 @@ const { visible } = defineProps<{
 }>();
 
 defineEmits<{
+  (e: 'selectOrUnselectQuestions', selectedQuestions: Question[]): void;
   (e: 'close'): void;
 }>();
 
@@ -85,6 +106,6 @@ const showError = (message: string) => {
 
 const searchingQuestions = ref(false);
 const questions = ref<Question[]>();
-const selectedQuestions = ref<Question[]>();
+const selectedQuestions = ref<Question[]>([]);
 const clientOrSkill = ref('');
 </script>

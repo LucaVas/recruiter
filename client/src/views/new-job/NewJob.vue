@@ -33,11 +33,23 @@
         <QuestionSearchModal
           :visible="openQuestionSearchModal"
           @close="openQuestionSearchModal = false"
+          @selectOrUnselectQuestions="
+            (questions) => {
+              job.questions.push(...questions);
+              openQuestionSearchModal = false;
+            }
+          "
         />
         <label>Questions</label>
 
         <div class="flex flex-row gap-3">
-          <Button label="Search" class="w-full" outlined icon="pi pi-search" @click="openQuestionSearchModal = true" />
+          <Button
+            label="Search"
+            class="w-full"
+            outlined
+            icon="pi pi-search"
+            @click="openQuestionSearchModal = true"
+          />
           <Button
             label="New"
             icon="pi pi-plus"
@@ -46,14 +58,11 @@
           />
           <Button icon="pi pi-plus" @click="openQuestionModal = true" class="min-w-fit md:hidden" />
         </div>
-        <!-- <QuestionsTable
-          :questions="questions"
-          @selectQuestions="
-            (questions) => {
-              job.questions = questions;
-            }
-          "
-        /> -->
+        <QuestionsTable
+          :visible="job.questions.length > 0"
+          :questions="job.questions"
+          @removeQuestion="(question) => job.questions?.splice(job.questions.indexOf(question), 1)"
+        />
       </div>
     </div>
     <div v-else class="flex h-full w-full items-center justify-center">
@@ -99,7 +108,6 @@ const jobCreated = ref(false);
 const creatingJob = ref(false);
 const openQuestionModal = ref(false);
 const openQuestionSearchModal = ref(false);
-const questions = ref<Question[]>();
 
 async function create(job: NewJobRequest) {
   creatingJob.value = true;

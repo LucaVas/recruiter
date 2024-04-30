@@ -7,8 +7,12 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Accordion: typeof import('primevue/accordion')['default']
+    AccordionTab: typeof import('primevue/accordiontab')['default']
     ActionButtonsColumn: typeof import('./src/components/tables/dashboard/columns/ActionButtonsColumn.vue')['default']
     ApproveModal: typeof import('./src/components/tables/users/ApproveModal.vue')['default']
+    Avatar: typeof import('primevue/avatar')['default']
+    Badge: typeof import('primevue/badge')['default']
     Button: typeof import('primevue/button')['default']
     CandidaciesTable: typeof import('./src/components/tables/candidacies/CandidaciesTable.vue')['default']
     CandidacyFooter: typeof import('./src/components/candidacy/CandidacyFooter.vue')['default']
@@ -19,6 +23,7 @@ declare module 'vue' {
     CandidateSingleSelectTable: typeof import('./src/components/candidacy/candidate/CandidateSingleSelectTable.vue')['default']
     CandidatesTable: typeof import('./src/components/tables/candidates/CandidatesTable.vue')['default']
     CandidateTable: typeof import('./src/components/candidacy/candidate/CandidateTable.vue')['default']
+    Checkbox: typeof import('primevue/checkbox')['default']
     ClientModal: typeof import('./src/components/client/ClientModal.vue')['default']
     Column: typeof import('primevue/column')['default']
     copy: typeof import('./src/components/job/shared/Skills copy.vue')['default']

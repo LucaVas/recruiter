@@ -1,19 +1,21 @@
 <template>
-  <div v-if="questions">
+  <div v-if="questions && visible">
     <DataTable
-      v-model:selection="selectedQuestions"
       :value="questions"
-      dataKey="id"
+      stripedRows
       tableStyle="min-width: 50rem"
       size="small"
       paginator
       :rows="5"
       :rowsPerPageOptions="[5, 10, 20, 50]"
-      @update:selection="
-        () => (selectedQuestions ? $emit('selectQuestions', selectedQuestions) : null)
-      "
     >
-      <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
+      <Column style="width: 1rem">
+        <template #body="{ data }">
+          <div class="flex items-center justify-center">
+            <Button icon="pi pi-trash" class="p-panel-header-icon" @click="$emit('removeQuestion', data)" unstyled />
+          </div>
+        </template>
+      </Column>
       <Column field="text" header="Question"></Column>
     </DataTable>
   </div>
@@ -23,15 +25,13 @@
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import { type Question } from '@/stores/question/schema';
-import { ref } from 'vue';
 
-const { questions } = defineProps<{
+const { questions, visible } = defineProps<{
   questions: Question[] | undefined;
+  visible: boolean;
 }>();
 
 defineEmits<{
-  (e: 'selectQuestions', questions: Question[]): void;
+  (e: 'removeQuestion', question: Question): void;
 }>();
-
-const selectedQuestions = ref<Question[]>();
 </script>
