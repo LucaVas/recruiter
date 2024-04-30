@@ -2,7 +2,14 @@
   <div class="flex items-center justify-center">
     <Dialog
       :visible="visible"
-      @update:visible="$emit('close')"
+      @update:visible="
+        {
+          $emit('close');
+          clientOrSkill = '';
+          selectedQuestions = [];
+          questions = [];
+        }
+      "
       closeOnEscape
       modal
       class="w-[90%] sm:w-2/3 md:w-2/3 lg:w-1/3"
@@ -46,7 +53,14 @@
           <Button
             label="Cancel"
             class="min-w-fit"
-            @click="$emit('close')"
+            @click="
+              {
+                $emit('close');
+                clientOrSkill = '';
+                selectedQuestions = [];
+                questions = [];
+              }
+            "
             icon="pi pi-times"
             size="small"
             outlined
@@ -54,7 +68,14 @@
           <Button
             label="Add"
             class="min-w-fit"
-            @click="$emit('selectOrUnselectQuestions', selectedQuestions)"
+            @click="
+              {
+                $emit('selectOrUnselectQuestions', selectedQuestions);
+                clientOrSkill = '';
+                selectedQuestions = [];
+                questions = [];
+              }
+            "
             icon="pi pi-check"
             size="small"
           />
@@ -75,8 +96,9 @@ import QuestionSearchModalPanel from '@/components/question/QuestionSearchModalP
 
 const toast = useToast();
 
-const { visible } = defineProps<{
+const { visible, questionsSelected } = defineProps<{
   visible: boolean;
+  questionsSelected: Question[];
 }>();
 
 defineEmits<{
@@ -87,7 +109,14 @@ defineEmits<{
 async function search(clientOrSkill: string) {
   searchingQuestions.value = true;
   try {
-    questions.value = await searchQuestions(clientOrSkill);
+    const found = await searchQuestions(clientOrSkill);
+    if (questionsSelected) {
+      questions.value = found.filter(
+        (question) => !questionsSelected.some((selected) => selected.id === question.id)
+      );
+    } else {
+      questions.value = found;
+    }
   } catch (e) {
     showError(e as string);
   } finally {

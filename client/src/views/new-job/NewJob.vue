@@ -31,6 +31,7 @@
           "
         />
         <QuestionSearchModal
+          :questionsSelected="job.questions"
           :visible="openQuestionSearchModal"
           @close="openQuestionSearchModal = false"
           @selectOrUnselectQuestions="
