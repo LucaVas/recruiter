@@ -16,7 +16,8 @@
           </div>
         </template>
       </Column>
-      <Column field="text" header="Question"></Column>
+      <Column field="title" header="Title"></Column>
+      <Column field="text" header="Text"></Column>
     </DataTable>
   </div>
 </template>
