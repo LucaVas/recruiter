@@ -10,16 +10,17 @@
             binary
             variant="filled"
           />
-          <span class="font-bold">{{ question.text }} </span>
+          <span class="font-bold">{{ question.title }} </span>
         </div>
       </template>
       <template #icons>
         <Button icon="pi pi-cog" class="p-panel-header-icon p-link mr-2" @click="toggle" unstyled />
         <Menu ref="menu" id="config_menu" :model="items" popup />
       </template>
-      <p class="m-0">
-        {{ question.answer }}
-      </p>
+      <div class="space-y-4">
+        <p><span class="font-semibold">Question:</span> {{ question.text }}</p>
+        <p><span class="font-semibold">Answer:</span> {{ question.answer }}</p>
+      </div>
       <template #footer>
         <div>
           <span class="p-text-secondary">Division: {{ question.division ?? '-' }}</span>
