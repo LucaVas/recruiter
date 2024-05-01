@@ -11,5 +11,5 @@ export type Question = {
 
 export type QuestionForm = Pick<Question, 'title' | 'text' | 'division' | 'answer'> & {
   clientId: number;
-  skillId?: number;
+  skillNames: string[];
 };

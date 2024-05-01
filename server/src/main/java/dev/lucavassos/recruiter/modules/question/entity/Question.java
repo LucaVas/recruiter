@@ -13,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -44,9 +45,11 @@ public class Question {
     @Column(name = "division")
     private String division;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "skill_id")
-    private Skill skill;
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="skill_question",
+            joinColumns=@JoinColumn(name="skill_id"),
+            inverseJoinColumns=@JoinColumn(name="question_id"))
+    private Set<Skill> skills;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")

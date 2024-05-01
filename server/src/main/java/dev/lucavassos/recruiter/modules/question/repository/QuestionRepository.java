@@ -10,9 +10,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT q FROM Question q " +
             "LEFT JOIN q.client c " +
-            "LEFT JOIN q.skill s " +
-            "WHERE UPPER(q.title) = UPPER(:titleOrClientOrSkill) " +
-            "OR UPPER(c.name) = UPPER(:titleOrClientOrSkill) " +
-            "OR UPPER(s.name) = UPPER(:titleOrClientOrSkill)")
-    List<Question> findByTitleOrClientOrSkill(String titleOrClientOrSkill);
+            "WHERE UPPER(q.title) = UPPER(:titleOrClient) " +
+            "OR UPPER(c.name) = UPPER(:titleOrClient) ")
+    List<Question> findByTitleOrClient(String titleOrClient);
 }

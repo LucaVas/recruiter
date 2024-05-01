@@ -3,6 +3,8 @@ package dev.lucavassos.recruiter.modules.question.domain;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 
+import java.util.List;
+
 public record NewQuestionRequest(
         @NotNull(message = "Question text cannot be empty") String text,
 
@@ -20,5 +22,5 @@ public record NewQuestionRequest(
         Long clientId,
 
         @Nullable
-        Long skillId
+        List<String> skillNames
 ){}

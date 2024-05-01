@@ -16,30 +16,30 @@
         <div class="flex w-full flex-row gap-3">
           <InputGroup class="flex w-full flex-row">
             <InputText
+              autofocus
               id="question-input"
-              v-model="titleOrClientOrSkill"
+              v-model="titleOrClient"
               @keypress="
                 ($event) => {
-                  if ($event.key === 'Enter' && titleOrClientOrSkill !== '') {
-                    search(titleOrClientOrSkill);
+                  if ($event.key === 'Enter' && titleOrClient !== '') {
+                    search(titleOrClient);
                   }
                 }
               "
               class="w-full"
             />
             <Button
-              outlined
               icon="pi pi-search"
-              @click="titleOrClientOrSkill !== '' ? search(titleOrClientOrSkill) : null"
+              @click="titleOrClient !== '' ? search(titleOrClient) : null"
             />
           </InputGroup>
         </div>
-        <small id="question-input-help" v-show="titleOrClientOrSkill === ''" class="text-gray-500"
-          >Type client name or skill related to the questions you want to add.</small
+        <small id="question-input-help" v-show="titleOrClient === ''" class="text-gray-500"
+          >Type question title or client name</small
         >
       </div>
-      <div class="mt-3 h-72 space-y-2 overflow-auto">
-        <div v-if="questions.length > 0">
+      <div class="mt-3 h-72 overflow-auto">
+        <div v-if="questions.length > 0" class="space-y-2">
           <QuestionSearchModalPanel
             v-for="question in questions"
             :key="question.id"
@@ -103,10 +103,10 @@ defineEmits<{
   (e: 'close'): void;
 }>();
 
-async function search(titleOrClientOrSkill: string) {
+async function search(titleOrClient: string) {
   searchingQuestions.value = true;
   try {
-    const found = await searchQuestions(titleOrClientOrSkill);
+    const found = await searchQuestions(titleOrClient);
     if (questionsSelected) {
       questions.value = found.filter(
         (question) => !questionsSelected.some((selected) => selected.id === question.id)
@@ -131,7 +131,7 @@ const showError = (message: string) => {
 };
 
 const initSearch = () => {
-  titleOrClientOrSkill.value = '';
+  titleOrClient.value = '';
   selectedQuestions.value = [];
   questions.value = [];
 };
@@ -139,5 +139,5 @@ const initSearch = () => {
 const searchingQuestions = ref(false);
 const questions = ref<Question[]>([]);
 const selectedQuestions = ref<Question[]>([]);
-const titleOrClientOrSkill = ref('');
+const titleOrClient = ref('');
 </script>

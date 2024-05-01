@@ -4,9 +4,9 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
+import Chips from 'primevue/chips';
 import { ref, onMounted } from 'vue';
 import type { Question, QuestionForm } from '@/stores/question/schema';
-import { getAllSkills } from '@/stores/skill';
 import { getAllClients } from '@/stores/client';
 
 const loading = ref(false);
@@ -28,11 +28,10 @@ const questionForm = ref<QuestionForm>({
   answer: '',
   division: '',
   clientId: 0,
-  skillId: undefined,
+  skillNames: [],
 });
 
 const clients = ref<{ name: string; label: number }[]>();
-const skills = ref<{ name: string; label: number }[]>();
 
 onMounted(async () => {
   loading.value = true;
@@ -40,10 +39,6 @@ onMounted(async () => {
     clients.value = (await getAllClients()).map((c) => ({
       name: c.name,
       label: c.id,
-    }));
-    skills.value = (await getAllSkills()).map((s) => ({
-      name: s.name,
-      label: s.id,
     }));
   } catch (e) {
     console.error(e);
@@ -97,14 +92,16 @@ onMounted(async () => {
           <InputGroupAddon>
             <i class="pi pi-wrench"></i>
           </InputGroupAddon>
-          <Dropdown
-            v-model="questionForm.skillId"
-            :options="skills"
-            optionLabel="name"
-            optionValue="label"
-            placeholder="Select a skill"
-            class="md:w-14rem w-full"
-          />
+          <div class="p-fluid w-full overflow-x-auto">
+            <Chips
+              v-model="questionForm.skillNames"
+              separator=","
+              :allow-duplicate="false"
+              class="w-full"
+              :max="5"
+              :placeholder="questionForm.skillNames.length === 0 ? 'Skills' : ''"
+            />
+          </div>
         </InputGroup>
 
         <InputGroup>

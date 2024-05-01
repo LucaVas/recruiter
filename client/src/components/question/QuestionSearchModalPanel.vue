@@ -2,7 +2,7 @@
   <div>
     <Panel toggleable collapsed>
       <template #header>
-        <div class="align-center flex gap-2">
+        <div class="align-center items-center flex gap-2">
           <Checkbox
             v-model="questionSelected"
             @change="$emit('selectOrUnselectQuestion', question)"
@@ -14,8 +14,15 @@
         </div>
       </template>
       <template #icons>
-        <Button icon="pi pi-cog" class="p-panel-header-icon p-link mr-2" @click="toggle" unstyled />
-        <Menu ref="menu" id="config_menu" :model="items" popup />
+        <div class="min-w-fit flex justify-center">
+          <Button
+            icon="pi pi-cog"
+            class="p-panel-header-icon p-link mr-2"
+            @click="toggle"
+            unstyled
+          />
+          <Menu ref="menu" id="config_menu" :model="items" popup />
+        </div>
       </template>
       <div class="space-y-4">
         <p><span class="font-semibold">Question:</span> {{ question.text }}</p>

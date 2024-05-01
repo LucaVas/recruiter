@@ -24,6 +24,7 @@ declare module 'vue' {
     CandidatesTable: typeof import('./src/components/tables/candidates/CandidatesTable.vue')['default']
     CandidateTable: typeof import('./src/components/candidacy/candidate/CandidateTable.vue')['default']
     Checkbox: typeof import('primevue/checkbox')['default']
+    Chips: typeof import('primevue/chips')['default']
     ClientModal: typeof import('./src/components/client/ClientModal.vue')['default']
     Column: typeof import('primevue/column')['default']
     copy: typeof import('./src/components/job/shared/Skills copy.vue')['default']

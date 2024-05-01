@@ -1,7 +1,5 @@
 package dev.lucavassos.recruiter.modules.question;
 
-import dev.lucavassos.recruiter.modules.candidate.domain.CandidateResponse;
-import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
 import dev.lucavassos.recruiter.modules.question.domain.NewQuestionRequest;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import jakarta.validation.Valid;
@@ -34,9 +32,9 @@ public class QuestionController {
 
     @GetMapping(path = "/questions/search")
     public ResponseEntity<List<QuestionDto>> getQuestions(
-            @RequestParam("titleOrClientOrSkill") String titleOrClientOrSkill) throws Exception {
-        LOG.info("Received request to get questions for ttle / client / skill {}", titleOrClientOrSkill);
-        List<QuestionDto> questions = service.getQuestionsByTitleOrClientOrSkill(titleOrClientOrSkill);
+            @RequestParam("titleOrClientOrSkill") String findByTitleOrClient) throws Exception {
+        LOG.info("Received request to get questions for ttle / client {}", findByTitleOrClient);
+        List<QuestionDto> questions = service.getQuestionsByTitleOrClient(findByTitleOrClient);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(questions);

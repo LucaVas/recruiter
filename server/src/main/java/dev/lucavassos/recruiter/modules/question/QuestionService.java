@@ -2,8 +2,6 @@ package dev.lucavassos.recruiter.modules.question;
 
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
-import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
-import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
 import dev.lucavassos.recruiter.modules.question.domain.NewQuestionRequest;
@@ -14,14 +12,13 @@ import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMappe
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -36,10 +33,10 @@ public class QuestionService {
     private final QuestionDtoMapper questionDtoMapper;
 
     @Transactional
-    public List<QuestionDto> getQuestionsByTitleOrClientOrSkill(String titleOrClientOrSkill) {
-        LOG.info("Retrieving questions for title / client / skill {}", titleOrClientOrSkill);
+    public List<QuestionDto> getQuestionsByTitleOrClient(String findByTitleOrClient) {
+        LOG.info("Retrieving questions for title / client {}", findByTitleOrClient);
 
-        List<Question> questions = questionRepository.findByTitleOrClientOrSkill(titleOrClientOrSkill);
+        List<Question> questions = questionRepository.findByTitleOrClient(findByTitleOrClient);
 
         List<QuestionDto> questionDtos = questions.stream()
                 .map(questionDtoMapper)
@@ -56,25 +53,22 @@ public class QuestionService {
 
         Client client = clientRepository.findById(request.clientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
-        Skill skill = null;
-        if (request.skillId() != null) {
-            skill = skillRepository.findById(request.skillId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
+        List<Skill> skills = new ArrayList<>();
+        if (request.skillNames() != null && !request.skillNames().isEmpty()) {
+            request.skillNames().stream()
+                    .map(skillName -> skillRepository.findByName(skillName)
+                                .orElseGet(() -> skillRepository.save(Skill.builder().name(skillName).build()))
+                    ).forEach(skills::add);
         }
-
-        String formattedTitle = Arrays.stream(request.title().split(" "))
-                .map(StringUtils::capitalize)
-                .reduce((a, b) -> a + " " + b)
-                .orElseThrow(() -> new ServerException("Error formatting title"));
 
         Question question;
         try {
             question = Question.builder()
-                    .title(formattedTitle)
+                    .title(request.title())
                     .text(request.text())
                     .answer(request.answer())
                     .client(client)
-                    .skill(skill)
+                    .skills(new HashSet<>(skills))
                     .active(true)
                     .build();
             questionRepository.save(question);

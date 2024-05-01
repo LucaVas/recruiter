@@ -44,13 +44,11 @@
         <label>Questions</label>
 
         <div class="flex flex-row gap-3">
-          <Button
-            label="Search"
-            class="w-full"
-            outlined
-            icon="pi pi-search"
-            @click="openQuestionSearchModal = true"
-          />
+          <IconField iconPosition="left" class="w-full">
+            <InputIcon class="pi pi-search"> </InputIcon>
+            <InputText placeholder="Search" class="w-full" @click="openQuestionSearchModal = true" />
+          </IconField>
+
           <Button
             label="New"
             icon="pi pi-plus"
@@ -86,7 +84,10 @@ import JobHiringDetails from '@/components/job/shared/JobHiringDetails.vue';
 import NowJobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import QuestionSearchModal from '@/components/question/QuestionSearchModal.vue';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
 import Toast from 'primevue/toast';
+import InputText from 'primevue/inputtext';
 import { useToast } from 'primevue/usetoast';
 import { createJob } from '@/stores/job';
 import type { NewJobRequest } from '@/stores/job/schema';
@@ -99,6 +100,7 @@ import QuestionModal from '@/components/question/QuestionModal.vue';
 import QuestionsTable from '@/components/question/QuestionsTable.vue';
 import { createQuestion } from '@/stores/question/index';
 import { type QuestionForm } from '@/stores/question/schema';
+import { capitalize, capitalizeText, capitalizeWords } from '../../utils/stringUtils';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -123,7 +125,14 @@ async function create(job: NewJobRequest) {
 
 const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
   try {
-    const newQuestion = await createQuestion(question);
+    const newQuestion = await createQuestion({
+      ...question,
+      text: capitalizeText(question.text),
+      title: capitalizeWords(question.title),
+      answer: capitalizeText(question.answer),
+      division: capitalize(question.division),
+      skillNames: question.skillNames.map((s) => capitalize(s)),
+    });
     job.value.questions.push(newQuestion);
   } catch (e) {
     showError(e as string);
