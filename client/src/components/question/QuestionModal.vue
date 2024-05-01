@@ -23,11 +23,12 @@ const emits = defineEmits<{
 }>();
 
 const questionForm = ref<QuestionForm>({
+  title: '',
   text: '',
   answer: '',
   division: '',
   clientId: 0,
-  skillId: 0,
+  skillId: undefined,
 });
 
 const clients = ref<{ name: string; label: number }[]>();
@@ -64,6 +65,13 @@ onMounted(async () => {
       class="w-[90%] sm:w-2/3 md:w-2/3 lg:w-1/3"
     >
       <div class="mb-5 flex flex-col gap-2">
+        <InputGroup>
+          <InputGroupAddon>
+            <i class="pi pi-id-card"></i>
+          </InputGroupAddon>
+          <InputText placeholder="Title" autocomplete="off" v-model="questionForm.title" />
+        </InputGroup>
+
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-building"></i>

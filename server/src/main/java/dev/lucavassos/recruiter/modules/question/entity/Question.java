@@ -26,6 +26,10 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, name = "title")
+    @Size(min = 1, message = "Question title must be at least 1 character long")
+    private String title;
+
     @Column(nullable = false, name = "text")
     @Size(min = 1, message = "Question text must be at least 1 character long")
     private String text;

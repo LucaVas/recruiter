@@ -5,9 +5,7 @@
       @update:visible="
         {
           $emit('close');
-          clientOrSkill = '';
-          selectedQuestions = [];
-          questions = [];
+          initSearch();
         }
       "
       closeOnEscape
@@ -19,11 +17,11 @@
           <InputGroup class="flex w-full flex-row">
             <InputText
               id="question-input"
-              v-model="clientOrSkill"
+              v-model="titleOrClientOrSkill"
               @keypress="
                 ($event) => {
-                  if ($event.key === 'Enter' && clientOrSkill !== '') {
-                    search(clientOrSkill);
+                  if ($event.key === 'Enter' && titleOrClientOrSkill !== '') {
+                    search(titleOrClientOrSkill);
                   }
                 }
               "
@@ -32,11 +30,11 @@
             <Button
               outlined
               icon="pi pi-search"
-              @click="clientOrSkill !== '' ? search(clientOrSkill) : null"
+              @click="titleOrClientOrSkill !== '' ? search(titleOrClientOrSkill) : null"
             />
           </InputGroup>
         </div>
-        <small id="question-input-help" v-show="clientOrSkill === ''" class="text-gray-500"
+        <small id="question-input-help" v-show="titleOrClientOrSkill === ''" class="text-gray-500"
           >Type client name or skill related to the questions you want to add.</small
         >
       </div>
@@ -59,9 +57,7 @@
             @click="
               {
                 $emit('close');
-                clientOrSkill = '';
-                selectedQuestions = [];
-                questions = [];
+                initSearch();
               }
             "
             icon="pi pi-times"
@@ -74,9 +70,7 @@
             @click="
               {
                 $emit('selectOrUnselectQuestions', selectedQuestions);
-                clientOrSkill = '';
-                selectedQuestions = [];
-                questions = [];
+                initSearch();
               }
             "
             icon="pi pi-check"
@@ -109,10 +103,10 @@ defineEmits<{
   (e: 'close'): void;
 }>();
 
-async function search(clientOrSkill: string) {
+async function search(titleOrClientOrSkill: string) {
   searchingQuestions.value = true;
   try {
-    const found = await searchQuestions(clientOrSkill);
+    const found = await searchQuestions(titleOrClientOrSkill);
     if (questionsSelected) {
       questions.value = found.filter(
         (question) => !questionsSelected.some((selected) => selected.id === question.id)
@@ -136,8 +130,14 @@ const showError = (message: string) => {
   });
 };
 
+const initSearch = () => {
+  titleOrClientOrSkill.value = '';
+  selectedQuestions.value = [];
+  questions.value = [];
+};
+
 const searchingQuestions = ref(false);
 const questions = ref<Question[]>([]);
 const selectedQuestions = ref<Question[]>([]);
-const clientOrSkill = ref('');
+const titleOrClientOrSkill = ref('');
 </script>

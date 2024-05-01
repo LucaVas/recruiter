@@ -1,5 +1,6 @@
 export type Question = {
   id: number;
+  title: string;
   text: string;
   answer: string;
   active: boolean;
@@ -8,7 +9,7 @@ export type Question = {
   modifiedDTime: Date;
 };
 
-export type QuestionForm = Pick<Question, 'text' | 'division' | 'answer'> & {
+export type QuestionForm = Pick<Question, 'title' | 'text' | 'division' | 'answer'> & {
   clientId: number;
-  skillId: number;
+  skillId?: number;
 };

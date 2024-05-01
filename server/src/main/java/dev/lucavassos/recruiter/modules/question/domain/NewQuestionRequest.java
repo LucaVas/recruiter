@@ -8,13 +8,17 @@ public record NewQuestionRequest(
 
         @Nullable String division,
 
+        @NotNull(message = "Question title cannot be empty")
+        @Size(max = 255, message = "Title answer must be less than 255 characters")
+        String title,
+
         @NotNull(message = "Question answer cannot be empty")
-        @Size(max = 255, message = "Question answer must be less than 500 characters")
+        @Size(max = 500, message = "Question answer must be less than 500 characters")
         String answer,
 
         @NotNull(message = "Client ID cannot be empty")
         Long clientId,
 
-        @NotNull(message = "Client ID cannot be empty")
+        @Nullable
         Long skillId
 ){}

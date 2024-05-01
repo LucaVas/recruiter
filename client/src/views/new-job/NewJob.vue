@@ -96,7 +96,6 @@ import JobFooter from '@/components/job/shared/JobFooter.vue';
 import type { Skill } from '@/stores/skill/schema';
 import type { Client } from '@/stores/client/schema';
 import QuestionModal from '@/components/question/QuestionModal.vue';
-import { type Question } from '@/stores/question/schema';
 import QuestionsTable from '@/components/question/QuestionsTable.vue';
 import { createQuestion } from '@/stores/question/index';
 import { type QuestionForm } from '@/stores/question/schema';

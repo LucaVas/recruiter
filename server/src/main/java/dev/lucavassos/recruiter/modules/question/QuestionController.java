@@ -34,9 +34,9 @@ public class QuestionController {
 
     @GetMapping(path = "/questions/search")
     public ResponseEntity<List<QuestionDto>> getQuestions(
-            @RequestParam("clientOrSkill") String clientOrSkill) throws Exception {
-        LOG.info("Received request to get questions for client / skill {}", clientOrSkill);
-        List<QuestionDto> questions = service.getQuestionsByClientOrSkill(clientOrSkill);
+            @RequestParam("titleOrClientOrSkill") String titleOrClientOrSkill) throws Exception {
+        LOG.info("Received request to get questions for ttle / client / skill {}", titleOrClientOrSkill);
+        List<QuestionDto> questions = service.getQuestionsByTitleOrClientOrSkill(titleOrClientOrSkill);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(questions);

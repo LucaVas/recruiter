@@ -33,10 +33,10 @@ public class QuestionService {
     private final QuestionDtoMapper questionDtoMapper;
 
     @Transactional
-    public List<QuestionDto> getQuestionsByClientOrSkill(String clientOrSkill) {
-        LOG.info("Retrieving questions for client / skill {}", clientOrSkill);
+    public List<QuestionDto> getQuestionsByTitleOrClientOrSkill(String titleOrClientOrSkill) {
+        LOG.info("Retrieving questions for title / client / skill {}", titleOrClientOrSkill);
 
-        List<Question> questions = questionRepository.findByClientNameOrSkillName(clientOrSkill);
+        List<Question> questions = questionRepository.findByTitleOrClientOrSkill(titleOrClientOrSkill);
 
         List<QuestionDto> questionDtos = questions.stream()
                 .map(questionDtoMapper)
@@ -53,12 +53,16 @@ public class QuestionService {
 
         Client client = clientRepository.findById(request.clientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
-        Skill skill = skillRepository.findById(request.skillId())
-                .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
+        Skill skill = null;
+        if (request.skillId() != null) {
+            skill = skillRepository.findById(request.skillId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
+        }
 
         Question question;
         try {
             question = Question.builder()
+                    .title(request.title())
                     .text(request.text())
                     .answer(request.answer())
                     .client(client)

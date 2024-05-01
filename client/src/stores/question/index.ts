@@ -5,8 +5,8 @@ import axiosApi from '../api';
 const api = axiosApi();
 
 // functions
-export async function searchQuestions(clientOrSkill: string): Promise<Question[]> {
-  const { data } = await api.get(`/questions/search?clientOrSkill=${clientOrSkill}`);
+export async function searchQuestions(titleOrClientOrSkill: string): Promise<Question[]> {
+  const { data } = await api.get(`/questions/search?titleOrClientOrSkill=${titleOrClientOrSkill}`);
   return data;
 }
 
