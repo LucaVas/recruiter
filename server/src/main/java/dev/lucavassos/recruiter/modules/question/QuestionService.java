@@ -14,11 +14,14 @@ import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMappe
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.text.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -59,10 +62,15 @@ public class QuestionService {
                     .orElseThrow(() -> new ResourceNotFoundException("Skill not found"));
         }
 
+        String formattedTitle = Arrays.stream(request.title().split(" "))
+                .map(StringUtils::capitalize)
+                .reduce((a, b) -> a + " " + b)
+                .orElseThrow(() -> new ServerException("Error formatting title"));
+
         Question question;
         try {
             question = Question.builder()
-                    .title(request.title())
+                    .title(formattedTitle)
                     .text(request.text())
                     .answer(request.answer())
                     .client(client)
