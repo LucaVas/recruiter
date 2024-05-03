@@ -13,7 +13,7 @@ export type Candidacy = {
   officialNoticePeriod: number;
   actualNoticePeriod: number;
   reasonForQuickJoin: string;
-  remarks: string;
+  recruiterComment: string;
   status?: CandidacyStatus;
   modifiedDTime: Date;
   createdDTime: Date;

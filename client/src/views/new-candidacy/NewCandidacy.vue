@@ -96,7 +96,7 @@ const candidacy = ref<RawCandidacy>({
   officialNoticePeriod: 0,
   actualNoticePeriod: 0,
   reasonForQuickJoin: '',
-  remarks: '',
+  recruiterComment: '',
 });
 
 const candidate = ref<NewCandidateRequest>({
