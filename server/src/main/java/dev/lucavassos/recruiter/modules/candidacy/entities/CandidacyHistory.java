@@ -44,9 +44,6 @@ public class CandidacyHistory {
     @Column(name = "reason_for_quick_join")
     private String reasonForQuickJoin;
 
-    @Column(name = "remarks")
-    private String remarks;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name = "job_id", referencedColumnName = "job_id"),

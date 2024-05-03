@@ -36,6 +36,6 @@ public record NewCandidacyRequest(
         CandidacyStatus status,
 
         String reasonForQuickJoin,
-        String remarks
+        String recruiterComment
 ) {
 }

@@ -62,9 +62,6 @@ public class Candidacy {
     @Column(name = "reason_for_quick_join")
     private String reasonForQuickJoin;
 
-    @Column(name = "remarks")
-    private String remarks;
-
     @OneToMany(mappedBy = "candidacy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CandidacyHistory> candidacyHistories;
 

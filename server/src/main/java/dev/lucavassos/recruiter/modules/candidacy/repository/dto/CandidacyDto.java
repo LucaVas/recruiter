@@ -19,7 +19,6 @@ public record CandidacyDto(
         Double officialNoticePeriod,
         Double actualNoticePeriod,
         String reasonForQuickJoin,
-        String remarks,
         CandidacyStatus status,
         LocalDateTime createdDTime,
         LocalDateTime modifiedDTime
