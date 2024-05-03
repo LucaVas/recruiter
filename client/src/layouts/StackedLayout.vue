@@ -2,6 +2,7 @@
 import Navbar from '@/components/navbar/Navbar.vue';
 import type { MenuItem } from './types';
 import { ref } from 'vue';
+import NavbarButtons from '@/components/navbar/NavbarButtons.vue';
 
 const { menuItems, username } = defineProps<{
   menuItems: MenuItem[];
@@ -12,9 +13,15 @@ const menuVisible = ref(false);
 
 <template>
   <div class="flex h-screen flex-col md:flex-row">
-    <div class="h-20 w-full p-2 md:relative md:h-full md:w-20 bg-slate-50/90 fixed">
-      <nav class="flex items-center sm:items-start w-full h-full justify-end md:justify-center">
-        <Button icon="pi pi-bars" @click="menuVisible = true" />
+    <div class="fixed h-20 w-full bg-slate-50/90 p-2 md:relative md:h-full md:w-20">
+      <nav
+        class="flex h-full w-full items-start justify-end md:flex-col md:items-center md:justify-between"
+      >
+        <div class="space-y-3">
+          <Button icon="pi pi-bars" @click="menuVisible = true" />
+          <NavbarButtons />
+        </div>
+        <Button class="hidden md:block" icon="pi pi-cog" outlined @click="menuVisible = true" />
       </nav>
     </div>
     <Navbar
