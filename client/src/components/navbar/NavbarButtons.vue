@@ -1,16 +1,19 @@
 <template>
-  <div class="hidden gap-3 md:flex md:flex-col">
-    <Button
-      v-for="button in filteredButtons"
-      :key="filteredButtons.indexOf(button)"
-      :icon="button.icon"
-      outlined
-      @click="button.command"
-    />
+  <div class="hidden justify-between gap-3 md:flex md:flex-col">
+    <div class="flex flex-col gap-3">
+      <Button
+        v-for="button in filteredButtons"
+        :key="filteredButtons.indexOf(button)"
+        :icon="button.icon"
+        outlined
+        @click="button.command"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import { isAdmin } from '@/stores/auth/index';
 import { computed, ref } from 'vue';
@@ -41,6 +44,11 @@ const buttons = ref([
     icon: 'pi pi-file',
     visible: !isAdmin,
     command: () => router.push({ name: 'CandidaciesPage' }),
+  },
+  {
+    icon: 'pi pi-cog',
+    visible: true,
+    command: () => router.push({ name: 'Settings' }),
   },
 ]);
 

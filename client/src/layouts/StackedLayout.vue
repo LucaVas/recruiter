@@ -15,13 +15,10 @@ const menuVisible = ref(false);
   <div class="flex h-screen flex-col md:flex-row">
     <div class="fixed h-20 w-full bg-slate-50/90 p-2 md:relative md:h-full md:w-20">
       <nav
-        class="flex h-full w-full items-start justify-end md:flex-col md:items-center md:justify-between"
+        class="flex h-full w-full items-start justify-end md:flex-col md:items-center md:justify-start md:gap-3"
       >
-        <div class="space-y-3">
-          <Button icon="pi pi-bars" @click="menuVisible = true" />
-          <NavbarButtons />
-        </div>
-        <Button class="hidden md:block" icon="pi pi-cog" outlined @click="menuVisible = true" />
+        <Button icon="pi pi-bars" @click="menuVisible = true" />
+        <NavbarButtons />
       </nav>
     </div>
     <Navbar

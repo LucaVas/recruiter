@@ -70,7 +70,7 @@ export const menuItems = ref<MenuItem[]>([
         name: 'Settings',
         icon: 'pi pi-cog',
         shortcut: '⌘+S',
-        view: 'Dashboard',
+        view: 'Settings',
         privileges: ['ROLE_RECRUITER', 'ROLE_ADMIN'],
       },
     ],
