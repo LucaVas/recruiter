@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.user;
 
+import dev.lucavassos.recruiter.auth.domain.AuthUserInfoDto;
 import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import jakarta.validation.Valid;

@@ -11,6 +11,8 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
+import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ public class AuthService {
     private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
+    private final UserDtoMapper userDtoMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final MonitoringProcessor monitoringProcessor;
@@ -84,5 +87,15 @@ public class AuthService {
                 userPrincipal.getId(),
                 userPrincipal.getUsername(),
                 userPrincipal.getRoleName());
+    }
+
+    public UserDto getAuthUserProfile() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        return userRepository.findOneById(userPrincipal.getId())
+                .map(userDtoMapper)
+                .orElseThrow(() -> new ServerException("Auth user not found."));
     }
 }

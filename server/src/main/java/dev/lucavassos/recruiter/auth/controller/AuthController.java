@@ -7,6 +7,7 @@ import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.jwt.JwtTokenProvider;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -96,6 +97,12 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<AuthUserInfoDto> getAuthUser() {
         LOG.info("Received request for auth user.");
-        return new ResponseEntity<>(service.getAuthUser(), HttpStatus.OK);
+        return ResponseEntity.ok(service.getAuthUser());
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserDto> getAuthUserProfile() {
+        LOG.info("Received request for auth user profile.");
+        return ResponseEntity.ok(service.getAuthUserProfile());
     }
 }
