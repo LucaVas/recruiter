@@ -27,6 +27,7 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,22 +96,29 @@ public class CandidacyService {
         }
 
         CandidacyId candidacyId = new CandidacyId(candidate.getPan(), job.getId());
-        Candidacy newCandidacy = Candidacy.builder()
-                .id(candidacyId)
-                .job(job)
-                .candidate(candidate)
-                .recruiter(recruiter)
-                .relevantExperience(candidacy.relevantExperience())
-                .expectedCtc(candidacy.expectedCtc())
-                .officialNoticePeriod(candidacy.officialNoticePeriod())
-                .actualNoticePeriod(candidacy.actualNoticePeriod())
-                .reasonForQuickJoin(candidacy.reasonForQuickJoin())
-                .remarks(candidacy.remarks())
-                .status(candidacy.status() != null ? candidacy.status() : CandidacyStatus.SENT_TO_CLIENT)
-                .build();
-
-        candidacyRepository.save(newCandidacy);
+        Candidacy newCandidacy = saveCandidacy(
+                Candidacy.builder()
+                        .id(candidacyId)
+                        .job(job)
+                        .candidate(candidate)
+                        .recruiter(recruiter)
+                        .relevantExperience(candidacy.relevantExperience())
+                        .expectedCtc(candidacy.expectedCtc())
+                        .officialNoticePeriod(candidacy.officialNoticePeriod())
+                        .actualNoticePeriod(candidacy.actualNoticePeriod())
+                        .reasonForQuickJoin(candidacy.reasonForQuickJoin())
+                        .status(candidacy.status() != null ? candidacy.status() : CandidacyStatus.SENT_TO_CLIENT)
+                        .build()
+        );
         monitoringProcessor.incrementCandidaciesCounter();
+
+        if ( !StringUtils.isBlank(candidacy.recruiterComment()) ) {
+            saveCandidacyComment(CandidacyComment.builder()
+                    .text(candidacy.recruiterComment())
+                    .candidacy(newCandidacy)
+                    .author(recruiter)
+                    .build());
+        }
 
     }
 
@@ -215,11 +223,6 @@ public class CandidacyService {
             changes = true;
         }
 
-        if (request.remarks() != null && !request.remarks().equals(candidacy.getRemarks())) {
-            candidacy.setRemarks(request.remarks());
-            changes = true;
-        }
-
         if (request.status() != null && request.status() != candidacy.getStatus()) {
             candidacy.setStatus(request.status());
             changes = true;
@@ -228,18 +231,11 @@ public class CandidacyService {
         if (!changes) {
             throw new RequestValidationException("No updates were made to data.");
         }
-        try {
-            candidacyRepository.save(candidacy);
-        } catch (Exception e) {
-            LOG.error("Database error while updating candidacy: {}", e.getMessage());
-            throw new DatabaseException(e.getMessage());
-        }
 
-        LOG.info("Candidacy updated: [{}]", candidacy);
+        Candidacy updatedCandidacy = saveCandidacy(candidacy);
+        LOG.info("Candidacy updated: [{}]", updatedCandidacy);
 
-        return candidacyDtoMapper.apply(candidacy);
-
-
+        return candidacyDtoMapper.apply(updatedCandidacy);
     }
 
     @Transactional
@@ -313,6 +309,26 @@ public class CandidacyService {
                 .stream()
                 .map(candidacyCommentDtoMapper)
                 .toList();
+    }
+
+    @Transactional
+    private CandidacyComment saveCandidacyComment(CandidacyComment comment) {
+        try {
+            return candidacyCommentRepository.save(comment);
+        } catch (Exception e) {
+            LOG.error("Database error while adding comment to candidacy: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    @Transactional
+    private Candidacy saveCandidacy(Candidacy candidacy) {
+        try {
+            return candidacyRepository.save(candidacy);
+        } catch (Exception e) {
+            LOG.error("Database error while updating candidacy: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     private User getAuthUser() {

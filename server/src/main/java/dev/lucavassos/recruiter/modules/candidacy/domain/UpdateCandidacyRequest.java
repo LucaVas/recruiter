@@ -27,7 +27,6 @@ public record UpdateCandidacyRequest(
         @Nullable
         CandidacyStatus status,
 
-        String reasonForQuickJoin,
-        String remarks
+        String reasonForQuickJoin
 ) {
 }

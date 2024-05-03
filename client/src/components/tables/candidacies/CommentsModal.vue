@@ -9,7 +9,7 @@
   >
     <div class="flex flex-col gap-4">
       <div v-if="!loadingComments" id="commentsContainer" class="py-3">
-        <div v-if="comments.length > 0" class="flex flex-col gap-3 overflow-y-auto max-h-[13rem]">
+        <div v-if="comments.length > 0" class="flex max-h-[13rem] flex-col gap-3 overflow-y-auto">
           <CommentPanel v-for="comment in comments" :key="comment.id" :comment="comment" />
         </div>
         <div v-else>
@@ -17,7 +17,7 @@
         </div>
       </div>
       <ProgressSpinner v-else />
-
+      <Divider/>
       <NewCommentContainer @sendComment="(comment) => $emit('send', comment)" />
     </div>
   </Dialog>
@@ -28,6 +28,7 @@ import Dialog from 'primevue/dialog';
 import CommentPanel from './CommentPanel.vue';
 import NewCommentContainer from '@/components/comments/shared/NewCommentContainer.vue';
 import ProgressSpinner from 'primevue/progressspinner';
+import Divider from 'primevue/divider';
 import type { CandidacyComment } from '@/stores/candidacy/schema';
 
 const { visible, comments, loadingComments } = defineProps<{
