@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy.entities;
 
+import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -52,6 +53,10 @@ public class CandidacyHistory {
             @JoinColumn(name = "candidate_pan", referencedColumnName = "candidate_pan")
     })
     private Candidacy candidacy;
+
+    @Column(nullable = false, name = "status")
+    @Enumerated(EnumType.STRING)
+    private CandidacyStatus status;
 
     // relation to user who modified the candidacy
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

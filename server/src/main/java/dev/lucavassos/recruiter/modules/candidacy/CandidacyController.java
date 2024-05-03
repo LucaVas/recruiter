@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyResponse;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
@@ -31,7 +30,7 @@ public class CandidacyController {
     }
 
     @PutMapping("/candidacies/job={jobId}&candidate={pan}")
-    public ResponseEntity<CandidacyResponse> updateCandidacy(
+    public ResponseEntity<CandidacyDto> updateCandidacy(
             @PathVariable Long jobId,
             @PathVariable String pan,
             @Valid @RequestBody UpdateCandidacyRequest request) throws Exception {
@@ -40,7 +39,7 @@ public class CandidacyController {
     }
 
     @GetMapping("/candidacies/job={jobId}&candidate={pan}")
-    public ResponseEntity<CandidacyResponse> getCandidacy(
+    public ResponseEntity<CandidacyDto> getCandidacy(
             @PathVariable Long jobId,
             @PathVariable String pan) {
         LOG.info("Received request to get candidacy with job ID {} and candidate pan {}", jobId, pan);

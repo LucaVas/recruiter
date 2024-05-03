@@ -5,7 +5,7 @@ import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyResponse;
+import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
@@ -96,6 +96,7 @@ public class CandidacyService {
                 .actualNoticePeriod(candidacy.actualNoticePeriod())
                 .reasonForQuickJoin(candidacy.reasonForQuickJoin())
                 .remarks(candidacy.remarks())
+                .status(candidacy.status() != null ? candidacy.status() : CandidacyStatus.SENT_TO_CLIENT)
                 .build();
 
         candidacyRepository.save(newCandidacy);
@@ -104,7 +105,7 @@ public class CandidacyService {
     }
 
     @Transactional
-    public CandidacyResponse getCandidacy(Long jobId, String pan) {
+    public CandidacyDto getCandidacy(Long jobId, String pan) {
 
         Job job = jobRepository.findOneById(jobId).orElseThrow(
                 () -> {
@@ -121,7 +122,7 @@ public class CandidacyService {
 
         return candidacyRepository.findByJobAndCandidate(job, candidate)
                 .map(candidacy ->
-                        new CandidacyResponse(candidacyDtoMapper.apply(candidacy))
+                        candidacyDtoMapper.apply(candidacy)
         ).orElseThrow(
                 () -> {
                     LOG.error("Candidacy with job {} and candidate {} not found", job, candidate);
@@ -144,7 +145,7 @@ public class CandidacyService {
     }
 
     @Transactional
-    public CandidacyResponse updateCandidacy(Long jobId, String pan, UpdateCandidacyRequest request) {
+    public CandidacyDto updateCandidacy(Long jobId, String pan, UpdateCandidacyRequest request) {
 
         boolean changes = false;
         LOG.info("Updating candidacy with jobId {} and pan {}", jobId, pan);
@@ -209,6 +210,11 @@ public class CandidacyService {
             changes = true;
         }
 
+        if (request.status() != null && request.status() != candidacy.getStatus()) {
+            candidacy.setStatus(request.status());
+            changes = true;
+        }
+
         if (!changes) {
             throw new RequestValidationException("No updates were made to data.");
         }
@@ -221,9 +227,8 @@ public class CandidacyService {
 
         LOG.info("Candidacy updated: [{}]", candidacy);
 
-        return new CandidacyResponse(
-                candidacyDtoMapper.apply(candidacy)
-        );
+        return candidacyDtoMapper.apply(candidacy);
+
 
     }
 

@@ -33,6 +33,7 @@ public class CandidacyDtoMapper implements Function<Candidacy, CandidacyDto> {
                 candidacy.getActualNoticePeriod(),
                 candidacy.getReasonForQuickJoin(),
                 candidacy.getRemarks(),
+                candidacy.getStatus(),
                 candidacy.getCreatedDTime(),
                 candidacy.getModifiedDTime()
         );
