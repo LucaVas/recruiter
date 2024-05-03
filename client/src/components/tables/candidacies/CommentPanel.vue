@@ -7,8 +7,8 @@
         </div>
       </template>
       <template #footer>
-        <div class="align-center flex flex-wrap justify-between gap-3">
-          <span class="p-text-secondary">{{ comment.createdDTime }}</span>
+        <div class="align-center flex flex-wrap justify-end gap-3">
+          <span class="p-text-secondary text-slate-400 italic">{{ formatDateTime(comment.createdDTime) }}</span>
         </div>
       </template>
       <p class="m-0">
@@ -21,6 +21,7 @@
 <script setup lang="ts">
 import Panel from 'primevue/panel';
 import { type CandidacyComment } from '@/stores/candidacy/schema';
+import { formatDateTime } from '@/utils/dateUtils';
 
 const { comment } = defineProps<{
   comment: CandidacyComment;

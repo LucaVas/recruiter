@@ -26,14 +26,15 @@
       <template #body="{ data }">
         <CommentsModal
           :loadingComments="loadingComments"
+          :sendingComment="sendingComment"
           :comments="comments"
           :visible="openCommentsHistoryModal"
+          @send="(comment) => send(data.job.id, data.candidate.pan, comment)"
           @close="openCommentsHistoryModal = false"
-          @loadComments="getComments(data.job.id, data.candidate.pan)"
         />
         <CandidaciesTableActionButtonsColumn
           :data="data"
-          @seeCommentsHistory="
+          @seeComments="
             {
               openCommentsHistoryModal = true;
               getComments(data.job.id, data.candidate.pan);
@@ -64,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { getAllCandidacies, getCandidacyComments } from '@/stores/candidacy';
+import { addCandidacyComment, getAllCandidacies, getCandidacyComments } from '@/stores/candidacy';
 import type { Candidacy } from '@/stores/candidacy/schema';
 import { ApiError } from '@/utils/types';
 import Column from 'primevue/column';
@@ -89,10 +90,23 @@ const showError = (content: string) => {
 };
 
 const loadingTable = ref(false);
+const sendingComment = ref(false);
 const loadingComments = ref(false);
 const candidates = ref<Candidacy[]>();
 const openCommentsHistoryModal = ref(false);
 const comments = ref<CandidacyComment[]>([]);
+
+const send = async (jobId: number, pan: string, comment: string) => {
+  sendingComment.value = true;
+  try {
+    await addCandidacyComment(jobId, pan, { text: comment });
+    await getComments(jobId, pan);
+  } catch (e) {
+    toast.add({ severity: 'error', summary: 'Error', detail: `Failed to send comment: ${e}` });
+  } finally {
+    sendingComment.value = false;
+  }
+};
 
 const getComments = async (jobId: number, pan: string) => {
   loadingComments.value = true;

@@ -3,7 +3,7 @@
     <TextArea v-model="comment" variant="filled" rows="4" cols="30" class="w-full" />
   </div>
   <div class="flex justify-end gap-2">
-    <Button icon="pi pi-send" label="Send Comment" @click="$emit('sendComment', comment)" />
+    <Button icon="pi pi-send" label="Send Comment" @click="{ $emit('sendComment', comment); comment = '' }" />
   </div>
 </template>
 

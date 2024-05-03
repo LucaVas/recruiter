@@ -1,6 +1,7 @@
 import {
   type Candidacy,
   type CandidacyComment,
+  type NewCandidacyCommentRequest,
   type NewCandidacyRequest,
   type UpdateCandidacyRequest,
 } from './schema';
@@ -37,4 +38,12 @@ export async function getCandidacyComments(
 ): Promise<CandidacyComment[]> {
   const { data } = await api.get(`/candidacies/job=${jobId}&candidate=${pan}/comments`);
   return data;
+}
+
+export async function addCandidacyComment(
+  jobId: number,
+  pan: string,
+  comment: NewCandidacyCommentRequest
+): Promise<void> {
+  await api.post(`/candidacies/job=${jobId}&candidate=${pan}/comments`, comment);
 }

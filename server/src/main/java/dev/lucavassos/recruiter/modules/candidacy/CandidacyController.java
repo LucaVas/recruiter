@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
+import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
@@ -60,5 +61,16 @@ public class CandidacyController {
     ) {
         LOG.info("Received request to get comments for candidacy with job ID {} and candidate pan {}", jobId, pan);
         return ResponseEntity.ok(service.getCandidacyComments(jobId, pan));
+    }
+
+    @PostMapping("/candidacies/job={jobId}&candidate={pan}/comments")
+    public ResponseEntity<?> addCandidacyComment(
+            @PathVariable Long jobId,
+            @PathVariable String pan,
+            @Valid @RequestBody NewCandidacyCommentRequest comment
+    ) {
+        LOG.info("Received request to add comment to candidacy with job ID {} and candidate pan {}", jobId, pan);
+        service.addCandidacyComment(jobId, pan, comment);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

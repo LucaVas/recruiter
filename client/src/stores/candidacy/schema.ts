@@ -33,6 +33,7 @@ export type UpdateCandidacyRequest = Omit<
   'id' | 'createdDTime' | 'modifiedDTime' | 'recruiter' | 'job' | 'candidate'
 >;
 export type NewCandidacyRequest = UpdateCandidacyRequest & { jobId: number; candidatePan: string };
+export type NewCandidacyCommentRequest = Pick<CandidacyComment, 'text'>;
 
 // frontend types
 export type RawCandidacy = Omit<

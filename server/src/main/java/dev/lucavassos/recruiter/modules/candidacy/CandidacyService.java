@@ -6,9 +6,11 @@ import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
+import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
+import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyId;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyCommentRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
@@ -19,6 +21,7 @@ import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
+import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
@@ -237,6 +240,49 @@ public class CandidacyService {
         return candidacyDtoMapper.apply(candidacy);
 
 
+    }
+
+    @Transactional
+    public void addCandidacyComment(Long jobId, String pan, NewCandidacyCommentRequest comment) {
+        Job job = jobRepository.findOneById(jobId).orElseThrow(
+                () -> {
+                    LOG.error("Job with id {} not found", jobId);
+                    return new ResourceNotFoundException("Job not found");
+                }
+        );
+        Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
+                () -> {
+                    LOG.error("Candidate with pan {} not found", pan);
+                    return new ResourceNotFoundException("Candidate not found");
+                }
+        );
+
+        Candidacy candidacy = candidacyRepository.findByJobAndCandidate(job, candidate)
+                .orElseThrow(
+                        () -> {
+                            LOG.error("Candidacy with job {} and candidate {} not found", job, candidate);
+                            return new ResourceNotFoundException("Candidacy not found");
+                        }
+                );
+
+        User user = getAuthUser();
+        if (!isUserAuthorized(user, candidacy)) {
+            LOG.error("User with id {} is not authorized to add comments to this candidacy", user.getId());
+            throw new UnauthorizedException("Recruiter is unauthorized to add comments to this candidacy");
+        }
+
+        try {
+            candidacyCommentRepository.save(
+                    CandidacyComment.builder()
+                            .text(comment.text())
+                            .candidacy(candidacy)
+                            .author(user)
+                            .build()
+            );
+        } catch (Exception e) {
+            LOG.error("Database error while adding comment to candidacy: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     @Transactional

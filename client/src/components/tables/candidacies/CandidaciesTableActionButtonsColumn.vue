@@ -22,7 +22,7 @@ const { data } = defineProps<{
   data: any;
 }>();
 const emits = defineEmits<{
-  (e: 'seeCommentsHistory'): void;
+  (e: 'seeComments'): void;
 }>();
 
 const menu = ref();
@@ -53,10 +53,10 @@ const adminItems = ref([
 
 const recruiterItems = ref([
   {
-    label: 'Comment history',
+    label: 'Comments',
     icon: 'pi pi-envelope',
     command: () => {
-      emits('seeCommentsHistory');
+      emits('seeComments');
     },
   },
 ]);
