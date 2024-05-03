@@ -1,10 +1,6 @@
 <template>
   <Toast />
-  <CommentsModal
-    :comments="comments"
-    :visible="openCommentsHistoryModal"
-    @close="openCommentsHistoryModal = false"
-  />
+
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"
@@ -28,6 +24,13 @@
 
     <Column field="action" header="" class="min-w-fit">
       <template #body="{ data }">
+        <CommentsModal
+          :loadingComments="loadingComments"
+          :comments="comments"
+          :visible="openCommentsHistoryModal"
+          @close="openCommentsHistoryModal = false"
+          @loadComments="getComments(data.job.id, data.candidate.pan)"
+        />
         <CandidaciesTableActionButtonsColumn
           :data="data"
           @seeCommentsHistory="
