@@ -67,6 +67,7 @@ declare module 'vue' {
     MultiSelect: typeof import('primevue/multiselect')['default']
     Navbar: typeof import('./src/components/navbar/Navbar.vue')['default']
     NavbarBody: typeof import('./src/components/navbar/NavbarBody.vue')['default']
+    NavbarButtons: typeof import('./src/components/navbar/NavbarButtons.vue')['default']
     NavbarFooter: typeof import('./src/components/navbar/NavbarFooter.vue')['default']
     NavbarGroup: typeof import('./src/components/navbar/NavbarGroup.vue')['default']
     NavbarHeader: typeof import('./src/components/navbar/NavbarHeader.vue')['default']
