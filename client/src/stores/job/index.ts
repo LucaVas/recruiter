@@ -1,21 +1,18 @@
-import { changeJobStatusRequestSchema, deleteJobSchema, newJobRequestSchema, updateJobRequestSchema, type Job, type JobResponse, type JobStatus, type NewJobRequest } from './schema';
 import axiosApi from '../api';
+import { type Job, type JobResponse, type JobStatus, type NewJobRequest } from './schema';
 
 const api = axiosApi();
 
 export async function getAllJobs(): Promise<Job[]> {
   const { data } = await api.get(`/jobs`);
-  console.log(data)
   return data;
 }
 export async function createJob(newJob: NewJobRequest): Promise<JobResponse> {
   const { data } = await api.post(`/jobs`, newJob);
-  console.log(data);
   return data;
 }
 export async function updateJob(updatedJob: Job): Promise<JobResponse> {
   const { data } = await api.put(`/jobs/${updatedJob.id}`, updatedJob);
-  console.log(data);
   return data;
 }
 export async function changeJobStatus(jobId: number, newStatus: JobStatus): Promise<void> {

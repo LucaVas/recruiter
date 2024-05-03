@@ -1,5 +1,6 @@
 <template>
   <Toast />
+
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"
@@ -16,135 +17,107 @@
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <Header
-        :showColumns="showAllColumns"
-        :filters="filters"
-        @clearFilter="clearFilter()"
-        @showOrHideColumns="showAllColumns = !showAllColumns"
-      />
+      <CandidaciesTableHeader :filters="filters" @clearFilter="clearFilter()" />
     </template>
     <template #empty> No candidacies found. </template>
     <template #loading> Loading candidacies, please wait... </template>
 
-    <Column field="action" header="" class="min-w-10">
+    <Column field="action" header="" class="min-w-fit">
       <template #body="{ data }">
-        <div class="flex gap-2">
-          <Button
-            label="Edit"
-            class="h-8 min-w-fit"
-            rounded
-            @click="
-              router.push({
-                name: 'Candidacy',
-                params: { jobId: data.job.id, pan: data.candidate.pan },
-              })
-            "
-          />
-        </div>
-      </template>
-    </Column>
-    <Column field="job" header="Job" class="min-w-52">
-      <template #body="{ data }">
-        <div class="flex items-center gap-3">
-          {{ data.job.name }}
-        </div>
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter min-w-52"
-          placeholder="Search by job"
+        <CommentsModal
+          :loadingComments="loadingComments"
+          :sendingComment="sendingComment"
+          :comments="comments"
+          :visible="openCommentsHistoryModal"
+          @send="(comment) => send(data.job.id, data.candidate.pan, comment)"
+          @close="openCommentsHistoryModal = false"
+        />
+        <CandidaciesTableActionButtonsColumn
+          :data="data"
+          @seeComments="
+            {
+              openCommentsHistoryModal = true;
+              getComments(data.job.id, data.candidate.pan);
+            }
+          "
         />
       </template>
     </Column>
-    <Column field="client" header="Client" class="min-w-52">
+    <Column header="Candidate" class="min-w-52">
       <template #body="{ data }">
-        <div class="flex items-center gap-3">
-          {{ data.job.client }}
-        </div>
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter min-w-52"
-          placeholder="Search by client"
-        />
+        <CandidacyCandidateCard :candidate="data.candidate" />
       </template>
     </Column>
-    <Column field="candidate" header="Candidate" class="min-w-52">
+    <Column header="Job" class="min-w-52">
       <template #body="{ data }">
-        <div class="flex items-center gap-3">
-          {{ data.candidate.email }}
-        </div>
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter min-w-52"
-          placeholder="Search by candidate"
-        />
+        <CandidacyJobCard :candidacy="data" />
       </template>
     </Column>
-    <Column field="recruiter" header="Recruiter" class="min-w-52" v-if="showAllColumns">
+    <Column header="Status" class="min-w-52">
       <template #body="{ data }">
-        <div class="flex items-center gap-3">
-          {{ data.recruiter.username }}
-        </div>
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter min-w-52"
-          placeholder="Search by recruiter"
-        />
-      </template>
-    </Column>
-    <Column field="createdOn" header="Submitted On" dataType="date" class="min-w-40">
-      <template #body="{ data }">
-        {{ formatDate(data.createdAt) }}
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="date"
-          class="p-column-filter"
-          placeholder="Search by submission date"
-        />
+        <Tag
+          :severity="getCandidacyStatusSeverity(data.status)"
+          :value="getCandidacyStatus(data.status)"
+        ></Tag>
       </template>
     </Column>
   </DataTable>
 </template>
 
 <script setup lang="ts">
-import Button from 'primevue/button';
-import DataTable from 'primevue/datatable';
-import InputText from 'primevue/inputtext';
-import Toast from 'primevue/toast';
-import { onMounted, ref } from 'vue';
-import Column from 'primevue/column';
-import { filters, initFilters, clearFilter } from './filters';
-import { ApiError } from '@/utils/types';
-import { getAllCandidacies } from '@/stores/candidacy';
-import { useToast } from 'primevue/usetoast';
-import { columns } from '.';
-import Header from '../shared/Header.vue';
+import { addCandidacyComment, getAllCandidacies, getCandidacyComments } from '@/stores/candidacy';
 import type { Candidacy } from '@/stores/candidacy/schema';
-import { useRouter } from 'vue-router';
-import { formatDate } from '@/utils/dateUtils';
+import { ApiError } from '@/utils/types';
+import Column from 'primevue/column';
+import DataTable from 'primevue/datatable';
+import Toast from 'primevue/toast';
+import Tag from 'primevue/tag';
+import { useToast } from 'primevue/usetoast';
+import { onMounted, ref } from 'vue';
+import { columns } from '.';
+import CandidaciesTableHeader from './CandidaciesTableHeader.vue';
+import CandidaciesTableActionButtonsColumn from './CandidaciesTableActionButtonsColumn.vue';
+import CandidacyCandidateCard from './CandidacyCandidateCard.vue';
+import CandidacyJobCard from './CandidacyJobCard.vue';
+import CommentsModal from './CommentsModal.vue';
+import { clearFilter, filters, initFilters } from './filters';
+import { getCandidacyStatus, getCandidacyStatusSeverity } from './utils';
+import { type CandidacyComment } from '@/stores/candidacy/schema';
 
-const router = useRouter();
 const toast = useToast();
 const showError = (content: string) => {
   toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
 };
 
 const loadingTable = ref(false);
+const sendingComment = ref(false);
+const loadingComments = ref(false);
 const candidates = ref<Candidacy[]>();
-const showAllColumns = ref(false);
+const openCommentsHistoryModal = ref(false);
+const comments = ref<CandidacyComment[]>([]);
+
+const send = async (jobId: number, pan: string, comment: string) => {
+  sendingComment.value = true;
+  try {
+    await addCandidacyComment(jobId, pan, { text: comment });
+    await getComments(jobId, pan);
+  } catch (e) {
+    toast.add({ severity: 'error', summary: 'Error', detail: `Failed to send comment: ${e}` });
+  } finally {
+    sendingComment.value = false;
+  }
+};
+
+const getComments = async (jobId: number, pan: string) => {
+  loadingComments.value = true;
+  try {
+    comments.value = await getCandidacyComments(jobId, pan);
+  } catch (err) {
+    if (err instanceof ApiError) showError(err.message);
+  } finally {
+    loadingComments.value = false;
+  }
+};
 async function initTable() {
   loadingTable.value = true;
   try {
@@ -160,4 +133,3 @@ onMounted(async () => {
   await initTable();
 });
 </script>
-@/stores/candidacy/schema

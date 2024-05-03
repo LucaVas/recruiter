@@ -249,4 +249,3 @@ onMounted(async () => {
     </Column>
   </DataTable>
 </template>
-@/stores/job/schema

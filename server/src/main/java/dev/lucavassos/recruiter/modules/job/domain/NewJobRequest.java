@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.job.domain;
 
-import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
@@ -62,5 +61,5 @@ public record NewJobRequest (
         @Future(message = "CV rate payment date must be in the future")
         LocalDateTime cvRatePaymentDate,
 
-        String comments
+        List<Long> questionIds
 ){}

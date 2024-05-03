@@ -29,8 +29,9 @@ public class CandidacyComment {
     @ManyToOne(fetch = FetchType.LAZY)
     private Candidacy candidacy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User author;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")

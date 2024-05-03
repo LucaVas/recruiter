@@ -17,6 +17,6 @@ public record UserDto(
         ApproverDto approver,
         LocalDateTime approvedDTime,
         LocalDateTime createdDTime,
-        LocalDateTime updatedDTime
+        LocalDateTime modifiedDTime
 ) {
 }

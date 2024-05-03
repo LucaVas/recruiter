@@ -60,13 +60,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(
-            mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<CandidacyComment> candidacyComments = new ArrayList<>();
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private PasswordResetToken passwordResetToken;
 

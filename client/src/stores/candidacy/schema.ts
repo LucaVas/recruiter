@@ -1,44 +1,42 @@
-import {z} from 'zod';
+import type { Candidate } from '../candidate/schema';
+import type { Job } from '../job/schema';
+import type { Recruiter, User } from '../user/schema';
 
-const candidacySchema = z.object({
-  id: z.number(),
-  relevantExperience: z.number().min(0),
-  expectedCtc: z.number().min(0),
-  officialNoticePeriod: z.number().min(0),
-  actualNoticePeriod: z.number().min(0),
-  reasonForQuickJoin: z.string(),
-  remarks: z.string(),
-  modifiedDTime: z.date(),
-  createdDTime: z.date(),
-});
-export type Candidacy = z.infer<typeof candidacySchema>;
+export type CandidacyStatus = 'SENT_TO_CLIENT' | 'REJECTED' | 'ACCEPTED';
 
-const candidacyCommentSchema = z.object({
-  id: z.number(),
-  text: z.string(),
-  createdDTime: z.date(),
-  modifiedDTime: z.date()
-})
-export type candidacyComment = z.infer<typeof candidacyCommentSchema>;
-
-// request
-export const updateCandidacyRequestSchema = candidacySchema.omit({
-  id: true,
-  createdDTime: true,
-  modifiedDTime: true,
-});
-export type UpdateCandidacyRequest = z.infer<typeof updateCandidacyRequestSchema>;
-
-export const newCandidacyRequestSchema = updateCandidacyRequestSchema.extend({
-  jobId: z.number(),
-  candidatePan: z.string(),
-});
-export type NewCandidacyRequest = z.infer<typeof newCandidacyRequestSchema>;
-
-// response
-export type CandidacyResponse = {
-  candidacy: Candidacy;
+export type Candidacy = {
+  job: Job;
+  recruiter: Recruiter;
+  candidate: Candidate;
+  relevantExperience: number;
+  expectedCtc: number;
+  officialNoticePeriod: number;
+  actualNoticePeriod: number;
+  reasonForQuickJoin: string;
+  remarks: string;
+  status?: CandidacyStatus;
+  modifiedDTime: Date;
+  createdDTime: Date;
 };
 
+export type CandidacyComment = {
+  id: number;
+  text: string;
+  author: User;
+  createdDTime: Date;
+  modifiedDTime: Date;
+};
+
+// request
+export type UpdateCandidacyRequest = Omit<
+  Candidacy,
+  'id' | 'createdDTime' | 'modifiedDTime' | 'recruiter' | 'job' | 'candidate'
+>;
+export type NewCandidacyRequest = UpdateCandidacyRequest & { jobId: number; candidatePan: string };
+export type NewCandidacyCommentRequest = Pick<CandidacyComment, 'text'>;
+
 // frontend types
-export type RawCandidacy = UpdateCandidacyRequest;
+export type RawCandidacy = Omit<
+  Candidacy,
+  'job' | 'recruiter' | 'candidate' | 'createdDTime' | 'modifiedDTime'
+>;

@@ -1,4 +1,4 @@
-import { newCandidateRequestSchema, type Candidate, type CandidateResponse, type NewCandidateRequest, updateCandidateRequestSchema } from './schema';
+import { type Candidate, type CandidateResponse, type NewCandidateRequest } from './schema';
 import axiosApi from '../api';
 
 const api = axiosApi();

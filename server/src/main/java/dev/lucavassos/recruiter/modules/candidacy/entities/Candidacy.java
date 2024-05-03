@@ -1,6 +1,8 @@
 package dev.lucavassos.recruiter.modules.candidacy.entities;
 
+import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
+import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
@@ -72,6 +74,10 @@ public class Candidacy {
             orphanRemoval = true
     )
     private List<CandidacyComment> comments = new ArrayList<>();
+
+    @Column(nullable = false, name = "status")
+    @Enumerated(EnumType.STRING)
+    private CandidacyStatus status;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")

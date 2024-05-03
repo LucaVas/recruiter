@@ -25,6 +25,7 @@
 		<postgresql.version>42.7.2</postgresql.version>
 		<prometheus-client.version>0.16.0</prometheus-client.version>
 		<microemeter.version>1.12.5</microemeter.version>
+		<commons-text.version>1.12.0</commons-text.version>
 	</properties>
 
 	<dependencies>
@@ -92,6 +93,14 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- String utils -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>${commons-text.version}</version>
+		</dependency>
+
 
 		<!-- JWT -->
 		<dependency>
