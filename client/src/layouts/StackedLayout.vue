@@ -2,7 +2,6 @@
 import Navbar from '@/components/navbar/Navbar.vue';
 import type { MenuItem } from './types';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import NavbarButtons from '@/components/navbar/NavbarButtons.vue';
 
 const { menuItems, username } = defineProps<{
