@@ -2,6 +2,7 @@ package dev.lucavassos.recruiter.modules.candidacy;
 
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
+import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -49,6 +50,15 @@ public class CandidacyController {
     @GetMapping("/candidacies")
     public ResponseEntity<List<CandidacyDto>> getAllCandidacies() {
         LOG.info("Received request for candidacies.");
-        return new ResponseEntity<>(service.getAllCandidacies(), HttpStatus.OK);
+        return ResponseEntity.ok(service.getAllCandidacies());
+    }
+
+    @GetMapping("/candidacies/job={jobId}&candidate={pan}/comments")
+    public ResponseEntity<List<CandidacyCommentDto>> getCandidacyComments(
+            @PathVariable Long jobId,
+            @PathVariable String pan
+    ) {
+        LOG.info("Received request to get comments for candidacy with job ID {} and candidate pan {}", jobId, pan);
+        return ResponseEntity.ok(service.getCandidacyComments(jobId, pan));
     }
 }

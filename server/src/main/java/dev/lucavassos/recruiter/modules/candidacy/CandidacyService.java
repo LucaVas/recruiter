@@ -10,6 +10,9 @@ import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyId;
+import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyCommentRepository;
+import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
+import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDtoMapper;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDtoMapper;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
@@ -46,6 +49,10 @@ public class CandidacyService {
     private CandidacyRepository candidacyRepository;
     @Autowired
     private CandidacyDtoMapper candidacyDtoMapper;
+    @Autowired
+    private CandidacyCommentRepository candidacyCommentRepository;
+    @Autowired
+    private CandidacyCommentDtoMapper candidacyCommentDtoMapper;
     @Autowired
     MonitoringProcessor monitoringProcessor;
 
@@ -230,6 +237,36 @@ public class CandidacyService {
         return candidacyDtoMapper.apply(candidacy);
 
 
+    }
+
+    @Transactional
+    public List<CandidacyCommentDto> getCandidacyComments(Long jobId, String pan) {
+
+        Job job = jobRepository.findOneById(jobId).orElseThrow(
+                () -> {
+                    LOG.error("Job with id {} not found", jobId);
+                    return new ResourceNotFoundException("Job not found");
+                }
+        );
+        Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
+                () -> {
+                    LOG.error("Candidate with pan {} not found", pan);
+                    return new ResourceNotFoundException("Candidate not found");
+                }
+        );
+
+        Candidacy candidacy = candidacyRepository.findByJobAndCandidate(job, candidate)
+                .orElseThrow(
+                        () -> {
+                            LOG.error("Candidacy with job {} and candidate {} not found", job, candidate);
+                            return new ResourceNotFoundException("Candidacy not found");
+                        }
+                );
+
+        return candidacyCommentRepository.findByCandidacy(candidacy)
+                .stream()
+                .map(candidacyCommentDtoMapper)
+                .toList();
     }
 
     private User getAuthUser() {
