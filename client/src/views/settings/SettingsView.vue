@@ -5,7 +5,7 @@
       <SettingsHeader :user="user" />
       <SettingsBody :user="user" />
       <Divider />
-      <SettingsFooter :user="user" />
+      <SettingsFooter :user="user" @edit="null" />
     </div>
     <div v-else class="flex w-full flex-row justify-center">
       <ProgressSpinner />
