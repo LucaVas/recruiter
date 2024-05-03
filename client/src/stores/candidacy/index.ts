@@ -1,6 +1,6 @@
 import {
   type Candidacy,
-  type CandidacyResponse,
+  type CandidacyComment,
   type NewCandidacyRequest,
   type UpdateCandidacyRequest,
 } from './schema';
@@ -16,17 +16,25 @@ export async function updateCandidacy(
   jobId: number,
   pan: string,
   candidacy: UpdateCandidacyRequest
-): Promise<CandidacyResponse> {
+): Promise<Candidacy> {
   const { data } = await api.put(`/candidacies/job=${jobId}&candidate=${pan}`, candidacy);
   return data;
 }
 
-export async function getCandidacy(jobId: number, pan: string): Promise<CandidacyResponse> {
+export async function getCandidacy(jobId: number, pan: string): Promise<Candidacy> {
   const { data } = await api.get(`/candidacies/job=${jobId}&candidate=${pan}`);
   return data;
 }
 
 export async function getAllCandidacies(): Promise<Candidacy[]> {
   const { data } = await api.get(`/candidacies`);
+  return data;
+}
+
+export async function getCandidacyComments(
+  jobId: number,
+  pan: string
+): Promise<CandidacyComment[]> {
+  const { data } = await api.get(`/candidacies/job=${jobId}&candidate=${pan}/comments`);
   return data;
 }
