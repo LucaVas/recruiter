@@ -30,7 +30,12 @@ public class QuestionRepositoryTests {
     public void save_creates_new_active_question() {
 
         String questionText = randomString(10, 50);
-        Question question = new Question(questionText);
+        Question question = Question.builder()
+                .title(randomString(10, 50))
+                .text(questionText)
+                .active(true)
+                .answer(randomString(10, 50))
+                .build();
 
         Question savedQuestion = repository.save(question);
 
@@ -42,7 +47,12 @@ public class QuestionRepositoryTests {
 
     @Test
     public void save_throws_error_if_question_text_is_invalid() {
-        Question questionWithShortText = new Question("");
+        Question questionWithShortText = Question.builder()
+                .title(randomString(10, 50))
+                .text("")
+                .active(true)
+                .answer(randomString(10, 50))
+                .build();
 
         assertThatThrownBy(() -> {
             repository.save(questionWithShortText);

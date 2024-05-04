@@ -1,8 +1,9 @@
 package dev.lucavassos.recruiter.job.repository;
 
+import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
-import dev.lucavassos.recruiter.modules.job.entities.ContractTypeName;
+import dev.lucavassos.recruiter.modules.job.entities.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import jakarta.validation.ConstraintViolationException;
@@ -36,11 +37,11 @@ public class JobRepositoryTests {
 
         String name = randomString(10, 50);
         Job job = Job.builder()
-                .client(randomString(5, 15))
+                .client(Client.builder().name(randomString(10, 50)).build())
                 .name(name)
                 .status(JobStatus.OPEN)
                 .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(randomInteger(0, 50))
                 .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(randomInteger(1, 20))
@@ -64,11 +65,11 @@ public class JobRepositoryTests {
     @Test
     public void save_throws_error_if_client_is_invalid() {
         Job job = Job.builder()
-                .client("")
+                .client(Client.builder().name(randomString(0,0)).build())
                 .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
                 .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(randomInteger(0, 50))
                 .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(randomInteger(1, 20))
@@ -90,11 +91,11 @@ public class JobRepositoryTests {
     @Test
     public void save_throws_error_if_name_is_invalid() {
         Job job = Job.builder()
-                .client(randomString(10, 50))
+                .client(Client.builder().name(randomString(10, 50)).build())
                 .name("")
                 .status(JobStatus.OPEN)
                 .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(randomInteger(0, 50))
                 .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(randomInteger(1, 20))
@@ -116,11 +117,11 @@ public class JobRepositoryTests {
     @Test
     public void save_throws_error_if_wanted_cvs_is_invalid() {
         Job job = Job.builder()
-                .client(randomString(10, 50))
+                .client(Client.builder().name(randomString(10, 50)).build())
                 .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
                 .wantedCvs(-1)
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(randomInteger(0, 50))
                 .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(randomInteger(1, 20))
@@ -142,11 +143,11 @@ public class JobRepositoryTests {
     @Test
     public void save_throws_error_if_experience_range_min_is_invalid() {
         Job job = Job.builder()
-                .client(randomString(10, 50))
+                .client(Client.builder().name(randomString(10, 50)).build())
                 .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
                 .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(-1)
                 .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(randomInteger(1, 20))
@@ -168,11 +169,11 @@ public class JobRepositoryTests {
     @Test
     public void save_throws_error_if_experience_range_max_is_invalid() {
         Job job = Job.builder()
-                .client(randomString(10, 50))
+                .client(Client.builder().name(randomString(10, 50)).build())
                 .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
                 .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(randomInteger(0, 50))
                 .experienceRangeMax(61)
                 .noticePeriodInDays(randomInteger(1, 20))
@@ -194,11 +195,11 @@ public class JobRepositoryTests {
     @Test
     public void save_throws_error_if_notice_period_is_invalid() {
         Job job = Job.builder()
-                .client(randomString(10, 50))
+                .client(Client.builder().name(randomString(10, 50)).build())
                 .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
                 .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(randomInteger(0, 50))
                 .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(-1)
@@ -220,11 +221,11 @@ public class JobRepositoryTests {
     @Test
     public void save_throws_error_if_salary_budget_is_invalid() {
         Job job = Job.builder()
-                .client(randomString(10, 50))
+                .client(Client.builder().name(randomString(10, 50)).build())
                 .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
                 .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(randomInteger(0, 50))
                 .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(randomInteger(1, 20))
@@ -246,11 +247,11 @@ public class JobRepositoryTests {
     @Test
     public void save_throws_error_if_bonus_pay_per_CV_is_invalid() {
         Job job = Job.builder()
-                .client(randomString(10, 50))
+                .client(Client.builder().name(randomString(10, 50)).build())
                 .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
                 .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(randomInteger(0, 50))
                 .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(randomInteger(1, 20))
@@ -272,11 +273,11 @@ public class JobRepositoryTests {
     @Test
     public void save_throws_error_if_closure_bonus_is_invalid() {
         Job job = Job.builder()
-                .client(randomString(10, 50))
+                .client(Client.builder().name(randomString(10, 50)).build())
                 .name(randomString(10, 50))
                 .status(JobStatus.OPEN)
                 .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.builder().contractTypeName(ContractTypeName.PERMANENT).build())
+                .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(randomInteger(0, 50))
                 .experienceRangeMax(randomInteger(0, 50))
                 .noticePeriodInDays(randomInteger(1, 20))

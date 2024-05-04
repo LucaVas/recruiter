@@ -5,8 +5,8 @@ FROM --platform=linux/amd64 maven:3.8.3-openjdk-17 AS build
 WORKDIR /app
 
 # Copy the Maven project file and source code
-COPY server/pom.xml server/
-COPY server/src server/src
+COPY pom.xml /app/server/
+COPY src /app/server/src
 
 # Switch to the server folder
 WORKDIR /app/server
