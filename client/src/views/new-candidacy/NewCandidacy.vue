@@ -96,8 +96,7 @@ const candidacy = ref<RawCandidacy>({
   officialNoticePeriod: 0,
   actualNoticePeriod: 0,
   reasonForQuickJoin: '',
-  remarks: '',
-  comments: '',
+  recruiterComment: '',
 });
 
 const candidate = ref<NewCandidateRequest>({
@@ -108,6 +107,7 @@ const candidate = ref<NewCandidateRequest>({
   totalExperience: 0,
   education: '',
   currentCtc: 0,
+  
 });
 
 // candidacy submission

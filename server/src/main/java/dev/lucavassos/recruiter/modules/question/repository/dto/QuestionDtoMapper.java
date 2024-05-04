@@ -11,8 +11,11 @@ public class QuestionDtoMapper implements Function<Question, QuestionDto> {
     public QuestionDto apply(Question question) {
         return new QuestionDto(
                 question.getId(),
+                question.getTitle(),
                 question.getText(),
+                question.getAnswer(),
                 question.getActive(),
+                question.getDivision(),
                 question.getCreatedDTime(),
                 question.getModifiedDTime()
         );

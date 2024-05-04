@@ -1,21 +1,24 @@
 package dev.lucavassos.recruiter.modules.question;
 
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
+import dev.lucavassos.recruiter.modules.question.domain.NewQuestionRequest;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
 import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
-import dev.lucavassos.recruiter.modules.skill.service.SkillService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,15 +33,10 @@ public class QuestionService {
     private final QuestionDtoMapper questionDtoMapper;
 
     @Transactional
-    public List<QuestionDto> getQuestionsByClientAndSkill(String clientName, String skillName) {
-        LOG.info("Retrieving questions for client {} and skill {}", clientName, skillName);
+    public List<QuestionDto> getQuestionsByTitleOrClient(String findByTitleOrClient) {
+        LOG.info("Retrieving questions for title / client {}", findByTitleOrClient);
 
-        Client client = clientRepository.findByName(clientName)
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found: " + clientName));
-        Skill skill = skillRepository.findByName(skillName)
-                .orElseThrow(() -> new ResourceNotFoundException("Skill not found: " + skillName));
-
-        List<Question> questions = questionRepository.findByClientAndSkill(client.getId(), skill.getId());
+        List<Question> questions = questionRepository.findByTitleOrClient(findByTitleOrClient);
 
         List<QuestionDto> questionDtos = questions.stream()
                 .map(questionDtoMapper)
@@ -47,6 +45,42 @@ public class QuestionService {
         LOG.info("{} questions retrieved: {}", questionDtos.size(), questionDtos);
 
         return questionDtos;
+    }
+
+    @Transactional
+    public QuestionDto createQuestion(NewQuestionRequest request) {
+        LOG.info("Creating new question");
+
+        Client client = clientRepository.findById(request.clientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
+        List<Skill> skills = new ArrayList<>();
+        if (request.skillNames() != null && !request.skillNames().isEmpty()) {
+            request.skillNames().stream()
+                    .map(skillName -> skillRepository.findByName(skillName)
+                                .orElseGet(() -> skillRepository.save(Skill.builder().name(skillName).build()))
+                    ).forEach(skills::add);
+        }
+
+        Question question;
+        try {
+            question = Question.builder()
+                    .title(request.title())
+                    .text(request.text())
+                    .answer(request.answer())
+                    .client(client)
+                    .skills(new HashSet<>(skills))
+                    .active(true)
+                    .build();
+            questionRepository.save(question);
+        } catch (Exception e) {
+            throw new ServerException(e.getMessage());
+        }
+
+        QuestionDto questionDto = questionDtoMapper.apply(question);
+
+        LOG.info("Question created: {}", questionDto);
+
+        return questionDto;
     }
 
 }

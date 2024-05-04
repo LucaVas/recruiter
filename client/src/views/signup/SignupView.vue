@@ -1,18 +1,17 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 import PageForm from '@/components/PageForm.vue';
-import InputText from 'primevue/inputtext';
-import InputMask from 'primevue/inputmask';
-import Dropdown from 'primevue/dropdown';
-import Password from 'primevue/password';
-import { useToast } from 'primevue/usetoast';
-import { ApiError } from '../../utils/types';
-import Toast from 'primevue/toast';
-import type { RoleName } from '@/stores/user/schema';
-import SignupCommentsModal from '@/components/signup/SignupCommentsModal.vue';
 import { signup } from '@/stores/auth/index';
 import type { SignupRequest } from '@/stores/auth/schema';
+import type { RoleName } from '@/stores/user/schema';
+import Dropdown from 'primevue/dropdown';
+import InputMask from 'primevue/inputmask';
+import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { ApiError } from '../../utils/types';
 
 const router = useRouter();
 const toast = useToast();
@@ -161,7 +160,7 @@ const submitSignup = async () => {
         </div>
 
         <!-- comments -->
-        <SignupCommentsModal
+        <!-- <SignupCommentsModal
           :visible="signupCommentsModalOpen"
           @closeModal="signupCommentsModalOpen = false"
           @continueSignup="
@@ -171,7 +170,7 @@ const submitSignup = async () => {
               submitSignup();
             }
           "
-        />
+        /> -->
         <div class="grid gap-2">
           <Button
             type="submit"

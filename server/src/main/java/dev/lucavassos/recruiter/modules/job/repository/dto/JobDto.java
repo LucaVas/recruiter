@@ -4,6 +4,8 @@ import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
+import dev.lucavassos.recruiter.modules.question.entity.Question;
+import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.constraints.*;
 
@@ -60,6 +62,8 @@ public record JobDto(
         @NotNull(message = "Number of candidates cannot be empty")
         @Min(value = 0, message = "Number of candidates must be a positive number")
         Integer numberOfCandidates,
+
+        List<QuestionDto> questions,
 
         LocalDateTime createdDTime,
         LocalDateTime modifiedDTime

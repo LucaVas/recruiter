@@ -8,15 +8,15 @@ import {
   storeAccessToken,
 } from '@/utils/auth';
 import {
-  loginRequestSchema,
-  signupRequestSchema,
   type AuthUserInfoDto,
   type LoginRequest,
   type LoginResponse,
   type SignupRequest,
   type SignupResponse,
+  type UserInfoUpdateRequest,
 } from './schema';
 import { computed, ref } from 'vue';
+import type { User } from '../user/schema';
 
 // vars
 const api = axiosApi();
@@ -50,3 +50,15 @@ export async function getMe(): Promise<AuthUserInfoDto> {
   const res = (await api.get('/auth/me')).data as AuthUserInfoDto;
   return res;
 }
+
+export const getProfileInformation = async (): Promise<User> => {
+  const { data } = await api.get('/auth/profile');
+  return data;
+};
+
+export const updateProfileInformation = async (
+  profileInformation: UserInfoUpdateRequest
+): Promise<void> => {
+  const { data } = await api.put('/auth/profile/update', profileInformation);
+  return data;
+};

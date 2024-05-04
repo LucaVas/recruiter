@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +24,9 @@ public record UpdateCandidacyRequest(
         @Min(value = 0, message = "Actual notice period must be a positive number")
         Double actualNoticePeriod,
 
-        String reasonForQuickJoin,
-        String remarks
+        @Nullable
+        CandidacyStatus status,
+
+        String reasonForQuickJoin
 ) {
 }

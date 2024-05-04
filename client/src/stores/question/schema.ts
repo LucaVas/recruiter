@@ -1,10 +1,15 @@
-import { z } from "zod";
+export type Question = {
+  id: number;
+  title: string;
+  text: string;
+  answer: string;
+  active: boolean;
+  division: string;
+  createdDTime: Date;
+  modifiedDTime: Date;
+};
 
-export const questionSchema = z.object({
-  id: z.number(),
-  text: z.string().min(1),
-  active: z.boolean(),
-  createdDTime: z.date(),
-  modifiedDTime: z.date(),
-});
-export type Question = z.infer<typeof questionSchema>;
+export type QuestionForm = Pick<Question, 'title' | 'text' | 'division' | 'answer'> & {
+  clientId: number;
+  skillNames: string[];
+};

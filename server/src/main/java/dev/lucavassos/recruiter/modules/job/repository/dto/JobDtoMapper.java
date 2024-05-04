@@ -1,14 +1,22 @@
 package dev.lucavassos.recruiter.modules.job.repository.dto;
 
 import dev.lucavassos.recruiter.modules.job.entities.Job;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
+import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class JobDtoMapper implements Function<Job, JobDto> {
+
+    @Autowired
+    private QuestionDtoMapper questionMapper;
+
+    @Autowired
+    private SkillDtoMapper skillMapper;
+
     @Override
     public JobDto apply(Job job) {
         return new JobDto(
@@ -17,7 +25,7 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 job.getName(),
                 job.getStatus(),
                 job.getWantedCvs(),
-                job.getSkills().stream().map(skill -> new SkillDto(skill.getId(), skill.getName(), skill.getCreatedDTime(), skill.getModifiedDTime())).collect(Collectors.toList()),
+                job.getSkills().stream().map(skillMapper).toList(),
                 job.getContractType(),
                 job.getExperienceRangeMin(),
                 job.getExperienceRangeMax(),
@@ -30,6 +38,7 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 job.getCvRatePaymentDate(),
                 job.getClosureBonusPaymentDate(),
                 job.getNumberOfCandidates(),
+                job.getQuestions().stream().map(questionMapper).toList(),
                 job.getCreatedDTime(),
                 job.getModifiedDTime()
         );

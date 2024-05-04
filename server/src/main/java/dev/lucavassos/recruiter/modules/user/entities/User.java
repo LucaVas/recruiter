@@ -54,18 +54,14 @@ public class User {
     @Size(min = 3, max = 50, message = "Country name must be between 3 and 50 characters long")
     private String country;
 
+    @Column
+    private String comment;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-    @OneToMany(
-            mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<CandidacyComment> candidacyComments = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private PasswordResetToken passwordResetToken;
@@ -77,8 +73,7 @@ public class User {
     @JoinColumn(name = "approver_id")
     private User approver;
 
-    @Column(updatable = false, name = "approved_dtime")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "approved_dtime")
     private LocalDateTime approvedDTime;
 
     @OneToMany(mappedBy = "recruiter")
