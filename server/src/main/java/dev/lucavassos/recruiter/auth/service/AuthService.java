@@ -4,6 +4,7 @@ import dev.lucavassos.recruiter.auth.domain.SignupRequest;
 import dev.lucavassos.recruiter.auth.domain.SignupResponse;
 import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.auth.domain.AuthUserInfoDto;
+import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
@@ -11,6 +12,8 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
+import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
+import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -29,6 +32,7 @@ public class AuthService {
     private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
+    private final UserDtoMapper userDtoMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final MonitoringProcessor monitoringProcessor;
@@ -84,5 +88,57 @@ public class AuthService {
                 userPrincipal.getId(),
                 userPrincipal.getUsername(),
                 userPrincipal.getRoleName());
+    }
+
+    public UserDto getAuthUserProfile() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        return userRepository.findOneById(userPrincipal.getId())
+                .map(userDtoMapper)
+                .orElseThrow(() -> new ServerException("Auth user not found."));
+    }
+
+    public void updateAuthUserProfile(UpdateProfileRequest request) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        User user = userRepository.findOneById(userPrincipal.getId())
+                .orElseThrow(() -> new ServerException("Auth user not found."));
+
+        if (request.email().equals(user.getEmail())
+                && request.mobile().equals(user.getMobile())
+                && request.city().equals(user.getCity())) {
+            return;
+        }
+
+        if (!request.email().equals(user.getEmail())) {
+
+            if (userRepository.existsUserByEmail(request.email())) throw new DuplicateResourceException(
+                    "User with email %s already exists.".formatted(request.email())
+            );
+
+            user.setEmail(request.email());
+        }
+        if (!request.mobile().equals(user.getMobile())) {
+            if (userRepository.existsUserByMobile(request.mobile())) throw new DuplicateResourceException(
+                    "User with mobile %s already exists.".formatted(request.mobile())
+            );
+
+            user.setMobile(request.mobile());
+        }
+
+        // set new city
+        if (!request.city().equals(user.getCity())) {
+            user.setCity(request.city());
+        }
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new ServerException("Error updating user profile.");
+        }
     }
 }

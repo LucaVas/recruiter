@@ -4,7 +4,6 @@ export type AuthUserInfoDto = {
   roleName: string;
 };
 
-
 // request
 export type LoginRequest = { usernameOrEmail: string; password: string };
 export type SignupRequest = {
@@ -17,6 +16,7 @@ export type SignupRequest = {
   roleName: string;
   comments: string;
 };
+export type UserInfoUpdateRequest = Pick<SignupRequest, 'email' | 'mobile' | 'city'>;
 
 // response
 export type SignupResponse = { id: number };
