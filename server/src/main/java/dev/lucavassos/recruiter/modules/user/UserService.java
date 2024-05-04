@@ -68,7 +68,7 @@ public class UserService  {
         user.setApproved(request.approved());
         user.setApprovedDTime(DateTimeUtils.getCurrentDTime());
         user.setApprover(approver);
-        user.setComment(request.commment());
+        user.setComment(request.comment());
 
         LOG.info("User to approve: {} on {}", user.getComment(), user.getApprovedDTime());
 
