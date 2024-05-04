@@ -15,6 +15,7 @@ public record UserDto(
         Set<Role> roles,
         Boolean approved,
         ApproverDto approver,
+        String comment,
         LocalDateTime approvedDTime,
         LocalDateTime createdDTime,
         LocalDateTime modifiedDTime

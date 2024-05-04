@@ -12,7 +12,7 @@ public record UserApprovalRequest(
         Boolean approved,
 
         @NotBlank(message = "Comment cannot be empty")
-        @Length(min = 1, max = 255, message = "Comment must be between 1 and 500 characters")
-        String commment 
+        @Length(min = 1, max = 255, message = "Comment must be between 1 and 255 characters")
+        String commment
 ) {
 }

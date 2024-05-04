@@ -8,7 +8,6 @@ const { visible } = defineProps<{
   visible: boolean;
 }>();
 const comment = ref('');
-const error = ref('');
 
 defineEmits<{
   (e: 'approve', comment: string): void;
@@ -18,15 +17,14 @@ defineEmits<{
 
 <template>
   <div class="card flex justify-center">
-    <Dialog :visible="visible" modal header="Confirm approval" :style="{ width: '20rem' }">
+    <Dialog :visible="visible" modal header="Confirm approval">
       <Textarea
         v-model="comment"
         rows="5"
         cols="30"
-        placeholder="Write here your comments..."
-        class="w-full"
+        placeholder="Write here your comment"
+        class="w-full mt-3"
       />
-      <Message v-if="error" severity="error" :closable="false" class="w-full">{{ error }}</Message>
       <Divider />
       <div class="flex justify-end gap-2">
         <Button

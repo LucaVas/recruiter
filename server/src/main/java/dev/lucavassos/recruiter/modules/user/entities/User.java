@@ -54,6 +54,9 @@ public class User {
     @Size(min = 3, max = 50, message = "Country name must be between 3 and 50 characters long")
     private String country;
 
+    @Column
+    private String comment;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -70,8 +73,7 @@ public class User {
     @JoinColumn(name = "approver_id")
     private User approver;
 
-    @Column(updatable = false, name = "approved_dtime")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "approved_dtime")
     private LocalDateTime approvedDTime;
 
     @OneToMany(mappedBy = "recruiter")
