@@ -10,6 +10,7 @@ import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
+import dev.lucavassos.recruiter.utils.DateTimeUtils;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,9 +64,13 @@ public class UserService  {
                         )
                 );
 
+
         user.setApproved(request.approved());
-        user.setApprovedDTime(LocalDateTime.now());
+        user.setApprovedDTime(DateTimeUtils.getCurrentDTime());
         user.setApprover(approver);
+        user.setComment(request.comment());
+
+        LOG.info("User to approve: {} on {}", user.getComment(), user.getApprovedDTime());
 
         User approvedUser = repository.save(user);
 

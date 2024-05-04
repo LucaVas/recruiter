@@ -96,7 +96,10 @@ declare module 'vue' {
     Tag: typeof import('primevue/tag')['default']
     Textarea: typeof import('primevue/textarea')['default']
     Tree: typeof import('primevue/tree')['default']
+    UserCard: typeof import('./src/components/users/UserCard.vue')['default']
     UserProfileModal: typeof import('./src/components/settings/UserProfileModal.vue')['default']
+    UsersHeader: typeof import('./src/components/users/UsersHeader.vue')['default']
     UsersTable: typeof import('./src/components/tables/users/UsersTable.vue')['default']
+    UsersTableButtons: typeof import('./src/components/tables/users/UsersTableButtons.vue')['default']
   }
 }

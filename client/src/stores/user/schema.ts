@@ -25,7 +25,7 @@ export type RoleName = 'ROLE_RECRUITER' | 'ROLE_ADMIN';
 export type UserApprovalRequest = {
   userId: number;
   approved: boolean;
-  comments: string;
+  comment: string;
 };
 
 export type PasswordResetRequest = {

@@ -25,7 +25,7 @@ public class UserController {
     @PostMapping("/users/approvals")
     public ResponseEntity<?> approveUser(
             @Valid @RequestBody UserApprovalRequest request) {
-        LOG.info("Received request to approve users.");
+        LOG.info("Received request to approve users: {}", request);
         service.approveUser(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -33,7 +33,7 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         LOG.info("Received request for users.");
-        return new ResponseEntity<>(service.getAllUsers(), HttpStatus.OK);
+        return ResponseEntity.ok(service.getAllUsers());
     }
 
     @PostMapping("/resetEmail/tokens")
