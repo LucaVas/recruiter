@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ActionButtonsColumn: typeof import('./src/components/tables/dashboard/columns/ActionButtonsColumn.vue')['default']
     ApproveModal: typeof import('./src/components/tables/users/ApproveModal.vue')['default']
+    Avatar: typeof import('primevue/avatar')['default']
     Button: typeof import('primevue/button')['default']
     CandidaciesTable: typeof import('./src/components/tables/candidacies/CandidaciesTable.vue')['default']
     CandidacyFooter: typeof import('./src/components/candidacy/CandidacyFooter.vue')['default']
