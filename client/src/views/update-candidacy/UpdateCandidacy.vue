@@ -54,9 +54,9 @@ onMounted(async () => {
   jobId.value = Number(route.params.jobId);
   pan.value = route.params.pan as string;
   const res = await getCandidacy(jobId.value, pan.value);
-  candidate.value = res.candidacy.candidate;
-  candidacy.value = res.candidacy;
-  job.value = res.candidacy.job;
+  candidate.value = res.candidate;
+  candidacy.value = res;
+  job.value = res.job;
 });
 </script>
 <template>

@@ -15,7 +15,7 @@ export async function findCandidate(identifier: string): Promise<CandidateRespon
   return data;
 }
 
-export async function updateCandidate(candidate: Candidate) {
+export async function updateCandidate(candidate: NewCandidateRequest) {
   const { data } = await api.put(`/candidates`, candidate);
   return data;
 }
