@@ -2,6 +2,18 @@ import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import { ref } from 'vue';
 
 export const filters = ref();
+export const columns = ref([
+  'username',
+  'email',
+  'mobile',
+  'city',
+  'country',
+  'roles',
+  'comment',
+  'approved',
+  'approver',
+  'approvedOn',
+]);
 
 export const clearFilter = () => {
   initFilters();

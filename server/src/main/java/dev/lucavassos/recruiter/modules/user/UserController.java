@@ -33,7 +33,7 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         LOG.info("Received request for users.");
-        return new ResponseEntity<>(service.getAllUsers(), HttpStatus.OK);
+        return ResponseEntity.ok(service.getAllUsers());
     }
 
     @PostMapping("/resetEmail/tokens")
