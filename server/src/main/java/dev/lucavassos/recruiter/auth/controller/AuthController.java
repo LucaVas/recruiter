@@ -5,7 +5,6 @@ import dev.lucavassos.recruiter.auth.domain.*;
 import dev.lucavassos.recruiter.auth.service.AuthService;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.jwt.JwtTokenProvider;
-import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
@@ -13,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -104,5 +101,14 @@ public class AuthController {
     public ResponseEntity<UserDto> getAuthUserProfile() {
         LOG.info("Received request for auth user profile.");
         return ResponseEntity.ok(service.getAuthUserProfile());
+    }
+
+    @PutMapping("/profile/update")
+    public ResponseEntity<?> updateAuthUserProfile(
+            @Valid @RequestBody UpdateProfileRequest request
+    ) {
+        LOG.info("Received request to update auth user profile.");
+        service.updateAuthUserProfile(request);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

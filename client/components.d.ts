@@ -85,6 +85,9 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchCandidate: typeof import('./src/components/candidacy/candidate/SearchCandidate.vue')['default']
+    SettingsBody: typeof import('./src/components/settings/SettingsBody.vue')['default']
+    SettingsFooter: typeof import('./src/components/settings/SettingsFooter.vue')['default']
+    SettingsHeader: typeof import('./src/components/settings/SettingsHeader.vue')['default']
     Sidebar: typeof import('primevue/sidebar')['default']
     SignupCommentsModal: typeof import('./src/components/signup/SignupCommentsModal.vue')['default']
     Skills: typeof import('./src/components/job/shared/Skills.vue')['default']
@@ -93,6 +96,7 @@ declare module 'vue' {
     Tag: typeof import('primevue/tag')['default']
     Textarea: typeof import('primevue/textarea')['default']
     Tree: typeof import('primevue/tree')['default']
+    UserProfileModal: typeof import('./src/components/settings/UserProfileModal.vue')['default']
     UsersTable: typeof import('./src/components/tables/users/UsersTable.vue')['default']
   }
 }

@@ -20,7 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import Button from 'primevue/button';
 import type { User } from '@/stores/user/schema';
 
 const { user } = defineProps<{
