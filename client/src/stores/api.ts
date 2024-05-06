@@ -15,7 +15,7 @@ export default () => {
 
   const instance = axios.create({
     baseURL: apiBase,
-    timeout: 1000,
+    timeout: 5000,
     headers: headers,
   });
 
