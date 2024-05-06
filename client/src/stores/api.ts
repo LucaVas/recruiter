@@ -24,6 +24,7 @@ export default () => {
       return request;
     },
     (error) => {
+      console.log('Error in API request', error)
       if (axios.isAxiosError(error)) {
         const message = error.response?.data.message;
         const statusCode = error.response?.data.statusCode;
@@ -41,6 +42,7 @@ export default () => {
       return response;
     },
     (error) => {
+      console.log('Error in API response', error)
       if (axios.isAxiosError(error)) {
         const message = error.response?.data.message;
         const statusCode = error.response?.status;

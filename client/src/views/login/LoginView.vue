@@ -30,6 +30,7 @@ const submitLogin = async () => {
     await login(userForm.value);
     router.push({ name: 'Dashboard' });
   } catch (err) {
+    console.error(`Error during login: ${err}`)
     if (err instanceof ApiError) showError(err.message);
     if (err instanceof Error) showError('Something went wrong');
   } finally {
