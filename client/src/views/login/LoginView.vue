@@ -65,6 +65,7 @@ const submitLogin = async () => {
           minlength="8"
           maxlength="64"
           class="flex flex-col"
+          autocomplete="current-password"
           required
         />
 
