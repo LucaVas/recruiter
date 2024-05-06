@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
@@ -19,7 +21,10 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Table(name="clients")
-public class Client {
+public class Client implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -7049957706738879274L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
