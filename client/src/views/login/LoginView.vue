@@ -53,6 +53,7 @@ const submitLogin = async () => {
           minlength="3"
           maxlength="50"
           required
+          autocomplete="email"
           aria-describedby="username-help"
           placeholder="Email"
           class="w-full"
