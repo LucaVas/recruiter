@@ -15,17 +15,14 @@
     />
     <div class="flex w-full flex-col gap-2">
       <label class="text-sm" for="clientName">Client Name</label>
-      <div class="flex sm:flex-row gap-3">
+      <div class="flex gap-3 sm:flex-row">
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-user"></i>
           </InputGroupAddon>
-          <InputText
-            id="clientName"
-            v-model="details.client.name"
-            @input="emit('input', details)"
-            :disabled="disabled"
-            :invalid="details.client.name === ''"
+          <ClientDropdown
+            :clients="clients"
+            @selectClient="(client) => (details.client = client)"
           />
         </InputGroup>
         <Button
@@ -49,7 +46,6 @@
           v-model="details.name"
           @input="emit('input', details)"
           :disabled="disabled"
-          :invalid="details.name === ''"
         />
       </InputGroup>
     </div>
@@ -99,10 +95,12 @@ import { ref } from 'vue';
 import { jobStatuses, contractTypes } from './utils';
 import type { Job, NewJobRequest } from '@/stores/job/schema';
 import type { Client } from '@/stores/client/schema';
+import ClientDropdown from './ClientDropdown.vue';
 
 // props
-const { jobDetails, disabled } = defineProps<{
+const { jobDetails, clients, disabled } = defineProps<{
   jobDetails: Job | NewJobRequest;
+  clients: Client[];
   disabled: boolean;
 }>();
 

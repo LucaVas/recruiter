@@ -2,7 +2,12 @@
   <Toast />
   <div class="flex w-full flex-col gap-8 pb-6">
     <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
-      <JobInformation :disabled="false" :jobDetails="job" @input="(details) => (job = details)" />
+      <JobInformation
+        :disabled="false"
+        :jobDetails="job"
+        :clients="clients"
+        @input="(details) => (job = details)"
+      />
       <JobHiringDetails @input="(details) => (job = details)" :disabled="false" :jobDetails="job" />
       <NowJobPaymentDetails
         :disabled="false"
@@ -46,7 +51,11 @@
         <div class="flex flex-row gap-3">
           <IconField iconPosition="left" class="w-full">
             <InputIcon class="pi pi-search"> </InputIcon>
-            <InputText placeholder="Search" class="w-full" @click="openQuestionSearchModal = true" />
+            <InputText
+              placeholder="Search"
+              class="w-full"
+              @click="openQuestionSearchModal = true"
+            />
           </IconField>
 
           <Button
@@ -91,7 +100,7 @@ import InputText from 'primevue/inputtext';
 import { useToast } from 'primevue/usetoast';
 import { createJob } from '@/stores/job';
 import type { NewJobRequest } from '@/stores/job/schema';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Success from '@/components/Success.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
 import type { Skill } from '@/stores/skill/schema';
@@ -101,6 +110,7 @@ import QuestionsTable from '@/components/question/QuestionsTable.vue';
 import { createQuestion } from '@/stores/question/index';
 import { type QuestionForm } from '@/stores/question/schema';
 import { capitalize, capitalizeText, capitalizeWords } from '../../utils/stringUtils';
+import { getAllClients } from '@/stores/client';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -149,6 +159,7 @@ const addSkill = (skill: Skill): void => {
   job.value.skills.unshift(skill);
 };
 
+const clients = ref<Client[]>([]);
 const job = ref<NewJobRequest>({
   client: {} as Client,
   name: '',
@@ -167,5 +178,9 @@ const job = ref<NewJobRequest>({
   questions: [],
   closureBonusPaymentDate: new Date(),
   cvRatePaymentDate: new Date(),
+});
+
+onMounted(async () => {
+  clients.value = await getAllClients();
 });
 </script>
