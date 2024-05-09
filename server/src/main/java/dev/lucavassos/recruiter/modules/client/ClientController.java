@@ -23,7 +23,7 @@ public class ClientController {
     @GetMapping("/clients")
     public ResponseEntity<List<ClientDto>> getAllClients() {
         log.info("Received request for all clients.");
-        return new ResponseEntity<>(service.getAllClients(0, 10), HttpStatus.OK);
+        return new ResponseEntity<>(service.getAllClients(0, 2000), HttpStatus.OK);
     }
 
     @PostMapping("/clients")

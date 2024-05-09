@@ -133,6 +133,7 @@ const clients = ref<Client[]>([]);
 async function create(job: NewJobRequest) {
   creatingJob.value = true;
   try {
+    console.log(job);
     await createJob(job);
     jobCreated.value = true;
   } catch (e) {
@@ -197,6 +198,6 @@ const job = ref<NewJobRequest>({
 });
 
 onMounted(async () => {
-  loadClients();
+  await loadClients();
 });
 </script>
