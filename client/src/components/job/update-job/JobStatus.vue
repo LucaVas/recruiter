@@ -1,5 +1,4 @@
 <template>
-  <Toast />
   <div class="flex flex-col items-start justify-between md:flex-row md:items-center">
     <div class="flex w-full flex-row items-center justify-between gap-2 md:justify-normal">
       <Tag
@@ -35,7 +34,6 @@
 import Tag from 'primevue/tag';
 import TieredMenu from 'primevue/tieredmenu';
 import Button from 'primevue/button';
-import Toast from 'primevue/toast';
 import type { JobStatus } from '@/stores/job/schema';
 import { formatDate } from '@/utils/dateUtils';
 import { ref } from 'vue';

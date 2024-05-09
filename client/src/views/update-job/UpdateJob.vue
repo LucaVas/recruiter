@@ -1,5 +1,4 @@
 <template>
-  <Toast />
   <div v-if="!jobDetails" class="flex w-full items-center justify-center">
     <ProgressSpinner />
   </div>
@@ -43,7 +42,6 @@ import Skills from '@/components/job/shared/Skills.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Toast from 'primevue/toast';
 import ProgressSpinner from 'primevue/progressspinner';
 import type { Job, JobStatus } from '@/stores/job/schema';
 import { useToast } from 'primevue/usetoast';

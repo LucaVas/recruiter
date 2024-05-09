@@ -1,6 +1,4 @@
 <template>
-  <Toast />
-
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"
@@ -70,7 +68,6 @@ import type { Candidacy } from '@/stores/candidacy/schema';
 import { ApiError } from '@/utils/types';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import Toast from 'primevue/toast';
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';

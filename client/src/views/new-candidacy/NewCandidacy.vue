@@ -1,5 +1,4 @@
 <template>
-  <Toast />
   <div class="flex w-full flex-col gap-8 pb-6">
     <div v-if="!candidacySubmitted" class="flex h-full w-full flex-col gap-6">
       <div v-if="job">
@@ -60,7 +59,6 @@
 import CandidateSection from '@/components/candidacy/CandidateSection.vue';
 import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
-import Toast from 'primevue/toast';
 import { onMounted, ref } from 'vue';
 import { getJob } from '@/stores/job';
 import { useRoute } from 'vue-router';

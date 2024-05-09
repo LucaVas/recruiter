@@ -1,5 +1,4 @@
 <template>
-  <Toast />
   <div class="flex w-full flex-col gap-8 pb-6">
     <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
       <JobInformation
@@ -108,7 +107,6 @@ import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import QuestionSearchModal from '@/components/question/QuestionSearchModal.vue';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
-import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
 import { useToast } from 'primevue/usetoast';
 import { createJob } from '@/stores/job';

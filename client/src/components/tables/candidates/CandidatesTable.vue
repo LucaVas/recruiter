@@ -2,7 +2,6 @@
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import InputText from 'primevue/inputtext';
-import Toast from 'primevue/toast';
 import Header from '../shared/Header.vue';
 import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
@@ -58,7 +57,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Toast />
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"

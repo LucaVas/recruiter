@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Toast />
     <Divider />
     <FileUpload
       name="demo[]"
@@ -19,7 +18,6 @@
 
 <script setup lang="ts">
 import { useToast } from 'primevue/usetoast';
-import Toast from 'primevue/toast';
 import FileUpload from 'primevue/fileupload';
 const toast = useToast();
 

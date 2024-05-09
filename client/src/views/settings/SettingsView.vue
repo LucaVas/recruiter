@@ -1,5 +1,4 @@
 <template>
-  <Toast />
   <div class="h-full w-full">
     <div v-if="!loading && user" class="flex h-full flex-col justify-between">
       <UserProfileModal
@@ -20,7 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import Toast from 'primevue/toast';
 import Divider from 'primevue/divider';
 import ProgressSpinner from 'primevue/progressspinner';
 import { onMounted, ref } from 'vue';

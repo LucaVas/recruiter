@@ -7,7 +7,6 @@ import Tag from 'primevue/tag';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
 import type { Job } from '@/stores/job/schema';
-import Toast from 'primevue/toast';
 import { formatDate } from '@/utils/dateUtils';
 import {
   filters,
@@ -54,8 +53,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Toast />
-
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"

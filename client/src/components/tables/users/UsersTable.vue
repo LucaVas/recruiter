@@ -7,7 +7,6 @@ import { filters, initFilters, clearFilter } from './filters';
 import type { User, UserApprovalRequest } from '@/stores/user/schema';
 import { ApiError } from '@/utils/types';
 import { getAllUsers, approveUser } from '@/stores/user';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { columns } from '../candidates';
 import UserCard from '@/components/users/UserCard.vue';
@@ -60,7 +59,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Toast />
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"

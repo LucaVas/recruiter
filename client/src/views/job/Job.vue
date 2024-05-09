@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import Toast from 'primevue/toast';
 import { getJobDetails } from './index';
 import { useToast } from 'primevue/usetoast';
 import { useRoute, useRouter } from 'vue-router';
@@ -65,7 +64,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Toast />
   <div v-if="job" class="flex w-full flex-col items-start gap-4">
     <JobTitle :title="job.name" />
     <JobMetadata :job="job" />
