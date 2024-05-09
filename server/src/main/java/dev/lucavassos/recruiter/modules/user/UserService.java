@@ -10,7 +10,10 @@ import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
+import dev.lucavassos.recruiter.service.email.EmailService;
 import dev.lucavassos.recruiter.utils.DateTimeUtils;
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.Authentication;
@@ -24,6 +27,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService  {
 
     private final PasswordEncoder passwordEncoder;
@@ -31,14 +35,7 @@ public class UserService  {
     private final UserRepository repository;
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
-
-    public UserService(PasswordEncoder passwordEncoder, PasswordResetTokenGenerator resetTokenGenerator, UserRepository repository, PasswordResetTokenRepository tokenRepository, UserDtoMapper userDtoMapper) {
-        this.passwordEncoder = passwordEncoder;
-        this.resetTokenGenerator = resetTokenGenerator;
-        this.repository = repository;
-        this.tokenRepository = tokenRepository;
-        this.userDtoMapper = userDtoMapper;
-    }
+    private final EmailService emailService;
 
     public void approveUser(UserApprovalRequest request) {
 
@@ -88,7 +85,7 @@ public class UserService  {
 
     }
 
-    public void sendResetPasswordEmail(PasswordForgotRequest request) throws BadRequestException {
+    public void sendResetPasswordEmail(PasswordForgotRequest request) throws BadRequestException, MessagingException {
         User userByEmail = repository
                 .findOneByEmail(request.email())
                 .orElseThrow(() -> {
@@ -128,8 +125,8 @@ public class UserService  {
 
         tokenRepository.save(token);
 
-        // TODO: send email with url
-        log.info("Token generated for user [{}]", userByUsername.getUsername());
+        log.info("Sending email to [{}]", userByUsername.getEmail());
+        emailService.sendEmail("luca.vassos@gmail.com", userByUsername.getUsername(), "http://localhost:8080/resetPassword/" + token.getTokenString());
     }
 
     public void deleteTokenForUser(User user) {

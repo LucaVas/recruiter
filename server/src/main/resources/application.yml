@@ -3,6 +3,12 @@ server:
     error:
         include-message: always
 
+logging:
+    level:
+        org:
+            springframwork:
+                mail: DEBUG
+
 management:
     endpoints:
         web:
@@ -15,6 +21,18 @@ management:
             enabled: true
 
 spring:
+    mail:
+        host: ${EMAIL_HOST}
+        port: ${EMAIL_PORT}
+        username: ${EMAIL_USERNAME}
+        password: ${EMAIL_PASSWORD}
+        properties:
+            mail:
+                debug: ${EMAIL_SERVICE_DEBUG}
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
     thymeleaf:
         check-template-location: false
     jpa:

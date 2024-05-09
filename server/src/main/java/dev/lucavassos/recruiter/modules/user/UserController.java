@@ -2,6 +2,7 @@ package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public class UserController {
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> sendResetPasswordToken(
-            @RequestBody PasswordForgotRequest request) throws BadRequestException {
+            @RequestBody PasswordForgotRequest request) throws BadRequestException, MessagingException {
         service.sendResetPasswordEmail(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

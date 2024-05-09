@@ -11,7 +11,7 @@ import { DEFAULT_SERVER_ERROR } from '@/consts';
 import { requestNewPassword } from '@/stores/auth';
 
 const toast = useToast();
-const loading = ref(false);
+const sendingEmail = ref(false);
 
 const form = ref<PasswordForgotRequest>({
   email: '',
@@ -19,8 +19,7 @@ const form = ref<PasswordForgotRequest>({
 });
 
 const submit = async (form: PasswordForgotRequest) => {
-  loading.value = true;
-  console.log('form', form);
+  sendingEmail.value = true;
   try {
     await requestNewPassword(form);
     toast.add({
@@ -39,7 +38,7 @@ const submit = async (form: PasswordForgotRequest) => {
     if (err instanceof Error)
       toast.add({ severity: 'error', summary: 'Error', detail: DEFAULT_SERVER_ERROR, life: 3000 });
   } finally {
-    loading.value = false;
+    sendingEmail.value = false;
   }
 };
 </script>
@@ -80,7 +79,8 @@ const submit = async (form: PasswordForgotRequest) => {
           class="w-full"
           type="submit"
           label="Reset password"
-          :disabled="loading"
+          :disabled="sendingEmail"
+          :loading="sendingEmail"
           data-testid="password-reset-button"
         />
       </template>
@@ -94,7 +94,7 @@ const submit = async (form: PasswordForgotRequest) => {
               label="Remember now?"
               icon="pi pi-question-circle"
               severity="secondary"
-              :disabled="loading"
+              :disabled="sendingEmail"
               data-testid="remember-password-button"
               outlined
             />
