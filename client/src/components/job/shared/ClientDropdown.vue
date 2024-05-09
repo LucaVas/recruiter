@@ -22,8 +22,9 @@ import Dropdown from 'primevue/dropdown';
 import type { Client } from '@/stores/client/schema';
 import { ref } from 'vue';
 
-const { clients } = defineProps<{
+const { clients, client } = defineProps<{
   clients: Client[];
+  client: Client;
 }>();
 
 const selectedClient = ref<Client | null>(null);

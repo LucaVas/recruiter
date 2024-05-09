@@ -29,3 +29,7 @@ export type Client = {
   modifiedDTime: Date;
 };
 
+export type NewClient = {
+  name: string;
+  industry: Industry;
+};

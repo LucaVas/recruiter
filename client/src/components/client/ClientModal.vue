@@ -5,7 +5,7 @@ import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref } from 'vue';
-import { type Client, industries } from '@/stores/client/schema';
+import { type Client, industries, type NewClient } from '@/stores/client/schema';
 
 const { client, visible, isUpdate } = defineProps<{
   client: Client | undefined;
@@ -15,7 +15,7 @@ const { client, visible, isUpdate } = defineProps<{
 
 const emits = defineEmits<{
   (e: 'close'): void;
-  (e: 'save', content: Client): void;
+  (e: 'save', content: NewClient): void;
 }>();
 
 const clientForm = ref(client);
@@ -53,6 +53,7 @@ const clientForm = ref(client);
             v-model="clientForm.industry"
             :options="industries"
             optionLabel="name"
+            optionValue="value"
             placeholder="Select an Industry"
             class="md:w-14rem w-full"
           />

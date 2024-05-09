@@ -6,7 +6,9 @@
         :disabled="false"
         :jobDetails="job"
         :clients="clients"
+        :selectedClient="job.client"
         @input="(details) => (job = details)"
+        @selectClient="(client) => (job.client = client)"
       />
       <JobHiringDetails @input="(details) => (job = details)" :disabled="false" :jobDetails="job" />
       <NowJobPaymentDetails
@@ -132,7 +134,6 @@ async function create(job: NewJobRequest) {
     creatingJob.value = false;
   }
 }
-
 const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
   try {
     const newQuestion = await createQuestion({

@@ -7,8 +7,8 @@
       :visible="clientModalOpen"
       @close="clientModalOpen = false"
       @save="
-        (client: Client) => {
-          details.client = client;
+        (client: NewClient) => {
+          create(client);
           clientModalOpen = false;
         }
       "
@@ -22,15 +22,24 @@
           </InputGroupAddon>
           <ClientDropdown
             :clients="clients"
+            :client="selectedClient"
             @selectClient="(client) => (details.client = client)"
           />
         </InputGroup>
         <Button
           size="small"
+          icon="pi pi-user-plus"
+          iconPos="right"
+          class="min-w-fit md:hidden"
+          outlined
+          @click="clientModalOpen = true"
+        />
+        <Button
+          size="small"
           label="New client"
           icon="pi pi-user-plus"
           iconPos="right"
-          class="min-w-fit"
+          class="hidden min-w-fit md:flex"
           outlined
           @click="clientModalOpen = true"
         />
@@ -96,17 +105,27 @@ import { jobStatuses, contractTypes } from './utils';
 import type { Job, NewJobRequest } from '@/stores/job/schema';
 import type { Client } from '@/stores/client/schema';
 import ClientDropdown from './ClientDropdown.vue';
+import { createClient } from '@/stores/client/index';
+import type { NewClient } from '@/stores/client/schema';
 
 // props
-const { jobDetails, clients, disabled } = defineProps<{
+const { jobDetails, selectedClient, clients, disabled } = defineProps<{
   jobDetails: Job | NewJobRequest;
+  selectedClient: Client;
   clients: Client[];
   disabled: boolean;
 }>();
 
+const create = async (client: NewClient) => {
+  const newClient = await createClient(client);
+  details.value.client = newClient;
+  emit('input', jobDetails);
+};
+
 // emits
 const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
+  (e: 'selectClient', client: Client): void;
 }>();
 
 const clientModalOpen = ref(false);
