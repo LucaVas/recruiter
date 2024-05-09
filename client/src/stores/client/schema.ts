@@ -9,7 +9,7 @@ type Industry =
   | 'ENGINEERING'
   | 'OTHER';
 
-export const industries = [
+export const industries: { name: string; value: Industry }[] = [
   { name: 'IT', value: 'IT' },
   { name: 'Finance', value: 'FINANCE' },
   { name: 'Healthcare', value: 'HEALTHCARE' },
@@ -29,3 +29,7 @@ export type Client = {
   modifiedDTime: Date;
 };
 
+export type NewClient = {
+  name: string;
+  industry: Industry;
+};

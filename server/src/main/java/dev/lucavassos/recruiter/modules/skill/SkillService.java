@@ -27,9 +27,9 @@ public class SkillService {
     private QuestionDtoMapper questionDtoMapper;
 
     @Transactional
-    public List<SkillDto> getAllSkills() {
+    public List<SkillDto> getAllSkills(Integer pageNumber, Integer pageSize) {
 
-        Pageable limit = PageRequest.of(0,10);
+        Pageable limit = PageRequest.of(pageNumber,pageSize);
         LOG.info("Retrieving {} skills", limit.getPageSize());
 
 

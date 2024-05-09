@@ -1,15 +1,16 @@
 package dev.lucavassos.recruiter.modules.client;
 
+import dev.lucavassos.recruiter.exception.BadRequestException;
+import dev.lucavassos.recruiter.exception.DatabaseException;
+import dev.lucavassos.recruiter.modules.client.domain.NewClientRequest;
+import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
 import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
 import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDtoMapper;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
-import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,31 +19,52 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class ClientService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClientService.class);
-
-    @Autowired
-    private ClientRepository clientRepository;
-    @Autowired
-    private ClientDtoMapper clientDtoMapper;
+    private final ClientRepository clientRepository;
+    private final ClientDtoMapper clientDtoMapper;
 
     @Transactional
-    public List<ClientDto> getAllClients() {
+    public List<ClientDto> getAllClients(Integer pageNumber, Integer pageSize) {
+        log.info("Retrieving {} clients", pageSize);
 
-        Pageable limit = PageRequest.of(0,10);
-        LOG.info("Retrieving {} clients", limit.getPageSize());
-
-
+        Pageable limit = PageRequest.of(pageNumber, pageSize);
         List<ClientDto> clients =
                 clientRepository.findAll(limit)
                         .stream()
-                        .map(client -> clientDtoMapper.apply(client)
-                        )
+                        .map(clientDtoMapper)
                         .toList();
 
-        LOG.info("Clients retrieved: {} ({})", clients, clients.size());
+        log.info("Clients retrieved: {} ({})", clients, clients.size());
 
         return clients;
+    }
+
+    @Transactional
+    public ClientDto addClient(NewClientRequest request) {
+        log.info("Adding client: {}", request);
+
+        if (clientRepository.existsByName(request.name())) {
+            throw new BadRequestException("Client already exists");
+        }
+
+        Client newClient = Client.builder().name(request.name()).industry(request.industry()).build();
+        ClientDto client = clientDtoMapper.apply(saveClient(newClient));
+
+        log.info("Client added: {}", client);
+
+        return client;
+    }
+
+    @Transactional
+    private Client saveClient(Client client) {
+        try {
+            return clientRepository.save(client);
+        } catch (Exception e) {
+            log.error("Database error while adding comment to candidacy: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
     }
 }

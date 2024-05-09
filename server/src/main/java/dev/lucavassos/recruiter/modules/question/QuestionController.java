@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.question;
 import dev.lucavassos.recruiter.modules.question.domain.NewQuestionRequest;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "api/v1")
 public class QuestionController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
     private QuestionService service;
@@ -24,7 +24,7 @@ public class QuestionController {
     @PostMapping("/questions")
     public ResponseEntity<QuestionDto> createQuestion(
             @Valid @RequestBody NewQuestionRequest request) throws Exception {
-        LOG.info("Received new request to create question: {}", request);
+        log.info("Received new request to create question: {}", request);
         QuestionDto question = service.createQuestion(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(question);
@@ -33,7 +33,7 @@ public class QuestionController {
     @GetMapping(path = "/questions/search")
     public ResponseEntity<List<QuestionDto>> getQuestions(
             @RequestParam("titleOrClientOrSkill") String findByTitleOrClient) throws Exception {
-        LOG.info("Received request to get questions for ttle / client {}", findByTitleOrClient);
+        log.info("Received request to get questions for ttle / client {}", findByTitleOrClient);
         List<QuestionDto> questions = service.getQuestionsByTitleOrClient(findByTitleOrClient);
         return ResponseEntity
                 .status(HttpStatus.OK)

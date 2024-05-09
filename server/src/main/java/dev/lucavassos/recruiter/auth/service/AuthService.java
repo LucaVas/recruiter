@@ -1,11 +1,9 @@
 package dev.lucavassos.recruiter.auth.service;
 
-import dev.lucavassos.recruiter.auth.domain.SignupRequest;
-import dev.lucavassos.recruiter.auth.domain.SignupResponse;
+import dev.lucavassos.recruiter.auth.domain.*;
 import dev.lucavassos.recruiter.auth.UserPrincipal;
-import dev.lucavassos.recruiter.auth.domain.AuthUserInfoDto;
-import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
+import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
@@ -16,6 +14,7 @@ import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -28,8 +27,8 @@ import java.util.Collections;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AuthService {
-    private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
     private final UserDtoMapper userDtoMapper;
@@ -39,7 +38,7 @@ public class AuthService {
 
     @Transactional
     public SignupResponse signup(SignupRequest request) {
-        LOG.info("Initiated signup process in service...{}", request);
+        log.info("Initiated signup process in service...{}", request);
         if (userRepository.existsUserByEmail(request.email())) {
             throw new DuplicateResourceException(
                     "User with email %s already exists.".formatted(request.email())
@@ -65,7 +64,7 @@ public class AuthService {
                 .country(request.country())
                 .build();
 
-        LOG.info("Role: {}", request.roleName());
+        log.info("Role: {}", request.roleName());
         Role userRole = roleRepository.findByName(RoleName.valueOf(request.roleName()))
                 .orElseThrow(() -> new ServerException("The user role provided is invalid."));
 
@@ -73,7 +72,7 @@ public class AuthService {
 
         User userSaved = userRepository.save(user);
 
-        LOG.info("New user created: [{}]", userSaved);
+        log.info("New user created: [{}]", userSaved);
         monitoringProcessor.incrementUsersCounter();
 
         return new SignupResponse(user.getId());

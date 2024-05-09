@@ -78,7 +78,8 @@ public class Job {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
+    @Size(min = 1, max = 500, message = "Job name must be between 1 and 500 characters long")
     private String description;
 
     @Column(nullable = false)

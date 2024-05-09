@@ -17,6 +17,8 @@ export type SignupRequest = {
   comments: string;
 };
 export type UserInfoUpdateRequest = Pick<SignupRequest, 'email' | 'mobile' | 'city'>;
+export type PasswordForgotRequest = Pick<SignupRequest, 'email' | 'username'>;
+export type NewPasswordRequest = Pick<SignupRequest, 'password'>;
 
 // response
 export type SignupResponse = { id: number };

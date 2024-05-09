@@ -11,7 +11,11 @@
         @delete="delJob(jobDetails.id)"
         @changeStatus="(status: JobStatus) => changeStatus(jobDetails!.id, status)"
       />
-      <JobInformation :disabled="jobDetails.status === 'ARCHIVED'" :jobDetails="jobDetails" />
+      <JobInformation
+        :disabled="jobDetails.status === 'ARCHIVED'"
+        :jobDetails="jobDetails"
+        :clients="clients"
+      />
       <JobHiringDetails :disabled="jobDetails.status === 'ARCHIVED'" :jobDetails="jobDetails" />
       <JobPaymentDetails :disabled="jobDetails.status === 'ARCHIVED'" :jobDetails="jobDetails" />
       <Skills
@@ -46,6 +50,8 @@ import { useToast } from 'primevue/usetoast';
 import { getJob, updateJob, deleteJob, changeJobStatus } from '@/stores/job';
 import { ApiError } from '@/utils/types';
 import Success from '@/components/Success.vue';
+import { getAllClients } from '@/stores/client';
+import type { Client } from '@/stores/client/schema';
 
 // variables
 const jobDetails = ref<Job>();
@@ -56,6 +62,7 @@ const loading = ref(false);
 const updatingJob = ref(false);
 const jobUpdated = ref(false);
 const toast = useToast();
+const clients = ref<Client[]>([]);
 const showError = (content: string) => {
   toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
 };
@@ -112,6 +119,9 @@ async function delJob(id: number) {
 
 // init
 onMounted(async () => {
-  jobDetails.value = await loadJobData(Number(jobId.value));
+  await Promise.all([
+    (jobDetails.value = await loadJobData(Number(jobId.value))),
+    (clients.value = await getAllClients()),
+  ]);
 });
 </script>
