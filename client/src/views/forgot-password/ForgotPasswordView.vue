@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import PageForm from '@/components/PageForm.vue';
-import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import { useToast } from 'primevue/usetoast';

@@ -24,7 +24,7 @@ public class EmailService {
                 + "<p>You are receiving this email since you requested to reset your password. "
                 + "If it wasn't you, please ignore this email altogether.<br/><br/>"
                 + "<p>Click the following link below to reset your password: %s/%s </p><br/>"
-                + "<h4>The reset link is valid for 24 hours.</h4><br/><br/>"
+                + "<h4>The reset link is valid for 15 minutes.</h4><br/><br/>"
                 + "With regards,<br/>Recruiter Platform";
         htmlContent = String.format(htmlContent, name, this.clientBaseUrl, resetEndpoint);
 

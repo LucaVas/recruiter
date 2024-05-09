@@ -126,7 +126,7 @@ public class UserService  {
         tokenRepository.save(token);
 
         log.info("Sending email to [{}]", userByUsername.getEmail());
-        emailService.sendEmail("luca.vassos@gmail.com", userByUsername.getUsername(), "reset-password/token=" + token.getTokenString());
+        emailService.sendEmail("luca.vassos@gmail.com", userByUsername.getUsername(), "password-reset/token=" + token.getTokenString());
     }
 
     public void deleteTokenForUser(User user) {
@@ -155,7 +155,7 @@ public class UserService  {
         }
 
         User updatedUser = token.getUser();
-        updatedUser.setPassword(passwordEncoder.encode(request.newPassword()));
+        updatedUser.setPassword(passwordEncoder.encode(request.password()));
         repository.save(updatedUser);
         tokenRepository.delete(token);
     }
