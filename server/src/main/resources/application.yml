@@ -6,7 +6,7 @@ server:
 password:
     reset:
         token:
-            expirationInSeconds: 1
+            expirationInSeconds: ${RESET_PASSWORD_TOKEN_EXPIRATION}
 
 client:
     base-url: ${CLIENT_BASE_URL}
