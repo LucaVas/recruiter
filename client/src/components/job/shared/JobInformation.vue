@@ -2,16 +2,9 @@
   <div class="card flex flex-col gap-8">
     <ClientModal
       v-if="details"
-      :isUpdate="false"
-      :client="details.client"
       :visible="clientModalOpen"
       @close="clientModalOpen = false"
-      @save="
-        (client: NewClient) => {
-          create(client);
-          clientModalOpen = false;
-        }
-      "
+      @save="(client: NewClient) => create(client)"
     />
     <div class="flex w-full flex-col gap-2">
       <label class="text-sm" for="clientName">Client Name</label>
@@ -22,7 +15,7 @@
           </InputGroupAddon>
           <ClientDropdown
             :clients="clients"
-            :client="selectedClient"
+            :client="details.client"
             @selectClient="(client) => (details.client = client)"
           />
         </InputGroup>
@@ -107,19 +100,27 @@ import type { Client } from '@/stores/client/schema';
 import ClientDropdown from './ClientDropdown.vue';
 import { createClient } from '@/stores/client/index';
 import type { NewClient } from '@/stores/client/schema';
+import { useToast } from 'primevue/usetoast';
+import { ApiError } from '@/utils/types';
+
+const toast = useToast();
 
 // props
-const { jobDetails, selectedClient, clients, disabled } = defineProps<{
+const { jobDetails, clients, disabled } = defineProps<{
   jobDetails: Job | NewJobRequest;
-  selectedClient: Client;
   clients: Client[];
   disabled: boolean;
 }>();
 
 const create = async (client: NewClient) => {
-  const newClient = await createClient(client);
-  details.value.client = newClient;
-  emit('input', jobDetails);
+  try {
+    const newClient = await createClient(client);
+    emit('selectClient', newClient);
+    clientModalOpen.value = false;
+  } catch (e) {
+    if (e instanceof ApiError)
+      toast.add({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+  }
 };
 
 // emits

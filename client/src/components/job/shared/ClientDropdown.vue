@@ -1,13 +1,19 @@
 <template>
-  <div class="justify-center flex w-full">
+  <div class="flex w-full justify-center">
     <Dropdown
-      v-model="selectedClient"
+      :modelValue="client"
       :options="clients"
+      @update:modelValue="$emit('selectClient', selectedClient)"
       filter
       optionLabel="name"
       placeholder="Select a Client"
       class="md:w-14rem w-full"
     >
+      <template #value="slotProps">
+      <div v-if="slotProps.value" class="flex items-center">
+        <div>{{ slotProps.value.name }}</div>
+      </div>
+      </template>
       <template #option="slotProps">
         <div class="align-items-center flex">
           <div>{{ slotProps.option.name }}</div>
@@ -27,7 +33,7 @@ const { clients, client } = defineProps<{
   client: Client;
 }>();
 
-const selectedClient = ref<Client | null>(null);
+const selectedClient = ref(client);
 
 defineEmits<{
   (e: 'selectClient', client: Client): void;

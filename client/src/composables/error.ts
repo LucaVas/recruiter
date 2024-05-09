@@ -48,7 +48,7 @@ export function withError<Args extends any[], Return, T extends (...args: Args) 
 
 function getErrorMessage(error: unknown) {
   if (error instanceof AxiosError && error.response) {
-    return (error.response.data as ApiError).message;
+    return (error.response.data satisfies ApiError).message;
   }
 
   if (error instanceof Error) {

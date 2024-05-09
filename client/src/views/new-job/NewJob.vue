@@ -8,7 +8,12 @@
         :clients="clients"
         :selectedClient="job.client"
         @input="(details) => (job = details)"
-        @selectClient="(client) => (job.client = client)"
+        @selectClient="
+          (client) => {
+            job.client = client;
+            clients.push(client);
+          }
+        "
       />
       <JobHiringDetails @input="(details) => (job = details)" :disabled="false" :jobDetails="job" />
       <NowJobPaymentDetails
@@ -27,6 +32,7 @@
       </div>
       <div class="space-y-3">
         <QuestionModal
+          :clients="clients"
           :visible="openQuestionModal"
           :isUpdate="false"
           @close="openQuestionModal = false"
@@ -122,6 +128,7 @@ const jobCreated = ref(false);
 const creatingJob = ref(false);
 const openQuestionModal = ref(false);
 const openQuestionSearchModal = ref(false);
+const clients = ref<Client[]>([]);
 
 async function create(job: NewJobRequest) {
   creatingJob.value = true;
@@ -134,6 +141,15 @@ async function create(job: NewJobRequest) {
     creatingJob.value = false;
   }
 }
+
+const loadClients = async () => {
+  try {
+    clients.value = await getAllClients();
+  } catch (e) {
+    showError(e as string);
+  }
+};
+
 const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
   try {
     const newQuestion = await createQuestion({
@@ -160,7 +176,6 @@ const addSkill = (skill: Skill): void => {
   job.value.skills.unshift(skill);
 };
 
-const clients = ref<Client[]>([]);
 const job = ref<NewJobRequest>({
   client: {} as Client,
   name: '',
@@ -182,7 +197,6 @@ const job = ref<NewJobRequest>({
 });
 
 onMounted(async () => {
-  clients.value = await getAllClients();
+  loadClients();
 });
-
 </script>

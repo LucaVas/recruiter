@@ -9,7 +9,7 @@ type Industry =
   | 'ENGINEERING'
   | 'OTHER';
 
-export const industries = [
+export const industries: { name: string; value: Industry }[] = [
   { name: 'IT', value: 'IT' },
   { name: 'Finance', value: 'FINANCE' },
   { name: 'Healthcare', value: 'HEALTHCARE' },

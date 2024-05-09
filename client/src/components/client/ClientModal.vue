@@ -4,27 +4,30 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
+import Dropdown from 'primevue/dropdown';
+import Toast from 'primevue/toast';
 import { ref } from 'vue';
-import { type Client, industries, type NewClient } from '@/stores/client/schema';
+import { industries, type NewClient } from '@/stores/client/schema';
 
-const { client, visible, isUpdate } = defineProps<{
-  client: Client | undefined;
+const { visible } = defineProps<{
   visible: boolean;
-  isUpdate: boolean;
 }>();
 
-const emits = defineEmits<{
+defineEmits<{
   (e: 'close'): void;
   (e: 'save', content: NewClient): void;
 }>();
 
-const clientForm = ref(client);
+const clientForm = ref<NewClient>({
+  name: '',
+  industry: industries[0].value,
+});
 </script>
 
 <template>
+  <Toast />
   <div class="card flex justify-center">
     <Dialog
-      v-if="clientForm"
       :visible="visible"
       @update:visible="$emit('close')"
       closeOnEscape
@@ -37,12 +40,7 @@ const clientForm = ref(client);
           <InputGroupAddon>
             <i class="pi pi-briefcase"></i>
           </InputGroupAddon>
-          <InputText
-            placeholder="Name"
-            autocomplete="off"
-            v-model="clientForm.name"
-            :invalid="clientForm.name === ''"
-          />
+          <InputText placeholder="Name" autocomplete="off" v-model="clientForm.name" />
         </InputGroup>
 
         <InputGroup>
@@ -62,7 +60,7 @@ const clientForm = ref(client);
 
       <div class="flex justify-end gap-2">
         <Button label="Cancel" severity="secondary" @click="$emit('close')" />
-        <Button label="Save" @click="emits('save', clientForm)" />
+        <Button label="Save" @click="$emit('save', clientForm)" />
       </div>
     </Dialog>
   </div>
