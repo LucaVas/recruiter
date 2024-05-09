@@ -8,7 +8,9 @@
       </template>
       <template #footer>
         <div class="align-center flex flex-wrap justify-end gap-3">
-          <span class="p-text-secondary text-slate-400 italic">{{ formatDateTime(comment.createdDTime) }}</span>
+          <span class="p-text-secondary italic text-slate-400">{{
+            formatDateTime(comment.createdDTime)
+          }}</span>
         </div>
       </template>
       <p class="m-0">

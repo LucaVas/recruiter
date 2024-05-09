@@ -12,7 +12,12 @@
       <Column style="width: 1rem">
         <template #body="{ data }">
           <div class="flex items-center justify-center">
-            <Button icon="pi pi-trash" class="p-panel-header-icon" @click="$emit('removeQuestion', data)" unstyled />
+            <Button
+              icon="pi pi-trash"
+              class="p-panel-header-icon"
+              @click="$emit('removeQuestion', data)"
+              unstyled
+            />
           </div>
         </template>
       </Column>

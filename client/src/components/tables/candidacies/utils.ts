@@ -8,8 +8,8 @@ export const getCandidacyStatus = (status: CandidacyStatus): string => {
 };
 
 export const getCandidacyStatusSeverity = (status: CandidacyStatus): string => {
-    if (status === 'ACCEPTED') return 'success';
-    if (status === 'REJECTED') return 'danger';
-    if (status === 'SENT_TO_CLIENT') return 'secondary';
-    return '';
-}
+  if (status === 'ACCEPTED') return 'success';
+  if (status === 'REJECTED') return 'danger';
+  if (status === 'SENT_TO_CLIENT') return 'secondary';
+  return '';
+};

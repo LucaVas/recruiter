@@ -17,7 +17,7 @@
         </div>
       </div>
       <ProgressSpinner v-else />
-      <Divider/>
+      <Divider />
       <NewCommentContainer @sendComment="(comment) => $emit('send', comment)" />
     </div>
   </Dialog>

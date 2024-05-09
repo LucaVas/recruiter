@@ -135,10 +135,7 @@ onMounted(async () => {
     </Column>
     <Column field="contractType" header="Contract" class="min-w-20" v-if="showAllColumns">
       <template #body="{ data }">
-        <Tag
-          :value="data.contractType"
-          :severity="getContractType(data.contractType)"
-        />
+        <Tag :value="data.contractType" :severity="getContractType(data.contractType)" />
       </template>
       <template #filter="{ filterModel }">
         <MultiSelect

@@ -78,7 +78,7 @@ const submit = async (token: string, form: NewPasswordRequest) => {
         />
         <RouterLink :to="{ name: 'Login' }" v-else>
           <Button
-            class="w-full mt-5"
+            class="mt-5 w-full"
             type="button"
             label="Back to Login"
             data-testid="back-to-login-button"

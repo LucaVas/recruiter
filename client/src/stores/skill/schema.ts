@@ -4,4 +4,3 @@ export type Skill = {
   createdDTime: Date;
   modifiedDTime: Date;
 };
-

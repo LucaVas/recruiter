@@ -2,7 +2,7 @@
   <div>
     <Panel toggleable collapsed>
       <template #header>
-        <div class="align-center items-center flex gap-2">
+        <div class="align-center flex items-center gap-2">
           <Checkbox
             v-model="questionSelected"
             @change="$emit('selectOrUnselectQuestion', question)"
@@ -14,7 +14,7 @@
         </div>
       </template>
       <template #icons>
-        <div class="min-w-fit flex justify-center">
+        <div class="flex min-w-fit justify-center">
           <Button
             icon="pi pi-cog"
             class="p-panel-header-icon p-link mr-2"

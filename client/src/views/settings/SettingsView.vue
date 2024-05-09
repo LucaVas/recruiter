@@ -45,10 +45,16 @@ const update = async (userForm: UserInfoUpdateRequest) => {
   try {
     await updateProfileInformation(userForm);
     openUserProfileModal.value = false;
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Profile information updated successfully!', life: 3000})
+    toast.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Profile information updated successfully!',
+      life: 3000,
+    });
     await initUserInformation();
   } catch (e) {
-    if (e instanceof ApiError) toast.add({ severity: 'error', summary: 'Error', detail: e.message });
+    if (e instanceof ApiError)
+      toast.add({ severity: 'error', summary: 'Error', detail: e.message });
   } finally {
     updatingUser.value = false;
   }
@@ -59,7 +65,8 @@ const initUserInformation = async () => {
   try {
     user.value = await getProfileInformation();
   } catch (e) {
-    if (e instanceof ApiError) toast.add({ severity: 'error', summary: 'Error', detail: e.message });
+    if (e instanceof ApiError)
+      toast.add({ severity: 'error', summary: 'Error', detail: e.message });
   } finally {
     loading.value = false;
   }
@@ -70,7 +77,8 @@ onMounted(async () => {
   try {
     await initUserInformation();
   } catch (e) {
-    if (e instanceof ApiError) toast.add({ severity: 'error', summary: 'Error', detail: e.message });
+    if (e instanceof ApiError)
+      toast.add({ severity: 'error', summary: 'Error', detail: e.message });
   } finally {
     loading.value = false;
   }

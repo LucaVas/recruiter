@@ -9,14 +9,14 @@ export type Candidate = {
   totalExperience: number;
   education: string;
   currentCtc: number;
-  status: CandidateStatus,
+  status: CandidateStatus;
   createdDTime: Date;
   modifiedDTime: Date;
 };
 
 //request
 export type NewCandidateRequest = Omit<Candidate, 'status' | 'createdDTime' | 'modifiedDTime'>;
-export type UpdateCandidateRequest = NewCandidateRequest
+export type UpdateCandidateRequest = NewCandidateRequest;
 
 // response
 export type CandidateResponse = { pan: string; candidate: Candidate };

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-4 h-30">
+  <div class="h-30 flex flex-col gap-4">
     <header id="header">
       <h2 class="font-semibold">{{ candidate.name }}</h2>
       <h4 class="italic">{{ candidate.email }}</h4>

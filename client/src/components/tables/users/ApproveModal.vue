@@ -23,7 +23,7 @@ defineEmits<{
         rows="5"
         cols="30"
         placeholder="Write here your comment"
-        class="w-full mt-3"
+        class="mt-3 w-full"
       />
       <Divider />
       <div class="flex justify-end gap-2">

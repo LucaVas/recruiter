@@ -33,5 +33,3 @@ export type PasswordResetRequest = {
   newPassword: string;
 };
 export type PasswordResetTokenRequest = { email: string; username: string };
-
-

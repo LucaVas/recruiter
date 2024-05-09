@@ -82,7 +82,7 @@ const submitLogin = async () => {
         <div class="mt-4">
           <RouterLink :to="{ name: 'ForgotPassword' }">
             <Button
-              class="w-full mb-4"
+              class="mb-4 w-full"
               type="button"
               label="Forgot password?"
               :disabled="loading"
