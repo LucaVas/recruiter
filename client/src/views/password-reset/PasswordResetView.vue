@@ -28,6 +28,7 @@ const submit = async (token: string, form: NewPasswordRequest) => {
       severity: 'success',
       summary: 'Success',
       detail: 'Password reset successful. You can now login.',
+      life: 3000,
     });
     passwordReset.value = true;
   } catch (err) {

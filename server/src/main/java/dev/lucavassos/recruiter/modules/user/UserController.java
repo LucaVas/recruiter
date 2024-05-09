@@ -4,6 +4,7 @@ import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,25 +15,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "api/v1")
 public class UserController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserService service;
 
     @PostMapping("/users/approvals")
     public ResponseEntity<?> approveUser(
             @Valid @RequestBody UserApprovalRequest request) {
-        LOG.info("Received request to approve users: {}", request);
+        log.info("Received request to approve users: {}", request);
         service.approveUser(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        LOG.info("Received request for users.");
+        log.info("Received request for users.");
         return ResponseEntity.ok(service.getAllUsers());
     }
 

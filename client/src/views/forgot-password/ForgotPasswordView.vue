@@ -25,6 +25,7 @@ const submit = async (form: PasswordForgotRequest) => {
       severity: 'success',
       summary: 'Success',
       detail: 'A password reset link was sent to your email.',
+      life: 3000,
     });
   } catch (err) {
     if (err instanceof ApiError)

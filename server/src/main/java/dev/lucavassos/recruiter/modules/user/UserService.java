@@ -16,6 +16,7 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +30,9 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService  {
+
+    @Value("${password.reset.token.expirationInSeconds}")
+    private Integer expirationInSeconds;
 
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenGenerator resetTokenGenerator;
@@ -126,7 +130,10 @@ public class UserService  {
         tokenRepository.save(token);
 
         log.info("Sending email to [{}]", userByUsername.getEmail());
-        emailService.sendEmail("luca.vassos@gmail.com", userByUsername.getUsername(), "password-reset/token=" + token.getTokenString());
+        emailService.sendEmail(userByUsername.getEmail(),
+                userByUsername.getUsername(),
+                token.getTokenString(),
+                expirationInSeconds / 60);
     }
 
     public void deleteTokenForUser(User user) {
@@ -149,7 +156,7 @@ public class UserService  {
                         );
 
         LocalDateTime now = LocalDateTime.now();
-        if (ChronoUnit.MINUTES.between(token.getCreatedDTime(), now) > 15) {
+        if (ChronoUnit.SECONDS.between(token.getCreatedDTime(), now) > expirationInSeconds) {
             log.error("Token expired.");
             throw new BadRequestException("Invalid token. Please request a new one.");
         }

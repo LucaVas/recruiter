@@ -3,8 +3,14 @@ server:
     error:
         include-message: always
 
+password:
+    reset:
+        token:
+            expirationInSeconds: 1
+
 client:
     base-url: ${CLIENT_BASE_URL}
+    reset-password-url: ${CLIENT_RESET_PASSWORD_URL}
 
 logging:
     level:
