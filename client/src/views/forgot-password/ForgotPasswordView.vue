@@ -8,19 +8,21 @@ import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { type PasswordForgotRequest } from '@/stores/auth/schema';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
+import { requestNewPassword } from '@/stores/auth';
 
 const toast = useToast();
 const loading = ref(false);
 
 const form = ref<PasswordForgotRequest>({
   email: '',
+  username: '',
 });
 
 const submit = async (form: PasswordForgotRequest) => {
   loading.value = true;
   console.log('form', form);
   try {
-    //await requestNewPassword(form);
+    await requestNewPassword(form);
     toast.add({
       severity: 'success',
       summary: 'Success',
@@ -28,7 +30,12 @@ const submit = async (form: PasswordForgotRequest) => {
     });
   } catch (err) {
     if (err instanceof ApiError)
-      toast.add({ severity: 'error', summary: 'Error', detail: err.message, life: 3000 });
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: err.message ?? DEFAULT_SERVER_ERROR,
+        life: 3000,
+      });
     if (err instanceof Error)
       toast.add({ severity: 'error', summary: 'Error', detail: DEFAULT_SERVER_ERROR, life: 3000 });
   } finally {
@@ -56,6 +63,17 @@ const submit = async (form: PasswordForgotRequest) => {
           required
           autocomplete="email"
           placeholder="Email"
+          class="w-full"
+        />
+        <InputText
+          type="username"
+          id="username "
+          v-model="form.username"
+          minlength="3"
+          maxlength="50"
+          required
+          autocomplete="username"
+          placeholder="Username"
           class="w-full"
         />
         <Button

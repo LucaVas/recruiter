@@ -11,6 +11,7 @@ import {
   type AuthUserInfoDto,
   type LoginRequest,
   type LoginResponse,
+  type PasswordForgotRequest,
   type SignupRequest,
   type SignupResponse,
   type UserInfoUpdateRequest,
@@ -60,5 +61,10 @@ export const updateProfileInformation = async (
   profileInformation: UserInfoUpdateRequest
 ): Promise<void> => {
   const { data } = await api.put('/auth/profile/update', profileInformation);
+  return data;
+};
+
+export const requestNewPassword = async (form: PasswordForgotRequest): Promise<void> => {
+  const { data } = await api.post('/resetPassword', form);
   return data;
 };
