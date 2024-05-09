@@ -16,12 +16,16 @@ const form = ref<PasswordForgotRequest>({
   email: '',
 });
 
-
 const submit = async (form: PasswordForgotRequest) => {
   loading.value = true;
+  console.log('form', form);
   try {
     //await requestNewPassword(form);
-    toast.add({ severity: 'success', summary: 'Success', detail: 'A password reset link was sent to your email.' });
+    toast.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'A password reset link was sent to your email.',
+    });
   } catch (err) {
     if (err instanceof ApiError)
       toast.add({ severity: 'error', summary: 'Error', detail: err.message, life: 3000 });
@@ -34,8 +38,6 @@ const submit = async (form: PasswordForgotRequest) => {
 </script>
 
 <template>
-  <Toast data-testid="error-message" />
-
   <div class="flex h-screen w-screen justify-center bg-slate-100">
     <PageForm
       heading="Password Reset"
@@ -56,17 +58,29 @@ const submit = async (form: PasswordForgotRequest) => {
           placeholder="Email"
           class="w-full"
         />
+        <Button
+          class="w-full"
+          type="submit"
+          label="Reset password"
+          :disabled="loading"
+          data-testid="password-reset-button"
+        />
       </template>
 
       <template #footer>
-        <div class="mt-4 flex">
-          <Button
-            class="w-full"
-            type="submit"
-            label="Reset password"
-            :disabled="loading"
-            data-testid="password-reset-button"
-          />
+        <div class="mt-4">
+          <RouterLink :to="{ name: 'Login' }">
+            <Button
+              class="w-full"
+              type="button"
+              label="Remember now?"
+              icon="pi pi-question-circle"
+              severity="secondary"
+              :disabled="loading"
+              data-testid="remember-password-button"
+              outlined
+            />
+          </RouterLink>
         </div>
       </template>
     </PageForm>
