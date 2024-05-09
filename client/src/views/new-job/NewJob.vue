@@ -23,7 +23,11 @@
       />
       <div class="space-y-3">
         <label>Skills</label>
-        <SkillsDropdown :disabled="false" @addSkill="(skill: Skill) => addSkill(skill)" />
+        <SkillsDropdown
+          :skills="skills"
+          :disabled="false"
+          @addSkill="(skill: Skill) => addSkill(skill)"
+        />
         <JobSkills
           :isNewJob="true"
           @remove="(skill: Skill) => removeSkill(skill)"
@@ -97,6 +101,7 @@
 
 <script setup lang="ts">
 import JobInformation from '@/components/job/shared/JobInformation.vue';
+import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
 import JobHiringDetails from '@/components/job/shared/JobHiringDetails.vue';
 import NowJobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
@@ -119,6 +124,7 @@ import { createQuestion } from '@/stores/question/index';
 import { type QuestionForm } from '@/stores/question/schema';
 import { capitalize, capitalizeText, capitalizeWords } from '../../utils/stringUtils';
 import { getAllClients } from '@/stores/client';
+import { getAllSkills } from '@/stores/skill';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -129,6 +135,7 @@ const creatingJob = ref(false);
 const openQuestionModal = ref(false);
 const openQuestionSearchModal = ref(false);
 const clients = ref<Client[]>([]);
+const skills = ref<Skill[]>([]);
 
 async function create(job: NewJobRequest) {
   creatingJob.value = true;
@@ -151,6 +158,14 @@ const loadClients = async () => {
   }
 };
 
+const loadSkills = async () => {
+  try {
+    skills.value = await getAllSkills();
+  } catch (e) {
+    showError(e as string);
+  }
+};
+
 const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
   try {
     const newQuestion = await createQuestion({
@@ -162,6 +177,7 @@ const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
       skillNames: question.skillNames.map((s) => capitalize(s)),
     });
     job.value.questions.push(newQuestion);
+    skills.value = await getAllSkills();
   } catch (e) {
     showError(e as string);
   }
@@ -198,6 +214,6 @@ const job = ref<NewJobRequest>({
 });
 
 onMounted(async () => {
-  await loadClients();
+  await Promise.all([loadClients(), loadSkills()]);
 });
 </script>

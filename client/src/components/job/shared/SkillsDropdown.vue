@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import type { Skill } from '@/stores/skill/schema';
 import Dropdown from 'primevue/dropdown';
-import { getAllSkills } from '@/stores/skill';
 
 // variables
 const loading = ref(false);
-const skills = ref<Skill[]>();
 const selectedSkill = ref<Skill>();
 
 // props
-const { disabled } = defineProps<{
+const { disabled, skills } = defineProps<{
+  skills: Skill[];
   disabled: boolean;
 }>();
 
@@ -18,13 +17,6 @@ const { disabled } = defineProps<{
 defineEmits<{
   (e: 'addSkill', skill: Skill): void;
 }>();
-
-// init
-onMounted(async () => {
-  loading.value = true;
-  skills.value = await getAllSkills();
-  loading.value = false;
-});
 </script>
 
 <template>

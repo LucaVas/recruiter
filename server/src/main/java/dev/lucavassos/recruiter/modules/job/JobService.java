@@ -27,6 +27,7 @@ import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -41,9 +42,8 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class JobService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(JobService.class);
 
     private final JobRepository repository;
     private final JobHistoryRepository historyRepository;
@@ -57,10 +57,12 @@ public class JobService {
 
     @Transactional
     public JobResponse addJob(NewJobRequest request) throws Exception {
-        LOG.info("Initiating new job creation process...");
+        log.info("Initiating new job creation process...");
 
         List<Skill> skills = skillRepository
                 .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toList()));
+
+        log.info("Skills found: {}", skills);
 
         Client client = clientRepository
                 .findByName(request.client().name())
@@ -103,11 +105,11 @@ public class JobService {
             );
             clientRepository.save(client);
         } catch (Exception e) {
-            LOG.error("Database error while updating job: {}", e.getMessage());
+            log.error("Database error while updating job: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
 
-        LOG.info("New job created: [{}]", createdJob);
+        log.info("New job created: [{}]", createdJob);
         saveJobInHistoryTable(createdJob, recruiter);
 
         monitoringProcessor.incrementJobsCounter();
@@ -124,7 +126,7 @@ public class JobService {
 
         boolean changes = false;
         Long id = request.id();
-        LOG.info("Updating job with id {}", id);
+        log.info("Updating job with id {}", id);
 
         Job job = repository.findOneById(id).orElseThrow(
                 () -> new ResourceNotFoundException(
@@ -137,7 +139,7 @@ public class JobService {
 
         User recruiter = getAuthUser();
         if (!isUserAuthorized(recruiter, job)) {
-            LOG.error("User with id {} is not authorized to modify this job", recruiter.getId());
+            log.error("User with id {} is not authorized to modify this job", recruiter.getId());
             throw new UnauthorizedException("Recruiter is unauthorized to modify this job");
         }
 
@@ -210,11 +212,11 @@ public class JobService {
             repository.save(job);
             saveJobInHistoryTable(job, recruiter);
         } catch (Exception e) {
-            LOG.error("Database error while updating job: {}", e.getMessage());
+            log.error("Database error while updating job: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
 
-        LOG.info("Job updated: [{}]", job);
+        log.info("Job updated: [{}]", job);
 
         return new JobResponse(
                 job.getId(),
@@ -230,6 +232,8 @@ public class JobService {
                         "Job with id [%d] not found".formatted(id)
                 )
         );
+
+        log.info("Job found: [{}]", job);
 
         return jobDtoMapper.apply(job);
     }
@@ -254,7 +258,7 @@ public class JobService {
 
     @Transactional
     public List<JobDto> getAllJobs() {
-        LOG.info("Retrieving {} jobs", 1000);
+        log.info("Retrieving {} jobs", 1000);
 
         List<Job> jobs = repository.findAll();
 
@@ -267,31 +271,31 @@ public class JobService {
                 })
                 .toList();
 
-        LOG.info("Jobs retrieved: {}", jobs);
+        log.info("Jobs retrieved: {}", jobs);
 
         return jobsDtos;
     }
 
     @Transactional
     public void deleteJob(Long id) {
-        LOG.info("Deleting job {}", id);
+        log.info("Deleting job {}", id);
         Job job = repository.findOneById(id).orElseThrow(
                 () -> {
-                    LOG.error("Job {} not found", id);
+                    log.error("Job {} not found", id);
                     return new ResourceNotFoundException("Job with id %d not found".formatted(id));
                 }
         );
 
         User user = getAuthUser();
         if (!user.isAdmin()) {
-            LOG.error("User with id {} is not authorized to delete this job", user.getId());
+            log.error("User with id {} is not authorized to delete this job", user.getId());
             throw new UnauthorizedException("User is unauthorized to delete this job");
         }
 
         if (job.getStatus() != JobStatus.ARCHIVED) {
             job.setStatus(JobStatus.ARCHIVED);
             Job jobDeleted = repository.save(job);
-            LOG.info("Job {} deleted successfully", jobDeleted.getId());
+            log.info("Job {} deleted successfully", jobDeleted.getId());
             saveJobInHistoryTable(job, user);
         }
     }
@@ -302,7 +306,7 @@ public class JobService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
-                    LOG.error("User with id {} not found", userPrincipal.getId());
+                    log.error("User with id {} not found", userPrincipal.getId());
                     return new ResourceNotFoundException("User not found");
                 }
         );
@@ -326,7 +330,7 @@ public class JobService {
                             .build()
             );
         } catch (Exception e) {
-            LOG.error("Error while saving job in history table: {}", e.getMessage());
+            log.error("Error while saving job in history table: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
 

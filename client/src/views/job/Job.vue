@@ -57,6 +57,7 @@ const delJob = async (id: number) => {
 onMounted(async () => {
   try {
     job.value = await getJobDetails(id);
+    console.log(job.value)
   } catch (e) {
     showError(e as string);
   }
