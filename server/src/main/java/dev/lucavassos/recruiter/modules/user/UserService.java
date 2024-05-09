@@ -10,10 +10,13 @@ import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
+import dev.lucavassos.recruiter.service.email.EmailService;
 import dev.lucavassos.recruiter.utils.DateTimeUtils;
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,23 +27,19 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class UserService  {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+    @Value("${password.reset.token.expirationInSeconds}")
+    private Integer expirationInSeconds;
 
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenGenerator resetTokenGenerator;
     private final UserRepository repository;
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
-
-    public UserService(PasswordEncoder passwordEncoder, PasswordResetTokenGenerator resetTokenGenerator, UserRepository repository, PasswordResetTokenRepository tokenRepository, UserDtoMapper userDtoMapper) {
-        this.passwordEncoder = passwordEncoder;
-        this.resetTokenGenerator = resetTokenGenerator;
-        this.repository = repository;
-        this.tokenRepository = tokenRepository;
-        this.userDtoMapper = userDtoMapper;
-    }
+    private final EmailService emailService;
 
     public void approveUser(UserApprovalRequest request) {
 
@@ -70,15 +69,15 @@ public class UserService  {
         user.setApprover(approver);
         user.setComment(request.comment());
 
-        LOG.info("User to approve: {} on {}", user.getComment(), user.getApprovedDTime());
+        log.info("User to approve: {} on {}", user.getComment(), user.getApprovedDTime());
 
         User approvedUser = repository.save(user);
 
-        LOG.info("User approved: {}", approvedUser );
+        log.info("User approved: {}", approvedUser );
     }
 
     public List<UserDto> getAllUsers() {
-        LOG.info("Request received for all users");
+        log.info("Request received for all users");
         List<User> users = repository.findAll();
         User user = getAuthUser();
 
@@ -90,12 +89,12 @@ public class UserService  {
 
     }
 
-    public void sendResetPasswordEmail(PasswordResetTokenRequest request) throws BadRequestException {
+    public void sendResetPasswordEmail(PasswordForgotRequest request) throws BadRequestException, MessagingException {
         User userByEmail = repository
                 .findOneByEmail(request.email())
                 .orElseThrow(() -> {
                     String message = String.format("User with email %s not found", request.email());
-                        LOG.error(message);
+                        log.error(message);
                             return new ResourceNotFoundException(message);
                 }
                 );
@@ -104,7 +103,7 @@ public class UserService  {
                 .findOneByUsername(request.username())
                 .orElseThrow(() -> {
                             String message = String.format("User with username %s not found", request.username());
-                            LOG.error(message);
+                            log.error(message);
                             return new ResourceNotFoundException(message);
                         }
                 );
@@ -114,12 +113,12 @@ public class UserService  {
                     userByEmail.getEmail(),
                     userByEmail.getUsername(),
                     request.username());
-            LOG.error(message);
+            log.error(message);
             throw new BadRequestException("Incorrect. Please try again.");
         }
 
         if (userByUsername.getPasswordResetToken() != null) {
-            LOG.debug("Token for user [{}] already exists", userByUsername.getUsername());
+            log.debug("Token for user [{}] already exists", userByUsername.getUsername());
             deleteTokenForUser(userByUsername);
         }
 
@@ -130,14 +129,18 @@ public class UserService  {
 
         tokenRepository.save(token);
 
-        // TODO: send email with url
+        log.info("Sending email to [{}]", userByUsername.getEmail());
+        emailService.sendEmail(userByUsername.getEmail(),
+                userByUsername.getUsername(),
+                token.getTokenString(),
+                expirationInSeconds / 60);
     }
 
     public void deleteTokenForUser(User user) {
         PasswordResetToken token = user.getPasswordResetToken();
         if (token != null) {
             tokenRepository.delete(token);
-            LOG.debug("Token after delete exists: {}", tokenRepository.existsById(token.getId()));
+            log.debug("Token after delete exists: {}", tokenRepository.existsById(token.getId()));
             user.setPasswordResetToken(null);
         }
     }
@@ -147,19 +150,19 @@ public class UserService  {
                 tokenRepository
                         .findOneByTokenString(tokenString)
                         .orElseThrow(() -> {
-                                    LOG.error("Token was not found in the database.");
+                                    log.error("Token was not found in the database.");
                                     return new BadRequestException("Invalid token. Please request a new one.");
                                 }
                         );
 
         LocalDateTime now = LocalDateTime.now();
-        if (ChronoUnit.MINUTES.between(token.getCreatedDTime(), now) > 15) {
-            LOG.error("Token expired.");
+        if (ChronoUnit.SECONDS.between(token.getCreatedDTime(), now) > expirationInSeconds) {
+            log.error("Token expired.");
             throw new BadRequestException("Invalid token. Please request a new one.");
         }
 
         User updatedUser = token.getUser();
-        updatedUser.setPassword(passwordEncoder.encode(request.newPassword()));
+        updatedUser.setPassword(passwordEncoder.encode(request.password()));
         repository.save(updatedUser);
         tokenRepository.delete(token);
     }
@@ -170,7 +173,7 @@ public class UserService  {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return repository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
-                    LOG.error("User with id {} not found", userPrincipal.getId());
+                    log.error("User with id {} not found", userPrincipal.getId());
                     return new ResourceNotFoundException("User not found");
                 }
         );

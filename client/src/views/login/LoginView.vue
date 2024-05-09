@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import PageForm from '@/components/PageForm.vue';
 import { useRouter } from 'vue-router';
-import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
@@ -30,7 +29,7 @@ const submitLogin = async () => {
     await login(userForm.value);
     router.push({ name: 'Dashboard' });
   } catch (err) {
-    console.error(`Error during login: ${err}`)
+    console.error(`Error during login: ${err}`);
     if (err instanceof ApiError) showError(err.message);
     if (err instanceof Error) showError('Something went wrong');
   } finally {
@@ -40,8 +39,6 @@ const submitLogin = async () => {
 </script>
 
 <template>
-  <Toast data-testid="error-message" />
-
   <div class="flex h-screen w-screen justify-center bg-slate-100">
     <PageForm heading="Log in" formLabel="Login" @submit="submitLogin" data-testid="login-form">
       <template #default>
@@ -81,10 +78,10 @@ const submitLogin = async () => {
       </template>
 
       <template #footer>
-        <div class="mt-4 flex items-center justify-between">
-          <RouterLink :to="{ name: 'Login' }" target="_blank" rel="noopener">
+        <div class="mt-4">
+          <RouterLink :to="{ name: 'ForgotPassword' }">
             <Button
-              class="w-full"
+              class="w-full mb-4"
               type="button"
               label="Forgot password?"
               :disabled="loading"
@@ -109,4 +106,3 @@ const submitLogin = async () => {
     </PageForm>
   </div>
 </template>
-@/stores/auth/schema
