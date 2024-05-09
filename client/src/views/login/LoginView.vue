@@ -82,7 +82,7 @@ const submitLogin = async () => {
 
       <template #footer>
         <div class="mt-4 flex items-center justify-between">
-          <RouterLink :to="{ name: 'Login' }" target="_blank" rel="noopener">
+          <RouterLink :to="{ name: 'ForgotPassword' }">
             <Button
               class="w-full"
               type="button"
@@ -109,4 +109,3 @@ const submitLogin = async () => {
     </PageForm>
   </div>
 </template>
-@/stores/auth/schema
