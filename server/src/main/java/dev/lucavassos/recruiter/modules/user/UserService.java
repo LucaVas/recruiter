@@ -126,7 +126,7 @@ public class UserService  {
         tokenRepository.save(token);
 
         log.info("Sending email to [{}]", userByUsername.getEmail());
-        emailService.sendEmail("luca.vassos@gmail.com", userByUsername.getUsername(), "http://localhost:8080/resetPassword/" + token.getTokenString());
+        emailService.sendEmail("luca.vassos@gmail.com", userByUsername.getUsername(), "reset-password/token=" + token.getTokenString());
     }
 
     public void deleteTokenForUser(User user) {

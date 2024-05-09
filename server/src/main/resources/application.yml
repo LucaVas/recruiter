@@ -3,6 +3,9 @@ server:
     error:
         include-message: always
 
+client:
+    base-url: ${CLIENT_BASE_URL}
+
 logging:
     level:
         org:
