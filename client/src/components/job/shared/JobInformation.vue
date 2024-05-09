@@ -2,38 +2,37 @@
   <div class="card flex flex-col gap-8">
     <ClientModal
       v-if="details"
-      :isUpdate="false"
-      :client="details.client"
       :visible="clientModalOpen"
       @close="clientModalOpen = false"
-      @save="
-        (client: Client) => {
-          details.client = client;
-          clientModalOpen = false;
-        }
-      "
+      @save="(client: NewClient) => create(client)"
     />
     <div class="flex w-full flex-col gap-2">
       <label class="text-sm" for="clientName">Client Name</label>
-      <div class="flex sm:flex-row gap-3">
+      <div class="flex gap-3 sm:flex-row">
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-user"></i>
           </InputGroupAddon>
-          <InputText
-            id="clientName"
-            v-model="details.client.name"
-            @input="emit('input', details)"
-            :disabled="disabled"
-            :invalid="details.client.name === ''"
+          <ClientDropdown
+            :clients="clients"
+            :client="details.client"
+            @selectClient="(client) => (details.client = client)"
           />
         </InputGroup>
+        <Button
+          size="small"
+          icon="pi pi-user-plus"
+          iconPos="right"
+          class="min-w-fit md:hidden"
+          outlined
+          @click="clientModalOpen = true"
+        />
         <Button
           size="small"
           label="New client"
           icon="pi pi-user-plus"
           iconPos="right"
-          class="min-w-fit"
+          class="hidden min-w-fit md:flex"
           outlined
           @click="clientModalOpen = true"
         />
@@ -49,7 +48,6 @@
           v-model="details.name"
           @input="emit('input', details)"
           :disabled="disabled"
-          :invalid="details.name === ''"
         />
       </InputGroup>
     </div>
@@ -99,16 +97,36 @@ import { ref } from 'vue';
 import { jobStatuses, contractTypes } from './utils';
 import type { Job, NewJobRequest } from '@/stores/job/schema';
 import type { Client } from '@/stores/client/schema';
+import ClientDropdown from './ClientDropdown.vue';
+import { createClient } from '@/stores/client/index';
+import type { NewClient } from '@/stores/client/schema';
+import { useToast } from 'primevue/usetoast';
+import { ApiError } from '@/utils/types';
+
+const toast = useToast();
 
 // props
-const { jobDetails, disabled } = defineProps<{
+const { jobDetails, clients, disabled } = defineProps<{
   jobDetails: Job | NewJobRequest;
+  clients: Client[];
   disabled: boolean;
 }>();
+
+const create = async (client: NewClient) => {
+  try {
+    const newClient = await createClient(client);
+    emit('selectClient', newClient);
+    clientModalOpen.value = false;
+  } catch (e) {
+    if (e instanceof ApiError)
+      toast.add({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+  }
+};
 
 // emits
 const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
+  (e: 'selectClient', client: Client): void;
 }>();
 
 const clientModalOpen = ref(false);

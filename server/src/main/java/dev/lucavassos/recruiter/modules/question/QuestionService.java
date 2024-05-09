@@ -12,6 +12,7 @@ import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMappe
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class QuestionService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(QuestionService.class);
 
     private final QuestionRepository questionRepository;
     private final ClientRepository clientRepository;
@@ -34,7 +34,7 @@ public class QuestionService {
 
     @Transactional
     public List<QuestionDto> getQuestionsByTitleOrClient(String findByTitleOrClient) {
-        LOG.info("Retrieving questions for title / client {}", findByTitleOrClient);
+        log.info("Retrieving questions for title / client {}", findByTitleOrClient);
 
         List<Question> questions = questionRepository.findByTitleOrClient(findByTitleOrClient);
 
@@ -42,14 +42,14 @@ public class QuestionService {
                 .map(questionDtoMapper)
                 .toList();
 
-        LOG.info("{} questions retrieved: {}", questionDtos.size(), questionDtos);
+        log.info("{} questions retrieved: {}", questionDtos.size(), questionDtos);
 
         return questionDtos;
     }
 
     @Transactional
     public QuestionDto createQuestion(NewQuestionRequest request) {
-        LOG.info("Creating new question");
+        log.info("Creating new question");
 
         Client client = clientRepository.findById(request.clientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
@@ -60,6 +60,8 @@ public class QuestionService {
                                 .orElseGet(() -> skillRepository.save(Skill.builder().name(skillName).build()))
                     ).forEach(skills::add);
         }
+
+        log.info("Skills: {}", skills);
 
         Question question;
         try {
@@ -78,7 +80,7 @@ public class QuestionService {
 
         QuestionDto questionDto = questionDtoMapper.apply(question);
 
-        LOG.info("Question created: {}", questionDto);
+        log.info("Question created: {}", questionDto);
 
         return questionDto;
     }

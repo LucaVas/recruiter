@@ -12,3 +12,17 @@ export class ApiError implements ApiErrorI {
     this.statusCode = statusCode ?? 500;
   }
 }
+
+export class ValidationError {
+  message: string;
+  fields: Record<string, string>;
+
+  constructor(message: string, fields: Record<string, string>) {
+    this.message = message;
+    this.fields = fields;
+  }
+
+  output() {
+    return `${this.message}: ${Object.values(this.fields).join(', ')}`;
+  }
+}

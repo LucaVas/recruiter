@@ -2,7 +2,19 @@
   <Toast />
   <div class="flex w-full flex-col gap-8 pb-6">
     <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
-      <JobInformation :disabled="false" :jobDetails="job" @input="(details) => (job = details)" />
+      <JobInformation
+        :disabled="false"
+        :jobDetails="job"
+        :clients="clients"
+        :selectedClient="job.client"
+        @input="(details) => (job = details)"
+        @selectClient="
+          (client) => {
+            job.client = client;
+            clients.push(client);
+          }
+        "
+      />
       <JobHiringDetails @input="(details) => (job = details)" :disabled="false" :jobDetails="job" />
       <NowJobPaymentDetails
         :disabled="false"
@@ -11,7 +23,11 @@
       />
       <div class="space-y-3">
         <label>Skills</label>
-        <SkillsDropdown :disabled="false" @addSkill="(skill: Skill) => addSkill(skill)" />
+        <SkillsDropdown
+          :skills="skills"
+          :disabled="false"
+          @addSkill="(skill: Skill) => addSkill(skill)"
+        />
         <JobSkills
           :isNewJob="true"
           @remove="(skill: Skill) => removeSkill(skill)"
@@ -20,6 +36,7 @@
       </div>
       <div class="space-y-3">
         <QuestionModal
+          :clients="clients"
           :visible="openQuestionModal"
           :isUpdate="false"
           @close="openQuestionModal = false"
@@ -46,7 +63,11 @@
         <div class="flex flex-row gap-3">
           <IconField iconPosition="left" class="w-full">
             <InputIcon class="pi pi-search"> </InputIcon>
-            <InputText placeholder="Search" class="w-full" @click="openQuestionSearchModal = true" />
+            <InputText
+              placeholder="Search"
+              class="w-full"
+              @click="openQuestionSearchModal = true"
+            />
           </IconField>
 
           <Button
@@ -80,6 +101,7 @@
 
 <script setup lang="ts">
 import JobInformation from '@/components/job/shared/JobInformation.vue';
+import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
 import JobHiringDetails from '@/components/job/shared/JobHiringDetails.vue';
 import NowJobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
@@ -91,7 +113,7 @@ import InputText from 'primevue/inputtext';
 import { useToast } from 'primevue/usetoast';
 import { createJob } from '@/stores/job';
 import type { NewJobRequest } from '@/stores/job/schema';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Success from '@/components/Success.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
 import type { Skill } from '@/stores/skill/schema';
@@ -101,6 +123,8 @@ import QuestionsTable from '@/components/question/QuestionsTable.vue';
 import { createQuestion } from '@/stores/question/index';
 import { type QuestionForm } from '@/stores/question/schema';
 import { capitalize, capitalizeText, capitalizeWords } from '../../utils/stringUtils';
+import { getAllClients } from '@/stores/client';
+import { getAllSkills } from '@/stores/skill';
 
 const toast = useToast();
 const showError = (content: string) => {
@@ -110,10 +134,13 @@ const jobCreated = ref(false);
 const creatingJob = ref(false);
 const openQuestionModal = ref(false);
 const openQuestionSearchModal = ref(false);
+const clients = ref<Client[]>([]);
+const skills = ref<Skill[]>([]);
 
 async function create(job: NewJobRequest) {
   creatingJob.value = true;
   try {
+    console.log(job);
     await createJob(job);
     jobCreated.value = true;
   } catch (e) {
@@ -122,6 +149,22 @@ async function create(job: NewJobRequest) {
     creatingJob.value = false;
   }
 }
+
+const loadClients = async () => {
+  try {
+    clients.value = await getAllClients();
+  } catch (e) {
+    showError(e as string);
+  }
+};
+
+const loadSkills = async () => {
+  try {
+    skills.value = await getAllSkills();
+  } catch (e) {
+    showError(e as string);
+  }
+};
 
 const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
   try {
@@ -134,6 +177,7 @@ const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
       skillNames: question.skillNames.map((s) => capitalize(s)),
     });
     job.value.questions.push(newQuestion);
+    skills.value = await getAllSkills();
   } catch (e) {
     showError(e as string);
   }
@@ -167,5 +211,9 @@ const job = ref<NewJobRequest>({
   questions: [],
   closureBonusPaymentDate: new Date(),
   cvRatePaymentDate: new Date(),
+});
+
+onMounted(async () => {
+  await Promise.all([loadClients(), loadSkills()]);
 });
 </script>

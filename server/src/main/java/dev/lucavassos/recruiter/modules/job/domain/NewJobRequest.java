@@ -2,8 +2,10 @@ package dev.lucavassos.recruiter.modules.job.domain;
 
 import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
 import dev.lucavassos.recruiter.modules.job.entities.ContractType;
+import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,6 +47,7 @@ public record NewJobRequest (
         Currency currency,
 
         @NotBlank(message = "Description cannot be empty")
+        @Length(min = 1, max = 500, message = "Description must be between 1 and 500 characters")
         String description,
 
         @NotNull(message = "Bonus pay per CV cannot be empty")
@@ -61,5 +64,5 @@ public record NewJobRequest (
         @Future(message = "CV rate payment date must be in the future")
         LocalDateTime cvRatePaymentDate,
 
-        List<Long> questionIds
+        List<QuestionDto> questions
 ){}

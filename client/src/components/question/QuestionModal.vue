@@ -5,16 +5,14 @@ import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Chips from 'primevue/chips';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import type { Question, QuestionForm } from '@/stores/question/schema';
-import { getAllClients } from '@/stores/client';
+import { type Client } from '@/stores/client/schema';
 
-const loading = ref(false);
-
-const { question, visible, isUpdate } = defineProps<{
+const { question, clients, visible } = defineProps<{
   question?: Question | undefined;
+  clients: Client[];
   visible: boolean;
-  isUpdate: boolean;
 }>();
 
 const emits = defineEmits<{
@@ -31,21 +29,7 @@ const questionForm = ref<QuestionForm>({
   skillNames: [],
 });
 
-const clients = ref<{ name: string; label: number }[]>();
-
-onMounted(async () => {
-  loading.value = true;
-  try {
-    clients.value = (await getAllClients()).map((c) => ({
-      name: c.name,
-      label: c.id,
-    }));
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
-});
+const mappedClients = ref<{ name: string; label: number }[]>();
 </script>
 
 <template>
@@ -53,6 +37,12 @@ onMounted(async () => {
     <Dialog
       v-if="questionForm"
       :visible="visible"
+      @show="
+        mappedClients = clients.map((c) => ({
+          name: c.name,
+          label: c.id,
+        }))
+      "
       @update:visible="$emit('close')"
       closeOnEscape
       modal
@@ -73,7 +63,7 @@ onMounted(async () => {
           </InputGroupAddon>
           <Dropdown
             v-model="questionForm.clientId"
-            :options="clients"
+            :options="mappedClients"
             optionLabel="name"
             optionValue="label"
             placeholder="Select a client"

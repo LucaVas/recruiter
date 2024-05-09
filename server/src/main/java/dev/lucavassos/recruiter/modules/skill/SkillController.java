@@ -25,6 +25,6 @@ public class SkillController {
     @GetMapping("/skills")
     public ResponseEntity<List<SkillDto>> getAllSkills() {
         LOG.info("Received request for all skills.");
-        return new ResponseEntity<>(service.getAllSkills(), HttpStatus.OK);
+        return new ResponseEntity<>(service.getAllSkills(0, 2000), HttpStatus.OK);
     }
 }
