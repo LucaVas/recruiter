@@ -1,7 +1,7 @@
 <template>
-  <div class="flex w-full flex-col md:flex-row items-center gap-4">
+  <div class="flex w-full flex-col md:items-center md:flex-row gap-4">
     <label
-      class="rounded-md border border-transparent bg-[#3b81f6] p-3 text-sm font-semibold text-white min-w-fit"
+      class="rounded-md border border-slate-300 bg-white text-center p-3 text-sm font-semibold text-[#3b81f6] min-w-fit cursor-pointer"
     >
       <input type="file" accept="application/pdf" @change="onUpload($event)" />
       <i class="pi pi-upload mr-2"></i>
