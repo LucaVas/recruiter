@@ -5,35 +5,53 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import dev.lucavassos.recruiter.exception.ServerException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.io.InputStream;
 
-@Service
 @Slf4j
+@Service
 public class FileUploadService {
 
-    private final GoogleStorageConfig googleStorageConfig = new GoogleStorageConfig();
+    @Value("${google.storage.bucket.name}")
+    private String bucket;
 
-    public void uploadResume() throws IOException {
-        Storage storage = StorageOptions.newBuilder()
-                .setProjectId("recruiter-420314")
-                .setCredentials(
-                        GoogleCredentials.fromStream(new FileInputStream("src/main/resources/secrets/recruiter-420314-a391a279757e.json")
-                        )
-                )
-                .build()
-                .getService();
+    @Value("${google.storage.project.id}")
+    private String projectId;
 
-        BlobId blobId = BlobId.of("recruiter-cv-bucket", "tmp/hello.txt");
+    public void uploadResume(InputStream fileStream, String fileName) {
+        Storage storage = getStorage();
+
+        BlobId blobId = BlobId.of(bucket, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
-        String filePath = "src/main/resources/tmp/hello.txt";
+        upload(storage, blobInfo, fileStream);
+        log.info("Resume uploaded successfully as {}", blobId.getName());
+    }
 
-        storage.createFrom(blobInfo, Paths.get(filePath));
-        log.info("File {} uploaded to bucket {} as {}", filePath, googleStorageConfig.getBucket(), blobId.getName());
+    private Storage getStorage() {
+        try {
+            return StorageOptions.newBuilder()
+                    .setProjectId(projectId)
+                    .setCredentials(GoogleCredentials.getApplicationDefault())
+                    .build()
+                    .getService();
+        } catch (IOException e) {
+            log.error("Error while getting storage instance: {}", e.getMessage());
+            throw new ServerException("Error while uploading file. Please try again later.");
+        }
+    }
+
+    private void upload(Storage storage, BlobInfo blobInfo, InputStream fileStream) {
+        try {
+            storage.createFrom(blobInfo, fileStream);
+        } catch (IOException e) {
+            log.error("Error while uploading file: {}", e.getMessage());
+            throw new ServerException("Error while uploading file. Please try again later.");
+        }
     }
 }
