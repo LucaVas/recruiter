@@ -128,7 +128,7 @@ public class CandidacyService {
 
         if ( candidacy.resume() != null ) {
             try {
-                fileUploadService.uploadResume(candidacy.resume().getInputStream(), candidacy.resume().getName());
+                fileUploadService.uploadResume(candidacy.resume().getInputStream(), candidacy.resume().getName(), candidate.getPan());
             } catch (IOException ioe) {
                 log.error("Error while uploading resume: {}", ioe.getMessage());
                 throw new ServerException("Error while uploading resume");

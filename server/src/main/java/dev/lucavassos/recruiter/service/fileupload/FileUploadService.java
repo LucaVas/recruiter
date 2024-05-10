@@ -23,10 +23,16 @@ public class FileUploadService {
     @Value("${google.storage.project.id}")
     private String projectId;
 
-    public void uploadResume(InputStream fileStream, String fileName) {
+    public void uploadResume(InputStream fileStream, String fileName, String candidatePan) {
         Storage storage = getStorage();
 
-        BlobId blobId = BlobId.of(bucket, fileName);
+        String folderPath = "users/" + candidatePan;
+        storage.create(
+                BlobInfo.newBuilder(bucket, folderPath).build(),
+                new byte[0]
+        );
+
+        BlobId blobId = BlobId.of(bucket, folderPath + "/" + fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
         upload(storage, blobInfo, fileStream);
