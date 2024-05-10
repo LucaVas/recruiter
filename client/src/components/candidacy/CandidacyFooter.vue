@@ -37,7 +37,12 @@ defineEmits<{
         v-if="candidacySubmitted"
         label="Back to Dashboard"
         size="small"
-        @click="{ $emit('back'); router.push({ name: 'Dashboard' })}"
+        @click="
+          {
+            $emit('back');
+            router.push({ name: 'Dashboard' });
+          }
+        "
       />
     </div>
   </div>

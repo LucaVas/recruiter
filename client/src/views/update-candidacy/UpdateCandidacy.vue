@@ -7,7 +7,7 @@ import { getCandidacy, updateCandidacy } from '@/stores/candidacy/index';
 import { useRoute } from 'vue-router';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
-import FilesUploader from '@/components/candidacy/FilesUploader.vue';
+import FilesUploader from '@/components/uploader/FilesUploader.vue';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
 import Success from '@/components/Success.vue';

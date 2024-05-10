@@ -1,13 +1,13 @@
 <template>
-  <div class="flex w-full flex-col md:items-center md:flex-row gap-4">
+  <div class="flex w-full flex-col gap-4 md:flex-row md:items-center">
     <label
-      class="rounded-md border border-slate-300 bg-white text-center p-3 text-sm font-semibold text-[#3b81f6] min-w-fit cursor-pointer"
+      class="min-w-fit cursor-pointer rounded-md border border-slate-300 bg-white p-3 text-center text-sm font-semibold text-[#3b81f6]"
     >
       <input type="file" accept="application/pdf" @change="onUpload($event)" />
       <i class="pi pi-upload mr-2"></i>
       Upload
     </label>
-    <div v-if="file" class="w-full flex justify-between">
+    <div v-if="file" class="flex w-full justify-between">
       <span class="file-name max-w-[90%] overflow-x-auto whitespace-nowrap">{{ file.name }}</span>
       <Button class="min-w-fit" icon="pi pi-trash" unstyled @click="file = undefined" />
     </div>
