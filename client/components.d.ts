@@ -44,7 +44,7 @@ declare module 'vue' {
     Dialog: typeof import('primevue/dialog')['default']
     Divider: typeof import('primevue/divider')['default']
     Dropdown: typeof import('primevue/dropdown')['default']
-    FilesUploader: typeof import('./src/components/candidacy/FilesUploader.vue')['default']
+    FilesUploader: typeof import('./src/components/uploader/FilesUploader.vue')['default']
     Header: typeof import('./src/components/tables/shared/Header.vue')['default']
     HiringDetails: typeof import('./src/components/candidacy/HiringDetails.vue')['default']
     InputMask: typeof import('primevue/inputmask')['default']

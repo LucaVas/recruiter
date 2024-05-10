@@ -16,6 +16,7 @@ export const searchedCandidate = ref<Candidate>();
 export const creatingCandidate = ref(false);
 export const candidateCreated = ref(false);
 
+export const resume = ref<File>();
 export const candidacy = ref<RawCandidacy>({
   relevantExperience: 0,
   expectedCtc: 0,

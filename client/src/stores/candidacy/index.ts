@@ -9,7 +9,7 @@ import axiosApi from '../api';
 
 const api = axiosApi();
 
-export async function submitCandidacy(candidacy: NewCandidacyRequest, file: File): Promise<void> {
+export async function submitCandidacy(candidacy: NewCandidacyRequest, file: File | undefined): Promise<void> {
   const formData = new FormData();
   formData.append('jobId', candidacy.jobId.toString());
   formData.append('candidatePan', candidacy.candidatePan);
@@ -20,7 +20,7 @@ export async function submitCandidacy(candidacy: NewCandidacyRequest, file: File
   formData.append('reasonForQuickJoin', candidacy.reasonForQuickJoin);
   formData.append('recruiterComment', candidacy.recruiterComment);
   if (candidacy.status) formData.append('status', candidacy.status.toString());
-  formData.append('resume', file);
+  if (file) formData.append('resume', file);
 
   await api.post(`/candidacies`, formData);
 }
