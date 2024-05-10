@@ -2,39 +2,31 @@
 import CandidateTable from '@/components/candidacy/candidate/CandidateTable.vue';
 import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
-import Toast from 'primevue/toast';
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { getCandidacy, updateCandidacy } from '@/stores/candidacy/index';
 import { useRoute } from 'vue-router';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
 import FilesUploader from '@/components/candidacy/FilesUploader.vue';
-import type { Job } from '@/stores/job/schema';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
 import Success from '@/components/Success.vue';
 import { ApiError } from '@/utils/types';
-import type { Candidate } from '@/stores/candidate/schema';
-import type { RawCandidacy } from '@/stores/candidacy/schema';
 import type { UpdateCandidacyRequest } from '@/stores/candidacy/schema';
+import {
+  jobId,
+  pan,
+  updatingCandidacy,
+  candidacyUpdated,
+  candidate,
+  job,
+  candidacy,
+} from './index';
+import { showError } from '@/utils/errorUtils';
+import { headerModalOpen } from '../new-candidacy';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
-const headerModalOpen = ref(false);
-const job = ref<Job>();
-
-const showError = (content: string) => {
-  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
-};
-
-// candidacy details
-const candidacy = ref<RawCandidacy>();
-const jobId = ref<number>();
-const pan = ref<string>();
-
-// candidacy submission
-const candidacyUpdated = ref(false);
-const updatingCandidacy = ref(false);
-const candidate = ref<Candidate>();
 
 async function update(candidacy: UpdateCandidacyRequest | undefined) {
   if (!candidacy || !jobId.value || pan.value === undefined) return;
@@ -43,7 +35,9 @@ async function update(candidacy: UpdateCandidacyRequest | undefined) {
     await updateCandidacy(jobId.value, pan.value, candidacy);
     candidacyUpdated.value = true;
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     updatingCandidacy.value = false;
   }
@@ -60,7 +54,6 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <Toast />
   <div class="flex w-full flex-col gap-8 pb-6">
     <div v-if="!candidacyUpdated" class="flex h-full w-full flex-col gap-6">
       <div v-if="job">

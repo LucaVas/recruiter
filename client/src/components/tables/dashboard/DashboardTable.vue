@@ -7,7 +7,6 @@ import Tag from 'primevue/tag';
 import Column from 'primevue/column';
 import Dropdown from 'primevue/dropdown';
 import type { Job } from '@/stores/job/schema';
-import Toast from 'primevue/toast';
 import { formatDate } from '@/utils/dateUtils';
 import {
   filters,
@@ -23,6 +22,8 @@ import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { getAllJobs } from '@/stores/job';
 import Header from '../shared/Header.vue';
+import { showError } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
@@ -31,16 +32,15 @@ const statuses = ref(['closed', 'open', 'pending']);
 const showAllColumns = ref(false);
 
 const toast = useToast();
-const showError = (content: string) => {
-  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
-};
 
 async function initTable() {
   loading.value = true;
   try {
     jobs.value = await getAllJobs();
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loading.value = false;
   }
@@ -54,8 +54,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Toast />
-
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"
@@ -87,7 +85,7 @@ onMounted(async () => {
         <ActionButtonsColumn
           :data="data"
           @reload-table="initTable()"
-          @pass-error="(message) => showError(message)"
+          @pass-error="(message) => showError(toast, message)"
         />
       </template>
     </Column>

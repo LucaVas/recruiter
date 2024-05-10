@@ -102,6 +102,8 @@ import { createClient } from '@/stores/client/index';
 import type { NewClient } from '@/stores/client/schema';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
+import { showError } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
 
@@ -117,9 +119,10 @@ const create = async (client: NewClient) => {
     const newClient = await createClient(client);
     emit('selectClient', newClient);
     clientModalOpen.value = false;
-  } catch (e) {
-    if (e instanceof ApiError)
-      toast.add({ severity: 'error', summary: 'Error', detail: e.message, life: 3000 });
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   }
 };
 

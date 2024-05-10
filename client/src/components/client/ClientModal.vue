@@ -5,7 +5,6 @@ import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Dropdown from 'primevue/dropdown';
-import Toast from 'primevue/toast';
 import { ref } from 'vue';
 import { industries, type NewClient } from '@/stores/client/schema';
 
@@ -25,7 +24,6 @@ const clientForm = ref<NewClient>({
 </script>
 
 <template>
-  <Toast />
   <div class="card flex justify-center">
     <Dialog
       :visible="visible"

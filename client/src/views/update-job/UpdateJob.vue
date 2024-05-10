@@ -1,5 +1,4 @@
 <template>
-  <Toast />
   <div v-if="!jobDetails" class="flex w-full items-center justify-center">
     <ProgressSpinner />
   </div>
@@ -43,7 +42,6 @@ import Skills from '@/components/job/shared/Skills.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Toast from 'primevue/toast';
 import ProgressSpinner from 'primevue/progressspinner';
 import type { Job, JobStatus } from '@/stores/job/schema';
 import { useToast } from 'primevue/usetoast';
@@ -51,21 +49,15 @@ import { getJob, updateJob, deleteJob, changeJobStatus } from '@/stores/job';
 import { ApiError } from '@/utils/types';
 import Success from '@/components/Success.vue';
 import { getAllClients } from '@/stores/client';
-import type { Client } from '@/stores/client/schema';
+import { showError } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
+import { loading, updatingJob, jobUpdated, jobDetails, clients } from './index';
 
 // variables
-const jobDetails = ref<Job>();
 const route = useRoute();
 const jobId = ref(route.params.id);
 const router = useRouter();
-const loading = ref(false);
-const updatingJob = ref(false);
-const jobUpdated = ref(false);
 const toast = useToast();
-const clients = ref<Client[]>([]);
-const showError = (content: string) => {
-  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
-};
 
 // functions
 async function loadJobData(jobId: number) {
@@ -76,8 +68,9 @@ async function loadJobData(jobId: number) {
   } catch (err) {
     if (err instanceof ApiError) {
       if (err.statusCode === 401) router.push({ name: 'Dashboard' });
-      else showError(err.message);
-    }
+      else showError(toast, err.message);
+    } else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loading.value = false;
   }
@@ -89,7 +82,9 @@ async function update(job: Job) {
     await updateJob(job);
     jobUpdated.value = true;
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     updatingJob.value = false;
   }
@@ -102,7 +97,9 @@ async function changeStatus(id: number, status: JobStatus) {
     jobUpdated.value = true;
     router.go(0);
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     updatingJob.value = false;
   }
@@ -113,7 +110,9 @@ async function delJob(id: number) {
     await deleteJob(id);
     router.go(0);
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   }
 }
 

@@ -6,11 +6,10 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Chips from 'primevue/chips';
 import { ref } from 'vue';
-import type { Question, QuestionForm } from '@/stores/question/schema';
+import type { QuestionForm } from '@/stores/question/schema';
 import { type Client } from '@/stores/client/schema';
 
-const { question, clients, visible } = defineProps<{
-  question?: Question | undefined;
+const { clients, visible } = defineProps<{
   clients: Client[];
   visible: boolean;
 }>();

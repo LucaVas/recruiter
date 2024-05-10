@@ -90,6 +90,9 @@ import { type Question } from '@/stores/question/schema';
 import { searchQuestions } from '@/stores/question';
 import { useToast } from 'primevue/usetoast';
 import QuestionSearchModalPanel from '@/components/question/QuestionSearchModalPanel.vue';
+import { ApiError } from '@/utils/types';
+import { showError } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
 
@@ -114,21 +117,14 @@ async function search(titleOrClient: string) {
     } else {
       questions.value = found;
     }
-  } catch (e) {
-    showError(e as string);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     searchingQuestions.value = false;
   }
 }
-
-const showError = (message: string) => {
-  toast.add({
-    severity: 'error',
-    summary: 'Error',
-    detail: message,
-    life: 3000,
-  });
-};
 
 const initSearch = () => {
   titleOrClient.value = '';

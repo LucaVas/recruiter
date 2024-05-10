@@ -1,5 +1,4 @@
 <template>
-  <Toast />
   <div class="h-full w-full">
     <div v-if="!loading && user" class="flex h-full flex-col justify-between">
       <UserProfileModal
@@ -20,11 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import Toast from 'primevue/toast';
 import Divider from 'primevue/divider';
 import ProgressSpinner from 'primevue/progressspinner';
-import { onMounted, ref } from 'vue';
-import type { User } from '@/stores/user/schema';
+import { onMounted } from 'vue';
 import { getProfileInformation, updateProfileInformation } from '@/stores/auth/index';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
@@ -33,28 +30,23 @@ import SettingsFooter from '@/components/settings/SettingsFooter.vue';
 import SettingsBody from '@/components/settings/SettingsBody.vue';
 import UserProfileModal from '@/components/settings/UserProfileModal.vue';
 import type { UserInfoUpdateRequest } from '@/stores/auth/schema';
+import { updatingUser, openUserProfileModal, loading, user } from './index';
+import { showError, showSuccess } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
-const user = ref<User>();
-const loading = ref(false);
-const updatingUser = ref(false);
-const openUserProfileModal = ref(false);
 
 const update = async (userForm: UserInfoUpdateRequest) => {
   updatingUser.value = true;
   try {
     await updateProfileInformation(userForm);
     openUserProfileModal.value = false;
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Profile information updated successfully!',
-      life: 3000,
-    });
+    showSuccess(toast, 'Profile information updated successfully!');
     await initUserInformation();
-  } catch (e) {
-    if (e instanceof ApiError)
-      toast.add({ severity: 'error', summary: 'Error', detail: e.message });
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     updatingUser.value = false;
   }
@@ -64,9 +56,10 @@ const initUserInformation = async () => {
   loading.value = true;
   try {
     user.value = await getProfileInformation();
-  } catch (e) {
-    if (e instanceof ApiError)
-      toast.add({ severity: 'error', summary: 'Error', detail: e.message });
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loading.value = false;
   }
@@ -76,9 +69,10 @@ onMounted(async () => {
   loading.value = true;
   try {
     await initUserInformation();
-  } catch (e) {
-    if (e instanceof ApiError)
-      toast.add({ severity: 'error', summary: 'Error', detail: e.message });
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loading.value = false;
   }
