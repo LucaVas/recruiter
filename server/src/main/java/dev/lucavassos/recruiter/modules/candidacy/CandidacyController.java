@@ -27,7 +27,7 @@ public class CandidacyController {
     public ResponseEntity<?> addCandidacy(
             @Valid @RequestBody NewCandidacyRequest request) {
         LOG.info("Received request to add candidacy: {}", request);
-        service.addCandidacy(request);
+//        service.addCandidacy(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

@@ -20,13 +20,9 @@ export async function submitCandidacy(candidacy: NewCandidacyRequest, file: File
   formData.append('reasonForQuickJoin', candidacy.reasonForQuickJoin);
   formData.append('recruiterComment', candidacy.recruiterComment);
   if (candidacy.status) formData.append('status', candidacy.status.toString());
-  formData.append('file', file);
+  formData.append('resume', file);
 
-  await api.post(`/candidacies`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  await api.post(`/candidacies`, formData);
 }
 
 export async function updateCandidacy(
