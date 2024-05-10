@@ -21,12 +21,29 @@
         @input="(details) => (job = details)"
       />
       <div class="space-y-3">
-        <label>Skills</label>
-        <SkillsDropdown
-          :skills="skills"
-          :disabled="false"
-          @addSkill="(skill: Skill) => addSkill(job, skill)"
+        <NewSkillModal
+          :visible="openSkillModal"
+          :creatingSkill="creatingSkill"
+          @close="openSkillModal = false"
+          @save="(skill: NewSkill) => createNewSkill(skill)"
         />
+        <label>Skills</label>
+        <div class="flex gap-3">
+          <SkillsDropdown
+            :skills="skills"
+            :disabled="false"
+            class="w-full"
+            @addSkill="(skill: Skill) => addSkill(job, skill)"
+          />
+          <Button
+            label="New"
+            icon="pi pi-plus"
+            @click="openSkillModal = true"
+            class="hidden min-w-fit md:block"
+          />
+          <Button icon="pi pi-plus" @click="openSkillModal = true" class="min-w-fit md:hidden" />
+        </div>
+
         <JobSkills
           :isNewJob="true"
           @remove="(skill: Skill) => removeSkill(job, skill)"
@@ -114,7 +131,7 @@ import type { NewJobRequest } from '@/stores/job/schema';
 import { onMounted } from 'vue';
 import Success from '@/components/Success.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
-import type { Skill } from '@/stores/skill/schema';
+import type { NewSkill, Skill } from '@/stores/skill/schema';
 import QuestionModal from '@/components/question/QuestionModal.vue';
 import QuestionsTable from '@/components/question/QuestionsTable.vue';
 import { createQuestion } from '@/stores/question/index';
@@ -134,8 +151,13 @@ import {
   addSkill,
   removeSkill,
   openQuestionModal,
+  openSkillModal,
   openQuestionSearchModal,
+  creatingSkill,
+  skillCreated,
 } from './index';
+import type NewSkillModal from '@/components/skill/NewSkillModal.vue';
+import { createSkill } from '../../stores/skill/index';
 
 const toast = useToast();
 
@@ -152,6 +174,23 @@ async function create(job: NewJobRequest) {
     creatingJob.value = false;
   }
 }
+
+const createNewSkill = async (skill: NewSkill) => {
+  creatingSkill.value = true;
+  try {
+    const newSkill = await createSkill(skill);
+    skills.value.push(newSkill);
+    addSkill(job.value, newSkill);
+    skillCreated.value = true;
+    openSkillModal.value = false;
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    creatingSkill.value = false;
+  }
+};
 
 const loadClients = async () => {
   try {

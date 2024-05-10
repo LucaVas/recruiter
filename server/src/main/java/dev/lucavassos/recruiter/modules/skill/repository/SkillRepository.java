@@ -8,6 +8,6 @@ import java.util.Optional;
 
 
 public interface SkillRepository extends JpaRepository<Skill, Long> {
-
+    Boolean existsByName(String name);
     Optional<Skill> findByName(String name);
 }

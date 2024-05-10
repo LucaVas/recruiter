@@ -73,6 +73,7 @@ declare module 'vue' {
     NavbarGroup: typeof import('./src/components/navbar/NavbarGroup.vue')['default']
     NavbarHeader: typeof import('./src/components/navbar/NavbarHeader.vue')['default']
     NewCommentContainer: typeof import('./src/components/comments/shared/NewCommentContainer.vue')['default']
+    NewSkillModal: typeof import('./src/components/skill/NewSkillModal.vue')['default']
     PageForm: typeof import('./src/components/PageForm.vue')['default']
     Panel: typeof import('primevue/panel')['default']
     ProgressSpinner: typeof import('primevue/progressspinner')['default']
