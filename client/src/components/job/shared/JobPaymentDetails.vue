@@ -100,4 +100,3 @@ const emit = defineEmits<{
 
 const details = ref(jobDetails);
 </script>
-@/stores/job/schema

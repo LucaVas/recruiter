@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 import PageForm from '@/components/PageForm.vue';
 import Button from 'primevue/button';
 import Password from 'primevue/password';
@@ -9,38 +8,23 @@ import { DEFAULT_SERVER_ERROR } from '@/consts';
 import type { NewPasswordRequest } from '@/stores/auth/schema';
 import { resetPassword } from '@/stores/auth/index';
 import { useRoute } from 'vue-router';
+import { showError, showSuccess } from '@/utils/errorUtils';
+import { resettingPassword, passwordReset, form } from './index';
 
 const route = useRoute();
 const urlToken = route.params.token as string;
 const toast = useToast();
-const resettingPassword = ref(false);
-const passwordReset = ref(false);
-
-const form = ref<NewPasswordRequest>({
-  password: '',
-});
 
 const submit = async (token: string, form: NewPasswordRequest) => {
   resettingPassword.value = true;
   try {
     await resetPassword(token, form);
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Password reset successful. You can now login.',
-      life: 3000,
-    });
+    showSuccess(toast, 'Password reset successfully. You can now login.');
     passwordReset.value = true;
   } catch (err) {
-    if (err instanceof ApiError)
-      toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: err.message ?? DEFAULT_SERVER_ERROR,
-        life: 3000,
-      });
-    if (err instanceof Error)
-      toast.add({ severity: 'error', summary: 'Error', detail: DEFAULT_SERVER_ERROR, life: 3000 });
+    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     resettingPassword.value = false;
   }

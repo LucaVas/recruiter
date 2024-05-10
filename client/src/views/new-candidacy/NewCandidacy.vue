@@ -68,54 +68,30 @@ import { ApiError } from '@/utils/types';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
 import FilesUploader from '@/components/candidacy/FilesUploader.vue';
-import type { Job } from '@/stores/job/schema';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
 import { createCandidate } from '@/stores/candidate/';
 import type { Candidate } from '@/stores/candidate/schema';
 import Success from '@/components/Success.vue';
-import type { RawCandidacy } from '@/stores/candidacy/schema';
 import type { NewCandidateRequest } from '@/stores/candidate/schema';
+import {
+  submittingNewCandidacy,
+  candidacy,
+  candidacySubmitted,
+  creatingCandidate,
+  searchedCandidate,
+  candidateCreated,
+  searchingForCandidate,
+  selectedCandidate,
+  job,
+  candidate,
+  headerModalOpen,
+} from './index';
+import { showError } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const jobId = ref<number>();
 const toast = useToast();
-const headerModalOpen = ref(false);
-const job = ref<Job>();
-
-const newCandidacyError = ref('');
-const showError = (content: string) => {
-  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
-};
-
-// candidacy details
-const candidacy = ref<RawCandidacy>({
-  relevantExperience: 0,
-  expectedCtc: 0,
-  officialNoticePeriod: 0,
-  actualNoticePeriod: 0,
-  reasonForQuickJoin: '',
-  recruiterComment: '',
-});
-
-const candidate = ref<NewCandidateRequest>({
-  name: '',
-  phone: '',
-  email: '',
-  pan: '',
-  totalExperience: 0,
-  education: '',
-  currentCtc: 0,
-});
-
-// candidacy submission
-const candidacySubmitted = ref(false);
-const submittingNewCandidacy = ref(false);
-// candidate
-const searchingForCandidate = ref(false);
-const selectedCandidate = ref<Candidate | null>();
-const searchedCandidate = ref<Candidate>();
-const creatingCandidate = ref(false);
-const candidateCreated = ref(false);
 
 async function submit(selectedCandidate: Candidate | null | undefined) {
   if (!selectedCandidate || !jobId.value) return;
@@ -128,7 +104,9 @@ async function submit(selectedCandidate: Candidate | null | undefined) {
     });
     candidacySubmitted.value = true;
   } catch (err) {
-    if (err instanceof ApiError) newCandidacyError.value = err.message;
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     submittingNewCandidacy.value = false;
   }
@@ -141,7 +119,9 @@ async function createNewCandidate(candidate: NewCandidateRequest) {
     searchedCandidate.value = res.candidate;
     candidateCreated.value = true;
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     creatingCandidate.value = false;
   }
@@ -153,7 +133,9 @@ async function searchCandidate(identifier: string) {
     const res = await findCandidate(identifier);
     searchedCandidate.value = res.candidate;
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     searchingForCandidate.value = false;
   }

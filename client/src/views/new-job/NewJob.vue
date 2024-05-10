@@ -25,11 +25,11 @@
         <SkillsDropdown
           :skills="skills"
           :disabled="false"
-          @addSkill="(skill: Skill) => addSkill(skill)"
+          @addSkill="(skill: Skill) => addSkill(job, skill)"
         />
         <JobSkills
           :isNewJob="true"
-          @remove="(skill: Skill) => removeSkill(skill)"
+          @remove="(skill: Skill) => removeSkill(job, skill)"
           :skills="job.skills"
         />
       </div>
@@ -111,11 +111,10 @@ import InputText from 'primevue/inputtext';
 import { useToast } from 'primevue/usetoast';
 import { createJob } from '@/stores/job';
 import type { NewJobRequest } from '@/stores/job/schema';
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import Success from '@/components/Success.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
 import type { Skill } from '@/stores/skill/schema';
-import type { Client } from '@/stores/client/schema';
 import QuestionModal from '@/components/question/QuestionModal.vue';
 import QuestionsTable from '@/components/question/QuestionsTable.vue';
 import { createQuestion } from '@/stores/question/index';
@@ -123,26 +122,32 @@ import { type QuestionForm } from '@/stores/question/schema';
 import { capitalize, capitalizeText, capitalizeWords } from '../../utils/stringUtils';
 import { getAllClients } from '@/stores/client';
 import { getAllSkills } from '@/stores/skill';
+import { showError } from '@/utils/errorUtils';
+import { ApiError } from '@/utils/types';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
+import {
+  job,
+  creatingJob,
+  jobCreated,
+  clients,
+  skills,
+  addSkill,
+  removeSkill,
+  openQuestionModal,
+  openQuestionSearchModal,
+} from './index';
 
 const toast = useToast();
-const showError = (content: string) => {
-  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
-};
-const jobCreated = ref(false);
-const creatingJob = ref(false);
-const openQuestionModal = ref(false);
-const openQuestionSearchModal = ref(false);
-const clients = ref<Client[]>([]);
-const skills = ref<Skill[]>([]);
 
 async function create(job: NewJobRequest) {
   creatingJob.value = true;
   try {
-    console.log(job);
     await createJob(job);
     jobCreated.value = true;
-  } catch (e) {
-    showError(e as string);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     creatingJob.value = false;
   }
@@ -151,16 +156,20 @@ async function create(job: NewJobRequest) {
 const loadClients = async () => {
   try {
     clients.value = await getAllClients();
-  } catch (e) {
-    showError(e as string);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   }
 };
 
 const loadSkills = async () => {
   try {
     skills.value = await getAllSkills();
-  } catch (e) {
-    showError(e as string);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   }
 };
 
@@ -176,40 +185,12 @@ const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
     });
     job.value.questions.push(newQuestion);
     skills.value = await getAllSkills();
-  } catch (e) {
-    showError(e as string);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   }
 };
-
-const removeSkill = (skill: Skill): void => {
-  if (!job.value.skills.includes(skill)) return;
-  job.value.skills.splice(job.value.skills.indexOf(skill), 1);
-};
-
-const addSkill = (skill: Skill): void => {
-  if (job.value.skills.some((s: Skill) => s.name === skill.name)) return;
-  job.value.skills.unshift(skill);
-};
-
-const job = ref<NewJobRequest>({
-  client: {} as Client,
-  name: '',
-  status: 'OPEN',
-  contractType: 'TEMPORARY',
-  wantedCvs: 0,
-  experienceRangeMin: 0,
-  experienceRangeMax: 0,
-  noticePeriodInDays: 0,
-  skills: [],
-  salaryBudget: 0,
-  currency: 'INR',
-  description: '',
-  bonusPayPerCv: 0,
-  closureBonus: 0,
-  questions: [],
-  closureBonusPaymentDate: new Date(),
-  cvRatePaymentDate: new Date(),
-});
 
 onMounted(async () => {
   await Promise.all([loadClients(), loadSkills()]);

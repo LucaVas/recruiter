@@ -80,11 +80,10 @@ import CommentsModal from './CommentsModal.vue';
 import { clearFilter, filters, initFilters } from './filters';
 import { getCandidacyStatus, getCandidacyStatusSeverity } from './utils';
 import { type CandidacyComment } from '@/stores/candidacy/schema';
+import { showError } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
-const showError = (content: string) => {
-  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
-};
 
 const loadingTable = ref(false);
 const sendingComment = ref(false);
@@ -98,8 +97,10 @@ const send = async (jobId: number, pan: string, comment: string) => {
   try {
     await addCandidacyComment(jobId, pan, { text: comment });
     await getComments(jobId, pan);
-  } catch (e) {
-    toast.add({ severity: 'error', summary: 'Error', detail: `Failed to send comment: ${e}` });
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     sendingComment.value = false;
   }
@@ -110,7 +111,9 @@ const getComments = async (jobId: number, pan: string) => {
   try {
     comments.value = await getCandidacyComments(jobId, pan);
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loadingComments.value = false;
   }
@@ -120,7 +123,9 @@ async function initTable() {
   try {
     candidates.value = await getAllCandidacies();
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loadingTable.value = false;
   }

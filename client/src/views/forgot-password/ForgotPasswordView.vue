@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 import PageForm from '@/components/PageForm.vue';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
@@ -8,35 +7,21 @@ import { ApiError } from '@/utils/types';
 import { type PasswordForgotRequest } from '@/stores/auth/schema';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import { requestNewPassword } from '@/stores/auth';
+import { showSuccess } from '@/utils/errorUtils';
+import { showError } from '@/utils/errorUtils';
+import { sendingEmail, form } from './index';
 
 const toast = useToast();
-const sendingEmail = ref(false);
-
-const form = ref<PasswordForgotRequest>({
-  email: '',
-  username: '',
-});
 
 const submit = async (form: PasswordForgotRequest) => {
   sendingEmail.value = true;
   try {
     await requestNewPassword(form);
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'A password reset link was sent to your email.',
-      life: 3000,
-    });
+    showSuccess(toast, 'A password reset link was sent to your email.');
   } catch (err) {
-    if (err instanceof ApiError)
-      toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: err.message ?? DEFAULT_SERVER_ERROR,
-        life: 3000,
-      });
-    if (err instanceof Error)
-      toast.add({ severity: 'error', summary: 'Error', detail: DEFAULT_SERVER_ERROR, life: 3000 });
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     sendingEmail.value = false;
   }

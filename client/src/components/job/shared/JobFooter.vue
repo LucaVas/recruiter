@@ -2,8 +2,7 @@
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { visible, saved, saving, isUpdate } = defineProps<{
-  visible: boolean;
+const { saved, saving, isUpdate } = defineProps<{
   saving: boolean;
   saved: boolean;
   isUpdate: boolean;

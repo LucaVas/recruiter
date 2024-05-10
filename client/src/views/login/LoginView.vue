@@ -19,7 +19,8 @@ const submitLogin = async () => {
     router.push({ name: 'Dashboard' });
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message);
-    if (err instanceof Error) showError(toast, DEFAULT_SERVER_ERROR);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loading.value = false;
   }

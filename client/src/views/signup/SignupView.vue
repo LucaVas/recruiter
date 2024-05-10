@@ -2,63 +2,46 @@
 import PageForm from '@/components/PageForm.vue';
 import { signup } from '@/stores/auth/index';
 import type { SignupRequest } from '@/stores/auth/schema';
-import type { RoleName } from '@/stores/user/schema';
 import Dropdown from 'primevue/dropdown';
 import InputMask from 'primevue/inputmask';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import { useToast } from 'primevue/usetoast';
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ApiError } from '../../utils/types';
 import SignupCommentsModal from '@/components/signup/SignupCommentsModal.vue';
 import { DEFAULT_SERVER_ERROR } from '../../consts';
+import { showError, showSuccess } from '@/utils/errorUtils';
+import {
+  loading,
+  hasSucceeded,
+  signupCommentsModalOpen,
+  userForm,
+  countries,
+  roles,
+} from './index';
 
 const router = useRouter();
 const toast = useToast();
-const showError = (content: string) => {
-  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 3000 });
-};
-
-const signupCommentsModalOpen = ref(false);
-const countries = ref([{ label: 'India', value: 'india' }]);
-const roles = ref([
-  { label: 'Recruiter', value: 'ROLE_RECRUITER' },
-  { label: 'Admin', value: 'ROLE_ADMIN' },
-]);
-const userForm = ref<SignupRequest>({
-  username: '',
-  email: '',
-  password: '',
-  mobile: '',
-  city: '',
-  country: '',
-  roleName: '' as RoleName,
-  comments: '',
-});
-
-const hasSucceeded = ref(false);
-const loading = ref(false);
 
 const submitSignup = async (userForm: SignupRequest) => {
   loading.value = true;
   try {
     await signup(userForm);
     hasSucceeded.value = true;
-    setTimeout(() => {
-      toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail:
-          'You have successfully signed up! An administrator will review your registration and confirm or reject it.',
-        closable: true,
-        life: 5000,
-      });
-    }, 100);
+    setTimeout(
+      () =>
+        showSuccess(
+          toast,
+          'You have successfully signed up! An administrator will review your registration and confirm or reject it.'
+        ),
+      100
+    );
     router.push({ name: 'Login' });
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message ?? DEFAULT_SERVER_ERROR);
-    if (err instanceof Error) showError(DEFAULT_SERVER_ERROR);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loading.value = false;
   }

@@ -13,11 +13,10 @@ import { useToast } from 'primevue/usetoast';
 import type { Candidate, NewCandidateRequest } from '@/stores/candidate/schema';
 import { columns } from '.';
 import CandidateModal from '@/components/candidacy/candidate/shared/CandidateModal.vue';
+import { showError } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
-const showError = (content: string) => {
-  toast.add({ severity: 'error', summary: 'Error', detail: content, life: 5000 });
-};
 
 const loadingTable = ref(false);
 const candidates = ref<Candidate[]>();
@@ -33,7 +32,9 @@ async function update(candidateForm: NewCandidateRequest) {
     editCandidateModal.value = false;
     await initTable();
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     initFilters();
     updatingCandidate.value = false;
@@ -45,7 +46,9 @@ async function initTable() {
   try {
     candidates.value = await getAllCandidates();
   } catch (err) {
-    if (err instanceof ApiError) showError(err.message);
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loadingTable.value = false;
   }

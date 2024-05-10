@@ -3,9 +3,8 @@ import type { Skill } from '@/stores/skill/schema';
 
 import { ref } from 'vue';
 
-const { skills, disabled } = defineProps<{
+const { skills } = defineProps<{
   skills: Skill[];
-  disabled: boolean;
 }>();
 
 const expandedRowGroups = ref();

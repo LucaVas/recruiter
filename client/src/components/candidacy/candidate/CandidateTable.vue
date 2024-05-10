@@ -18,4 +18,3 @@ const emits = defineEmits<{
     />
   </div>
 </template>
-../../../stores/candidate/schema

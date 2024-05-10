@@ -7,11 +7,10 @@ import type { Candidate } from '@/stores/candidate/schema';
 import type { NewCandidateRequest } from '@/stores/candidate/schema';
 
 // props
-const { candidate, searchedCandidate, searching, candidateCreated } = defineProps<{
+const { candidate, searchedCandidate, searching } = defineProps<{
   candidate: Candidate | NewCandidateRequest;
   searchedCandidate: Candidate | undefined;
   searching: boolean;
-  candidateCreated: boolean;
 }>();
 
 // emits

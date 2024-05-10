@@ -12,6 +12,8 @@ import { columns } from '../candidates';
 import UserCard from '@/components/users/UserCard.vue';
 import UsersHeader from '@/components/users/UsersHeader.vue';
 import UsersTableButtons from './UsersTableButtons.vue';
+import { showError, showSuccess } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
 const usersTableError = ref('');
@@ -27,15 +29,12 @@ const approve = async (request: UserApprovalRequest) => {
     await approveUser(request);
     approveModalOpen.value = false;
     initFilters();
-    toast.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'User status updated successfully!',
-    });
+    showSuccess(toast, 'User status updated successfully!');
     await initTable();
   } catch (err) {
-    if (err instanceof ApiError)
-      toast.add({ severity: 'error', summary: 'Error', detail: err.message });
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     approvingUser.value = false;
   }
