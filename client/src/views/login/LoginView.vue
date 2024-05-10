@@ -1,27 +1,16 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 import PageForm from '@/components/PageForm.vue';
-import { useRouter } from 'vue-router';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
+import { userForm, loading, router } from './index';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { login } from '@/stores/auth';
-import type { LoginRequest } from '@/stores/auth/schema';
+import { showError } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
-const router = useRouter();
-const loading = ref(false);
-
-const userForm = ref<LoginRequest>({
-  usernameOrEmail: '',
-  password: '',
-});
-
-const showError = (message: string) => {
-  toast.add({ severity: 'error', summary: 'Error', detail: message, life: 3000 });
-};
 
 const submitLogin = async () => {
   loading.value = true;
@@ -29,9 +18,8 @@ const submitLogin = async () => {
     await login(userForm.value);
     router.push({ name: 'Dashboard' });
   } catch (err) {
-    console.error(`Error during login: ${err}`);
-    if (err instanceof ApiError) showError(err.message);
-    if (err instanceof Error) showError('Something went wrong');
+    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof Error) showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     loading.value = false;
   }
