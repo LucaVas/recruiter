@@ -27,6 +27,7 @@
 		<microemeter.version>1.12.5</microemeter.version>
 		<commons-text.version>1.12.0</commons-text.version>
 		<google-cloud-storage.version>2.37.0</google-cloud-storage.version>
+		<guava.version>33.2.0-jre</guava.version>
 	</properties>
 
 	<dependencies>
@@ -92,6 +93,12 @@
 			<artifactId>google-cloud-storage</artifactId>
 			<version>${google-cloud-storage.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+
 
 
 		<!-- In-Memory database used for local development & testing -->
