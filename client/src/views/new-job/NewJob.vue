@@ -178,7 +178,9 @@ async function create(job: NewJobRequest) {
 const createNewSkill = async (skill: NewSkill) => {
   creatingSkill.value = true;
   try {
-    await createSkill(skill);
+    const newSkill = await createSkill(skill);
+    skills.value.push(newSkill);
+    addSkill(job.value, newSkill);
     skillCreated.value = true;
     openSkillModal.value = false;
   } catch (err) {
