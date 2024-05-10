@@ -12,6 +12,7 @@ const { submittingCandidacy, candidacySubmitted, disabled, isUpdate } = definePr
 defineEmits<{
   (e: 'submit'): void;
   (e: 'update'): void;
+  (e: 'back'): void;
 }>();
 </script>
 
@@ -36,7 +37,7 @@ defineEmits<{
         v-if="candidacySubmitted"
         label="Back to Dashboard"
         size="small"
-        @click="router.push({ name: 'Dashboard' })"
+        @click="{ $emit('back'); router.push({ name: 'Dashboard' })}"
       />
     </div>
   </div>

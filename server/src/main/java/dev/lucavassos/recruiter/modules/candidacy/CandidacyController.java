@@ -5,13 +5,16 @@ import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,11 +26,10 @@ public class CandidacyController {
     @Autowired
     private CandidacyService service;
 
-    @PostMapping("/candidacies")
-    public ResponseEntity<?> addCandidacy(
-            @Valid @RequestBody NewCandidacyRequest request) {
+    @RequestMapping(value = "/candidacies", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addCandidacy(@Valid NewCandidacyRequest request) {
         LOG.info("Received request to add candidacy: {}", request);
-//        service.addCandidacy(request);
+        service.addCandidacy(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

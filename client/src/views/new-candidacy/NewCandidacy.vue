@@ -51,6 +51,7 @@
       :submittingCandidacy="submittingNewCandidacy"
       :isUpdate="false"
       @submit="submit(selectedCandidate)"
+      @back="candidacySubmitted = false"
     />
   </div>
 </template>

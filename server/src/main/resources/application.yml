@@ -37,6 +37,10 @@ management:
             enabled: true
 
 spring:
+    servlet:
+        multipart:
+            max-file-size: 5MB
+            max-request-size: 5MB
     mail:
         host: ${EMAIL_HOST}
         port: ${EMAIL_PORT}

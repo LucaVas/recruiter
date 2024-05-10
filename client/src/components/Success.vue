@@ -10,4 +10,7 @@ import Image from 'primevue/image';
 const { message } = defineProps<{
   message: string;
 }>();
+defineEmits<{
+  (e: 'go'): void;
+}>();
 </script>

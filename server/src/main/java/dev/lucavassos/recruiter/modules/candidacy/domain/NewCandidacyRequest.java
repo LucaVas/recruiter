@@ -38,6 +38,6 @@ public record NewCandidacyRequest(
 
         String reasonForQuickJoin,
         String recruiterComment,
-        MultipartFile resume
+        @Nullable MultipartFile resume
 ) {
 }
