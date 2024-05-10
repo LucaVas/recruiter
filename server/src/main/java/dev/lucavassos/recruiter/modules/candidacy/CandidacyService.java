@@ -8,8 +8,10 @@ import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
+import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyFile;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyId;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyCommentRepository;
+import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyFileRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDtoMapper;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
@@ -39,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -46,6 +49,8 @@ public class CandidacyService {
 
     @Autowired
     private CandidateRepository candidateRepository;
+    @Autowired
+    private CandidacyFileRepository candidacyFileRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -127,11 +132,25 @@ public class CandidacyService {
         }
 
         if ( candidacy.resume() != null ) {
+            UUID uniqueId = UUID.randomUUID();
             try {
-                fileUploadService.uploadResume(candidacy.resume().getInputStream(), candidacy.resume().getName(), candidate.getPan());
+                fileUploadService.uploadResume(candidacy.resume().getInputStream(),
+                        candidacy.resume().getName(),
+                        uniqueId,
+                        candidate.getPan());
+                CandidacyFile file = CandidacyFile.builder()
+                        .type(candidacy.resume().getContentType())
+                        .name(candidacy.resume().getName())
+                        .uniqueId(uniqueId)
+                        .candidacy(newCandidacy)
+                        .build();
+                candidacyFileRepository.save(file);
             } catch (IOException ioe) {
                 log.error("Error while uploading resume: {}", ioe.getMessage());
                 throw new ServerException("Error while uploading resume");
+            } catch (Exception e) {
+                log.error("Error while saving candidacy file: {}", e.getMessage());
+                throw new DatabaseException("Error while saving candidacy file");
             }
         }
 

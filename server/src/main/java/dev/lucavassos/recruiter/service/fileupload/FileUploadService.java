@@ -1,10 +1,7 @@
 package dev.lucavassos.recruiter.service.fileupload;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 import dev.lucavassos.recruiter.exception.ServerException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -23,7 +21,7 @@ public class FileUploadService {
     @Value("${google.storage.project.id}")
     private String projectId;
 
-    public void uploadResume(InputStream fileStream, String fileName, String candidatePan) {
+    public void uploadResume(InputStream fileStream, String fileName, UUID uniqueId, String candidatePan) {
         Storage storage = getStorage();
 
         String folderPath = "users/" + candidatePan;
@@ -32,7 +30,7 @@ public class FileUploadService {
                 new byte[0]
         );
 
-        BlobId blobId = BlobId.of(bucket, folderPath + "/" + fileName);
+        BlobId blobId = BlobId.of(bucket, folderPath + "/" + uniqueId.toString() + "/" + fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
         upload(storage, blobInfo, fileStream);

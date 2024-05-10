@@ -9,13 +9,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name="candidacy_file")
+@Table(name="candidacy_files")
 public class CandidacyFile {
 
     @Id
@@ -29,10 +30,7 @@ public class CandidacyFile {
     private String name;
 
     @Column(nullable = false, name = "unique_id")
-    private String uniqueId;
-
-    @Column(name = "reason_for_quick_join")
-    private String reasonForQuickJoin;
+    private UUID uniqueId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
