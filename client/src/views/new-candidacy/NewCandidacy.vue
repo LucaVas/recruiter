@@ -37,7 +37,7 @@
         :is-archived="false"
       />
 
-      <FilesUploader />
+      <FilesUploader @addFile="(file: File) => (resume = file)" />
     </div>
 
     <div v-else class="flex h-full w-full items-center justify-center">
@@ -51,6 +51,7 @@
       :submittingCandidacy="submittingNewCandidacy"
       :isUpdate="false"
       @submit="submit(selectedCandidate)"
+      @back="candidacySubmitted = false"
     />
   </div>
 </template>
@@ -67,7 +68,7 @@ import { submitCandidacy } from '@/stores/candidacy';
 import { ApiError } from '@/utils/types';
 import HiringDetails from '@/components/candidacy/HiringDetails.vue';
 import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
-import FilesUploader from '@/components/candidacy/FilesUploader.vue';
+import FilesUploader from '@/components/uploader/FilesUploader.vue';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
 import { createCandidate } from '@/stores/candidate/';
@@ -86,6 +87,7 @@ import {
   job,
   candidate,
   headerModalOpen,
+  resume,
 } from './index';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
@@ -97,11 +99,14 @@ async function submit(selectedCandidate: Candidate | null | undefined) {
   if (!selectedCandidate || !jobId.value) return;
   submittingNewCandidacy.value = true;
   try {
-    await submitCandidacy({
-      ...candidacy.value,
-      jobId: jobId.value,
-      candidatePan: selectedCandidate.pan,
-    });
+    await submitCandidacy(
+      {
+        ...candidacy.value,
+        jobId: jobId.value,
+        candidatePan: selectedCandidate.pan,
+      },
+      resume.value
+    );
     candidacySubmitted.value = true;
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message);

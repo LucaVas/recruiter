@@ -55,4 +55,3 @@ const newCandidateModalOpen = ref(false);
     />
   </div>
 </template>
-@/stores/candidate/schema@/stores/candidate/schema

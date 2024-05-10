@@ -1,18 +1,17 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
 import dev.lucavassos.recruiter.auth.UserPrincipal;
-import dev.lucavassos.recruiter.exception.DatabaseException;
-import dev.lucavassos.recruiter.exception.RequestValidationException;
-import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
-import dev.lucavassos.recruiter.exception.UnauthorizedException;
+import dev.lucavassos.recruiter.exception.*;
 import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
+import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyFile;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyId;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyCommentRepository;
+import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyFileRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDtoMapper;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
@@ -27,6 +26,8 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
+import dev.lucavassos.recruiter.service.fileupload.FileUploadService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,16 +36,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
+@Slf4j
 @Service
 public class CandidacyService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CandidacyService.class);
-
     @Autowired
     private CandidateRepository candidateRepository;
+    @Autowired
+    private CandidacyFileRepository candidacyFileRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -59,6 +65,8 @@ public class CandidacyService {
     private CandidacyCommentDtoMapper candidacyCommentDtoMapper;
     @Autowired
     MonitoringProcessor monitoringProcessor;
+    @Autowired
+    FileUploadService fileUploadService;
 
     @Transactional
     public void addCandidacy(NewCandidacyRequest candidacy) {
@@ -71,29 +79,32 @@ public class CandidacyService {
         // find recruiter
         User recruiter = userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
-                    LOG.error("Recruiter with ID {} not found", userPrincipal.getId());
+                    log.error("Recruiter with ID {} not found", userPrincipal.getId());
                     return new ResourceNotFoundException("Recruiter not found");
                 }
         );
         // find job
         Job job = jobRepository.findOneById(candidacy.jobId()).orElseThrow(
                 () -> {
-                    LOG.error("Job with ID {} not found", candidacy.jobId());
+                    log.error("Job with ID {} not found", candidacy.jobId());
                     return new ResourceNotFoundException("Job not found");
                 }
         );
         // find candidate
         Candidate candidate = candidateRepository.findOneByPan(candidacy.candidatePan()).orElseThrow(
                 () -> {
-                    LOG.error("Candidate with Pan {} not found", candidacy.candidatePan());
+                    log.error("Candidate with Pan {} not found", candidacy.candidatePan());
                     return new ResourceNotFoundException("Candidate not found");
                 }
         );
 
         if (candidacyRepository.existsByJobAndCandidate(job, candidate)) {
-            LOG.error("Candidacy already exists for job {} and candidate {}", job, candidate);
+            log.error("Candidacy already exists for job {} and candidate {}", job, candidate);
             throw new RequestValidationException("Candidacy already exists");
         }
+
+        validateFile(candidacy.resume());
+
 
         CandidacyId candidacyId = new CandidacyId(candidate.getPan(), job.getId());
         Candidacy newCandidacy = saveCandidacy(
@@ -120,6 +131,29 @@ public class CandidacyService {
                     .build());
         }
 
+        if ( candidacy.resume() != null ) {
+            UUID uniqueId = UUID.randomUUID();
+            try {
+                fileUploadService.uploadResume(candidacy.resume().getInputStream(),
+                        candidacy.resume().getName(),
+                        uniqueId,
+                        candidate.getPan());
+                CandidacyFile file = CandidacyFile.builder()
+                        .type(candidacy.resume().getContentType())
+                        .name(candidacy.resume().getName())
+                        .uniqueId(uniqueId)
+                        .candidacy(newCandidacy)
+                        .build();
+                candidacyFileRepository.save(file);
+            } catch (IOException ioe) {
+                log.error("Error while uploading resume: {}", ioe.getMessage());
+                throw new ServerException("Error while uploading resume");
+            } catch (Exception e) {
+                log.error("Error while saving candidacy file: {}", e.getMessage());
+                throw new DatabaseException("Error while saving candidacy file");
+            }
+        }
+
     }
 
     @Transactional
@@ -127,13 +161,13 @@ public class CandidacyService {
 
         Job job = jobRepository.findOneById(jobId).orElseThrow(
                 () -> {
-                    LOG.error("Job with id {} not found", jobId);
+                    log.error("Job with id {} not found", jobId);
                     return new ResourceNotFoundException("Job not found");
                 }
         );
         Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
                 () -> {
-                    LOG.error("Candidate with pan {} not found", pan);
+                    log.error("Candidate with pan {} not found", pan);
                     return new ResourceNotFoundException("Candidate not found");
                 }
         );
@@ -143,7 +177,7 @@ public class CandidacyService {
                         candidacyDtoMapper.apply(candidacy)
         ).orElseThrow(
                 () -> {
-                    LOG.error("Candidacy with job {} and candidate {} not found", job, candidate);
+                    log.error("Candidacy with job {} and candidate {} not found", job, candidate);
                     return new ResourceNotFoundException("Candidacy not found");
                 }
         );
@@ -166,11 +200,11 @@ public class CandidacyService {
     public CandidacyDto updateCandidacy(Long jobId, String pan, UpdateCandidacyRequest request) {
 
         boolean changes = false;
-        LOG.info("Updating candidacy with jobId {} and pan {}", jobId, pan);
+        log.info("Updating candidacy with jobId {} and pan {}", jobId, pan);
 
         Job job = jobRepository.findOneById(jobId).orElseThrow(
                 () -> {
-                    LOG.error("Job with id [{}] not found.", jobId);
+                    log.error("Job with id [{}] not found.", jobId);
                     return new ResourceNotFoundException(
                             "Job not found.");
                 }
@@ -178,7 +212,7 @@ public class CandidacyService {
 
         Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
                 () -> {
-                    LOG.error("Candidate with pan [{}] not found.", pan);
+                    log.error("Candidate with pan [{}] not found.", pan);
                     return new ResourceNotFoundException(
                             "Candidate not found.");
                 }
@@ -186,7 +220,7 @@ public class CandidacyService {
 
         Candidacy candidacy = candidacyRepository.findByJobAndCandidate(job, candidate).orElseThrow(
                 () -> {
-                    LOG.error("Candidacy with job ID {} and candidate pan {} not found.", jobId, pan);
+                    log.error("Candidacy with job ID {} and candidate pan {} not found.", jobId, pan);
                     return new ResourceNotFoundException(
                             "Candidacy not found.");
                 }
@@ -194,7 +228,7 @@ public class CandidacyService {
 
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
-            LOG.error("User with id {} is not authorized to modify this candidacy", user.getId());
+            log.error("User with id {} is not authorized to modify this candidacy", user.getId());
             throw new UnauthorizedException("Recruiter is unauthorized to modify this candidacy");
         }
 
@@ -233,7 +267,7 @@ public class CandidacyService {
         }
 
         Candidacy updatedCandidacy = saveCandidacy(candidacy);
-        LOG.info("Candidacy updated: [{}]", updatedCandidacy);
+        log.info("Candidacy updated: [{}]", updatedCandidacy);
 
         return candidacyDtoMapper.apply(updatedCandidacy);
     }
@@ -242,13 +276,13 @@ public class CandidacyService {
     public void addCandidacyComment(Long jobId, String pan, NewCandidacyCommentRequest comment) {
         Job job = jobRepository.findOneById(jobId).orElseThrow(
                 () -> {
-                    LOG.error("Job with id {} not found", jobId);
+                    log.error("Job with id {} not found", jobId);
                     return new ResourceNotFoundException("Job not found");
                 }
         );
         Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
                 () -> {
-                    LOG.error("Candidate with pan {} not found", pan);
+                    log.error("Candidate with pan {} not found", pan);
                     return new ResourceNotFoundException("Candidate not found");
                 }
         );
@@ -256,14 +290,14 @@ public class CandidacyService {
         Candidacy candidacy = candidacyRepository.findByJobAndCandidate(job, candidate)
                 .orElseThrow(
                         () -> {
-                            LOG.error("Candidacy with job {} and candidate {} not found", job, candidate);
+                            log.error("Candidacy with job {} and candidate {} not found", job, candidate);
                             return new ResourceNotFoundException("Candidacy not found");
                         }
                 );
 
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
-            LOG.error("User with id {} is not authorized to add comments to this candidacy", user.getId());
+            log.error("User with id {} is not authorized to add comments to this candidacy", user.getId());
             throw new UnauthorizedException("Recruiter is unauthorized to add comments to this candidacy");
         }
 
@@ -276,7 +310,7 @@ public class CandidacyService {
                             .build()
             );
         } catch (Exception e) {
-            LOG.error("Database error while adding comment to candidacy: {}", e.getMessage());
+            log.error("Database error while adding comment to candidacy: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -286,13 +320,13 @@ public class CandidacyService {
 
         Job job = jobRepository.findOneById(jobId).orElseThrow(
                 () -> {
-                    LOG.error("Job with id {} not found", jobId);
+                    log.error("Job with id {} not found", jobId);
                     return new ResourceNotFoundException("Job not found");
                 }
         );
         Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
                 () -> {
-                    LOG.error("Candidate with pan {} not found", pan);
+                    log.error("Candidate with pan {} not found", pan);
                     return new ResourceNotFoundException("Candidate not found");
                 }
         );
@@ -300,7 +334,7 @@ public class CandidacyService {
         Candidacy candidacy = candidacyRepository.findByJobAndCandidate(job, candidate)
                 .orElseThrow(
                         () -> {
-                            LOG.error("Candidacy with job {} and candidate {} not found", job, candidate);
+                            log.error("Candidacy with job {} and candidate {} not found", job, candidate);
                             return new ResourceNotFoundException("Candidacy not found");
                         }
                 );
@@ -316,7 +350,7 @@ public class CandidacyService {
         try {
             return candidacyCommentRepository.save(comment);
         } catch (Exception e) {
-            LOG.error("Database error while adding comment to candidacy: {}", e.getMessage());
+            log.error("Database error while adding comment to candidacy: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -326,7 +360,7 @@ public class CandidacyService {
         try {
             return candidacyRepository.save(candidacy);
         } catch (Exception e) {
-            LOG.error("Database error while updating candidacy: {}", e.getMessage());
+            log.error("Database error while updating candidacy: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -337,7 +371,7 @@ public class CandidacyService {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
-                    LOG.error("User with id {} not found", userPrincipal.getId());
+                    log.error("User with id {} not found", userPrincipal.getId());
                     return new ResourceNotFoundException("User not found");
                 }
         );
@@ -348,4 +382,15 @@ public class CandidacyService {
                 candidacy.getRecruiter().getId().equals(recruiter.getId());
     }
 
+    private void validateFile(MultipartFile file) {
+        if (file.getSize() > 5242880) {
+            log.error("File size exceeds the limit of 5MB");
+            throw new RequestValidationException("File size exceeds the limit of 5MB");
+        }
+
+        if (!Objects.equals(file.getContentType(), "application/pdf")) {
+            log.error("File type not allowed: {}", file.getContentType());
+            throw new RequestValidationException("File type is not allowed. Only PDF files are accepted.");
+        }
+    }
 }

@@ -40,3 +40,5 @@ secrets.yml
 .gradletasknamecache
 .sts4-cache
 .git-hooks/
+/src/main/resources/secrets/
+/src/main/resources/tmp/

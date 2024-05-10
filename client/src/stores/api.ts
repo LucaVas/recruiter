@@ -21,6 +21,14 @@ export default () => {
 
   instance.interceptors.request.use(
     (request) => {
+      // Check if the request is a multipart/form-data request
+      if (
+        typeof request.headers['Content-Type'] === 'string' &&
+        request.headers['Content-Type'].startsWith('multipart/form-data')
+      ) {
+        // Set Content-Type to multipart/form-data for multipart requests
+        request.headers['Content-Type'] = 'multipart/form-data';
+      }
       return request;
     },
     (error) => {

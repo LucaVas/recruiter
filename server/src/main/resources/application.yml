@@ -3,6 +3,13 @@ server:
     error:
         include-message: always
 
+google:
+    storage:
+        bucket:
+            name: ${GOOGLE_CLOUD_BUCKET_NAME}
+        project:
+            id: ${GOOGLE_CLOUD_PROJECT_ID}
+
 password:
     reset:
         token:
@@ -30,6 +37,10 @@ management:
             enabled: true
 
 spring:
+    servlet:
+        multipart:
+            max-file-size: 5MB
+            max-request-size: 5MB
     mail:
         host: ${EMAIL_HOST}
         port: ${EMAIL_PORT}
