@@ -4,3 +4,5 @@ export type Skill = {
   createdDTime: Date;
   modifiedDTime: Date;
 };
+
+export type NewSkill = Pick<Skill, 'name'>;

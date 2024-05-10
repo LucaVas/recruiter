@@ -22,11 +22,22 @@
       />
       <div class="space-y-3">
         <label>Skills</label>
-        <SkillsDropdown
-          :skills="skills"
-          :disabled="false"
-          @addSkill="(skill: Skill) => addSkill(job, skill)"
-        />
+        <div class="flex gap-3">
+          <SkillsDropdown
+            :skills="skills"
+            :disabled="false"
+            class="w-full"
+            @addSkill="(skill: Skill) => addSkill(job, skill)"
+          />
+          <Button
+            label="New"
+            icon="pi pi-plus"
+            @click="openSkillModal = true"
+            class="hidden min-w-fit md:block"
+          />
+          <Button icon="pi pi-plus" @click="openSkillModal = true" class="min-w-fit md:hidden" />
+        </div>
+
         <JobSkills
           :isNewJob="true"
           @remove="(skill: Skill) => removeSkill(job, skill)"
@@ -134,6 +145,7 @@ import {
   addSkill,
   removeSkill,
   openQuestionModal,
+  openSkillModal,
   openQuestionSearchModal,
 } from './index';
 

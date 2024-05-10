@@ -36,6 +36,7 @@ export const addSkill = (job: NewJobRequest, skill: Skill): void => {
 export const jobCreated = ref(false);
 export const creatingJob = ref(false);
 export const openQuestionModal = ref(false);
+export const openSkillModal = ref(false)
 export const openQuestionSearchModal = ref(false);
 export const clients = ref<Client[]>([]);
 export const skills = ref<Skill[]>([]);

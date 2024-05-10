@@ -3,14 +3,16 @@ import PageForm from '@/components/PageForm.vue';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
-import { userForm, loading, router } from './index';
+import { userForm, loading } from './index';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { login } from '@/stores/auth';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
+import { useRouter } from 'vue-router';
 
 const toast = useToast();
+const router = useRouter();
 
 const submitLogin = async () => {
   loading.value = true;
