@@ -24,7 +24,7 @@ const { data } = defineProps<{
 const emits = defineEmits<{
   (e: 'seeComments'): void;
   (e: 'delete'): void;
-  (e: 'downloadResume'): void;
+  (e: 'seeFiles'): void;
 }>();
 
 const menu = ref();
@@ -65,10 +65,10 @@ const recruiterItems = ref([
     },
   },
   {
-    label: 'Resume',
-    icon: 'pi pi-file-pdf',
+    label: 'Files',
+    icon: 'pi pi-folder-open',
     command: () => {
-      emits('downloadResume');
+      emits('seeFiles');
     },
   },
 ]);

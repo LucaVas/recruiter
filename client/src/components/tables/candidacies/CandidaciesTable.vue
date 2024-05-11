@@ -36,6 +36,7 @@
           @delete="delCandidacy(data.job.id, data.candidate.pan)"
           :deletingCandidacy="deletingCandidacy"
         />
+        <CandidacyFilesModal :files="[]" :visible="candidacyFilesModalOpen" @close="candidacyFilesModalOpen = false" />
         <CandidaciesTableActionButtonsColumn
           :data="data"
           @seeComments="
@@ -45,7 +46,7 @@
             }
           "
           @delete="deleteCandidacyModalOpen = true"
-          @downloadResume="console.log('Download resume')"
+          @seeFiles="getCandidacyFiles(data.job.id, data.candidate.pan)"
         />
       </template>
     </Column>
@@ -96,11 +97,13 @@ import { type CandidacyComment } from '@/stores/candidacy/schema';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DeleteCandidacyModal from '@/components/candidacy/DeleteCandidacyModal.vue';
+import type CandidacyFilesModal from '@/components/candidacy/files/CandidacyFilesModal.vue';
 
 const toast = useToast();
 
 const deleteCandidacyModalOpen = ref(false);
 const deletingCandidacy = ref(false);
+const candidacyFilesModalOpen = ref(false);
 const loadingTable = ref(false);
 const sendingComment = ref(false);
 const loadingComments = ref(false);
@@ -149,6 +152,10 @@ const delCandidacy = async (jobId: number, pan: string) => {
   } finally {
     deletingCandidacy.value = false;
   }
+};
+
+const getCandidacyFiles = async (jobId: number, pan: string) => {
+  candidacyFilesModalOpen.value = true;
 };
 
 async function initTable() {

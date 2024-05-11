@@ -16,6 +16,8 @@
 </template>
 
 <script setup lang="ts">
+import { type CandidacyFile } from '@/stores/candidacy/schema';
+
 const { visible, files } = defineProps<{
   visible: boolean;
   files: CandidacyFile[];
