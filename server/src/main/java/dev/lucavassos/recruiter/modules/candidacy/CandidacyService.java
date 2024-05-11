@@ -103,8 +103,7 @@ public class CandidacyService {
             throw new RequestValidationException("Candidacy already exists");
         }
 
-        validateFile(candidacy.resume());
-
+        if (candidacy.resume() != null) validateFile(candidacy.resume());
 
         CandidacyId candidacyId = new CandidacyId(candidate.getPan(), job.getId());
         Candidacy newCandidacy = saveCandidacy(
