@@ -36,7 +36,11 @@
           @delete="delCandidacy(data.job.id, data.candidate.pan)"
           :deletingCandidacy="deletingCandidacy"
         />
-        <CandidacyFilesModal :files="[]" :visible="candidacyFilesModalOpen" @close="candidacyFilesModalOpen = false" />
+        <CandidacyFilesModal
+          :files="candidacyFiles"
+          :visible="candidacyFilesModalOpen"
+          @close="candidacyFilesModalOpen = false"
+        />
         <CandidaciesTableActionButtonsColumn
           :data="data"
           @seeComments="
@@ -46,7 +50,7 @@
             }
           "
           @delete="deleteCandidacyModalOpen = true"
-          @seeFiles="getCandidacyFiles(data.job.id, data.candidate.pan)"
+          @seeFiles="getFiles(data.job.id, data.candidate.pan)"
         />
       </template>
     </Column>
@@ -78,7 +82,7 @@ import {
   getCandidacyComments,
   deleteCandidacy,
 } from '@/stores/candidacy';
-import type { Candidacy } from '@/stores/candidacy/schema';
+import type { Candidacy, CandidacyFile } from '@/stores/candidacy/schema';
 import { ApiError } from '@/utils/types';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
@@ -98,6 +102,7 @@ import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DeleteCandidacyModal from '@/components/candidacy/DeleteCandidacyModal.vue';
 import type CandidacyFilesModal from '@/components/candidacy/files/CandidacyFilesModal.vue';
+import { getCandidacyFiles } from '../../../stores/candidacy/index';
 
 const toast = useToast();
 
@@ -110,6 +115,7 @@ const loadingComments = ref(false);
 const candidates = ref<Candidacy[]>();
 const openCommentsHistoryModal = ref(false);
 const comments = ref<CandidacyComment[]>([]);
+const candidacyFiles = ref<CandidacyFile[]>([]);
 
 const send = async (jobId: number, pan: string, comment: string) => {
   sendingComment.value = true;
@@ -154,8 +160,15 @@ const delCandidacy = async (jobId: number, pan: string) => {
   }
 };
 
-const getCandidacyFiles = async (jobId: number, pan: string) => {
-  candidacyFilesModalOpen.value = true;
+const getFiles = async (jobId: number, pan: string) => {
+  try {
+    candidacyFiles.value = await getCandidacyFiles(jobId, pan);
+    candidacyFilesModalOpen.value = true;
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } 
 };
 
 async function initTable() {

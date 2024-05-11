@@ -1,6 +1,7 @@
 import {
   type Candidacy,
   type CandidacyComment,
+  type CandidacyFile,
   type NewCandidacyCommentRequest,
   type NewCandidacyRequest,
   type UpdateCandidacyRequest,
@@ -70,4 +71,9 @@ export async function addCandidacyComment(
 
 export const deleteCandidacy = async (jobId: number, pan: string): Promise<void> => {
   await api.delete(`/candidacies/job=${jobId}&candidate=${pan}`);
+}
+
+export const getCandidacyFiles = async (jobId: number, pan: string): Promise<CandidacyFile[]> => {
+  const { data } = await api.get(`/candidacies/job=${jobId}&candidate=${pan}/files`);
+  return data;
 }
