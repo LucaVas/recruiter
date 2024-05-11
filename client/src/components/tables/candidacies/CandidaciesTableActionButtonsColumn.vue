@@ -7,7 +7,7 @@
       size="small"
       rounded
     />
-    <Menu ref="menu" id="config_menu" :model="!isAdmin ? adminItems : recruiterItems" popup />
+    <Menu ref="menu" id="config_menu" :model="isAdmin ? adminItems : recruiterItems" popup />
   </div>
 </template>
 
