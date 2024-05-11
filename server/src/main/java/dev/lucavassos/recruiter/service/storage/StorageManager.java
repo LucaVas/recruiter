@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.service.storage.fileupload;
+package dev.lucavassos.recruiter.service.storage;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;

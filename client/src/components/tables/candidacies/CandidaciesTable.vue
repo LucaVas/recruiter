@@ -45,6 +45,7 @@
             }
           "
           @delete="deleteCandidacyModalOpen = true"
+          @downloadResume="console.log('Download resume')"
         />
       </template>
     </Column>
