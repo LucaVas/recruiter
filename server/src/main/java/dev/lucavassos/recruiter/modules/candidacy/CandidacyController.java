@@ -5,6 +5,7 @@ import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
+import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyFileDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,5 +82,14 @@ public class CandidacyController {
         log.info("Received request to delete candidacy with job ID {} and candidate pan {}", jobId, pan);
         service.deleteCandidacy(jobId, pan);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/candidacies/job={jobId}&candidate={pan}/files")
+    public ResponseEntity<List<CandidacyFileDto>> getCandidacyFiles(
+            @PathVariable Long jobId,
+            @PathVariable String pan
+    ) {
+        log.info("Received request to get files for candidacy with job ID {} and candidate pan {}", jobId, pan);
+        return ResponseEntity.ok(service.getCandidacyFiles(jobId, pan));
     }
 }

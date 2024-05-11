@@ -12,10 +12,7 @@ import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyFile;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyId;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyCommentRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyFileRepository;
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDtoMapper;
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDtoMapper;
+import dev.lucavassos.recruiter.modules.candidacy.repository.dto.*;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
@@ -48,6 +45,8 @@ public class CandidacyService {
     private CandidateRepository candidateRepository;
     @Autowired
     private CandidacyFileRepository candidacyFileRepository;
+    @Autowired
+    private CandidacyFileDtoMapper candidacyFileDtoMapper;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -258,6 +257,17 @@ public class CandidacyService {
         return candidacyCommentRepository.findByCandidacy(candidacy)
                 .stream()
                 .map(candidacyCommentDtoMapper)
+                .toList();
+    }
+
+    @Transactional
+    public List<CandidacyFileDto> getCandidacyFiles(Long jobId, String pan) {
+
+        Candidacy candidacy = findIfExist(jobId, pan);
+
+        return candidacyFileRepository.findByCandidacy(candidacy)
+                .stream()
+                .map(candidacyFileDtoMapper)
                 .toList();
     }
 
