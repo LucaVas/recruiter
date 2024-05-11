@@ -1,9 +1,9 @@
-package dev.lucavassos.recruiter.service.fileupload;
+package dev.lucavassos.recruiter.service.storage.fileupload;
 
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import dev.lucavassos.recruiter.exception.ServerException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +18,11 @@ public class FileUploadService {
     @Value("${google.storage.bucket.name}")
     private String bucket;
 
-    @Value("${google.storage.project.id}")
-    private String projectId;
+    @Autowired
+    private StorageManager storageManager;
 
     public void uploadResume(InputStream fileStream, String fileName, UUID uniqueId, String candidatePan) {
-        Storage storage = getStorage();
+        Storage storage = storageManager.getStorage();
 
         String folderPath = "users/" + candidatePan;
         storage.create(
@@ -35,19 +35,6 @@ public class FileUploadService {
 
         upload(storage, blobInfo, fileStream);
         log.info("Resume uploaded successfully as {}", blobId.getName());
-    }
-
-    private Storage getStorage() {
-        try {
-            return StorageOptions.newBuilder()
-                    .setProjectId(projectId)
-                    .setCredentials(GoogleCredentials.getApplicationDefault())
-                    .build()
-                    .getService();
-        } catch (IOException e) {
-            log.error("Error while getting storage instance: {}", e.getMessage());
-            throw new ServerException("Error while uploading file. Please try again later.");
-        }
     }
 
     private void upload(Storage storage, BlobInfo blobInfo, InputStream fileStream) {
