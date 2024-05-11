@@ -30,6 +30,12 @@
           @send="(comment) => send(data.job.id, data.candidate.pan, comment)"
           @close="openCommentsHistoryModal = false"
         />
+        <DeleteCandidacyModal
+          :visible="deleteCandidacyModalOpen"
+          @close="deleteCandidacyModalOpen = false"
+          @delete="delCandidacy(data.job.id, data.candidate.pan)"
+          :deletingCandidacy="deletingCandidacy"
+        />
         <CandidaciesTableActionButtonsColumn
           :data="data"
           @seeComments="
@@ -38,6 +44,7 @@
               getComments(data.job.id, data.candidate.pan);
             }
           "
+          @delete="deleteCandidacyModalOpen = true"
         />
       </template>
     </Column>
@@ -63,7 +70,12 @@
 </template>
 
 <script setup lang="ts">
-import { addCandidacyComment, getAllCandidacies, getCandidacyComments } from '@/stores/candidacy';
+import {
+  addCandidacyComment,
+  getAllCandidacies,
+  getCandidacyComments,
+  deleteCandidacy,
+} from '@/stores/candidacy';
 import type { Candidacy } from '@/stores/candidacy/schema';
 import { ApiError } from '@/utils/types';
 import Column from 'primevue/column';
@@ -80,11 +92,14 @@ import CommentsModal from './CommentsModal.vue';
 import { clearFilter, filters, initFilters } from './filters';
 import { getCandidacyStatus, getCandidacyStatusSeverity } from './utils';
 import { type CandidacyComment } from '@/stores/candidacy/schema';
-import { showError } from '@/utils/errorUtils';
+import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
+import DeleteCandidacyModal from '@/components/candidacy/DeleteCandidacyModal.vue';
 
 const toast = useToast();
 
+const deleteCandidacyModalOpen = ref(false);
+const deletingCandidacy = ref(false);
 const loadingTable = ref(false);
 const sendingComment = ref(false);
 const loadingComments = ref(false);
@@ -118,6 +133,23 @@ const getComments = async (jobId: number, pan: string) => {
     loadingComments.value = false;
   }
 };
+
+const delCandidacy = async (jobId: number, pan: string) => {
+  deletingCandidacy.value = true;
+  try {
+    await deleteCandidacy(jobId, pan);
+    deleteCandidacyModalOpen.value = false;
+    showSuccess(toast, 'Candidacy deleted successfully');
+    await initTable();
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    deletingCandidacy.value = false;
+  }
+};
+
 async function initTable() {
   loadingTable.value = true;
   try {

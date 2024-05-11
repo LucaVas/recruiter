@@ -23,6 +23,7 @@ const { data } = defineProps<{
 }>();
 const emits = defineEmits<{
   (e: 'seeComments'): void;
+  (e: 'delete'): void;
 }>();
 
 const menu = ref();
@@ -48,6 +49,9 @@ const adminItems = ref([
   {
     label: 'Delete',
     icon: 'pi pi-times',
+    command: () => {
+      emits('delete');
+    },
   },
 ]);
 
