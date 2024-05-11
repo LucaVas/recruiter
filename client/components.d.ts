@@ -19,6 +19,8 @@ declare module 'vue' {
     CandidaciesTableHeader: typeof import('./src/components/tables/candidacies/CandidaciesTableHeader.vue')['default']
     CandidacyCandidateCard: typeof import('./src/components/tables/candidacies/CandidacyCandidateCard.vue')['default']
     CandidacyCard: typeof import('./src/components/tables/candidacies/CandidacyCard.vue')['default']
+    CandidacyDocumentsModal: typeof import('./src/components/candidacy/documents/CandidacyDocumentsModal.vue')['default']
+    CandidacyFilesModal: typeof import('./src/components/candidacy/files/CandidacyFilesModal.vue')['default']
     CandidacyFooter: typeof import('./src/components/candidacy/CandidacyFooter.vue')['default']
     CandidacyHeader: typeof import('./src/components/candidacy/CandidacyHeader.vue')['default']
     CandidacyHiringDetailsModal: typeof import('./src/components/candidacy/header/CandidacyHiringDetailsModal.vue')['default']
