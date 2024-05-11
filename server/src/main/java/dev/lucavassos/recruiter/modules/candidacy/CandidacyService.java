@@ -345,6 +345,43 @@ public class CandidacyService {
     }
 
     @Transactional
+    public void deleteCandidacy(Long jobId, String pan) {
+        Job job = jobRepository.findOneById(jobId).orElseThrow(
+                () -> {
+                    log.error("Job with id {} not found", jobId);
+                    return new ResourceNotFoundException("Job not found");
+                }
+        );
+        Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
+                () -> {
+                    log.error("Candidate with pan {} not found", pan);
+                    return new ResourceNotFoundException("Candidate not found");
+                }
+        );
+
+        Candidacy candidacy = candidacyRepository.findByJobAndCandidate(job, candidate)
+                .orElseThrow(
+                        () -> {
+                            log.error("Candidacy with job {} and candidate {} not found", job, candidate);
+                            return new ResourceNotFoundException("Candidacy not found");
+                        }
+                );
+
+        User user = getAuthUser();
+        if (!isUserAuthorized(user, candidacy)) {
+            log.error("User with id {} is not authorized to delete this candidacy", user.getId());
+            throw new UnauthorizedException("Recruiter is unauthorized to delete this candidacy");
+        }
+
+        try {
+            candidacyRepository.delete(candidacy);
+        } catch (Exception e) {
+            log.error("Database error while deleting candidacy: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    @Transactional
     private CandidacyComment saveCandidacyComment(CandidacyComment comment) {
         try {
             return candidacyCommentRepository.save(comment);

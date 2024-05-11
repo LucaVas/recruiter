@@ -67,3 +67,7 @@ export async function addCandidacyComment(
 ): Promise<void> {
   await api.post(`/candidacies/job=${jobId}&candidate=${pan}/comments`, comment);
 }
+
+export const deleteCandidacy = async (jobId: number, pan: string): Promise<void> => {
+  await api.delete(`/candidacies/job=${jobId}&candidate=${pan}`);
+}

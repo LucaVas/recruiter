@@ -75,4 +75,14 @@ public class CandidacyController {
         service.addCandidacyComment(jobId, pan, comment);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @DeleteMapping("/candidacies/job={jobId}&candidate={pan}")
+    public ResponseEntity<?> deleteCandidacy(
+            @PathVariable Long jobId,
+            @PathVariable String pan
+    ) {
+        LOG.info("Received request to delete candidacy with job ID {} and candidate pan {}", jobId, pan);
+        service.deleteCandidacy(jobId, pan);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

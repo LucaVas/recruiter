@@ -40,6 +40,7 @@ declare module 'vue' {
     copy: typeof import('./src/components/job/shared/Skills copy.vue')['default']
     DashboardTable: typeof import('./src/components/tables/dashboard/DashboardTable.vue')['default']
     DataTable: typeof import('primevue/datatable')['default']
+    DeleteCandidacyModal: typeof import('./src/components/candidacy/DeleteCandidacyModal.vue')['default']
     DeleteJobModal: typeof import('./src/components/job/shared/DeleteJobModal.vue')['default']
     Dialog: typeof import('primevue/dialog')['default']
     Divider: typeof import('primevue/divider')['default']
