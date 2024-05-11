@@ -25,7 +25,7 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
-import dev.lucavassos.recruiter.service.storage.fileupload.FileUploadService;
+import dev.lucavassos.recruiter.service.storage.fileupload.ResumeHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ public class CandidacyService {
     @Autowired
     MonitoringProcessor monitoringProcessor;
     @Autowired
-    FileUploadService fileUploadService;
+    ResumeHandler resumeHandler;
 
     @Transactional
     public void addCandidacy(NewCandidacyRequest candidacy) {
@@ -130,7 +130,7 @@ public class CandidacyService {
         if ( candidacy.resume() != null ) {
             UUID uniqueId = UUID.randomUUID();
             try {
-                fileUploadService.uploadResume(candidacy.resume().getInputStream(),
+                resumeHandler.uploadResume(candidacy.resume().getInputStream(),
                         candidacy.resume().getName(),
                         uniqueId,
                         candidate.getPan());
