@@ -18,7 +18,7 @@
           <div class="flex w-full justify-between">
             <span>{{ file.name }}</span>
             <div class="flex items-center gap-2">
-              <Button icon="pi pi-download" unstyled @click="$emit('download', file.id)" />
+              <Button icon="pi pi-download" unstyled @click="$emit('download', file.id)" :loading="downloading" />
               <Button icon="pi pi-trash" unstyled @click="$emit('delete', file.id)" />
               <i
                 class="pi pi-info-circle mr-2"
@@ -39,10 +39,11 @@ import Button from 'primevue/button';
 import { type CandidacyFile } from '@/stores/candidacy/schema';
 import { formatDateTime } from '@/utils/dateUtils';
 
-const { visible, files, loading } = defineProps<{
+const { visible, files, loading, downloading } = defineProps<{
   visible: boolean;
   files: CandidacyFile[];
   loading: boolean;
+  downloading: boolean;
 }>();
 
 defineEmits<{
