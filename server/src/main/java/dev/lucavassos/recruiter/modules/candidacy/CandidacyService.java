@@ -130,12 +130,12 @@ public class CandidacyService {
             UUID uniqueId = UUID.randomUUID();
             try {
                 resumeHandler.uploadResume(candidacy.resume().getInputStream(),
-                        candidacy.resume().getName(),
+                        candidacy.resume().getOriginalFilename(),
                         uniqueId,
                         candidate.getPan());
                 CandidacyFile file = CandidacyFile.builder()
                         .type(candidacy.resume().getContentType())
-                        .name(candidacy.resume().getName())
+                        .name(candidacy.resume().getOriginalFilename())
                         .uniqueId(uniqueId)
                         .candidacy(newCandidacy)
                         .build();

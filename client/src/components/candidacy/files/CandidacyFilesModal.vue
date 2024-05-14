@@ -23,6 +23,8 @@
 </template>
 
 <script setup lang="ts">
+import Dialog from 'primevue/dialog';
+import ProgressSpinner from 'primevue/progressspinner';
 import { type CandidacyFile } from '@/stores/candidacy/schema';
 import { formatDateTime } from '@/utils/dateUtils';
 
