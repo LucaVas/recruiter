@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URL;
 import java.util.List;
 
 @Slf4j
@@ -98,5 +99,11 @@ public class CandidacyController {
         log.info("Received request to delete candidacy file with ID {}", fileId);
         service.deleteCandidacyFile(fileId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/candidacies/files/{fileId}/url")
+    public ResponseEntity<URL> getCandidacyFileUrl(@PathVariable("fileId") Long fileId) {
+        log.info("Received request to get URL for candidacy file with ID {}", fileId);
+        return ResponseEntity.ok(service.getCandidacyFileUrl(fileId));
     }
 }

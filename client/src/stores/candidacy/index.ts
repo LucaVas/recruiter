@@ -26,7 +26,6 @@ export async function submitCandidacy(
   if (candidacy.status) formData.append('status', candidacy.status.toString());
   if (file !== undefined) formData.append('resume', file);
 
-  console.log(formData.get('resume'));
   await api.post(`/candidacies`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -80,4 +79,9 @@ export const getCandidacyFiles = async (jobId: number, pan: string): Promise<Can
 
 export const deleteFile = async (fileId: number): Promise<void> => {
   await api.delete(`/candidacies/files/${fileId}`);
+};
+
+export const getFileUrl = async (fileId: number): Promise<string> => {
+  const { data } = await api.get(`/candidacies/files/${fileId}/url`);
+  return data;
 };
