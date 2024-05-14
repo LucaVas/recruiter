@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -130,9 +131,9 @@ public class CandidacyService {
             UUID uniqueId = UUID.randomUUID();
             try {
                 resumeHandler.uploadResume(candidacy.resume().getInputStream(),
-                        candidacy.resume().getOriginalFilename(),
-                        uniqueId,
-                        candidate.getPan());
+                        candidate.getPan(),
+                        job.getId(),
+                        candidacy.resume().getOriginalFilename());
                 CandidacyFile file = CandidacyFile.builder()
                         .type(candidacy.resume().getContentType())
                         .name(candidacy.resume().getOriginalFilename())
@@ -290,7 +291,7 @@ public class CandidacyService {
             }
 
             try {
-                resumeHandler.deleteResume(file.getUniqueId(), candidacy.getCandidate().getPan(), file.getName());
+                resumeHandler.deleteResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
             } catch (Exception e) {
                 log.error("Error while deleting resume: {}", e.getMessage());
                 throw new ServerException("Error while deleting resume");
@@ -302,6 +303,27 @@ public class CandidacyService {
                 log.error("Database error while deleting candidacy file: {}", e.getMessage());
                 throw new DatabaseException(e.getMessage());
             }
+    }
+
+    @Transactional
+    public URL getCandidacyFileUrl(Long fileId) {
+
+        CandidacyFile file = candidacyFileRepository.findById(fileId).orElseThrow(
+                () -> {
+                    log.error("Candidacy file with id {} not found", fileId);
+                    return new ResourceNotFoundException("Candidacy file not found");
+                }
+        );
+
+        Candidacy candidacy = file.getCandidacy();
+
+        User user = getAuthUser();
+        if (!isUserAuthorized(user, candidacy)) {
+            log.error("User with id {} is not authorized to get this file", user.getId());
+            throw new UnauthorizedException("Recruiter is unauthorized to get this file");
+        }
+
+        return resumeHandler.getResumeUrl(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
     }
 
     @Transactional
