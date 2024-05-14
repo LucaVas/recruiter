@@ -53,6 +53,7 @@
           :files="candidacyFiles"
           :visible="candidacyFilesModalOpen"
           :loading="loadingFiles"
+          :downloading="downloadingFile"
           @close="
             {
               candidacyFilesModalOpen = false;
@@ -237,7 +238,7 @@ const downloadFile = async (fileId: number) => {
   downloadingFile.value = true;
   try {
     const url = await getFileUrl(fileId);
-    console.log(url);
+    await fetch(url);
     downloadingFile.value = false;
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message);
