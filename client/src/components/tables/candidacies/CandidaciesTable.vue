@@ -30,6 +30,43 @@
           @send="(comment) => send(data.job.id, data.candidate.pan, comment)"
           @close="openCommentsHistoryModal = false"
         />
+        <DeleteModal
+          :visible="deleteCandidacyModal"
+          :deleting="deletingCandidacy"
+          :message="'Are you sure you want to delete this candidacy?'"
+          @close="deleteCandidacyModal = false"
+          @delete="delCandidacy(data.job.id, data.candidate.pan)"
+        />
+        <DeleteModal
+          :visible="deleteFileModal"
+          :deleting="deletingFile"
+          :message="'Are you sure you want to delete this file?'"
+          @close="
+            {
+              deleteFileModal = false;
+              fileIdToDelete = undefined;
+            }
+          "
+          @delete="delFile(fileIdToDelete)"
+        />
+        <CandidacyFilesModal
+          :files="candidacyFiles"
+          :visible="candidacyFilesModalOpen"
+          :loading="loadingFiles"
+          @close="
+            {
+              candidacyFilesModalOpen = false;
+              currentCandidacyFilesModalOpen = undefined;
+            }
+          "
+          @download="console.log('download')"
+          @delete="
+            (fileId: number) => {
+              deleteFileModal = true;
+              fileIdToDelete = fileId;
+            }
+          "
+        />
         <CandidaciesTableActionButtonsColumn
           :data="data"
           @seeComments="
@@ -38,6 +75,8 @@
               getComments(data.job.id, data.candidate.pan);
             }
           "
+          @delete="deleteCandidacyModal = true"
+          @seeFiles="getFiles(data.job.id, data.candidate.pan)"
         />
       </template>
     </Column>
@@ -63,8 +102,13 @@
 </template>
 
 <script setup lang="ts">
-import { addCandidacyComment, getAllCandidacies, getCandidacyComments } from '@/stores/candidacy';
-import type { Candidacy } from '@/stores/candidacy/schema';
+import {
+  addCandidacyComment,
+  getAllCandidacies,
+  getCandidacyComments,
+  deleteCandidacy,
+} from '@/stores/candidacy';
+import type { Candidacy, CandidacyFile } from '@/stores/candidacy/schema';
 import { ApiError } from '@/utils/types';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
@@ -80,17 +124,32 @@ import CommentsModal from './CommentsModal.vue';
 import { clearFilter, filters, initFilters } from './filters';
 import { getCandidacyStatus, getCandidacyStatusSeverity } from './utils';
 import { type CandidacyComment } from '@/stores/candidacy/schema';
-import { showError } from '@/utils/errorUtils';
+import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
+import DeleteModal from '@/components/candidacy/DeleteModal.vue';
+import type CandidacyFilesModal from '@/components/candidacy/files/CandidacyFilesModal.vue';
+import { getCandidacyFiles, deleteFile } from '@/stores/candidacy/index';
 
 const toast = useToast();
 
-const loadingTable = ref(false);
+const openCommentsHistoryModal = ref(false);
 const sendingComment = ref(false);
 const loadingComments = ref(false);
+
+const deleteCandidacyModal = ref(false);
+const deletingCandidacy = ref(false);
+const deleteFileModal = ref(false);
+
+const fileIdToDelete = ref<number>();
+const deletingFile = ref(false);
+const candidacyFilesModalOpen = ref(false);
+const loadingFiles = ref(false);
+
+const loadingTable = ref(false);
 const candidates = ref<Candidacy[]>();
-const openCommentsHistoryModal = ref(false);
 const comments = ref<CandidacyComment[]>([]);
+const candidacyFiles = ref<CandidacyFile[]>([]);
+const currentCandidacyFilesModalOpen = ref<{ jobId: number; pan: string } | undefined>();
 
 const send = async (jobId: number, pan: string, comment: string) => {
   sendingComment.value = true;
@@ -118,6 +177,60 @@ const getComments = async (jobId: number, pan: string) => {
     loadingComments.value = false;
   }
 };
+
+const delCandidacy = async (jobId: number, pan: string) => {
+  deletingCandidacy.value = true;
+  try {
+    await deleteCandidacy(jobId, pan);
+    deletingCandidacy.value = false;
+    showSuccess(toast, 'Candidacy deleted successfully');
+    await initTable();
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    deletingCandidacy.value = false;
+  }
+};
+
+const getFiles = async (jobId: number, pan: string) => {
+  loadingFiles.value = true;
+  currentCandidacyFilesModalOpen.value = { jobId, pan };
+  try {
+    candidacyFilesModalOpen.value = true;
+    candidacyFiles.value = await getCandidacyFiles(jobId, pan);
+    loadingFiles.value = false;
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    loadingFiles.value = false;
+  }
+};
+
+const delFile = async (fileId: number | undefined) => {
+  if (!fileId || !currentCandidacyFilesModalOpen.value) return;
+  deletingFile.value = true;
+  try {
+    await deleteFile(fileId);
+    deletingFile.value = false;
+    deleteFileModal.value = false;
+    showSuccess(toast, 'File deleted successfully');
+    await getFiles(
+      currentCandidacyFilesModalOpen.value.jobId,
+      currentCandidacyFilesModalOpen.value.pan
+    );
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    deletingFile.value = false;
+  }
+};
+
 async function initTable() {
   loadingTable.value = true;
   try {

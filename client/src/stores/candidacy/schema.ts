@@ -27,6 +27,15 @@ export type CandidacyComment = {
   modifiedDTime: Date;
 };
 
+export type CandidacyFile = {
+  id: number;
+  type: number;
+  name: number;
+  uniqueId: string;
+  createdDTime: Date;
+  modifiedDTime: Date;
+};
+
 // request
 export type UpdateCandidacyRequest = Omit<
   Candidacy,

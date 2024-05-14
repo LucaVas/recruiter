@@ -7,7 +7,7 @@
       size="small"
       rounded
     />
-    <Menu ref="menu" id="config_menu" :model="!isAdmin ? adminItems : recruiterItems" popup />
+    <Menu ref="menu" id="config_menu" :model="isAdmin ? adminItems : recruiterItems" popup />
   </div>
 </template>
 
@@ -23,6 +23,8 @@ const { data } = defineProps<{
 }>();
 const emits = defineEmits<{
   (e: 'seeComments'): void;
+  (e: 'delete'): void;
+  (e: 'seeFiles'): void;
 }>();
 
 const menu = ref();
@@ -48,6 +50,9 @@ const adminItems = ref([
   {
     label: 'Delete',
     icon: 'pi pi-times',
+    command: () => {
+      emits('delete');
+    },
   },
 ]);
 
@@ -57,6 +62,13 @@ const recruiterItems = ref([
     icon: 'pi pi-envelope',
     command: () => {
       emits('seeComments');
+    },
+  },
+  {
+    label: 'Files',
+    icon: 'pi pi-folder-open',
+    command: () => {
+      emits('seeFiles');
     },
   },
 ]);

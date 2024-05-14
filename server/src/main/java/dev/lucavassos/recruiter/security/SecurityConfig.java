@@ -68,6 +68,10 @@ public class SecurityConfig {
                         authorizationManagerRequestMatcherRegistry
                                 .requestMatchers(
                                         HttpMethod.DELETE,
+                                        "api/v*/candidacies/files/**"
+                                ).hasAnyAuthority(RoleName.ROLE_ADMIN.name(), RoleName.ROLE_RECRUITER.name())
+                                .requestMatchers(
+                                        HttpMethod.DELETE,
                                         "api/v*/**"
                                 ).hasAuthority(RoleName.ROLE_ADMIN.name())
                                 .requestMatchers(
