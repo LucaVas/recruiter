@@ -1,10 +1,13 @@
 package dev.lucavassos.recruiter.service.storage;
 
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import dev.lucavassos.recruiter.exception.ServerException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,8 +17,17 @@ import java.io.InputStream;
 @Service
 public class StorageService {
 
-    protected void upload(Storage storage, BlobInfo blobInfo, InputStream fileStream) {
+    @Autowired
+    private StorageManager storageManager;
+
+    @Value("${google.storage.bucket.name}")
+    private String bucket;
+
+    protected void upload(String filePath, InputStream fileStream) {
+        Storage storage = storageManager.getStorage();
         try {
+            BlobId blobId = BlobId.of(bucket, filePath);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
             storage.createFrom(blobInfo, fileStream);
         } catch (IOException e) {
             log.error("Error while uploading file: {}", e.getMessage());
@@ -23,7 +35,26 @@ public class StorageService {
         }
     }
 
-    protected Boolean delete(Storage storage, BlobId blobId) {
-        return storage.delete(blobId);
+    protected Boolean delete(String filePath) {
+        Storage storage = storageManager.getStorage();
+
+        Blob blob = this.getBlob(filePath);
+        if (blob == null) {
+            log.error("The file at {} wasn't found in {}", filePath, bucket);
+            throw new ServerException("The file is not available anymore.");
+        }
+        Storage.BlobSourceOption precondition =
+                Storage.BlobSourceOption.generationMatch(blob.getGeneration());
+        return storage.delete(bucket, filePath, precondition);
+    }
+
+    protected Blob getBlob(String filePath) {
+        Storage storage = storageManager.getStorage();
+        return storage.get(bucket, filePath);
+    }
+
+    protected Blob createBlob(String folderPath) {
+        Storage storage = storageManager.getStorage();
+        return storage.create(BlobInfo.newBuilder(bucket, folderPath).build(), new byte[0]);
     }
 }
