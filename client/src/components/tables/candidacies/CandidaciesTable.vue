@@ -39,6 +39,7 @@
         <CandidacyFilesModal
           :files="candidacyFiles"
           :visible="candidacyFilesModalOpen"
+          :loading="loadingFiles"
           @close="candidacyFilesModalOpen = false"
         />
         <CandidaciesTableActionButtonsColumn
@@ -109,6 +110,7 @@ const toast = useToast();
 const deleteCandidacyModalOpen = ref(false);
 const deletingCandidacy = ref(false);
 const candidacyFilesModalOpen = ref(false);
+const loadingFiles = ref(false);
 const loadingTable = ref(false);
 const sendingComment = ref(false);
 const loadingComments = ref(false);
@@ -161,14 +163,18 @@ const delCandidacy = async (jobId: number, pan: string) => {
 };
 
 const getFiles = async (jobId: number, pan: string) => {
+  loadingFiles.value = true;
   try {
-    candidacyFiles.value = await getCandidacyFiles(jobId, pan);
     candidacyFilesModalOpen.value = true;
+    candidacyFiles.value = await getCandidacyFiles(jobId, pan);
+    loadingFiles.value = false;
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
-  } 
+  } finally {
+    loadingFiles.value = false;
+  }
 };
 
 async function initTable() {

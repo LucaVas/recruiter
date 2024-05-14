@@ -7,7 +7,10 @@
     :style="{ width: '50rem' }"
     :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
   >
-    <div class="flex flex-col gap-4">
+    <div v-if="loading" class="flex w-full items-center justify-center">
+      <ProgressSpinner />
+    </div>
+    <div v-else class="flex flex-col gap-4">
       <div v-for="file in files" :key="file.id" class="flex w-full items-center">
         <i class="pi pi-file mr-2" />
         <div class="flex w-full justify-between">
@@ -23,9 +26,10 @@
 import { type CandidacyFile } from '@/stores/candidacy/schema';
 import { formatDateTime } from '@/utils/dateUtils';
 
-const { visible, files } = defineProps<{
+const { visible, files, loading } = defineProps<{
   visible: boolean;
   files: CandidacyFile[];
+  loading: boolean;
 }>();
 
 defineEmits<{
