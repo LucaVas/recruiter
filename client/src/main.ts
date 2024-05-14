@@ -9,11 +9,14 @@ import App from './App.vue';
 import ToastService from 'primevue/toastservice';
 import PrimeVue from 'primevue/config';
 import Ripple from 'primevue/ripple';
+import Tooltip from 'primevue/tooltip';
 
 import router from './router';
 
 const app = createApp(App);
 app.directive('ripple', Ripple);
+app.directive('tooltip', Tooltip);
+
 
 app.use(router).use(ToastService).use(PrimeVue);
 

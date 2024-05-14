@@ -12,10 +12,7 @@ import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyFile;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyId;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyCommentRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyFileRepository;
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDto;
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommentDtoMapper;
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
-import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDtoMapper;
+import dev.lucavassos.recruiter.modules.candidacy.repository.dto.*;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
@@ -25,7 +22,7 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
-import dev.lucavassos.recruiter.service.fileupload.FileUploadService;
+import dev.lucavassos.recruiter.service.storage.ResumeHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +46,8 @@ public class CandidacyService {
     @Autowired
     private CandidacyFileRepository candidacyFileRepository;
     @Autowired
+    private CandidacyFileDtoMapper candidacyFileDtoMapper;
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private JobRepository jobRepository;
@@ -63,7 +62,7 @@ public class CandidacyService {
     @Autowired
     MonitoringProcessor monitoringProcessor;
     @Autowired
-    FileUploadService fileUploadService;
+    ResumeHandler resumeHandler;
 
     @Transactional
     public void addCandidacy(NewCandidacyRequest candidacy) {
@@ -130,13 +129,13 @@ public class CandidacyService {
         if ( candidacy.resume() != null ) {
             UUID uniqueId = UUID.randomUUID();
             try {
-                fileUploadService.uploadResume(candidacy.resume().getInputStream(),
-                        candidacy.resume().getName(),
+                resumeHandler.uploadResume(candidacy.resume().getInputStream(),
+                        candidacy.resume().getOriginalFilename(),
                         uniqueId,
                         candidate.getPan());
                 CandidacyFile file = CandidacyFile.builder()
                         .type(candidacy.resume().getContentType())
-                        .name(candidacy.resume().getName())
+                        .name(candidacy.resume().getOriginalFilename())
                         .uniqueId(uniqueId)
                         .candidacy(newCandidacy)
                         .build();
@@ -259,6 +258,50 @@ public class CandidacyService {
                 .stream()
                 .map(candidacyCommentDtoMapper)
                 .toList();
+    }
+
+    @Transactional
+    public List<CandidacyFileDto> getCandidacyFiles(Long jobId, String pan) {
+
+        Candidacy candidacy = findIfExist(jobId, pan);
+
+        return candidacyFileRepository.findByCandidacy(candidacy)
+                .stream()
+                .map(candidacyFileDtoMapper)
+                .toList();
+    }
+
+    @Transactional
+    public void deleteCandidacyFile(Long fileId) {
+
+            CandidacyFile file = candidacyFileRepository.findById(fileId).orElseThrow(
+                    () -> {
+                        log.error("Candidacy file with id {} not found", fileId);
+                        return new ResourceNotFoundException("Candidacy file not found");
+                    }
+            );
+
+            Candidacy candidacy = file.getCandidacy();
+
+            User user = getAuthUser();
+            if (!isUserAuthorized(user, candidacy)) {
+                log.error("User with id {} is not authorized to delete this file", user.getId());
+                throw new UnauthorizedException("Recruiter is unauthorized to delete this file");
+            }
+
+            try {
+                resumeHandler.deleteResume(file.getUniqueId(), candidacy.getCandidate().getPan(), file.getName());
+            } catch (Exception e) {
+                log.error("Error while deleting resume: {}", e.getMessage());
+                throw new ServerException("Error while deleting resume");
+            }
+
+            try {
+                candidacyFileRepository.delete(file);
+            } catch (Exception e) {
+                log.error("Database error while deleting candidacy file: {}", e.getMessage());
+                throw new DatabaseException(e.getMessage());
+            }
     }
 
     @Transactional
