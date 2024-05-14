@@ -71,9 +71,14 @@ export async function addCandidacyComment(
 
 export const deleteCandidacy = async (jobId: number, pan: string): Promise<void> => {
   await api.delete(`/candidacies/job=${jobId}&candidate=${pan}`);
-}
+};
 
 export const getCandidacyFiles = async (jobId: number, pan: string): Promise<CandidacyFile[]> => {
   const { data } = await api.get(`/candidacies/job=${jobId}&candidate=${pan}/files`);
   return data;
-}
+};
+
+export const deleteFile = async (fileId: number): Promise<void> => {
+  console.log('delete file')
+  // await api.delete(`/candidacies/files/${fileId}`);
+};
