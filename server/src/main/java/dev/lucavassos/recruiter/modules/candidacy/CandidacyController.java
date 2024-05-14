@@ -92,4 +92,11 @@ public class CandidacyController {
         log.info("Received request to get files for candidacy with job ID {} and candidate pan {}", jobId, pan);
         return ResponseEntity.ok(service.getCandidacyFiles(jobId, pan));
     }
+
+    @DeleteMapping("/candidacies/files/{fileId}")
+    public ResponseEntity<?> deleteCandidacyFile(@PathVariable("fileId") Long fileId) {
+        log.info("Received request to delete candidacy file with ID {}", fileId);
+        service.deleteCandidacyFile(fileId);
+        return ResponseEntity.noContent().build();
+    }
 }

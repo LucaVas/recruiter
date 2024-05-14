@@ -272,6 +272,39 @@ public class CandidacyService {
     }
 
     @Transactional
+    public void deleteCandidacyFile(Long fileId) {
+
+            CandidacyFile file = candidacyFileRepository.findById(fileId).orElseThrow(
+                    () -> {
+                        log.error("Candidacy file with id {} not found", fileId);
+                        return new ResourceNotFoundException("Candidacy file not found");
+                    }
+            );
+
+            Candidacy candidacy = file.getCandidacy();
+
+            User user = getAuthUser();
+            if (!isUserAuthorized(user, candidacy)) {
+                log.error("User with id {} is not authorized to delete this file", user.getId());
+                throw new UnauthorizedException("Recruiter is unauthorized to delete this file");
+            }
+
+            try {
+                resumeHandler.deleteResume(file.getUniqueId(), candidacy.getCandidate().getPan(), file.getName());
+            } catch (Exception e) {
+                log.error("Error while deleting resume: {}", e.getMessage());
+                throw new ServerException("Error while deleting resume");
+            }
+
+            try {
+                candidacyFileRepository.delete(file);
+            } catch (Exception e) {
+                log.error("Database error while deleting candidacy file: {}", e.getMessage());
+                throw new DatabaseException(e.getMessage());
+            }
+    }
+
+    @Transactional
     public void deleteCandidacy(Long jobId, String pan) {
 
         Candidacy candidacy = findIfExist(jobId, pan);

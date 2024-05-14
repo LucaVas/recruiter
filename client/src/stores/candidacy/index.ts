@@ -79,6 +79,5 @@ export const getCandidacyFiles = async (jobId: number, pan: string): Promise<Can
 };
 
 export const deleteFile = async (fileId: number): Promise<void> => {
-  console.log('delete file')
-  // await api.delete(`/candidacies/files/${fileId}`);
+  await api.delete(`/candidacies/files/${fileId}`);
 };

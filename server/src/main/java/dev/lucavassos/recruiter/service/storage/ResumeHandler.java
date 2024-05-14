@@ -39,14 +39,21 @@ public class ResumeHandler {
         log.info("Resume uploaded successfully as {}", blobId.getName());
     }
 
-    public void deleteResume(UUID uniqueId, String candidatePan) {
+    public void deleteResume(UUID uniqueId, String candidatePan, String fileName) {
         Storage storage = storageManager.getStorage();
-        String folderPath = "users/" + candidatePan + "/" + uniqueId.toString();
-        BlobId blobId = BlobId.of(bucket, folderPath);
-        Boolean deleted = storageService.delete(storage, blobId);
+        String filePath = "users/" + candidatePan + "/" + uniqueId.toString() + "/" + fileName;
+        Blob blob = storage.get(bucket, filePath);
+        if (blob == null) {
+            log.error("The file {} wasn't found in {}", fileName, bucket);
+            throw new ServerException("The file is not available anymore.");
+        }
+
+        Storage.BlobSourceOption precondition =
+                Storage.BlobSourceOption.generationMatch(blob.getGeneration());
+        boolean deleted = storage.delete(bucket, filePath, precondition);
         if (!deleted) {
-            log.error("Error while deleting resume from {}", blobId.getName());
+            log.error("Error while deleting resume from {}", blob.getName());
             throw new ServerException("Error while deleting resume. Please try again later.");
-        } else log.info("Resume deleted successfully from {}", blobId.getName());
+        } else log.info("Resume deleted successfully from {}", blob.getName());
     }
 }
