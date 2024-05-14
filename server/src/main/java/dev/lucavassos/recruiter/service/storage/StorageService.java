@@ -28,7 +28,12 @@ public class StorageService {
         try {
             BlobId blobId = BlobId.of(bucket, filePath);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-            storage.createFrom(blobInfo, fileStream);
+
+            Storage.BlobWriteOption precondition;
+            if (storage.get(bucket, filePath) == null) precondition = Storage.BlobWriteOption.doesNotExist();
+            else precondition = Storage.BlobWriteOption.generationMatch(storage.get(bucket, filePath).getGeneration());
+
+            storage.createFrom(blobInfo, fileStream, precondition);
         } catch (IOException e) {
             log.error("Error while uploading file: {}", e.getMessage());
             throw new ServerException("Error while uploading file. Please try again later.");
