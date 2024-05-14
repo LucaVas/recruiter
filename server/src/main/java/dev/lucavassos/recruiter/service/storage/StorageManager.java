@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.service.storage;
 
+import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
@@ -27,9 +28,11 @@ public class StorageManager {
             synchronized (StorageManager.class) {
                 if (storage == null) {
                     try {
+                        Credentials creds = GoogleCredentials.getApplicationDefault();
+                        log.info("Credentials: {}", creds);
                         storage = StorageOptions.newBuilder()
                                 .setProjectId(projectId)
-                                .setCredentials(GoogleCredentials.getApplicationDefault())
+                                .setCredentials(creds)
                                 .build()
                                 .getService();
                     } catch (IOException e) {

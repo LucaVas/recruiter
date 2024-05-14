@@ -1,9 +1,6 @@
 package dev.lucavassos.recruiter.service.storage;
 
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.*;
 import dev.lucavassos.recruiter.exception.ServerException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -53,12 +52,22 @@ public class StorageService {
         return storage.delete(bucket, filePath, precondition);
     }
 
-    protected Blob getBlob(String filePath) {
+    private Blob getBlob(String filePath) {
         Storage storage = storageManager.getStorage();
         return storage.get(bucket, filePath);
     }
 
-    protected Blob createBlob(String folderPath) {
+    protected URL getSignedUrl(String folderPath) {
+        Storage storage = storageManager.getStorage();
+
+        return storage.signUrl(
+                createBlob(folderPath),
+                15, TimeUnit.SECONDS,
+                Storage.SignUrlOption.withV4Signature()
+                );
+    }
+
+    private Blob createBlob(String folderPath) {
         Storage storage = storageManager.getStorage();
         return storage.create(BlobInfo.newBuilder(bucket, folderPath).build(), new byte[0]);
     }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.UUID;
 
 @Slf4j
@@ -15,18 +16,31 @@ public class ResumeHandler {
     @Autowired
     private StorageService storageService;
 
-    public void uploadResume(InputStream fileStream, String fileName, UUID uniqueId, String candidatePan) {
-        String filePath = "users/" + candidatePan + "/" + uniqueId.toString() + "/" + fileName;
+    public void uploadResume(InputStream fileStream, String candidatePan, Long jobId, String fileName) {
+        String filePath = getFilePath(candidatePan, jobId, fileName);
         storageService.upload(filePath, fileStream);
         log.info("Resume uploaded successfully to {}", filePath);
     }
 
-    public void deleteResume(UUID uniqueId, String candidatePan, String fileName) {
-        String filePath = "users/" + candidatePan + "/" + uniqueId.toString() + "/" + fileName;
+    public void deleteResume(String candidatePan, Long jobId, String fileName) {
+        String filePath = getFilePath(candidatePan, jobId, fileName);
         boolean deleted = storageService.delete(filePath);
         if (!deleted) {
             log.error("Error while deleting resume at {}", filePath);
             throw new ServerException("Error while deleting resume. Please try again later.");
         } else log.info("Resume deleted successfully at {}", filePath);
+    }
+
+    public URL getResumeUrl(String candidatePan, Long jobId, String fileName) {
+        return storageService.getSignedUrl(getFilePath(candidatePan, jobId, fileName));
+    }
+
+    private String getFilePath(String candidatePan, Long jobId, String fileName) {
+        return "candidates/" +
+                candidatePan +
+                "/job/" +
+                jobId +
+                "/" +
+                fileName;
     }
 }

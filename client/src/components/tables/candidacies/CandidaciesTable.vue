@@ -59,7 +59,7 @@
               currentCandidacyFilesModalOpen = undefined;
             }
           "
-          @download="console.log('download')"
+          @download="(fileId: number) => downloadFile(fileId)"
           @delete="
             (fileId: number) => {
               deleteFileModal = true;
@@ -128,7 +128,7 @@ import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DeleteModal from '@/components/candidacy/DeleteModal.vue';
 import type CandidacyFilesModal from '@/components/candidacy/files/CandidacyFilesModal.vue';
-import { getCandidacyFiles, deleteFile } from '@/stores/candidacy/index';
+import { getCandidacyFiles, deleteFile, getFileUrl } from '@/stores/candidacy/index';
 
 const toast = useToast();
 
@@ -139,6 +139,8 @@ const loadingComments = ref(false);
 const deleteCandidacyModal = ref(false);
 const deletingCandidacy = ref(false);
 const deleteFileModal = ref(false);
+
+const downloadingFile = ref(false);
 
 const fileIdToDelete = ref<number>();
 const deletingFile = ref(false);
@@ -228,6 +230,21 @@ const delFile = async (fileId: number | undefined) => {
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     deletingFile.value = false;
+  }
+};
+
+const downloadFile = async (fileId: number) => {
+  downloadingFile.value = true;
+  try {
+    const url = await getFileUrl(fileId);
+    console.log(url);
+    downloadingFile.value = false;
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    downloadingFile.value = false;
   }
 };
 
