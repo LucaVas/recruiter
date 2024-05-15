@@ -103,12 +103,6 @@ public class CandidacyController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/candidacies/files/{fileId}/url")
-    public ResponseEntity<URL> getCandidacyFileUrl(@PathVariable("fileId") Long fileId) {
-        log.info("Received request to get URL for candidacy file with ID {}", fileId);
-        return ResponseEntity.ok(service.getCandidacyFileUrl(fileId));
-    }
-
     @GetMapping("/candidacies/files/{fileId}")
     public ResponseEntity<byte[]> getCandidacyFile(@PathVariable("fileId") Long fileId) {
         log.info("Received request to get candidacy file with ID {}", fileId);

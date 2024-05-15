@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -68,22 +66,6 @@ public class StorageService {
             throw new ServerException("The file is not available anymore.");
         }
         return blob;
-    }
-
-    protected URL getSignedUrl(String folderPath) {
-        Storage storage = storageManager.getStorage();
-
-        try {
-            return storage.signUrl(
-                    createBlob(folderPath),
-                    15, TimeUnit.SECONDS,
-                    Storage.SignUrlOption.withV4Signature()
-            );
-        } catch (Exception e) {
-            log.error("Error while retriving signed url: {}", e.getMessage());
-            throw new ServerException("Error while retriving file. Please, try again later.");
-        }
-
     }
 
     private Blob createBlob(String folderPath) {

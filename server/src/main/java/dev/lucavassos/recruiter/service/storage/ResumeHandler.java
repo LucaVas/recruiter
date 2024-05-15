@@ -30,10 +30,6 @@ public class ResumeHandler {
         } else log.info("Resume deleted successfully at {}", filePath);
     }
 
-    public URL getResumeUrl(String candidatePan, Long jobId, String fileName) {
-        return storageService.getSignedUrl(getFilePath(candidatePan, jobId, fileName));
-    }
-
     public byte[] getResume(String candidatePan, Long jobId, String fileName) {
         return storageService.getFile(getFilePath(candidatePan, jobId, fileName));
     }

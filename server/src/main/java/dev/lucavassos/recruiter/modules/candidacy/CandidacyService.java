@@ -306,27 +306,6 @@ public class CandidacyService {
     }
 
     @Transactional
-    public URL getCandidacyFileUrl(Long fileId) {
-
-        CandidacyFile file = candidacyFileRepository.findById(fileId).orElseThrow(
-                () -> {
-                    log.error("Candidacy file with id {} not found", fileId);
-                    return new ResourceNotFoundException("Candidacy file not found");
-                }
-        );
-
-        Candidacy candidacy = file.getCandidacy();
-
-        User user = getAuthUser();
-        if (!isUserAuthorized(user, candidacy)) {
-            log.error("User with id {} is not authorized to get this file", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to get this file");
-        }
-
-        return resumeHandler.getResumeUrl(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
-    }
-
-    @Transactional
     public byte[] getCandidacyFile(Long fileId) {
 
         CandidacyFile file = candidacyFileRepository.findById(fileId).orElseThrow(
