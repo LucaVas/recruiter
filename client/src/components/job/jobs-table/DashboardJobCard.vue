@@ -1,6 +1,6 @@
 <template>
   <div class="h-30 flex flex-col items-start gap-4">
-    <div id="title">
+    <div id="title" class="space-y-3">
       <h2 class="font-semibold">{{ job.name }}</h2>
       <h4 class="italic">{{ job.client.name }}</h4>
     </div>
