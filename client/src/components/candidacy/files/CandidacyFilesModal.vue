@@ -18,6 +18,7 @@
           <div class="flex w-full justify-between">
             <span>{{ file.name }}</span>
             <div class="flex items-center gap-2">
+              <Button icon="pi pi-upload" unstyled @click="$emit('upload')" />
               <Button
                 icon="pi pi-download"
                 unstyled
@@ -55,5 +56,6 @@ defineEmits<{
   (e: 'close'): void;
   (e: 'download', file: CandidacyFile): void;
   (e: 'delete', fileId: number): void;
+  (e: 'upload'): void;
 }>();
 </script>

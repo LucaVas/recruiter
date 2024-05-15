@@ -43,6 +43,10 @@ export type UpdateCandidacyRequest = Omit<
 >;
 export type NewCandidacyRequest = UpdateCandidacyRequest & { jobId: number; candidatePan: string };
 export type NewCandidacyCommentRequest = Pick<CandidacyComment, 'text'>;
+export type UploadCandidacyFilesRequest = {
+  files: File[];
+};
+
 
 // frontend types
 export type RawCandidacy = Omit<

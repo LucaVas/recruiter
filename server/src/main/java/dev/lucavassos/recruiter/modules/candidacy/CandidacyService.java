@@ -2,10 +2,7 @@ package dev.lucavassos.recruiter.modules.candidacy;
 
 import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.*;
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
-import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
-import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
-import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
+import dev.lucavassos.recruiter.modules.candidacy.domain.*;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyFile;
@@ -34,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -119,7 +117,7 @@ public class CandidacyService {
         );
         monitoringProcessor.incrementCandidaciesCounter();
 
-        if ( !StringUtils.isBlank(candidacy.recruiterComment()) ) {
+        if (!StringUtils.isBlank(candidacy.recruiterComment())) {
             saveCandidacyComment(CandidacyComment.builder()
                     .text(candidacy.recruiterComment())
                     .candidacy(newCandidacy)
@@ -127,7 +125,7 @@ public class CandidacyService {
                     .build());
         }
 
-        if ( candidacy.resume() != null ) {
+        if (candidacy.resume() != null) {
             UUID uniqueId = UUID.randomUUID();
             try {
                 resumeHandler.uploadResume(candidacy.resume().getInputStream(),
@@ -275,34 +273,34 @@ public class CandidacyService {
     @Transactional
     public void deleteCandidacyFile(Long fileId) {
 
-            CandidacyFile file = candidacyFileRepository.findById(fileId).orElseThrow(
-                    () -> {
-                        log.error("Candidacy file with id {} not found", fileId);
-                        return new ResourceNotFoundException("Candidacy file not found");
-                    }
-            );
+        CandidacyFile file = candidacyFileRepository.findById(fileId).orElseThrow(
+                () -> {
+                    log.error("Candidacy file with id {} not found", fileId);
+                    return new ResourceNotFoundException("Candidacy file not found");
+                }
+        );
 
-            Candidacy candidacy = file.getCandidacy();
+        Candidacy candidacy = file.getCandidacy();
 
-            User user = getAuthUser();
-            if (!isUserAuthorized(user, candidacy)) {
-                log.error("User with id {} is not authorized to delete this file", user.getId());
-                throw new UnauthorizedException("Recruiter is unauthorized to delete this file");
-            }
+        User user = getAuthUser();
+        if (!isUserAuthorized(user, candidacy)) {
+            log.error("User with id {} is not authorized to delete this file", user.getId());
+            throw new UnauthorizedException("Recruiter is unauthorized to delete this file");
+        }
 
-            try {
-                resumeHandler.deleteResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
-            } catch (Exception e) {
-                log.error("Error while deleting resume: {}", e.getMessage());
-                throw new ServerException("Error while deleting resume");
-            }
+        try {
+            resumeHandler.deleteResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
+        } catch (Exception e) {
+            log.error("Error while deleting resume: {}", e.getMessage());
+            throw new ServerException("Error while deleting resume");
+        }
 
-            try {
-                candidacyFileRepository.delete(file);
-            } catch (Exception e) {
-                log.error("Database error while deleting candidacy file: {}", e.getMessage());
-                throw new DatabaseException(e.getMessage());
-            }
+        try {
+            candidacyFileRepository.delete(file);
+        } catch (Exception e) {
+            log.error("Database error while deleting candidacy file: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     @Transactional
@@ -347,7 +345,6 @@ public class CandidacyService {
         return resumeHandler.getResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
     }
 
-
     @Transactional
     public void deleteCandidacy(Long jobId, String pan) {
 
@@ -366,6 +363,47 @@ public class CandidacyService {
             throw new DatabaseException(e.getMessage());
         }
     }
+
+    @Transactional
+    public void addFilesToCandidacy(Long jobId, String pan, List<MultipartFile> files) {
+
+        Candidacy candidacy = findIfExist(jobId, pan);
+        User user = getAuthUser();
+        if (!isUserAuthorized(user, candidacy)) {
+            log.error("User with id {} is not authorized to upload fles to this candidacy", user.getId());
+            throw new UnauthorizedException("Recruiter is unauthorized to upload files to this candidacy");
+        }
+
+        if (files == null || files.isEmpty()) {
+            log.error("No files were provided to upload");
+            throw new RequestValidationException("No files were provided to upload");
+        }
+        files.forEach(file -> {
+            validateFile(file);
+            UUID uniqueId = UUID.randomUUID();
+            try {
+                resumeHandler.uploadResume(file.getInputStream(),
+                        candidacy.getCandidate().getPan(),
+                        candidacy.getJob().getId(),
+                        file.getOriginalFilename());
+                CandidacyFile newFile = CandidacyFile.builder()
+                        .type(file.getContentType())
+                        .name(file.getOriginalFilename())
+                        .uniqueId(uniqueId)
+                        .candidacy(candidacy)
+                        .build();
+                candidacyFileRepository.save(newFile);
+            } catch (IOException ioe) {
+                log.error("Error while uploading resume: {}", ioe.getMessage());
+                throw new ServerException("Error while uploading resume");
+            } catch (Exception e) {
+                log.error("Error while saving candidacy file: {}", e.getMessage());
+                throw new DatabaseException("Error while saving candidacy file");
+            }
+        });
+
+    }
+
 
     @Transactional
     private CandidacyComment saveCandidacyComment(CandidacyComment comment) {
