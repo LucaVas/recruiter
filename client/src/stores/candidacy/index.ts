@@ -5,7 +5,6 @@ import {
   type NewCandidacyCommentRequest,
   type NewCandidacyRequest,
   type UpdateCandidacyRequest,
-  type UploadCandidacyFilesRequest,
 } from './schema';
 import axiosApi from '../api';
 

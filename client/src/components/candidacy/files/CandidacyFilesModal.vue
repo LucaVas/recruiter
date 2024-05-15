@@ -10,7 +10,7 @@
     <div v-if="loading" class="flex w-full items-center justify-center">
       <ProgressSpinner />
     </div>
-    <div v-else class="flex flex-col gap-4">
+    <div v-else class="flex flex-col gap-4 max-h-42 overflow-y-auto">
       <div v-if="files.length === 0">No files available.</div>
       <div v-else>
         <div v-for="file in files" :key="file.id" class="flex w-full items-center border-b py-4">
@@ -18,7 +18,6 @@
           <div class="flex w-full justify-between">
             <span>{{ file.name }}</span>
             <div class="flex items-center gap-2">
-              <Button icon="pi pi-upload" unstyled @click="$emit('upload')" />
               <Button
                 icon="pi pi-download"
                 unstyled
@@ -35,6 +34,9 @@
         </div>
       </div>
     </div>
+    <template #footer>
+      <Button label="Upload more" outlined @click="$emit('upload')" />
+    </template>
   </Dialog>
 </template>
 

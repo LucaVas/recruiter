@@ -29,7 +29,6 @@ public class StorageManager {
                 if (storage == null) {
                     try {
                         Credentials creds = GoogleCredentials.getApplicationDefault();
-                        log.info("Credentials: {}", creds);
                         storage = StorageOptions.newBuilder()
                                 .setProjectId(projectId)
                                 .setCredentials(creds)
