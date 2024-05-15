@@ -2,7 +2,7 @@
   <div class="card flex flex-col gap-8">
     <div class="flex w-full flex-col gap-6 sm:flex-row">
       <div class="flex w-full flex-col gap-2">
-        <label class="text-sm" for="wantedCvs">Bonus Pay per CV</label>
+        <label class="text-sm" for="bonusPayPerCv">Payment per CV Upload (INR)</label>
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-wallet" />
@@ -18,7 +18,7 @@
         </InputGroup>
       </div>
       <div class="flex w-full flex-col gap-2">
-        <label class="text-sm" for="wantedCvs">CV Rate Payment Date</label>
+        <label class="text-sm" for="cvRatePaymentDate">Payment Date per CV Upload</label>
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-wallet" />
@@ -41,14 +41,13 @@
 
     <div class="flex w-full flex-col gap-6 sm:flex-row">
       <div class="flex w-full flex-col gap-2">
-        <label class="text-sm" for="wantedCvs">Closure Bonus</label>
+        <label class="text-sm" for="closureBonus">Candidate Joining Bonus (INR)</label>
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-money-bill" />
           </InputGroupAddon>
-          <InputNumber
+          <InputText
             id="closureBonus"
-            :min="0"
             v-model="details.closureBonus"
             required
             :disabled="disabled"
@@ -57,7 +56,7 @@
         </InputGroup>
       </div>
       <div class="flex w-full flex-col gap-2">
-        <label class="text-sm" for="wantedCvs">Closure Bonus Payment Date</label>
+        <label class="text-sm" for="closureBonusPaymentDate">Candidate Joining Bonus Payment Date</label>
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-money-bill" />
@@ -86,6 +85,7 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import Calendar from 'primevue/calendar';
 import { ref } from 'vue';
 import type { Job, NewJobRequest } from '@/stores/job/schema';
+import InputText from 'primevue/inputtext';
 
 // props
 const { jobDetails, disabled } = defineProps<{

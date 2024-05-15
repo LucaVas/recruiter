@@ -54,9 +54,7 @@ public record NewJobRequest (
         @Min(value = 1, message = "Bonus pay per CV must be greater than 0")
         Double bonusPayPerCv,
 
-        @NotNull(message = "Closure bonus cannot be empty")
-        @Min(value = 1, message = "Closure bonus must be greater than 0")
-        Double closureBonus,
+        @NotBlank(message = "Closure bonus cannot be empty") String closureBonus,
 
         @Future(message = "Closure bonus payment date must be in the future")
         LocalDateTime closureBonusPaymentDate,

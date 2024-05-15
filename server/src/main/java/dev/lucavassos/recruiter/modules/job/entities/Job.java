@@ -87,8 +87,8 @@ public class Job {
     private Double bonusPayPerCv;
 
     @Column(nullable = false)
-    @Min(value = 0, message = "Closure bonus cannot be negative")
-    private Double closureBonus;
+    @Size(min = 1, message = "Closure bonus name must be between 1 and 255 characters long")
+    private String closureBonus;
 
     @Column(nullable = false, name = "cv_rate_payment_date")
     private LocalDateTime cvRatePaymentDate;
