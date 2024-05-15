@@ -24,6 +24,7 @@ import { getAllJobs } from '@/stores/job';
 import Header from '../shared/Header.vue';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
+import DashboardJobCard from '@/components/job/jobs-table/DashboardJobCard.vue';
 
 const loading = ref(false);
 const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
@@ -87,6 +88,11 @@ onMounted(async () => {
           @reload-table="initTable()"
           @pass-error="(message) => showError(toast, message)"
         />
+      </template>
+    </Column>
+    <Column field="client" header="Client" class="min-w-52">
+      <template #body="{ data }">
+        <DashboardJobCard :job="data" />
       </template>
     </Column>
     <Column field="client" header="Client" class="min-w-52">
