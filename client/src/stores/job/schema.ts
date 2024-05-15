@@ -18,7 +18,7 @@ export type Job = {
   currency: Currency;
   description: string;
   bonusPayPerCv: number;
-  closureBonus: number;
+  closureBonus: string;
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
   numberOfCandidates: number | null;

@@ -17,7 +17,7 @@ export const job = ref<NewJobRequest>({
   currency: 'INR',
   description: '',
   bonusPayPerCv: 0,
-  closureBonus: 0,
+  closureBonus: 'Not Applicable',
   questions: [],
   closureBonusPaymentDate: new Date(),
   cvRatePaymentDate: new Date(),

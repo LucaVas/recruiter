@@ -315,7 +315,7 @@ public class EntityInitializer {
                         + "The ideal candidate will have a strong background in Java development and a passion "
                         + "for building robust, scalable software solutions.")
                 .bonusPayPerCv(3.7)
-                .closureBonus(200.0)
+                .closureBonus("Not Applicable")
                 .cvRatePaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
                 ))
@@ -346,7 +346,7 @@ public class EntityInitializer {
                         + "The ideal candidate will have a strong foundation in Python programming "
                         + "and a passion for developing efficient and scalable software solutions.")
                 .bonusPayPerCv(3.7)
-                .closureBonus(260.0)
+                .closureBonus("Not Applicable")
                 .cvRatePaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
                 ))
@@ -375,7 +375,7 @@ public class EntityInitializer {
                         + "The ideal candidate will have a strong background in data analysis, "
                         + "experience with Tableau, and a passion for developing data-driven insights.")
                 .bonusPayPerCv(3.0)
-                .closureBonus(230.0)
+                .closureBonus("Not Applicable")
                 .cvRatePaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
                 ))
@@ -404,7 +404,7 @@ public class EntityInitializer {
                         + "The ideal candidate will have a strong background in mainframe development, "
                         + "experience with PL2, and a passion for developing efficient and scalable software solutions.")
                 .bonusPayPerCv(6.0)
-                .closureBonus(400.0)
+                .closureBonus("Not Applicable")
                 .cvRatePaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
                 ))
@@ -442,7 +442,7 @@ public class EntityInitializer {
                 .closureBonusPaymentDate(LocalDateTime.of(
                         2024, 12, 31, 0, 0, 0
                 ))
-                .closureBonus(700.0)
+                .closureBonus("Not Applicable")
                 .recruiter(recruiter)
                 .build();
 

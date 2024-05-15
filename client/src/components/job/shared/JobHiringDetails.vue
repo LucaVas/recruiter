@@ -142,4 +142,3 @@ const currencies = ref<Currency[]>(['INR']);
     </div>
   </div>
 </template>
-@/stores/job/schema@/stores/job/schema
