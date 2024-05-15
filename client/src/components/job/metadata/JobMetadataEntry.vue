@@ -8,6 +8,6 @@ const { icon, content } = defineProps<{
 <template>
   <div class="flex w-full items-center gap-4">
     <i :class="`pi ${icon}`" />
-    <p>{{ content }}</p>
+    <p class="min-w-fit">{{ content }}</p>
   </div>
 </template>

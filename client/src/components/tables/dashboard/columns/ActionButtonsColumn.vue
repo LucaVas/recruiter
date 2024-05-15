@@ -14,7 +14,6 @@ const { data } = defineProps<{
       label="View"
       size="small"
       class="h-10 min-w-fit"
-      outlined
       @click="router.push({ name: 'Job', params: { id: data.id } })"
     />
   </div>

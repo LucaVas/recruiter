@@ -1,35 +1,22 @@
 <script setup lang="ts">
 import DataTable from 'primevue/datatable';
-import InputText from 'primevue/inputtext';
 import ActionButtonsColumn from './columns/ActionButtonsColumn.vue';
 import { onMounted, ref } from 'vue';
-import Tag from 'primevue/tag';
 import Column from 'primevue/column';
-import Dropdown from 'primevue/dropdown';
 import type { Job } from '@/stores/job/schema';
-import { formatDate } from '@/utils/dateUtils';
-import {
-  filters,
-  initFilters,
-  getSeverity,
-  getContractType,
-  getClientIcon,
-  globalFiltersFields,
-  clearFilter,
-  getSkills,
-} from './utils';
+import { filters, initFilters, globalFiltersFields } from './utils';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { getAllJobs } from '@/stores/job';
 import Header from '../shared/Header.vue';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
+import DashboardJobCard from '@/components/job/jobs-table/DashboardJobCard.vue';
+import DashboardJobInfoCard from '@/components/job/jobs-table/DashboardJobInfoCard.vue';
+import { getSeverity } from '@/components/job/shared/utils';
 
 const loading = ref(false);
-const contractTypes = ref([{ name: 'Permanent' }, { name: 'Temporary' }]);
 const jobs = ref<Job[]>();
-const statuses = ref(['closed', 'open', 'pending']);
-const showAllColumns = ref(false);
 
 const toast = useToast();
 
@@ -70,176 +57,51 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <Header
-        :filters="filters"
-        :showColumns="showAllColumns"
-        @clearFilter="clearFilter()"
-        @showOrHideColumns="showAllColumns = !showAllColumns"
-      />
+      <Header :filters="filters" @refresh="initTable()" />
     </template>
     <template #empty> No jobs found. </template>
     <template #loading> Loading jobs, please wait... </template>
 
-    <Column field="action" header="" class="min-w-fit">
+    <Column class="min-w-fit text-center">
       <template #body="{ data }">
         <ActionButtonsColumn
           :data="data"
-          @reload-table="initTable()"
-          @pass-error="(message) => showError(toast, message)"
+          @reloadTable="initTable()"
         />
       </template>
     </Column>
-    <Column field="client" header="Client" class="min-w-52">
+
+    <Column header="Job" class="min-w-52">
       <template #body="{ data }">
-        <div class="flex items-center gap-3">
-          <img :src="`src/assets/images/clients/${getClientIcon(data.client.name)}`" class="w-5" />
-          {{ data.client.name }}
-        </div>
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter min-w-52"
-          placeholder="Search by client"
-        />
+        <DashboardJobCard :job="data" />
       </template>
     </Column>
-    <Column field="name" header="Job Name" class="min-w-52">
+
+    <Column header="Information" class="min-w-80">
+      <template #body="{ data }">
+        <DashboardJobInfoCard :job="data" />
+      </template>
+    </Column>
+
+    <Column class="hidden">
+      <template #body="{ data }">
+        {{ data.client.name }}
+      </template>
+    </Column>
+    <Column class="hidden">
       <template #body="{ data }">
         {{ data.name }}
       </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter"
-          placeholder="Search by job name"
-        />
-      </template>
     </Column>
-    <Column field="skills" header="Skills" class="min-w-52" v-if="showAllColumns">
-      <template #body="{ data }">
-        {{ getSkills(data.skills) }}
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter min-w-52"
-          placeholder="Search by job skill"
-        />
-      </template>
+    <Column class="hidden">
+      <template #body="{ data }"> {{ data.salaryBudget }}</template>
     </Column>
-    <Column field="contractType" header="Contract" class="min-w-20" v-if="showAllColumns">
-      <template #body="{ data }">
-        <Tag :value="data.contractType" :severity="getContractType(data.contractType)" />
-      </template>
-      <template #filter="{ filterModel }">
-        <MultiSelect
-          v-model="filterModel.value"
-          :options="contractTypes"
-          optionLabel="name"
-          placeholder="Any"
-          class="p-column-filter"
-        >
-          <template #option="slotProps">
-            <div class="align-items-center flex gap-2">
-              <span>{{ slotProps.option.name }}</span>
-            </div>
-          </template>
-        </MultiSelect>
-      </template>
+    <Column dataType="numeric" class="hidden">
+      <template #body="{ data }"> {{ data.noticePeriodInDays }} </template>
     </Column>
-    <Column field="experienceRange" header="Experience" class="min-w-20" v-if="showAllColumns">
-      <template #body="{ data }">
-        {{ data.experienceRangeMin }}-{{ data.experienceRangeMax }} years
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="text"
-          class="p-column-filter"
-          placeholder="Search by experience"
-        />
-      </template>
-    </Column>
-    <Column field="salaryBudget" header="Salary Budget" class="min-w-44" v-if="showAllColumns">
-      <template #body="{ data }"> {{ data.salaryBudget }} {{ data.currency }} </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="number"
-          class="p-column-filter"
-          placeholder="Search by salaryBudget"
-        />
-      </template>
-    </Column>
-    <Column
-      field="noticePeriodInDays"
-      header="Notice Period"
-      dataType="numeric"
-      class="min-w-40"
-      v-if="showAllColumns"
-    >
-      <template #body="{ data }"> {{ data.noticePeriodInDays }} days </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="number"
-          class="p-column-filter"
-          placeholder="Search by notice period"
-        />
-      </template>
-    </Column>
-    <Column field="numberOfCandidates" header="Candidates" dataType="numeric" class="min-w-10">
-      <template #body="{ data }">
-        {{ data.numberOfCandidates }}
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="number"
-          class="p-column-filter"
-          placeholder="Search by candidates"
-        />
-      </template>
-    </Column>
-    <Column
-      field="creationDate"
-      header="Creation Date"
-      dataType="date"
-      class="min-w-40"
-      v-if="showAllColumns"
-    >
-      <template #body="{ data }">
-        {{ formatDate(data.createdDTime) }}
-      </template>
-      <template #filter="{ filterModel }">
-        <InputText
-          v-model="filterModel.value"
-          type="date"
-          class="p-column-filter"
-          placeholder="Search by creation date"
-        />
-      </template>
-    </Column>
-    <Column field="status" header="Status" class="min-w-10">
+    <Column header="Status" class="min-w-fit">
       <template #body="{ data }">
         <Tag :value="data.status" :severity="getSeverity(data.status)" />
-      </template>
-      <template #filter="{ filterModel }">
-        <Dropdown
-          v-model="filterModel.value"
-          :options="statuses"
-          placeholder="Select One"
-          class="p-column-filter"
-          showClear
-        >
-          <template #option="slotProps">
-            <Tag :value="slotProps.option" :severity="getSeverity(slotProps.option)" />
-          </template>
-        </Dropdown>
       </template>
     </Column>
   </DataTable>

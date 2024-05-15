@@ -1,4 +1,4 @@
-import { FilterMatchMode, FilterOperator } from 'primevue/api';
+import { FilterMatchMode } from 'primevue/api';
 import { ref } from 'vue';
 import type { Skill } from '@/stores/skill/schema';
 
@@ -18,41 +18,7 @@ export const globalFiltersFields = ref([
 export const initFilters = () => {
   filters.value = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    client: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    name: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    contractType: { value: null, matchMode: FilterMatchMode.IN },
-    experienceRange: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    salaryBudget: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO }],
-    },
-    noticePeriodInDays: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO }],
-    },
-    numberOfCandidates: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO }],
-    },
-    creationDate: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }],
-    },
-    status: { value: null, matchMode: FilterMatchMode.IN },
   };
-};
-
-export const clearFilter = () => {
-  initFilters();
 };
 
 export const getSeverity = (status: string) => {
