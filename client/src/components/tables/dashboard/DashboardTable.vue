@@ -13,7 +13,7 @@ import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DashboardJobCard from '@/components/job/jobs-table/DashboardJobCard.vue';
 import DashboardJobInfoCard from '@/components/job/jobs-table/DashboardJobInfoCard.vue';
-import { getSeverity } from '@/components/job/shared/utils';
+import { formatStatus, getSeverity } from '@/components/job/shared/utils';
 
 const loading = ref(false);
 const jobs = ref<Job[]>();
@@ -64,10 +64,7 @@ onMounted(async () => {
 
     <Column class="min-w-fit text-center">
       <template #body="{ data }">
-        <ActionButtonsColumn
-          :data="data"
-          @reloadTable="initTable()"
-        />
+        <ActionButtonsColumn :data="data" @reloadTable="initTable()" />
       </template>
     </Column>
 
@@ -80,6 +77,12 @@ onMounted(async () => {
     <Column header="Information" class="min-w-80">
       <template #body="{ data }">
         <DashboardJobInfoCard :job="data" />
+      </template>
+    </Column>
+
+    <Column header="Status" class="min-w-fit">
+      <template #body="{ data }">
+        <Tag :value="formatStatus(data.status)" :severity="getSeverity(data.status)" />
       </template>
     </Column>
 
@@ -98,11 +101,6 @@ onMounted(async () => {
     </Column>
     <Column dataType="numeric" class="hidden">
       <template #body="{ data }"> {{ data.noticePeriodInDays }} </template>
-    </Column>
-    <Column header="Status" class="min-w-fit">
-      <template #body="{ data }">
-        <Tag :value="data.status" :severity="getSeverity(data.status)" />
-      </template>
     </Column>
   </DataTable>
 </template>

@@ -4,7 +4,7 @@ import type { Skill } from '@/stores/skill/schema';
 
 export const filters = ref();
 export const globalFiltersFields = ref([
-  'client',
+  'client.name',
   'name',
   'experienceRange',
   'contractType',
