@@ -1,6 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
-import com.google.cloud.storage.Blob;
+import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyFilesUploadRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
 import java.util.List;
@@ -46,7 +47,8 @@ public class CandidacyController {
     @GetMapping("/candidacies/job={jobId}&candidate={pan}")
     public ResponseEntity<CandidacyDto> getCandidacy(
             @PathVariable Long jobId,
-            @PathVariable String pan) {
+            @PathVariable String pan
+    ) {
         log.info("Received request to get candidacy with job ID {} and candidate pan {}", jobId, pan);
         return ResponseEntity.ok(service.getCandidacy(jobId, pan));
     }
@@ -115,4 +117,18 @@ public class CandidacyController {
 
         return new ResponseEntity<>(file, headers, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/candidacies/job={jobId}&candidate={pan}/files",
+            method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadFiles(
+            @PathVariable Long jobId,
+            @PathVariable String pan,
+            @RequestParam("files") List<MultipartFile> files
+            ) {
+
+        log.info("Received request to add {} files to candidacy with job ID {} and candidate pan {}", files.size(), jobId, pan);
+        service.addFilesToCandidacy(jobId, pan, files);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }

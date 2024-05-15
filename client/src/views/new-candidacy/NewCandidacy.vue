@@ -37,7 +37,7 @@
         :is-archived="false"
       />
 
-      <FilesUploader @addFile="(file: File) => (resume = file)" />
+      <FilesUploader @addFile="(files: File[]) => (resume = files[0])" />
     </div>
 
     <div v-else class="flex h-full w-full items-center justify-center">

@@ -33,6 +33,23 @@ export async function submitCandidacy(
   });
 }
 
+export const uploadFilesToCandidacy = async (
+  jobId: number,
+  pan: string,
+  files: File[]
+): Promise<void> => {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append('files', file);
+  });
+
+  await api.post(`/candidacies/job=${jobId}&candidate=${pan}/files`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
 export async function updateCandidacy(
   jobId: number,
   pan: string,

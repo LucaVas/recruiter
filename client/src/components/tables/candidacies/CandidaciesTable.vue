@@ -49,11 +49,18 @@
           "
           @delete="delFile(fileIdToDelete)"
         />
+        <UploadFilesModal
+          :visible="uploadFilesModalOpen"
+          :uploading="uploadingFiles"
+          @upload="files => uploadFiles(data.job.id, data.candidate.pan, files)"
+          @close="uploadFilesModalOpen = false"
+        />
         <CandidacyFilesModal
           :files="candidacyFiles"
           :visible="candidacyFilesModalOpen"
           :loading="loadingFiles"
           :downloading="downloadingFile"
+          @upload="uploadFilesModalOpen = true"
           @close="
             {
               candidacyFilesModalOpen = false;
@@ -129,7 +136,13 @@ import { type CandidacyComment } from '@/stores/candidacy/schema';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DeleteModal from '@/components/candidacy/DeleteModal.vue';
-import { getCandidacyFiles, deleteFile, getFile } from '@/stores/candidacy/index';
+import {
+  getCandidacyFiles,
+  deleteFile,
+  getFile,
+  uploadFilesToCandidacy,
+} from '@/stores/candidacy/index';
+import UploadFilesModal from '@/components/candidacy/files/UploadFilesModal.vue';
 
 const toast = useToast();
 
@@ -147,6 +160,9 @@ const fileIdToDelete = ref<number>();
 const deletingFile = ref(false);
 const candidacyFilesModalOpen = ref(false);
 const loadingFiles = ref(false);
+
+const uploadingFiles = ref(false);
+const uploadFilesModalOpen = ref(false);
 
 const loadingTable = ref(false);
 const candidates = ref<Candidacy[]>();
@@ -252,6 +268,23 @@ const downloadFile = async (file: CandidacyFile) => {
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     downloadingFile.value = false;
+  }
+};
+
+const uploadFiles = async (jobId: number, pan: string, files: File[]) => {
+  uploadFilesModalOpen.value = true;
+  uploadingFiles.value = true;
+  try {
+    await uploadFilesToCandidacy(jobId, pan, files);
+    showSuccess(toast, 'Files uploaded successfully');
+    uploadFilesModalOpen.value = false;
+    await getFiles(jobId, pan);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    uploadingFiles.value = false;
   }
 };
 
