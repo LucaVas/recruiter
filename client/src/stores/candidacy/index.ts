@@ -81,7 +81,19 @@ export const deleteFile = async (fileId: number): Promise<void> => {
   await api.delete(`/candidacies/files/${fileId}`);
 };
 
-export const getFileUrl = async (fileId: number): Promise<string> => {
-  const { data } = await api.get(`/candidacies/files/${fileId}/url`);
-  return data;
+export const getFile = async (fileId: number): Promise<string> => {
+  const res = await api.get(`/candidacies/files/${fileId}`, {
+    responseType: 'arraybuffer',
+  });
+  // Get blob content as array buffer
+  const blobContent = res.data;
+
+  // Create Blob object from array buffer
+  const blob = new Blob([blobContent], { type: 'application/pdf' });
+
+  // Generate URL for Blob object
+  const blobUrl = URL.createObjectURL(blob);
+
+  // Return Blob URL
+  return blobUrl;
 };

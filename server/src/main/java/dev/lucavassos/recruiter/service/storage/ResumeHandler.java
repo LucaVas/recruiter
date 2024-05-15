@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -33,6 +32,10 @@ public class ResumeHandler {
 
     public URL getResumeUrl(String candidatePan, Long jobId, String fileName) {
         return storageService.getSignedUrl(getFilePath(candidatePan, jobId, fileName));
+    }
+
+    public byte[] getResume(String candidatePan, Long jobId, String fileName) {
+        return storageService.getFile(getFilePath(candidatePan, jobId, fileName));
     }
 
     private String getFilePath(String candidatePan, Long jobId, String fileName) {
