@@ -43,28 +43,47 @@ public class StorageService {
         Storage storage = storageManager.getStorage();
 
         Blob blob = this.getBlob(filePath);
-        if (blob == null) {
-            log.error("The file at {} wasn't found in {}", filePath, bucket);
-            throw new ServerException("The file is not available anymore.");
-        }
         Storage.BlobSourceOption precondition =
                 Storage.BlobSourceOption.generationMatch(blob.getGeneration());
         return storage.delete(bucket, filePath, precondition);
     }
 
-    private Blob getBlob(String filePath) {
+    protected byte[] getFile(String filePath) {
         Storage storage = storageManager.getStorage();
-        return storage.get(bucket, filePath);
+        Blob blob = getBlob(filePath);
+        log.info("Reading blob {}", blob);
+        // Read blob content into byte array
+        byte[] blobContent;
+        blobContent = blob.getContent();
+        return blobContent;
+    }
+
+
+    protected Blob getBlob(String filePath) {
+        Storage storage = storageManager.getStorage();
+        BlobId blobId = BlobId.of(bucket, filePath);
+        Blob blob = storage.get(blobId);
+        if (blob == null) {
+            log.error("The file at {} wasn't found in {}", filePath, bucket);
+            throw new ServerException("The file is not available anymore.");
+        }
+        return blob;
     }
 
     protected URL getSignedUrl(String folderPath) {
         Storage storage = storageManager.getStorage();
 
-        return storage.signUrl(
-                createBlob(folderPath),
-                15, TimeUnit.SECONDS,
-                Storage.SignUrlOption.withV4Signature()
-                );
+        try {
+            return storage.signUrl(
+                    createBlob(folderPath),
+                    15, TimeUnit.SECONDS,
+                    Storage.SignUrlOption.withV4Signature()
+            );
+        } catch (Exception e) {
+            log.error("Error while retriving signed url: {}", e.getMessage());
+            throw new ServerException("Error while retriving file. Please, try again later.");
+        }
+
     }
 
     private Blob createBlob(String folderPath) {

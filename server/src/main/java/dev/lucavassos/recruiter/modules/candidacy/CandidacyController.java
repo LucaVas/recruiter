@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
+import com.google.cloud.storage.Blob;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
@@ -9,6 +10,7 @@ import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyFileDt
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -105,5 +107,18 @@ public class CandidacyController {
     public ResponseEntity<URL> getCandidacyFileUrl(@PathVariable("fileId") Long fileId) {
         log.info("Received request to get URL for candidacy file with ID {}", fileId);
         return ResponseEntity.ok(service.getCandidacyFileUrl(fileId));
+    }
+
+    @GetMapping("/candidacies/files/{fileId}")
+    public ResponseEntity<byte[]> getCandidacyFile(@PathVariable("fileId") Long fileId) {
+        log.info("Received request to get candidacy file with ID {}", fileId);
+        byte[] file = service.getCandidacyFile(fileId);
+        log.info("File retrieved successfully.");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentLength(file.length);
+
+        return new ResponseEntity<>(file, headers, HttpStatus.OK);
     }
 }

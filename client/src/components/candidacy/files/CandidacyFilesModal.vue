@@ -18,7 +18,12 @@
           <div class="flex w-full justify-between">
             <span>{{ file.name }}</span>
             <div class="flex items-center gap-2">
-              <Button icon="pi pi-download" unstyled @click="$emit('download', file.id)" :loading="downloading" />
+              <Button
+                icon="pi pi-download"
+                unstyled
+                @click="$emit('download', file)"
+                :loading="downloading"
+              />
               <Button icon="pi pi-trash" unstyled @click="$emit('delete', file.id)" />
               <i
                 class="pi pi-info-circle mr-2"
@@ -48,7 +53,7 @@ const { visible, files, loading, downloading } = defineProps<{
 
 defineEmits<{
   (e: 'close'): void;
-  (e: 'download', fileId: number): void;
+  (e: 'download', file: CandidacyFile): void;
   (e: 'delete', fileId: number): void;
 }>();
 </script>

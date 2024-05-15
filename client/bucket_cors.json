@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://recruiter-client-yklq5atc4q-ew.a.run.app"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  }
+]

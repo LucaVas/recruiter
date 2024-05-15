@@ -30,7 +30,7 @@ export type CandidacyComment = {
 export type CandidacyFile = {
   id: number;
   type: number;
-  name: number;
+  name: string;
   uniqueId: string;
   createdDTime: Date;
   modifiedDTime: Date;

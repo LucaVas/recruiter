@@ -60,7 +60,7 @@
               currentCandidacyFilesModalOpen = undefined;
             }
           "
-          @download="(fileId: number) => downloadFile(fileId)"
+          @download="(file: CandidacyFile) => downloadFile(file)"
           @delete="
             (fileId: number) => {
               deleteFileModal = true;
@@ -122,14 +122,14 @@ import CandidaciesTableActionButtonsColumn from './CandidaciesTableActionButtons
 import CandidacyCandidateCard from './CandidacyCandidateCard.vue';
 import CandidacyJobCard from './CandidacyJobCard.vue';
 import CommentsModal from './CommentsModal.vue';
+import CandidacyFilesModal from '@/components/candidacy/files/CandidacyFilesModal.vue';
 import { clearFilter, filters, initFilters } from './filters';
 import { getCandidacyStatus, getCandidacyStatusSeverity } from './utils';
 import { type CandidacyComment } from '@/stores/candidacy/schema';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DeleteModal from '@/components/candidacy/DeleteModal.vue';
-import type CandidacyFilesModal from '@/components/candidacy/files/CandidacyFilesModal.vue';
-import { getCandidacyFiles, deleteFile, getFileUrl } from '@/stores/candidacy/index';
+import { getCandidacyFiles, deleteFile, getFile } from '@/stores/candidacy/index';
 
 const toast = useToast();
 
@@ -234,11 +234,17 @@ const delFile = async (fileId: number | undefined) => {
   }
 };
 
-const downloadFile = async (fileId: number) => {
+const downloadFile = async (file: CandidacyFile) => {
   downloadingFile.value = true;
   try {
-    const url = await getFileUrl(fileId);
-    await fetch(url);
+    const blobUrl = await getFile(file.id);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
     downloadingFile.value = false;
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message);
