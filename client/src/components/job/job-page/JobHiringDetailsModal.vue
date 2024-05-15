@@ -40,6 +40,7 @@ defineEmits<{
           :content="`${job.bonusPayPerCv} INR per CV paid on ${formatDate(job.cvRatePaymentDate)}`"
         />
         <JobMetadataEntry
+          v-if="job.closureBonus.toLowerCase() !== 'not applicable' && job.closureBonus !== ''"
           :icon="'pi-wallet'"
           :content="`${job.closureBonus} INR closure bonus paid on ${formatDate(job.closureBonusPaymentDate)}`"
         />
