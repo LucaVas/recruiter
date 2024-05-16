@@ -4,7 +4,9 @@ import dev.lucavassos.recruiter.auth.CustomUserDetailsService;
 import dev.lucavassos.recruiter.jwt.JwtAuthenticationFilter;
 import dev.lucavassos.recruiter.jwt.JwtAuthenticationEntryPoint;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,23 +24,34 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    CustomUserDetailsService customUserDetailsService;
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
-    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
+
+    @Value("#{'${cors.allowed-origins}'.split(',')}")
+    private final String[] allowedOrigins;
+
+    @Value("#{'${cors.allowed-methods}'.split(',')}")
+    private final String[] allowedMethods;
+
+    @Value("#{'${cors.allowed-headers}'.split(',')}")
+    private final String[] allowedHeaders;
+
+    @Value("#{'${cors.exposed-headers}'.split(',')}")
+    private final String[] exposedHeaders;
+
+    private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -48,22 +61,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder
-    ) {
-        DaoAuthenticationProvider daoAuthenticationProvider =
-                new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        return daoAuthenticationProvider;
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
                                 // allow unauthenticated requests to following endpoints
@@ -76,12 +76,29 @@ public class SecurityConfig {
                                 // all other requests should be authenticated
                                 .anyRequest().authenticated()
                 )
-                // each requests is handled as new request
+                // each request is handled as new request
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults());
-
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                // must use the custom authentication provider
+                .authenticationProvider(authenticationProvider)
+                // must be executed before the authentication middleware.
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(Arrays.stream(allowedOrigins).toList());
+        configuration.setAllowedMethods(Arrays.stream(allowedMethods).toList());
+        configuration.setAllowedHeaders(Arrays.stream(allowedHeaders).toList());
+        configuration.setExposedHeaders(Arrays.stream(exposedHeaders).toList());
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**",configuration);
+
+        return source;
     }
 }
