@@ -512,7 +512,8 @@ public class EntityInitializer {
     @Transactional
     public void createUsers() {
 
-        Set<Role> roles = new HashSet<>(roleRepository.findAll());
+        Role recruiterRole = roleRepository.findByName(RoleName.RECRUITER).orElseThrow();
+        Role adminRole = roleRepository.findByName(RoleName.ADMIN).orElseThrow();
 
         User recruiter = User.builder()
                 .name("recruiter")
@@ -522,7 +523,7 @@ public class EntityInitializer {
                 .city("Test city")
                 .country("India")
                 .approved(true)
-                .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_RECRUITER).collect(Collectors.toSet()))
+                .role(recruiterRole)
                 .build();
 
         User recruiter2 = User.builder()
@@ -532,7 +533,7 @@ public class EntityInitializer {
                 .mobile("1234567892")
                 .city("Test city 2")
                 .country("India")
-                .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_RECRUITER).collect(Collectors.toSet()))
+                .role(recruiterRole)
                 .build();
 
         User admin = User.builder()
@@ -543,7 +544,7 @@ public class EntityInitializer {
                 .city("Test city")
                 .country("India")
                 .approved(true)
-                .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_ADMIN).collect(Collectors.toSet()))
+                .role(adminRole)
                 .build();
 
         userRepository.saveAll(List.of(recruiter, recruiter2, admin));
