@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
-import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.*;
 import dev.lucavassos.recruiter.modules.candidacy.domain.*;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
@@ -30,8 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;

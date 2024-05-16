@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.candidate;
 
-import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.*;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateResponse;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;

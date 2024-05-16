@@ -1,11 +1,7 @@
-package dev.lucavassos.recruiter.auth.service;
+package dev.lucavassos.recruiter.auth;
 
 import dev.lucavassos.recruiter.auth.domain.*;
-import dev.lucavassos.recruiter.auth.UserPrincipal;
-import dev.lucavassos.recruiter.exception.BadRequestException;
-import dev.lucavassos.recruiter.exception.DatabaseException;
-import dev.lucavassos.recruiter.exception.DuplicateResourceException;
-import dev.lucavassos.recruiter.exception.ServerException;
+import dev.lucavassos.recruiter.exception.*;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
@@ -16,6 +12,8 @@ import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
     private final UserDtoMapper userDtoMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -39,6 +38,20 @@ public class AuthService {
         log.info("New user created: [{}]", createdUser);
         monitoringProcessor.incrementUsersCounter();
         return new SignupResponse(createdUser.getId());
+    }
+
+    @Transactional
+    public User authenticate(LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.email(),
+                        request.password()
+                )
+        );
+
+        return userRepository
+                .findOneByEmail(request.email())
+                .orElseThrow(() -> new UnauthorizedException("Invalid credentials."));
     }
 
     @Transactional
