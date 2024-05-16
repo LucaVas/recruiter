@@ -15,6 +15,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "api/v1/auth")
@@ -46,7 +48,9 @@ public class AuthController {
 
         User authenticatedUser = service.authenticate(request);
 
-        String jwtToken = jwtService.generateToken(authenticatedUser);
+        Map<String, Object> userClaim = new HashMap<>();
+        userClaim.put("user", new AuthUserInfoDto(authenticatedUser.getId(), authenticatedUser.getName(), authenticatedUser.getRole().getName()));
+        String jwtToken = jwtService.generateToken(userClaim, authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse(
                 new AuthUserInfoDto(authenticatedUser.getId(), authenticatedUser.getUsername(), authenticatedUser.getRole().getName()),

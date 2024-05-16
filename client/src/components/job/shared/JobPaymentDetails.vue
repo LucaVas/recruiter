@@ -56,7 +56,9 @@
         </InputGroup>
       </div>
       <div class="flex w-full flex-col gap-2">
-        <label class="text-sm" for="closureBonusPaymentDate">Candidate Joining Bonus Payment Date</label>
+        <label class="text-sm" for="closureBonusPaymentDate"
+          >Candidate Joining Bonus Payment Date</label
+        >
         <InputGroup>
           <InputGroupAddon>
             <i class="pi pi-money-bill" />

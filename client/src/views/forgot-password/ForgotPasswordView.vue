@@ -6,7 +6,7 @@ import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { type PasswordForgotRequest } from '@/stores/auth/schema';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
-import { requestNewPassword } from '@/stores/auth';
+import { requestNewPassword } from '@/stores/user';
 import { showSuccess } from '@/utils/errorUtils';
 import { showError } from '@/utils/errorUtils';
 import { sendingEmail, form } from './index';

@@ -52,7 +52,7 @@
         <UploadFilesModal
           :visible="uploadFilesModalOpen"
           :uploading="uploadingFiles"
-          @upload="files => uploadFiles(data.job.id, data.candidate.pan, files)"
+          @upload="(files) => uploadFiles(data.job.id, data.candidate.pan, files)"
           @close="uploadFilesModalOpen = false"
         />
         <CandidacyFilesModal

@@ -4,9 +4,9 @@ import type { MenuItem } from './types';
 import { ref } from 'vue';
 import NavbarButtons from '@/components/navbar/NavbarButtons.vue';
 
-const { menuItems, username } = defineProps<{
+const { menuItems, name } = defineProps<{
   menuItems: MenuItem[];
-  username: string;
+  name: string;
 }>();
 const menuVisible = ref(false);
 </script>
@@ -25,7 +25,7 @@ const menuVisible = ref(false);
       @closeMenu="menuVisible = false"
       :visible="menuVisible"
       :menuItems="menuItems"
-      :username="username"
+      :name="name"
     />
 
     <main class="flex flex-1 items-start justify-center overflow-auto p-5 pt-24 md:pt-5">

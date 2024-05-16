@@ -111,4 +111,3 @@ const details = ref(candidacy);
     </div>
   </div>
 </template>
-../../stores/candidacy/schema

@@ -1,7 +1,9 @@
+import type { RoleName } from '../user/schema';
+
 export type AuthUserInfoDto = {
   id: number;
   name: string;
-  roleName: string;
+  roleName: RoleName;
 };
 
 // request

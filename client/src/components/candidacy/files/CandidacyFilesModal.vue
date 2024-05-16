@@ -10,7 +10,7 @@
     <div v-if="loading" class="flex w-full items-center justify-center">
       <ProgressSpinner />
     </div>
-    <div v-else class="flex flex-col gap-4 max-h-42 overflow-y-auto">
+    <div v-else class="max-h-42 flex flex-col gap-4 overflow-y-auto">
       <div v-if="files.length === 0">No files available.</div>
       <div v-else>
         <div v-for="file in files" :key="file.id" class="flex w-full items-center border-b py-4">

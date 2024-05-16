@@ -4,6 +4,7 @@ import type { RoleName } from '@/stores/user/schema';
 const TOKEN_KEY = 'token';
 
 export function getAuthUserFromToken(token: string): AuthUserInfoDto {
+  console.log(JSON.parse(atob(token.split('.')[1])).user);
   return JSON.parse(atob(token.split('.')[1])).user;
 }
 

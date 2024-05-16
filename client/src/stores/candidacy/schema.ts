@@ -47,7 +47,6 @@ export type UploadCandidacyFilesRequest = {
   files: File[];
 };
 
-
 // frontend types
 export type RawCandidacy = Omit<
   Candidacy,

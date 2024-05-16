@@ -6,7 +6,7 @@ import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import type { NewPasswordRequest } from '@/stores/auth/schema';
-import { resetPassword } from '@/stores/auth/index';
+import { resetPassword } from '@/stores/user';
 import { useRoute } from 'vue-router';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { resettingPassword, passwordReset, form } from './index';

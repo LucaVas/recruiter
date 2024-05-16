@@ -17,7 +17,6 @@ const app = createApp(App);
 app.directive('ripple', Ripple);
 app.directive('tooltip', Tooltip);
 
-
 app.use(router).use(ToastService).use(PrimeVue);
 
 app.mount('#app');

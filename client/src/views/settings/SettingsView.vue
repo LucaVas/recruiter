@@ -22,7 +22,7 @@
 import Divider from 'primevue/divider';
 import ProgressSpinner from 'primevue/progressspinner';
 import { onMounted } from 'vue';
-import { getProfileInformation, updateProfileInformation } from '@/stores/auth/index';
+import { getProfileInformation, updateProfileInformation } from '@/stores/user';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import SettingsHeader from '@/components/settings/SettingsHeader.vue';

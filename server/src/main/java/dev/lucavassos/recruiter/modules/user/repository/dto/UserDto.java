@@ -8,7 +8,7 @@ public record UserDto(
         Long id,
         String name,
         String email,
-        String mobile,
+        String phone,
         String city,
         String country,
         Role role,
