@@ -27,10 +27,10 @@ public class Role {
     private String description;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(updatable = false, name = "created_dtime")
+    private LocalDateTime createdDTime;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_dtime")
+    private LocalDateTime modifiedDTime;
 }

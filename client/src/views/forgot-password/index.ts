@@ -5,5 +5,5 @@ export const sendingEmail = ref(false);
 
 export const form = ref<PasswordForgotRequest>({
   email: '',
-  username: '',
+  name: '',
 });

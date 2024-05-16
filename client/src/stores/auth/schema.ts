@@ -1,23 +1,23 @@
 export type AuthUserInfoDto = {
   id: number;
-  username: string;
+  name: string;
   roleName: string;
 };
 
 // request
-export type LoginRequest = { usernameOrEmail: string; password: string };
+export type LoginRequest = { email: string; password: string };
 export type SignupRequest = {
-  username: string;
+  name: string;
   email: string;
   password: string;
-  mobile: string;
+  phone: string;
   city: string;
   country: string;
   roleName: string;
   comments: string;
 };
-export type UserInfoUpdateRequest = Pick<SignupRequest, 'email' | 'mobile' | 'city'>;
-export type PasswordForgotRequest = Pick<SignupRequest, 'email' | 'username'>;
+export type UserInfoUpdateRequest = Pick<SignupRequest, 'email' | 'phone' | 'city'>;
+export type PasswordForgotRequest = Pick<SignupRequest, 'email' | 'name'>;
 export type NewPasswordRequest = Pick<SignupRequest, 'password'>;
 
 // response

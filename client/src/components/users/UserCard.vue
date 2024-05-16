@@ -2,9 +2,9 @@
   <div>
     <div class="flex items-center justify-between">
       <div class="flex items-center">
-        <Avatar icon="pi pi-user" :name="user.username" />
+        <Avatar icon="pi pi-user" :name="user.name" />
         <div class="ml-2">
-          <div class="text-lg font-semibold">{{ user.username }}</div>
+          <div class="text-lg font-semibold">{{ user.name }}</div>
           <div class="text-sm text-gray-500">{{ user.email }}</div>
         </div>
       </div>

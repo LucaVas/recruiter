@@ -7,7 +7,7 @@
       shape="circle"
     />
     <div class="flex w-full flex-row items-center justify-center md:justify-start">
-      <div class="text-2xl font-bold">{{ user.username }}</div>
+      <div class="text-2xl font-bold">{{ user.name }}</div>
       <Divider layout="vertical" />
       <Tag
         :value="user.approved ? 'Approved' : 'Not Approved'"

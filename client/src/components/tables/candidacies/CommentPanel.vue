@@ -3,7 +3,7 @@
     <Panel>
       <template #header>
         <div class="align-center flex gap-2">
-          <span class="font-bold">{{ comment.author.username }}</span>
+          <span class="font-bold">{{ comment.author.name }}</span>
         </div>
       </template>
       <template #footer>

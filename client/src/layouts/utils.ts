@@ -5,7 +5,7 @@ export function getMenuItems(isAdmin: boolean, items: MenuItem[]) {
     .map((group) => ({
       ...group,
       links: group.links.filter((link) =>
-        link.privileges.includes(isAdmin ? 'ROLE_ADMIN' : 'ROLE_RECRUITER')
+        link.privileges.includes(isAdmin ? 'ADMIN' : 'RECRUITER')
       ),
     }))
     .filter((group) => group.links.length > 0);

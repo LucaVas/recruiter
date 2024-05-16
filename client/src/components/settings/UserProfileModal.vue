@@ -30,10 +30,10 @@
           <i class="pi pi-phone"></i>
         </InputGroupAddon>
         <InputMask
-          id="mobile"
-          v-model="userForm.mobile"
+          id="phone"
+          v-model="userForm.phone"
           mask="(999) 999-9999"
-          placeholder="Mobile Number"
+          placeholder="Mobile Phone"
           class="md:w-14rem w-full"
           required
           :unmask="true"
@@ -78,7 +78,7 @@ defineEmits<{
 
 const userForm = ref({
   email: user ? user.email : '',
-  mobile: user ? user.mobile : '',
+  phone: user ? user.phone : '',
   city: user ? user.city : '',
 });
 </script>
