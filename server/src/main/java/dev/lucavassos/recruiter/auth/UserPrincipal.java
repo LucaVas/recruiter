@@ -38,7 +38,7 @@ public class UserPrincipal implements UserDetails {
     public boolean isAdmin() {
         return this.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .findFirst().map(RoleName::valueOf).stream().anyMatch(role -> role.equals(RoleName.ROLE_ADMIN));
+                .findFirst().map(RoleName::valueOf).stream().anyMatch(role -> role.equals(RoleName.ADMIN));
     }
 
     public RoleName getRoleName() {

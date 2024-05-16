@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.user.entities;
 
-import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import jakarta.persistence.*;
@@ -59,11 +58,9 @@ public class User implements UserDetails {
     @Column
     private String comment;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    private Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private PasswordResetToken passwordResetToken;
@@ -90,18 +87,11 @@ public class User implements UserDetails {
     private LocalDateTime modifiedDTime;
 
     public RoleName getRoleName() {
-        return this.getRoles().stream()
-                .findFirst()
-                .map(Role::getName)
-                .orElseThrow(
-                        () -> new UnauthorizedException("No role assigned to user.")
-                );
+        return this.role.getName();
     }
 
     public boolean isAdmin() {
-        return this.getRoles().stream()
-                .findFirst()
-                .map(Role::getName).stream().anyMatch(role -> role.equals(RoleName.ROLE_ADMIN));
+        return this.role.getName().equals(RoleName.ADMIN);
     }
 
     @Override
