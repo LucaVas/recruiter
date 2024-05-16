@@ -64,7 +64,7 @@ public class User implements UserDetails {
     @Getter @Setter
     private String comment;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     @Getter @Setter
     private Role role;
