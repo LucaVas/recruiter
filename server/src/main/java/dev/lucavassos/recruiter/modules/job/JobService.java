@@ -300,7 +300,7 @@ public class JobService {
     private User getAuthUser() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
         return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
                     log.error("User with id {} not found", userPrincipal.getId());
@@ -310,7 +310,7 @@ public class JobService {
     }
 
     private boolean isUserAuthorized(User recruiter, Job job) {
-        return recruiter.getRoleName() == RoleName.ROLE_ADMIN ||
+        return recruiter.getRoleName() == RoleName.ADMIN ||
                 job.getRecruiter().getId().equals(recruiter.getId());
     }
 

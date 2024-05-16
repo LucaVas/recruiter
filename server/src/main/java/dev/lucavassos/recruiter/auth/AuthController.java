@@ -53,7 +53,7 @@ public class AuthController {
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse(
-                new AuthUserInfoDto(authenticatedUser.getId(), authenticatedUser.getEmail(), authenticatedUser.getRole().getName()),
+                new AuthUserInfoDto(authenticatedUser.getId(), authenticatedUser.getUsername(), authenticatedUser.getRole().getName()),
                 jwtToken,
                 "Bearer");
 
@@ -62,20 +62,5 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, jwtToken)
                 .body(loginResponse);
-    }
-
-    @GetMapping("/profile")
-    public ResponseEntity<UserDto> getAuthUserProfile() {
-        log.info("Received request for auth user profile.");
-        return ResponseEntity.ok(service.getAuthUserProfile());
-    }
-
-    @PutMapping("/profile/update")
-    public ResponseEntity<?> updateAuthUserProfile(
-            @Valid @RequestBody UpdateProfileRequest request
-    ) {
-        log.info("Received request to update auth user profile.");
-        service.updateAuthUserProfile(request);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

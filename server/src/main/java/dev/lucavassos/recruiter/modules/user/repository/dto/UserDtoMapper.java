@@ -13,7 +13,7 @@ public class UserDtoMapper implements Function<User, UserDto> {
         return new UserDto(
                 user.getId(),
                 user.getName(),
-                user.getEmail(),
+                user.getUsername(),
                 user.getPhone(),
                 user.getCity(),
                 user.getCountry(),

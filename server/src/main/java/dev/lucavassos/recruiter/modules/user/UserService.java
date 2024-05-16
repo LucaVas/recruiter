@@ -1,9 +1,11 @@
 package dev.lucavassos.recruiter.modules.user;
 
+import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
+import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.entities.PasswordResetToken;
-import dev.lucavassos.recruiter.modules.user.generator.PasswordResetTokenGenerator;
 import dev.lucavassos.recruiter.modules.user.repository.PasswordResetTokenRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.entities.User;
@@ -35,7 +37,7 @@ public class UserService  {
 
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenGenerator resetTokenGenerator;
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
     private final EmailService emailService;
@@ -44,9 +46,9 @@ public class UserService  {
 
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
 
-        User user = repository
+        User user = userRepository
                 .findOneById(request.userId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -54,7 +56,7 @@ public class UserService  {
                         )
                 );
 
-        User approver = repository
+        User approver = userRepository
                 .findOneById(userPrincipal.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -70,14 +72,14 @@ public class UserService  {
 
         log.info("User to approve: {} on {}", user.getComment(), user.getApprovedDTime());
 
-        User approvedUser = repository.save(user);
+        User approvedUser = userRepository.save(user);
 
         log.info("User approved: {}", approvedUser );
     }
 
     public List<UserDto> getAllUsers() {
         log.info("Request received for all users");
-        List<User> users = repository.findAll();
+        List<User> users = userRepository.findAll();
         User user = getAuthUser();
 
         return users
@@ -89,7 +91,7 @@ public class UserService  {
     }
 
     public void sendResetPasswordEmail(PasswordForgotRequest request) throws BadRequestException, MessagingException {
-        User userByEmail = repository
+        User userByEmail = userRepository
                 .findOneByEmail(request.email())
                 .orElseThrow(() -> {
                     String message = String.format("User with email %s not found", request.email());
@@ -98,8 +100,8 @@ public class UserService  {
                 }
                 );
 
-        User userByUsername = repository
-                .findOneByUsername(request.username())
+        User userByName = userRepository
+                .findOneByName(request.username())
                 .orElseThrow(() -> {
                             String message = String.format("User with name %s not found", request.username());
                             log.error(message);
@@ -107,30 +109,30 @@ public class UserService  {
                         }
                 );
 
-        if (!userByEmail.getName().equals(userByUsername.getName())) {
+        if (!userByEmail.getName().equals(userByName.getName())) {
             String message = String.format("Username of user with email %s (%s) does not match name provided %s",
-                    userByEmail.getEmail(),
+                    userByEmail.getUsername(),
                     userByEmail.getName(),
                     request.username());
             log.error(message);
             throw new BadRequestException("Incorrect. Please try again.");
         }
 
-        if (userByUsername.getPasswordResetToken() != null) {
-            log.debug("Token for user [{}] already exists", userByUsername.getName());
-            deleteTokenForUser(userByUsername);
+        if (userByName.getPasswordResetToken() != null) {
+            log.debug("Token for user [{}] already exists", userByName.getName());
+            deleteTokenForUser(userByName);
         }
 
         PasswordResetToken token = PasswordResetToken.builder()
                 .tokenString(resetTokenGenerator.generateNewToken())
-                .user(userByUsername)
+                .user(userByName)
                 .build();
 
         tokenRepository.save(token);
 
-        log.info("Sending email to [{}]", userByUsername.getEmail());
-        emailService.sendEmail(userByUsername.getEmail(),
-                userByUsername.getName(),
+        log.info("Sending email to [{}]", userByName.getUsername());
+        emailService.sendEmail(userByName.getUsername(),
+                userByName.getName(),
                 token.getTokenString(),
                 expirationInSeconds / 60);
     }
@@ -162,15 +164,64 @@ public class UserService  {
 
         User updatedUser = token.getUser();
         updatedUser.setPassword(passwordEncoder.encode(request.password()));
-        repository.save(updatedUser);
+        userRepository.save(updatedUser);
         tokenRepository.delete(token);
+    }
+
+    public UserDto getAuthUserProfile() {
+        User user = getAuthUser();
+        return userRepository.findOneById(user.getId())
+                .map(userDtoMapper)
+                .orElseThrow(() -> new ServerException("Auth user not found."));
+    }
+
+    public void updateAuthUserProfile(UpdateProfileRequest request) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        User userPrincipal = (User) authentication.getPrincipal();
+
+        User user = userRepository.findOneById(userPrincipal.getId())
+                .orElseThrow(() -> new ServerException("Auth user not found."));
+
+        if (request.email().equals(user.getUsername())
+                && request.mobile().equals(user.getPhone())
+                && request.city().equals(user.getCity())) {
+            return;
+        }
+
+        if (!request.email().equals(user.getUsername())) {
+
+            if (userRepository.existsUserByEmail(request.email())) throw new DuplicateResourceException(
+                    "User with email %s already exists.".formatted(request.email())
+            );
+
+            user.setEmail(request.email());
+        }
+        if (!request.mobile().equals(user.getPhone())) {
+            if (userRepository.existsUserByPhone(request.mobile())) throw new DuplicateResourceException(
+                    "User with phone %s already exists.".formatted(request.mobile())
+            );
+
+            user.setPhone(request.mobile());
+        }
+
+        // set new city
+        if (!request.city().equals(user.getCity())) {
+            user.setCity(request.city());
+        }
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new ServerException("Error updating user profile.");
+        }
     }
 
     private User getAuthUser() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        return repository.findOneById(userPrincipal.getId()).orElseThrow(
+        User userPrincipal = (User) authentication.getPrincipal();
+        return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
                     log.error("User with id {} not found", userPrincipal.getId());
                     return new ResourceNotFoundException("User not found");

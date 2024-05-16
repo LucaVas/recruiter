@@ -7,15 +7,12 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,12 +58,12 @@ public class AuthService {
                     "User with email %s already exists.".formatted(request.email())
             );
         }
-        if (userRepository.existsUserByMobile(request.phone())) {
+        if (userRepository.existsUserByPhone(request.phone())) {
             throw new DuplicateResourceException(
                     "User with phone %s already exists.".formatted(request.phone())
             );
         }
-        if (userRepository.existsUserByUsername(request.name())) {
+        if (userRepository.existsUserByName(request.name())) {
             throw new DuplicateResourceException(
                     "User with name %s already exists.".formatted(request.name())
             );
@@ -97,57 +94,5 @@ public class AuthService {
                 .country(request.country())
                 .role(userRole)
                 .build();
-    }
-
-    public UserDto getAuthUserProfile() {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
-        return userRepository.findOneById(userPrincipal.getId())
-                .map(userDtoMapper)
-                .orElseThrow(() -> new ServerException("Auth user not found."));
-    }
-
-    public void updateAuthUserProfile(UpdateProfileRequest request) {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
-        User user = userRepository.findOneById(userPrincipal.getId())
-                .orElseThrow(() -> new ServerException("Auth user not found."));
-
-        if (request.email().equals(user.getEmail())
-                && request.mobile().equals(user.getPhone())
-                && request.city().equals(user.getCity())) {
-            return;
-        }
-
-        if (!request.email().equals(user.getEmail())) {
-
-            if (userRepository.existsUserByEmail(request.email())) throw new DuplicateResourceException(
-                    "User with email %s already exists.".formatted(request.email())
-            );
-
-            user.setEmail(request.email());
-        }
-        if (!request.mobile().equals(user.getPhone())) {
-            if (userRepository.existsUserByMobile(request.mobile())) throw new DuplicateResourceException(
-                    "User with phone %s already exists.".formatted(request.mobile())
-            );
-
-            user.setPhone(request.mobile());
-        }
-
-        // set new city
-        if (!request.city().equals(user.getCity())) {
-            user.setCity(request.city());
-        }
-
-        try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            throw new ServerException("Error updating user profile.");
-        }
     }
 }

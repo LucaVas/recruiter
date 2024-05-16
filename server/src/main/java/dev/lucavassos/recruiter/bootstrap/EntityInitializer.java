@@ -298,8 +298,8 @@ public class EntityInitializer {
     public void saveJobs() {
         Set<Client> clients = new HashSet<>(clientRepository.findAll());
         Set<Skill> skills = new HashSet<>(skillRepository.findAll());
-        User recruiter = userRepository.findOneByUsername("recruiter").orElseThrow(RuntimeException::new);
-        User recruiter2 = userRepository.findOneByUsername("recruiter2").orElseThrow(RuntimeException::new);
+        User recruiter = userRepository.findOneByName("recruiter").orElseThrow(RuntimeException::new);
+        User recruiter2 = userRepository.findOneByName("recruiter2").orElseThrow(RuntimeException::new);
 
         Job job1 = Job.builder()
                 .client(clients.stream().filter(client -> client.getName().equals("Accenture")).findFirst().orElseThrow(RuntimeException::new))
@@ -457,8 +457,8 @@ public class EntityInitializer {
 
     @Transactional
     public void saveCandidates() {
-        User recruiter = userRepository.findOneByUsername("recruiter").orElseThrow(RuntimeException::new);
-        User recruiter2 = userRepository.findOneByUsername("recruiter2").orElseThrow(RuntimeException::new);
+        User recruiter = userRepository.findOneByName("recruiter").orElseThrow(RuntimeException::new);
+        User recruiter2 = userRepository.findOneByName("recruiter2").orElseThrow(RuntimeException::new);
 
         Set<Candidate> candidates = new HashSet<>(List.of(
                 Candidate.builder()

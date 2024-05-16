@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.modules.user.generator;
+package dev.lucavassos.recruiter.modules.user;
 
 import org.springframework.stereotype.Service;
 
