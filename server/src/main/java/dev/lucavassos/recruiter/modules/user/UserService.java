@@ -102,14 +102,14 @@ public class UserService  {
         User userByUsername = repository
                 .findOneByUsername(request.username())
                 .orElseThrow(() -> {
-                            String message = String.format("User with username %s not found", request.username());
+                            String message = String.format("User with name %s not found", request.username());
                             log.error(message);
                             return new ResourceNotFoundException(message);
                         }
                 );
 
         if (!userByEmail.getName().equals(userByUsername.getName())) {
-            String message = String.format("Username of user with email %s (%s) does not match username provided %s",
+            String message = String.format("Username of user with email %s (%s) does not match name provided %s",
                     userByEmail.getEmail(),
                     userByEmail.getName(),
                     request.username());

@@ -10,7 +10,7 @@ public record PasswordForgotRequest(
         String email,
 
         @NotBlank(message = "Username cannot be empty")
-        @Pattern(regexp = "^[a-zA-Z0-9_\\-.]+$", message = "Invalid username. It can contain only letters, numbers, underscores, hyphens and dots")
+        @Pattern(regexp = "^[a-zA-Z0-9_\\-.]+$", message = "Invalid name. It can contain only letters, numbers, underscores, hyphens and dots")
         String username
 ) {
 }

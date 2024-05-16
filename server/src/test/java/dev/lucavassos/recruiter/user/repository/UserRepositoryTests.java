@@ -40,7 +40,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(encoder.encode("Password123"))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -60,7 +60,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email("user@mail.com")
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -69,7 +69,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email("user@mail.com")
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -88,7 +88,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("0000000000")
+                .phone("0000000000")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -97,7 +97,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("0000000000")
+                .phone("0000000000")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -116,7 +116,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("")
+                .phone("")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -125,7 +125,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("12345678901")
+                .phone("12345678901")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -146,7 +146,7 @@ public class UserRepositoryTests {
                 .name("")
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -155,7 +155,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(51, 100))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -177,7 +177,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email("mail.com")
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -194,7 +194,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomLowerCaseString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -203,7 +203,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(1, 7))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -212,7 +212,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(65, 100))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -237,7 +237,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city("")
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -246,7 +246,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(51, 100))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -267,7 +267,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country("")
                 .build();
@@ -276,7 +276,7 @@ public class UserRepositoryTests {
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(51, 100))
                 .build();

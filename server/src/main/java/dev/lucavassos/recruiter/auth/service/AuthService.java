@@ -2,6 +2,8 @@ package dev.lucavassos.recruiter.auth.service;
 
 import dev.lucavassos.recruiter.auth.domain.*;
 import dev.lucavassos.recruiter.auth.UserPrincipal;
+import dev.lucavassos.recruiter.exception.BadRequestException;
+import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
@@ -20,8 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -33,57 +33,57 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final MonitoringProcessor monitoringProcessor;
 
+    public SignupResponse register(SignupRequest request) {
+        validateUserExistence(request);
+        User createdUser = createUser(buildUser(request));
+        log.info("New user created: [{}]", createdUser);
+        monitoringProcessor.incrementUsersCounter();
+        return new SignupResponse(createdUser.getId());
+    }
+
     @Transactional
-    public SignupResponse signup(SignupRequest request) {
-        log.info("Initiated signup process in service...{}", request);
+    private void validateUserExistence(SignupRequest request) {
         if (userRepository.existsUserByEmail(request.email())) {
             throw new DuplicateResourceException(
                     "User with email %s already exists.".formatted(request.email())
             );
         }
-        if (userRepository.existsUserByMobile(request.mobile())) {
+        if (userRepository.existsUserByMobile(request.phone())) {
             throw new DuplicateResourceException(
-                    "User with mobile %s already exists.".formatted(request.mobile())
+                    "User with phone %s already exists.".formatted(request.phone())
             );
         }
-        if (userRepository.existsUserByUsername(request.username())) {
+        if (userRepository.existsUserByUsername(request.name())) {
             throw new DuplicateResourceException(
-                    "User with username %s already exists.".formatted(request.username())
+                    "User with name %s already exists.".formatted(request.name())
             );
         }
-
-        User user = User.builder()
-                .name(request.username())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .mobile(request.mobile())
-                .city(request.city())
-                .country(request.country())
-                .build();
-
-        log.info("Role: {}", request.roleName());
-        Role userRole = roleRepository.findByName(RoleName.valueOf(request.roleName()))
-                .orElseThrow(() -> new ServerException("The user role provided is invalid."));
-
-        user.setRoles(Collections.singleton(userRole));
-
-        User userSaved = userRepository.save(user);
-
-        log.info("New user created: [{}]", userSaved);
-        monitoringProcessor.incrementUsersCounter();
-
-        return new SignupResponse(user.getId());
     }
 
-    public AuthUserInfoDto getAuthUser() {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+    @Transactional
+    private User createUser(User user) {
+        try {
+            return userRepository.save(user);
+        } catch (Exception e) {
+            log.error("Error creating user: [{}]", user, e);
+            throw new DatabaseException("Error while creating user.");
+        }
+    }
 
-        return new AuthUserInfoDto(
-                userPrincipal.getId(),
-                userPrincipal.getUsername(),
-                userPrincipal.getRoleName());
+    @Transactional
+    private User buildUser(SignupRequest request) {
+        Role userRole = roleRepository.findByName(RoleName.valueOf(request.roleName()))
+                .orElseThrow(() -> new BadRequestException("The user role provided is invalid."));
+
+        return User.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .phone(request.phone())
+                .city(request.city())
+                .country(request.country())
+                .role(userRole)
+                .build();
     }
 
     public UserDto getAuthUserProfile() {
@@ -105,7 +105,7 @@ public class AuthService {
                 .orElseThrow(() -> new ServerException("Auth user not found."));
 
         if (request.email().equals(user.getEmail())
-                && request.mobile().equals(user.getMobile())
+                && request.mobile().equals(user.getPhone())
                 && request.city().equals(user.getCity())) {
             return;
         }
@@ -118,12 +118,12 @@ public class AuthService {
 
             user.setEmail(request.email());
         }
-        if (!request.mobile().equals(user.getMobile())) {
+        if (!request.mobile().equals(user.getPhone())) {
             if (userRepository.existsUserByMobile(request.mobile())) throw new DuplicateResourceException(
-                    "User with mobile %s already exists.".formatted(request.mobile())
+                    "User with phone %s already exists.".formatted(request.mobile())
             );
 
-            user.setMobile(request.mobile());
+            user.setPhone(request.mobile());
         }
 
         // set new city

@@ -44,8 +44,8 @@ public class User implements UserDetails {
     private String password;
 
     @Column(nullable = false, unique = true)
-    @Size(min = 5, max = 10, message = "Mobile number must be between 5 and 10 characters long")
-    private String mobile;
+    @Size(min = 5, max = 10, message = "Phone number must be between 5 and 10 characters long")
+    private String phone;
 
     @Column(nullable = false)
     @Size(min = 3, max = 50, message = "City name must be between 3 and 50 characters long")
