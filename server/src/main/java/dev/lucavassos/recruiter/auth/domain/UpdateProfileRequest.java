@@ -6,13 +6,13 @@ import jakarta.validation.constraints.Pattern;
 
 public record UpdateProfileRequest(
 
-        @NotBlank(message = "Username or email cannot be empty")
+        @NotBlank(message = "Email cannot be empty")
         @Email(message = "Invalid email")
         String email,
 
-        @NotBlank(message = "Mobile cannot be empty")
-        @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must have 10 digits.")
-        String mobile,
+        @NotBlank(message = "Phone cannot be empty")
+        @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must have 10 digits.")
+        String phone,
 
         @NotBlank(message = "City cannot be empty")
         String city

@@ -101,9 +101,9 @@ public class UserService  {
                 );
 
         User userByName = userRepository
-                .findOneByName(request.username())
+                .findOneByName(request.name())
                 .orElseThrow(() -> {
-                            String message = String.format("User with name %s not found", request.username());
+                            String message = String.format("User with name %s not found", request.name());
                             log.error(message);
                             return new ResourceNotFoundException(message);
                         }
@@ -113,7 +113,7 @@ public class UserService  {
             String message = String.format("Username of user with email %s (%s) does not match name provided %s",
                     userByEmail.getUsername(),
                     userByEmail.getName(),
-                    request.username());
+                    request.name());
             log.error(message);
             throw new BadRequestException("Incorrect. Please try again.");
         }
@@ -184,7 +184,7 @@ public class UserService  {
                 .orElseThrow(() -> new ServerException("Auth user not found."));
 
         if (request.email().equals(user.getUsername())
-                && request.mobile().equals(user.getPhone())
+                && request.phone().equals(user.getPhone())
                 && request.city().equals(user.getCity())) {
             return;
         }
@@ -197,12 +197,12 @@ public class UserService  {
 
             user.setEmail(request.email());
         }
-        if (!request.mobile().equals(user.getPhone())) {
-            if (userRepository.existsUserByPhone(request.mobile())) throw new DuplicateResourceException(
-                    "User with phone %s already exists.".formatted(request.mobile())
+        if (!request.phone().equals(user.getPhone())) {
+            if (userRepository.existsUserByPhone(request.phone())) throw new DuplicateResourceException(
+                    "User with phone %s already exists.".formatted(request.phone())
             );
 
-            user.setPhone(request.mobile());
+            user.setPhone(request.phone());
         }
 
         // set new city

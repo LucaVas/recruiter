@@ -4,7 +4,7 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 
 public record AuthUserInfoDto(
         Long id,
-        String username,
+        String name,
         RoleName roleName
 ) {
 }

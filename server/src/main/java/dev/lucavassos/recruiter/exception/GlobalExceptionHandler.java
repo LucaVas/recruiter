@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         e.printStackTrace();
         ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
         errorDetail.setType(URI.create("https://www.rfc-editor.org/rfc/rfc9110.html#name-401-unauthorized"));
-        errorDetail.setProperty("description", "The username or password is incorrect");
+        errorDetail.setProperty("description", "The name or password is incorrect");
 
         return errorDetail;
     }

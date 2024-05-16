@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 
 public record SignupRequest(
 
-        @NotBlank(message = "Username cannot be empty")
+        @NotBlank(message = "Name cannot be empty")
         @Pattern(regexp = "^[a-zA-Z0-9_\\-.]+$", message = "Invalid name. It can contain only letters, numbers, underscores, hyphens and dots")
         String name,
 
