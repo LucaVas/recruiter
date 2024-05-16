@@ -53,13 +53,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/users/profile")
     public ResponseEntity<UserDto> getAuthUserProfile() {
         log.info("Received request for auth user profile.");
         return ResponseEntity.ok(service.getAuthUserProfile());
     }
 
-    @PutMapping("/profile/update")
+    @PutMapping("/users/profile/update")
     public ResponseEntity<?> updateAuthUserProfile(
             @Valid @RequestBody UpdateProfileRequest request
     ) {

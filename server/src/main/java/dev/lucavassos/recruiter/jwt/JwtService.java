@@ -63,7 +63,7 @@ public class JwtService {
     ) {
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
+                .addClaims(extraClaims)
                 .setSubject(userDetails.getUsername()) // actually email
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
