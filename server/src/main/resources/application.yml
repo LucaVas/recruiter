@@ -80,4 +80,4 @@ cors:
 
 jwt:
     jwtSecret: ${JWT_SECRET}
-    jwtExpirationInMs: 3000 #${JWT_EXPIRATION_MS}
+    jwtExpirationInMs: ${JWT_EXPIRATION_MS}

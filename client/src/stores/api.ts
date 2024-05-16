@@ -2,6 +2,7 @@ import { apiBase } from '@/config';
 import { getStoredAccessToken } from '@/utils/auth';
 import { ApiError } from '@/utils/types';
 import axios, { type RawAxiosRequestHeaders } from 'axios';
+import { logout } from './auth';
 
 export default () => {
   let headers: RawAxiosRequestHeaders = {
@@ -32,7 +33,6 @@ export default () => {
       return request;
     },
     (error) => {
-      console.log('Error in API request', error);
       if (axios.isAxiosError(error)) {
         const title = error.response?.data.title;
         const message = error.response?.data.description;
@@ -48,11 +48,17 @@ export default () => {
       return response;
     },
     (error) => {
-      console.log('Error in API response', error);
       if (axios.isAxiosError(error)) {
         const title = error.response?.data.title;
         const message = error.response?.data.description;
         const statusCode = error.response?.status;
+
+        if (message.includes("JWT token")) {
+          logout();
+          window.location.reload();
+          return
+        }
+
         throw new ApiError(message, statusCode, title);
       } else if (error.response && error.response.data) {
         throw new ApiError(error.response.data, error.response.statusCode);
