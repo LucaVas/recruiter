@@ -18,6 +18,7 @@ import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -110,7 +111,7 @@ public class CandidateService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidate)) {
             LOG.error("User with id {} is not authorized to modify this candidate", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to modify this candidate");
+            throw new AccessDeniedException("Recruiter is unauthorized to modify this candidate");
         }
 
         if (request.name() != null && !request.name().equals(candidate.getName())) {

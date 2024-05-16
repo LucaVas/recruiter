@@ -22,6 +22,7 @@ import dev.lucavassos.recruiter.service.storage.ResumeHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -167,7 +168,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to modify this candidacy", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to modify this candidacy");
+            throw new AccessDeniedException("Recruiter is unauthorized to modify this candidacy");
         }
 
         if (request.relevantExperience() != null && request.relevantExperience() != candidacy.getRelevantExperience()) {
@@ -218,7 +219,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to add comments to this candidacy", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to add comments to this candidacy");
+            throw new AccessDeniedException("Recruiter is unauthorized to add comments to this candidacy");
         }
 
         try {
@@ -272,7 +273,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to delete this file", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to delete this file");
+            throw new AccessDeniedException("Recruiter is unauthorized to delete this file");
         }
 
         try {
@@ -305,7 +306,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to get this file", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to get this file");
+            throw new AccessDeniedException("Recruiter is unauthorized to get this file");
         }
 
         return resumeHandler.getResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
@@ -319,7 +320,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to delete this candidacy", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to delete this candidacy");
+            throw new AccessDeniedException("Recruiter is unauthorized to delete this candidacy");
         }
 
         try {
@@ -337,7 +338,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to upload fles to this candidacy", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to upload files to this candidacy");
+            throw new AccessDeniedException("Recruiter is unauthorized to upload files to this candidacy");
         }
 
         if (files == null || files.isEmpty()) {

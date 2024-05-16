@@ -11,6 +11,7 @@ import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +49,7 @@ public class AuthService {
 
         return userRepository
                 .findOneByEmail(request.email())
-                .orElseThrow(() -> new UnauthorizedException("Invalid credentials."));
+                .orElseThrow(() -> new AccessDeniedException("Invalid credentials."));
     }
 
     @Transactional
