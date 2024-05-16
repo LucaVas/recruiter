@@ -4,7 +4,7 @@ import dev.lucavassos.recruiter.auth.*;
 import dev.lucavassos.recruiter.auth.domain.*;
 import dev.lucavassos.recruiter.auth.service.AuthService;
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
-import dev.lucavassos.recruiter.jwt.JwtTokenProvider;
+import dev.lucavassos.recruiter.jwt.JwtService;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
@@ -32,7 +32,7 @@ public class AuthController {
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final JwtTokenProvider tokenProvider;
+    private final JwtService tokenProvider;
     private final MonitoringProcessor monitoringProcessor;
     private final AuthService service;
 
