@@ -19,9 +19,9 @@ import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import dev.lucavassos.recruiter.service.storage.ResumeHandler;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -35,37 +35,27 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CandidacyService {
 
-    @Autowired
-    private CandidateRepository candidateRepository;
-    @Autowired
-    private CandidacyFileRepository candidacyFileRepository;
-    @Autowired
-    private CandidacyFileDtoMapper candidacyFileDtoMapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JobRepository jobRepository;
-    @Autowired
-    private CandidacyRepository candidacyRepository;
-    @Autowired
-    private CandidacyDtoMapper candidacyDtoMapper;
-    @Autowired
-    private CandidacyCommentRepository candidacyCommentRepository;
-    @Autowired
-    private CandidacyCommentDtoMapper candidacyCommentDtoMapper;
-    @Autowired
-    MonitoringProcessor monitoringProcessor;
-    @Autowired
-    ResumeHandler resumeHandler;
+    private final CandidateRepository candidateRepository;
+    private final CandidacyFileRepository candidacyFileRepository;
+    private final CandidacyFileDtoMapper candidacyFileDtoMapper;
+    private final UserRepository userRepository;
+    private final JobRepository jobRepository;
+    private final CandidacyRepository candidacyRepository;
+    private final CandidacyDtoMapper candidacyDtoMapper;
+    private final CandidacyCommentRepository candidacyCommentRepository;
+    private final CandidacyCommentDtoMapper candidacyCommentDtoMapper;
+    private final MonitoringProcessor monitoringProcessor;
+    private final ResumeHandler resumeHandler;
 
     @Transactional
     public void addCandidacy(NewCandidacyRequest candidacy) {
 
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
 
 
         // find recruiter
@@ -404,7 +394,7 @@ public class CandidacyService {
     private User getAuthUser() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
         return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
                     log.error("User with id {} not found", userPrincipal.getId());
@@ -438,7 +428,7 @@ public class CandidacyService {
     }
 
     private boolean isUserAuthorized(User recruiter, Candidacy candidacy) {
-        return recruiter.getRoleName() == RoleName.ROLE_ADMIN ||
+        return recruiter.getRoleName() == RoleName.ADMIN ||
                 candidacy.getRecruiter().getId().equals(recruiter.getId());
     }
 
