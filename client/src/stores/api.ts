@@ -34,9 +34,10 @@ export default () => {
     (error) => {
       console.log('Error in API request', error);
       if (axios.isAxiosError(error)) {
-        const message = error.response?.data.message;
-        const statusCode = error.response?.data.statusCode;
-        throw new ApiError(message, statusCode);
+        const title = error.response?.data.title;
+        const message = error.response?.data.description;
+        const statusCode = error.response?.status;
+        throw new ApiError(message, statusCode, title);
       }
       return Promise.reject(error);
     }
@@ -44,17 +45,15 @@ export default () => {
 
   instance.interceptors.response.use(
     (response) => {
-      if (response.status === 401) {
-        alert('You are not authorized');
-      }
       return response;
     },
     (error) => {
       console.log('Error in API response', error);
       if (axios.isAxiosError(error)) {
-        const message = error.response?.data.message;
+        const title = error.response?.data.title;
+        const message = error.response?.data.description;
         const statusCode = error.response?.status;
-        throw new ApiError(message, statusCode);
+        throw new ApiError(message, statusCode, title);
       } else if (error.response && error.response.data) {
         throw new ApiError(error.response.data, error.response.statusCode);
       } else {

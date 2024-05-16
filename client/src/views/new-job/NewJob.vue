@@ -167,7 +167,7 @@ async function create(job: NewJobRequest) {
     await createJob(job);
     jobCreated.value = true;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -184,7 +184,7 @@ const createNewSkill = async (skill: NewSkill) => {
     skillCreated.value = true;
     openSkillModal.value = false;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -196,7 +196,7 @@ const loadClients = async () => {
   try {
     clients.value = await getAllClients();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   }
@@ -206,7 +206,7 @@ const loadSkills = async () => {
   try {
     skills.value = await getAllSkills();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   }
@@ -225,7 +225,7 @@ const createAndAddQuestion = async (question: QuestionForm): Promise<void> => {
     job.value.questions.push(newQuestion);
     skills.value = await getAllSkills();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   }

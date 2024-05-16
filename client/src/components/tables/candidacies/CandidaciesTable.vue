@@ -176,7 +176,7 @@ const send = async (jobId: number, pan: string, comment: string) => {
     await addCandidacyComment(jobId, pan, { text: comment });
     await getComments(jobId, pan);
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -189,7 +189,7 @@ const getComments = async (jobId: number, pan: string) => {
   try {
     comments.value = await getCandidacyComments(jobId, pan);
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -205,7 +205,7 @@ const delCandidacy = async (jobId: number, pan: string) => {
     showSuccess(toast, 'Candidacy deleted successfully');
     await initTable();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -221,7 +221,7 @@ const getFiles = async (jobId: number, pan: string) => {
     candidacyFiles.value = await getCandidacyFiles(jobId, pan);
     loadingFiles.value = false;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -242,7 +242,7 @@ const delFile = async (fileId: number | undefined) => {
       currentCandidacyFilesModalOpen.value.pan
     );
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -263,7 +263,7 @@ const downloadFile = async (file: CandidacyFile) => {
 
     downloadingFile.value = false;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -280,7 +280,7 @@ const uploadFiles = async (jobId: number, pan: string, files: File[]) => {
     uploadFilesModalOpen.value = false;
     await getFiles(jobId, pan);
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -293,7 +293,7 @@ async function initTable() {
   try {
     candidates.value = await getAllCandidacies();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {

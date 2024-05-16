@@ -22,7 +22,7 @@ const submit = async (token: string, form: NewPasswordRequest) => {
     showSuccess(toast, 'Password reset successfully. You can now login.');
     passwordReset.value = true;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {

@@ -25,7 +25,7 @@ async function initTable() {
   try {
     jobs.value = await getAllJobs();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
