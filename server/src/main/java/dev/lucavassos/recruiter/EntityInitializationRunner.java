@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter;
 
+import dev.lucavassos.recruiter.bootstrap.EntityInitializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

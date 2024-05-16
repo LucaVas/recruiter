@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter;
+package dev.lucavassos.recruiter.bootstrap;
 
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
@@ -46,8 +46,14 @@ public class EntityInitializer {
 
     @Transactional
     public void createRoles() {
-        Role recruiter = Role.builder().name(RoleName.ROLE_RECRUITER).build();
-        Role admin = Role.builder().name(RoleName.ROLE_ADMIN).build();
+        Role recruiter = Role.builder()
+                .name(RoleName.RECRUITER)
+                .description("Recruiter role")
+                .build();
+        Role admin = Role.builder()
+                .name(RoleName.ADMIN)
+                .description("Administrator role")
+                .build();
 
         roleRepository.saveAll(List.of(recruiter, admin));
     }
