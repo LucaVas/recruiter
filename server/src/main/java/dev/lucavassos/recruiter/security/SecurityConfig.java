@@ -66,34 +66,18 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
+                                // allow unauthenticated requests to following endpoints
                                 .requestMatchers(
-                                        HttpMethod.DELETE,
-                                        "api/v*/candidacies/files/**"
-                                ).hasAnyAuthority(RoleName.ROLE_ADMIN.name(), RoleName.ROLE_RECRUITER.name())
-                                .requestMatchers(
-                                        HttpMethod.DELETE,
-                                        "api/v*/**"
-                                ).hasAuthority(RoleName.ROLE_ADMIN.name())
-                                .requestMatchers(
-                                        HttpMethod.POST,
-                                        "api/v*/jobs"
-                                ).hasAuthority(RoleName.ROLE_ADMIN.name())
-                                .requestMatchers(
-                                        HttpMethod.POST,
                                         "/api/v*/auth/login/**",
                                         "api/v*/auth/signup/**",
-                                        "api/v*/resetPassword/**"
+                                        "api/v*/auth/resetPassword/**",
+                                        "/actuator/**"
                                 ).permitAll()
-                                .requestMatchers(
-                                        "/actuator/health",
-                                        "/actuator/info"
-                                ).permitAll()
+                                // all other requests should be authenticated
                                 .anyRequest().authenticated()
                 )
-                // disable session
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                // each requests is handled as new request
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults());
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

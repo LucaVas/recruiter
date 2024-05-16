@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class JobController {
     private JobService service;
 
     @PostMapping("/jobs")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JobResponse> addJob(
             @Valid @RequestBody NewJobRequest request) throws Exception {
         LOG.info("Received request to add new job: {}", request);
@@ -48,6 +50,7 @@ public class JobController {
     }
 
     @DeleteMapping("/jobs/{jobId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteJob(@PathVariable("jobId") Long id) throws Exception {
         LOG.info("Received request to delete job: {}", id);
         service.deleteJob(id);
