@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.user;
 
+import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
 import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import jakarta.mail.MessagingException;
@@ -50,5 +51,20 @@ public class UserController {
             @Valid @RequestBody PasswordResetRequest request) throws BadRequestException {
         service.resetPassword(token, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/users/profile")
+    public ResponseEntity<UserDto> getAuthUserProfile() {
+        log.info("Received request for auth user profile.");
+        return ResponseEntity.ok(service.getAuthUserProfile());
+    }
+
+    @PutMapping("/users/profile/update")
+    public ResponseEntity<?> updateAuthUserProfile(
+            @Valid @RequestBody UpdateProfileRequest request
+    ) {
+        log.info("Received request to update auth user profile.");
+        service.updateAuthUserProfile(request);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

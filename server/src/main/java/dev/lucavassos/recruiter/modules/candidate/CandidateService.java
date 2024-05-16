@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.candidate;
 
-import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.*;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateResponse;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
@@ -19,6 +18,7 @@ import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -111,7 +111,7 @@ public class CandidateService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidate)) {
             LOG.error("User with id {} is not authorized to modify this candidate", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to modify this candidate");
+            throw new AccessDeniedException("Recruiter is unauthorized to modify this candidate");
         }
 
         if (request.name() != null && !request.name().equals(candidate.getName())) {
@@ -215,7 +215,7 @@ public class CandidateService {
     private User getAuthUser() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
         return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
                     LOG.error("User with id {} not found", userPrincipal.getId());
@@ -225,7 +225,7 @@ public class CandidateService {
     }
 
     private boolean isUserAuthorized(User recruiter, Candidate candidate) {
-        return recruiter.getRoleName() == RoleName.ROLE_ADMIN
+        return recruiter.getRoleName() == RoleName.ADMIN
                || candidate.getRecruiter().getId().equals(recruiter.getId());
     }
 

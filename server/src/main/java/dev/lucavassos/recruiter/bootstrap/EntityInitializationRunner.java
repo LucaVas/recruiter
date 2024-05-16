@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter;
+package dev.lucavassos.recruiter.bootstrap;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;

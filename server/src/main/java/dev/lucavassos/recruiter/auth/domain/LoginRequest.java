@@ -1,16 +1,10 @@
 package dev.lucavassos.recruiter.auth.domain;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-public class LoginRequest {
-        @NotBlank(message = "Username or email cannot be empty")
-        private String usernameOrEmail;
-
+public record LoginRequest(
+        @NotBlank(message = "Email cannot be empty")
+        String email,
         @NotBlank(message = "Password cannot be empty")
-        String password;
-}
+        String password
+) {}

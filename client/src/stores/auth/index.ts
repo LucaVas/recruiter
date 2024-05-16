@@ -3,7 +3,7 @@ import {
   clearStoredAccessToken,
   getAuthRoleFromToken,
   getAuthUserIdFromToken,
-  getAuthUsernameFromToken,
+  getAuthNameFromToken,
   getStoredAccessToken,
   storeAccessToken,
 } from '@/utils/auth';
@@ -27,12 +27,12 @@ export const authUserId = computed(() =>
   authToken.value ? getAuthUserIdFromToken(authToken.value) : null
 );
 export const authUsername = computed(() =>
-  authToken.value ? getAuthUsernameFromToken(authToken.value) : null
+  authToken.value ? getAuthNameFromToken(authToken.value) : null
 );
 export const isLoggedIn = computed(() => !!authToken.value);
 export const invalidToken = computed(() => authToken.value);
 export const isAdmin = computed(() =>
-  authToken.value ? getAuthRoleFromToken(authToken.value) === 'ROLE_ADMIN' : false
+  authToken.value ? getAuthRoleFromToken(authToken.value) === 'ADMIN' : false
 );
 
 // functions

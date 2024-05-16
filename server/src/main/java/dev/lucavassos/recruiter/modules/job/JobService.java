@@ -1,10 +1,8 @@
 package dev.lucavassos.recruiter.modules.job;
 
-import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
-import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
@@ -28,8 +26,7 @@ import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -140,7 +137,7 @@ public class JobService {
         User recruiter = getAuthUser();
         if (!isUserAuthorized(recruiter, job)) {
             log.error("User with id {} is not authorized to modify this job", recruiter.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to modify this job");
+            throw new AccessDeniedException("Recruiter is unauthorized to modify this job");
         }
 
 
@@ -289,7 +286,7 @@ public class JobService {
         User user = getAuthUser();
         if (!user.isAdmin()) {
             log.error("User with id {} is not authorized to delete this job", user.getId());
-            throw new UnauthorizedException("User is unauthorized to delete this job");
+            throw new AccessDeniedException("User is unauthorized to delete this job");
         }
 
         if (job.getStatus() != JobStatus.ARCHIVED) {
@@ -303,7 +300,7 @@ public class JobService {
     private User getAuthUser() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
         return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
                     log.error("User with id {} not found", userPrincipal.getId());
@@ -313,7 +310,7 @@ public class JobService {
     }
 
     private boolean isUserAuthorized(User recruiter, Job job) {
-        return recruiter.getRoleName() == RoleName.ROLE_ADMIN ||
+        return recruiter.getRoleName() == RoleName.ADMIN ||
                 job.getRecruiter().getId().equals(recruiter.getId());
     }
 

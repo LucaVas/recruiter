@@ -63,14 +63,14 @@ const submitSignup = async (userForm: SignupRequest) => {
       data-testid="signup-form"
     >
       <template #default>
-        <!-- username -->
+        <!-- name -->
         <InputText
-          id="username"
-          v-model="userForm.username"
+          id="name"
+          v-model="userForm.name"
           minlength="3"
           maxlength="50"
           required
-          placeholder="Username"
+          placeholder="Name"
           class="md:w-14rem w-full"
         />
         <!-- email -->
@@ -96,12 +96,12 @@ const submitSignup = async (userForm: SignupRequest) => {
           required
         >
         </Password>
-        <!-- mobile -->
+        <!-- Phone -->
         <InputMask
-          id="mobile"
-          v-model="userForm.mobile"
+          id="Phone"
+          v-model="userForm.phone"
           mask="(999) 999-9999"
-          placeholder="Mobile Number"
+          placeholder="Phone Number"
           class="md:w-14rem w-full"
           required
           :unmask="true"

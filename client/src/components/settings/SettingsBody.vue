@@ -6,7 +6,7 @@
     </div>
     <div class="space-y-1">
       <h2 class="text-lg font-bold">Mobile</h2>
-      <p>{{ user.mobile }}</p>
+      <p>{{ user.phone }}</p>
     </div>
     <div class="space-y-1">
       <h2 class="text-lg font-bold">Location</h2>
@@ -14,7 +14,7 @@
     </div>
     <div class="space-y-1">
       <h2 class="text-lg font-bold">Role</h2>
-      <p>{{ user.roles[0].name === 'ROLE_ADMIN' ? 'Administrator' : 'Recruiter' }}</p>
+      <p>{{ user.role.name === 'ADMIN' ? 'Administrator' : 'Recruiter' }}</p>
     </div>
   </div>
 </template>

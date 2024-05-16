@@ -20,14 +20,17 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 60)
+    @Column(length = 60, unique = true, nullable = false)
     private RoleName name;
+
+    @Column(nullable = false)
+    private String description;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")
     private LocalDateTime createdDTime;
 
     @UpdateTimestamp
-    @Column(name = "modified_dtime")
+    @Column(name = "updated_dtime")
     private LocalDateTime modifiedDTime;
 }

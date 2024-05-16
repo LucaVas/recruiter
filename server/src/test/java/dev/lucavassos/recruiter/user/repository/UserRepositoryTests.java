@@ -37,10 +37,10 @@ public class UserRepositoryTests {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         User user = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(encoder.encode("Password123"))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -57,19 +57,19 @@ public class UserRepositoryTests {
     public void save_throws_error_if_email_exists() {
 
         User user1 = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email("user@mail.com")
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
 
         User user2 = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email("user@mail.com")
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -85,19 +85,19 @@ public class UserRepositoryTests {
     @Test
     public void save_throws_error_if_mobile_exists() {
         User user1 = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("0000000000")
+                .phone("0000000000")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
 
         User user2 = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("0000000000")
+                .phone("0000000000")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -113,19 +113,19 @@ public class UserRepositoryTests {
     @Test
     public void save_throws_error_if_mobile_is_invalid() {
         User userWithShortMobile = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("")
+                .phone("")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
 
         User userWithLongMobile = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile("12345678901")
+                .phone("12345678901")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -143,19 +143,19 @@ public class UserRepositoryTests {
     @Test
     public void save_throws_error_if_username_is_invalid() {
         User userWithShortUsername = User.builder()
-                .username("")
+                .name("")
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
 
         User userWithLongUsername = User.builder()
-                .username(randomLowerCaseString(51, 100))
+                .name(randomLowerCaseString(51, 100))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -174,10 +174,10 @@ public class UserRepositoryTests {
     @Test
     public void save_throws_error_if_email_is_invalid() {
         User userWithWrongEmail = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email("mail.com")
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -191,28 +191,28 @@ public class UserRepositoryTests {
     @Test
     public void save_throws_error_if_password_is_invalid() {
         User userWithInvalidPassword = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomLowerCaseString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
 
         User userWithShortPassword = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(1, 7))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
 
         User userWithLongPassword = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(65, 100))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -234,19 +234,19 @@ public class UserRepositoryTests {
     @Test
     public void save_throws_error_if_city_is_invalid() {
         User userWithShortCity = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city("")
                 .country(randomLowerCaseString(3, 8))
                 .build();
 
         User userWithLongCity = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(51, 100))
                 .country(randomLowerCaseString(3, 8))
                 .build();
@@ -264,19 +264,19 @@ public class UserRepositoryTests {
     @Test
     public void save_throws_error_if_country_is_invalid() {
         User userWithShortCountry = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country("")
                 .build();
 
         User userWithLongCountry = User.builder()
-                .username(randomLowerCaseString(3, 8))
+                .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
-                .mobile(randomPhoneNumber())
+                .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(51, 100))
                 .build();

@@ -24,7 +24,7 @@ public class CandidacyDtoMapper implements Function<Candidacy, CandidacyDto> {
                 jobDtoMapper.apply(candidacy.getJob()),
                 new RecruiterDto(
                         candidacy.getRecruiter().getId(),
-                        candidacy.getRecruiter().getUsername()
+                        candidacy.getRecruiter().getName()
                 ),
                 candidateDtoMapper.apply(candidacy.getCandidate()),
                 candidacy.getRelevantExperience(),

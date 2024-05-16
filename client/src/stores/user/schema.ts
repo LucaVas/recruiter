@@ -1,12 +1,12 @@
 // backend dtos
 export type User = {
   id: number;
-  username: string;
+  name: string;
   email: string;
-  mobile: string;
+  phone: string;
   city: string;
   country: string;
-  roles: Role[];
+  role: Role;
   comments: string;
   approved: boolean;
   approver: Recruiter;
@@ -15,12 +15,18 @@ export type User = {
   modifiedDTime: Date;
 };
 
-export type Recruiter = Pick<User, 'id' | 'username'>;
+export type Recruiter = Pick<User, 'id' | 'name'>;
 export type ApproverDto = Recruiter;
 
 // backend domain objects
-export type Role = { id: number; name: RoleName };
-export type RoleName = 'ROLE_RECRUITER' | 'ROLE_ADMIN';
+export type Role = {
+  id: number;
+  name: RoleName;
+  description: string;
+  createdDTime: Date;
+  modifiedDTime: Date;
+};
+export type RoleName = 'RECRUITER' | 'ADMIN' | 'TESTER';
 
 export type UserApprovalRequest = {
   userId: number;
@@ -32,4 +38,4 @@ export type PasswordResetRequest = {
   userId: number;
   newPassword: string;
 };
-export type PasswordResetTokenRequest = { email: string; username: string };
+export type PasswordResetTokenRequest = { email: string; name: string };

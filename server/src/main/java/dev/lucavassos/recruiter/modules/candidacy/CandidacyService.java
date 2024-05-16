@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
-import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.*;
 import dev.lucavassos.recruiter.modules.candidacy.domain.*;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
@@ -20,9 +19,10 @@ import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import dev.lucavassos.recruiter.service.storage.ResumeHandler;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,45 +30,33 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CandidacyService {
 
-    @Autowired
-    private CandidateRepository candidateRepository;
-    @Autowired
-    private CandidacyFileRepository candidacyFileRepository;
-    @Autowired
-    private CandidacyFileDtoMapper candidacyFileDtoMapper;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JobRepository jobRepository;
-    @Autowired
-    private CandidacyRepository candidacyRepository;
-    @Autowired
-    private CandidacyDtoMapper candidacyDtoMapper;
-    @Autowired
-    private CandidacyCommentRepository candidacyCommentRepository;
-    @Autowired
-    private CandidacyCommentDtoMapper candidacyCommentDtoMapper;
-    @Autowired
-    MonitoringProcessor monitoringProcessor;
-    @Autowired
-    ResumeHandler resumeHandler;
+    private final CandidateRepository candidateRepository;
+    private final CandidacyFileRepository candidacyFileRepository;
+    private final CandidacyFileDtoMapper candidacyFileDtoMapper;
+    private final UserRepository userRepository;
+    private final JobRepository jobRepository;
+    private final CandidacyRepository candidacyRepository;
+    private final CandidacyDtoMapper candidacyDtoMapper;
+    private final CandidacyCommentRepository candidacyCommentRepository;
+    private final CandidacyCommentDtoMapper candidacyCommentDtoMapper;
+    private final MonitoringProcessor monitoringProcessor;
+    private final ResumeHandler resumeHandler;
 
     @Transactional
     public void addCandidacy(NewCandidacyRequest candidacy) {
 
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
 
 
         // find recruiter
@@ -180,7 +168,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to modify this candidacy", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to modify this candidacy");
+            throw new AccessDeniedException("Recruiter is unauthorized to modify this candidacy");
         }
 
         if (request.relevantExperience() != null && request.relevantExperience() != candidacy.getRelevantExperience()) {
@@ -231,7 +219,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to add comments to this candidacy", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to add comments to this candidacy");
+            throw new AccessDeniedException("Recruiter is unauthorized to add comments to this candidacy");
         }
 
         try {
@@ -285,7 +273,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to delete this file", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to delete this file");
+            throw new AccessDeniedException("Recruiter is unauthorized to delete this file");
         }
 
         try {
@@ -318,7 +306,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to get this file", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to get this file");
+            throw new AccessDeniedException("Recruiter is unauthorized to get this file");
         }
 
         return resumeHandler.getResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
@@ -332,7 +320,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to delete this candidacy", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to delete this candidacy");
+            throw new AccessDeniedException("Recruiter is unauthorized to delete this candidacy");
         }
 
         try {
@@ -350,7 +338,7 @@ public class CandidacyService {
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy)) {
             log.error("User with id {} is not authorized to upload fles to this candidacy", user.getId());
-            throw new UnauthorizedException("Recruiter is unauthorized to upload files to this candidacy");
+            throw new AccessDeniedException("Recruiter is unauthorized to upload files to this candidacy");
         }
 
         if (files == null || files.isEmpty()) {
@@ -407,7 +395,7 @@ public class CandidacyService {
     private User getAuthUser() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User userPrincipal = (User) authentication.getPrincipal();
         return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
                 () -> {
                     log.error("User with id {} not found", userPrincipal.getId());
@@ -441,7 +429,7 @@ public class CandidacyService {
     }
 
     private boolean isUserAuthorized(User recruiter, Candidacy candidacy) {
-        return recruiter.getRoleName() == RoleName.ROLE_ADMIN ||
+        return recruiter.getRoleName() == RoleName.ADMIN ||
                 candidacy.getRecruiter().getId().equals(recruiter.getId());
     }
 

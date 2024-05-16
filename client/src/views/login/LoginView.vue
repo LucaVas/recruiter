@@ -37,7 +37,7 @@ const submitLogin = async () => {
         <InputText
           type="email"
           id="email "
-          v-model="userForm.usernameOrEmail"
+          v-model="userForm.email"
           minlength="3"
           maxlength="50"
           required

@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -80,6 +81,7 @@ public class CandidacyController {
     }
 
     @DeleteMapping("/candidacies/job={jobId}&candidate={pan}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCandidacy(
             @PathVariable Long jobId,
             @PathVariable String pan
@@ -99,6 +101,7 @@ public class CandidacyController {
     }
 
     @DeleteMapping("/candidacies/files/{fileId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<?> deleteCandidacyFile(@PathVariable("fileId") Long fileId) {
         log.info("Received request to delete candidacy file with ID {}", fileId);
         service.deleteCandidacyFile(fileId);

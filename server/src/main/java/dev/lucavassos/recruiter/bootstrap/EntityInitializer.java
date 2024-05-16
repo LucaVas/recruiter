@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter;
+package dev.lucavassos.recruiter.bootstrap;
 
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
@@ -46,8 +46,14 @@ public class EntityInitializer {
 
     @Transactional
     public void createRoles() {
-        Role recruiter = Role.builder().name(RoleName.ROLE_RECRUITER).build();
-        Role admin = Role.builder().name(RoleName.ROLE_ADMIN).build();
+        Role recruiter = Role.builder()
+                .name(RoleName.RECRUITER)
+                .description("Recruiter role")
+                .build();
+        Role admin = Role.builder()
+                .name(RoleName.ADMIN)
+                .description("Administrator role")
+                .build();
 
         roleRepository.saveAll(List.of(recruiter, admin));
     }
@@ -292,8 +298,8 @@ public class EntityInitializer {
     public void saveJobs() {
         Set<Client> clients = new HashSet<>(clientRepository.findAll());
         Set<Skill> skills = new HashSet<>(skillRepository.findAll());
-        User recruiter = userRepository.findOneByUsername("recruiter").orElseThrow(RuntimeException::new);
-        User recruiter2 = userRepository.findOneByUsername("recruiter2").orElseThrow(RuntimeException::new);
+        User recruiter = userRepository.findOneByName("recruiter").orElseThrow(RuntimeException::new);
+        User recruiter2 = userRepository.findOneByName("recruiter2").orElseThrow(RuntimeException::new);
 
         Job job1 = Job.builder()
                 .client(clients.stream().filter(client -> client.getName().equals("Accenture")).findFirst().orElseThrow(RuntimeException::new))
@@ -451,8 +457,8 @@ public class EntityInitializer {
 
     @Transactional
     public void saveCandidates() {
-        User recruiter = userRepository.findOneByUsername("recruiter").orElseThrow(RuntimeException::new);
-        User recruiter2 = userRepository.findOneByUsername("recruiter2").orElseThrow(RuntimeException::new);
+        User recruiter = userRepository.findOneByName("recruiter").orElseThrow(RuntimeException::new);
+        User recruiter2 = userRepository.findOneByName("recruiter2").orElseThrow(RuntimeException::new);
 
         Set<Candidate> candidates = new HashSet<>(List.of(
                 Candidate.builder()
@@ -506,38 +512,39 @@ public class EntityInitializer {
     @Transactional
     public void createUsers() {
 
-        Set<Role> roles = new HashSet<>(roleRepository.findAll());
+        Role recruiterRole = roleRepository.findByName(RoleName.RECRUITER).orElseThrow();
+        Role adminRole = roleRepository.findByName(RoleName.ADMIN).orElseThrow();
 
         User recruiter = User.builder()
-                .username("recruiter")
+                .name("recruiter")
                 .email("recruiter@mail.com")
                 .password(encoder.encode("Password123!"))
-                .mobile("1234567890")
+                .phone("1234567890")
                 .city("Test city")
                 .country("India")
                 .approved(true)
-                .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_RECRUITER).collect(Collectors.toSet()))
+                .role(recruiterRole)
                 .build();
 
         User recruiter2 = User.builder()
-                .username("recruiter2")
+                .name("recruiter2")
                 .email("recruiter2@mail.com")
                 .password(encoder.encode("Password123!"))
-                .mobile("1234567892")
+                .phone("1234567892")
                 .city("Test city 2")
                 .country("India")
-                .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_RECRUITER).collect(Collectors.toSet()))
+                .role(recruiterRole)
                 .build();
 
         User admin = User.builder()
-                .username("admin")
+                .name("admin")
                 .email("admin@mail.com")
                 .password(encoder.encode("Password123!"))
-                .mobile("1234567891")
+                .phone("1234567891")
                 .city("Test city")
                 .country("India")
                 .approved(true)
-                .roles(roles.stream().filter(role -> role.getName() == RoleName.ROLE_ADMIN).collect(Collectors.toSet()))
+                .role(adminRole)
                 .build();
 
         userRepository.saveAll(List.of(recruiter, recruiter2, admin));

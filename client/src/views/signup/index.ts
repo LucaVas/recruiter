@@ -8,10 +8,10 @@ export const roles = ref([
   { label: 'Admin', value: 'ROLE_ADMIN' },
 ]);
 export const userForm = ref<SignupRequest>({
-  username: '',
+  name: '',
   email: '',
   password: '',
-  mobile: '',
+  phone: '',
   city: '',
   country: '',
   roleName: 'ROLE_RECRUITER',

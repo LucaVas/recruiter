@@ -50,14 +50,14 @@ const submit = async (form: PasswordForgotRequest) => {
           class="w-full"
         />
         <InputText
-          type="username"
-          id="username "
-          v-model="form.username"
+          type="name"
+          id="name "
+          v-model="form.name"
           minlength="3"
           maxlength="50"
           required
-          autocomplete="username"
-          placeholder="Username"
+          autocomplete="name"
+          placeholder="Name"
           class="w-full"
         />
         <Button
