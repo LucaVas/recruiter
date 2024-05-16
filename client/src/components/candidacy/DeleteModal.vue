@@ -6,7 +6,7 @@ import Divider from 'primevue/divider';
 const { visible, deleting, message } = defineProps<{
   visible: boolean;
   deleting: boolean;
-  message: string
+  message: string;
 }>();
 
 defineEmits<{

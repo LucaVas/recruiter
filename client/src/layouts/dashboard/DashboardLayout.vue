@@ -2,7 +2,7 @@
   <StackedLayout
     :menuItems="getMenuItems(isAdmin, menuItems) ?? menuItems"
     :username="authUsername ?? 'null'"
-  ></StackedLayout>
+  />
 </template>
 
 <script setup lang="ts">

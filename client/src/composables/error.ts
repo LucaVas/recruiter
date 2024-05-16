@@ -3,10 +3,12 @@ import { AxiosError } from 'axios';
 import type { Ref } from 'vue';
 
 type ApiError = {
-  path: string;
-  message: string;
-  statusCode: number;
-  localDateTime: Date;
+  type: string;
+  title: string;
+  status: number;
+  detail: string;
+  instance: string;
+  description: string;
 };
 
 /**
