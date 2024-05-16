@@ -509,7 +509,7 @@ public class EntityInitializer {
         Set<Role> roles = new HashSet<>(roleRepository.findAll());
 
         User recruiter = User.builder()
-                .username("recruiter")
+                .name("recruiter")
                 .email("recruiter@mail.com")
                 .password(encoder.encode("Password123!"))
                 .mobile("1234567890")
@@ -520,7 +520,7 @@ public class EntityInitializer {
                 .build();
 
         User recruiter2 = User.builder()
-                .username("recruiter2")
+                .name("recruiter2")
                 .email("recruiter2@mail.com")
                 .password(encoder.encode("Password123!"))
                 .mobile("1234567892")
@@ -530,7 +530,7 @@ public class EntityInitializer {
                 .build();
 
         User admin = User.builder()
-                .username("admin")
+                .name("admin")
                 .email("admin@mail.com")
                 .password(encoder.encode("Password123!"))
                 .mobile("1234567891")

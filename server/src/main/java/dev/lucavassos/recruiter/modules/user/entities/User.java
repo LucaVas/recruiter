@@ -2,7 +2,6 @@ package dev.lucavassos.recruiter.modules.user.entities;
 
 import dev.lucavassos.recruiter.exception.UnauthorizedException;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
-import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -11,6 +10,9 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,7 +24,7 @@ import java.util.*;
 @Getter
 @Setter
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,7 @@ public class User {
 
     @Column(nullable = false, unique = true)
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters long")
-    private String username;
+    private String name;
 
     @Column(nullable = false, unique = true)
     @Size(min = 5, max = 50, message = "Email must be between 5 and 50 characters long")
@@ -100,5 +102,46 @@ public class User {
         return this.getRoles().stream()
                 .findFirst()
                 .map(Role::getName).stream().anyMatch(role -> role.equals(RoleName.ROLE_ADMIN));
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + this.getRoleName().name());
+        return List.of(authority);
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

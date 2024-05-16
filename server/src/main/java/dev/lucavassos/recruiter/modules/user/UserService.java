@@ -108,17 +108,17 @@ public class UserService  {
                         }
                 );
 
-        if (!userByEmail.getUsername().equals(userByUsername.getUsername())) {
+        if (!userByEmail.getName().equals(userByUsername.getName())) {
             String message = String.format("Username of user with email %s (%s) does not match username provided %s",
                     userByEmail.getEmail(),
-                    userByEmail.getUsername(),
+                    userByEmail.getName(),
                     request.username());
             log.error(message);
             throw new BadRequestException("Incorrect. Please try again.");
         }
 
         if (userByUsername.getPasswordResetToken() != null) {
-            log.debug("Token for user [{}] already exists", userByUsername.getUsername());
+            log.debug("Token for user [{}] already exists", userByUsername.getName());
             deleteTokenForUser(userByUsername);
         }
 
@@ -131,7 +131,7 @@ public class UserService  {
 
         log.info("Sending email to [{}]", userByUsername.getEmail());
         emailService.sendEmail(userByUsername.getEmail(),
-                userByUsername.getUsername(),
+                userByUsername.getName(),
                 token.getTokenString(),
                 expirationInSeconds / 60);
     }

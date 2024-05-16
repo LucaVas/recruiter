@@ -3,7 +3,6 @@ package dev.lucavassos.recruiter.auth.service;
 import dev.lucavassos.recruiter.auth.domain.*;
 import dev.lucavassos.recruiter.auth.UserPrincipal;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
-import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
@@ -15,8 +14,6 @@ import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +53,7 @@ public class AuthService {
         }
 
         User user = User.builder()
-                .username(request.username())
+                .name(request.username())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .mobile(request.mobile())

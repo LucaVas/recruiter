@@ -12,7 +12,7 @@ public class UserDtoMapper implements Function<User, UserDto> {
 
         return new UserDto(
                 user.getId(),
-                user.getUsername(),
+                user.getName(),
                 user.getEmail(),
                 user.getMobile(),
                 user.getCity(),
@@ -21,7 +21,7 @@ public class UserDtoMapper implements Function<User, UserDto> {
                 user.isApproved(),
                 new ApproverDto(
                         user.getId(),
-                        user.getUsername()
+                        user.getName()
                 ),
                 user.getComment(),
                 user.getApprovedDTime(),
