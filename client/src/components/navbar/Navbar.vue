@@ -5,10 +5,10 @@ import NavbarHeader from './NavbarHeader.vue';
 import NavbarFooter from './NavbarFooter.vue';
 import Divider from 'primevue/divider';
 
-const { menuItems, visible, username } = defineProps<{
+const { menuItems, visible, name } = defineProps<{
   visible: boolean;
   menuItems: MenuItem[];
-  username: string;
+  name: string;
 }>();
 defineEmits<{
   (e: 'closeMenu'): void;
@@ -24,7 +24,7 @@ defineEmits<{
           <Divider />
           <NavbarBody @closeMenu="$emit('closeMenu')" :menuItems="menuItems" />
           <Divider />
-          <NavbarFooter :username="username" />
+          <NavbarFooter :name="name" />
         </div>
       </template>
     </Sidebar>

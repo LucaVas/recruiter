@@ -36,4 +36,3 @@ defineEmits<{
   </div>
   <Divider />
 </template>
-@/components/job/update-job/utils @/stores/job/schema

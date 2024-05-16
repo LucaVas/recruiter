@@ -5,7 +5,7 @@
       <p>{{ user.email }}</p>
     </div>
     <div class="space-y-1">
-      <h2 class="text-lg font-bold">Mobile</h2>
+      <h2 class="text-lg font-bold">Phone</h2>
       <p>{{ user.phone }}</p>
     </div>
     <div class="space-y-1">

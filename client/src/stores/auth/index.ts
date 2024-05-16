@@ -21,7 +21,7 @@ const authToken = ref(getStoredAccessToken(localStorage));
 export const authUserId = computed(() =>
   authToken.value ? getAuthUserIdFromToken(authToken.value) : null
 );
-export const authUsername = computed(() =>
+export const authName = computed(() =>
   authToken.value ? getAuthNameFromToken(authToken.value) : null
 );
 export const isLoggedIn = computed(() => !!authToken.value);

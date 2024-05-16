@@ -57,8 +57,9 @@ const details = ref(job);
           :content="`${details.bonusPayPerCv} INR per CV paid on ${formatDate(details.cvRatePaymentDate)}`"
         />
         <JobMetadataEntry
+          v-if="job.closureBonus.toLowerCase() !== 'not applicable' && job.closureBonus !== ''"
           :icon="'pi-wallet'"
-          :content="`${details.closureBonus} INR closure bonus paid on ${formatDate(details.closureBonusPaymentDate)}`"
+          :content="`${job.closureBonus} INR closure bonus paid on ${formatDate(job.closureBonusPaymentDate)}`"
         />
       </div>
       <div class="mt-5 flex justify-end gap-2">

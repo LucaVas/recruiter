@@ -49,7 +49,7 @@ public class AuthController {
         User authenticatedUser = service.authenticate(request);
 
         Map<String, Object> userClaim = new HashMap<>();
-        userClaim.put("user", new AuthUserInfoDto(authenticatedUser.getId(), authenticatedUser.getUsername(), authenticatedUser.getRole().getName()));
+        userClaim.put("user", new AuthUserInfoDto(authenticatedUser.getId(), authenticatedUser.getName(), authenticatedUser.getRole().getName()));
         String jwtToken = jwtService.generateToken(userClaim, authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse(
