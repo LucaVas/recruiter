@@ -44,7 +44,7 @@ const update = async (userForm: UserInfoUpdateRequest) => {
     showSuccess(toast, 'Profile information updated successfully!');
     await initUserInformation();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -57,7 +57,7 @@ const initUserInformation = async () => {
   try {
     user.value = await getProfileInformation();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -70,7 +70,7 @@ onMounted(async () => {
   try {
     await initUserInformation();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {

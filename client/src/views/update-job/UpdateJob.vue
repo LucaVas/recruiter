@@ -68,7 +68,7 @@ async function loadJobData(jobId: number) {
   } catch (err) {
     if (err instanceof ApiError) {
       if (err.statusCode === 401) router.push({ name: 'Dashboard' });
-      else showError(toast, err.message);
+      else showError(toast, err.message, err.title);
     } else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -82,7 +82,7 @@ async function update(job: Job) {
     await updateJob(job);
     jobUpdated.value = true;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -97,7 +97,7 @@ async function changeStatus(id: number, status: JobStatus) {
     jobUpdated.value = true;
     router.go(0);
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -110,7 +110,7 @@ async function delJob(id: number) {
     await deleteJob(id);
     router.go(0);
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   }

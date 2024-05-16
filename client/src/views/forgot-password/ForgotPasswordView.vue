@@ -19,7 +19,7 @@ const submit = async (form: PasswordForgotRequest) => {
     await requestNewPassword(form);
     showSuccess(toast, 'A password reset link was sent to your email.');
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {

@@ -32,7 +32,7 @@ async function update(candidateForm: NewCandidateRequest) {
     editCandidateModal.value = false;
     await initTable();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -46,7 +46,7 @@ async function initTable() {
   try {
     candidates.value = await getAllCandidates();
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {

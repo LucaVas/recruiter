@@ -109,7 +109,7 @@ async function submit(selectedCandidate: Candidate | null | undefined) {
     );
     candidacySubmitted.value = true;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -124,7 +124,7 @@ async function createNewCandidate(candidate: NewCandidateRequest) {
     searchedCandidate.value = res.candidate;
     candidateCreated.value = true;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
@@ -138,7 +138,7 @@ async function searchCandidate(identifier: string) {
     const res = await findCandidate(identifier);
     searchedCandidate.value = res.candidate;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message);
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
