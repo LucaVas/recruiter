@@ -105,6 +105,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<!-- PostgreSQL used in Staging and Production environment -->
         <dependency>

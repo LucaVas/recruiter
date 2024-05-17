@@ -1,6 +1,9 @@
 package dev.lucavassos.recruiter.user.repository;
 
+import dev.lucavassos.recruiter.modules.user.domain.RoleName;
+import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.entities.User;
+import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
@@ -10,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.annotation.Rollback;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -21,12 +23,12 @@ import static dev.lucavassos.recruiter.testUtils.RandomUtils.randomString;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Rollback
 public class UserRepositoryTests {
 
     @Autowired
-    private UserRepository repository;
-
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private TestEntityManager manager;
 
@@ -34,8 +36,9 @@ public class UserRepositoryTests {
     @Test
     public void save_creates_new_user() {
 
+        // GIVEN
+        Role recruiterRole = roleRepository.findByName(RoleName.RECRUITER).orElseThrow();
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
         User user = User.builder()
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
@@ -43,19 +46,23 @@ public class UserRepositoryTests {
                 .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
+                .role(recruiterRole)
                 .build();
 
-        User savedUser = repository.save(user);
-
+        // WHEN
+        User savedUser = userRepository.save(user);
         User existsUser = manager.find(User.class, savedUser.getId());
 
-        assertThat(existsUser.getEmail()).isEqualTo(user.getEmail());
+        // THEN
+        assertThat(existsUser.getUsername()).isEqualTo(savedUser.getUsername());
         assertThat(existsUser.getPassword()).startsWith("$2");
+        assertThat(existsUser.getRole()).isEqualTo(recruiterRole);
     }
 
     @Test
     public void save_throws_error_if_email_exists() {
 
+        Role recruiterRole = roleRepository.findByName(RoleName.RECRUITER).orElseThrow();
         User user1 = User.builder()
                 .name(randomLowerCaseString(3, 8))
                 .email("user@mail.com")
@@ -63,6 +70,7 @@ public class UserRepositoryTests {
                 .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
+                .role(recruiterRole)
                 .build();
 
         User user2 = User.builder()
@@ -72,72 +80,82 @@ public class UserRepositoryTests {
                 .phone(randomPhoneNumber())
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
+                .role(recruiterRole)
                 .build();
 
-        repository.save(user1);
+        userRepository.save(user1);
 
         assertThatThrownBy(() -> {
-            repository.save(user2);
+            userRepository.save(user2);
         }).isInstanceOf(DataIntegrityViolationException.class)
                 .hasMessageContaining("duplicate key value violates unique constraint \"users_email_key");
     }
 
     @Test
-    public void save_throws_error_if_mobile_exists() {
+    public void save_throws_error_if_phone_exists() {
+
+        Role recruiterRole = roleRepository.findByName(RoleName.RECRUITER).orElseThrow();
+
         User user1 = User.builder()
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
-                .password(randomString(8, 64))
+                .password("Password123!!")
                 .phone("0000000000")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
+                .role(recruiterRole)
                 .build();
 
         User user2 = User.builder()
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
-                .password(randomString(8, 64))
+                .password("Password123!!")
                 .phone("0000000000")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
+                .role(recruiterRole)
                 .build();
 
-        repository.save(user1);
+        userRepository.save(user1);
 
         assertThatThrownBy(() -> {
-            repository.save(user2);
+            userRepository.save(user2);
         }).isInstanceOf(DataIntegrityViolationException.class)
-                .hasMessageContaining("duplicate key value violates unique constraint \"users_mobile_key");
+                .hasMessageContaining("duplicate key value violates unique constraint \"users_phone_key");
     }
 
     @Test
-    public void save_throws_error_if_mobile_is_invalid() {
-        User userWithShortMobile = User.builder()
+    public void save_throws_error_if_phone_is_invalid() {
+
+        Role recruiterRole = roleRepository.findByName(RoleName.RECRUITER).orElseThrow();
+        User userWithShortPhone = User.builder()
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
                 .phone("")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
+                .role(recruiterRole)
                 .build();
 
-        User userWithLongMobile = User.builder()
+        User userWithLongPhone = User.builder()
                 .name(randomLowerCaseString(3, 8))
                 .email(randomEmail())
                 .password(randomString(8, 64))
                 .phone("12345678901")
                 .city(randomLowerCaseString(3, 8))
                 .country(randomLowerCaseString(3, 8))
+                .role(recruiterRole)
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(userWithShortMobile);
+            userRepository.save(userWithShortPhone);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("Mobile number must be between 5 and 10 characters long");
+                .hasMessageContaining("Phone number must be 10 characters long");
         assertThatThrownBy(() -> {
-            repository.save(userWithLongMobile);
+            userRepository.save(userWithLongPhone);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("Mobile number must be between 5 and 10 characters long");
+                .hasMessageContaining("Phone number must be 10 characters long");
     }
 
     @Test
@@ -161,12 +179,12 @@ public class UserRepositoryTests {
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(userWithShortUsername);
+            userRepository.save(userWithShortUsername);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Username must be between 3 and 50 characters long");
 
         assertThatThrownBy(() -> {
-            repository.save(userWithLongUsername);
+            userRepository.save(userWithLongUsername);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Username must be between 3 and 50 characters long");
     }
@@ -183,7 +201,7 @@ public class UserRepositoryTests {
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(userWithWrongEmail);
+            userRepository.save(userWithWrongEmail);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Invalid email");
     }
@@ -218,15 +236,15 @@ public class UserRepositoryTests {
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(userWithInvalidPassword);
+            userRepository.save(userWithInvalidPassword);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Invalid password. Password must contain at least 1 lowercase letter, 1 uppercase letter and 1 number.");
         assertThatThrownBy(() -> {
-            repository.save(userWithShortPassword);
+            userRepository.save(userWithShortPassword);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Password must be between 8 and 64 characters long");
         assertThatThrownBy(() -> {
-            repository.save(userWithLongPassword);
+            userRepository.save(userWithLongPassword);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Password must be between 8 and 64 characters long");
     }
@@ -252,11 +270,11 @@ public class UserRepositoryTests {
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(userWithShortCity);
+            userRepository.save(userWithShortCity);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("City name must be between 3 and 50 characters long");
         assertThatThrownBy(() -> {
-            repository.save(userWithLongCity);
+            userRepository.save(userWithLongCity);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("City name must be between 3 and 50 characters long");
     }
@@ -282,11 +300,11 @@ public class UserRepositoryTests {
                 .build();
 
         assertThatThrownBy(() -> {
-            repository.save(userWithShortCountry);
+            userRepository.save(userWithShortCountry);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Country name must be between 3 and 50 characters long");
         assertThatThrownBy(() -> {
-            repository.save(userWithLongCountry);
+            userRepository.save(userWithLongCountry);
         }).isInstanceOf(ConstraintViolationException.class)
                 .hasMessageContaining("Country name must be between 3 and 50 characters long");
     }

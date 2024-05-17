@@ -12,7 +12,7 @@ public class RandomUtils {
     private static final Random RANDOM = new Random();
 
     public static String randomPhoneNumber() {
-        return randomNumericString(5, 10);
+        return randomNumericString(10, 10);
     }
 
     private static String randomNumericString(int minLength, int maxLength) {

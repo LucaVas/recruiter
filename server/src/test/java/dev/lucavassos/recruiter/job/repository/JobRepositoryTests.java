@@ -49,7 +49,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(randomDouble(1, 1000))
+                .closureBonus(randomString(1, 100))
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
@@ -77,7 +77,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(randomDouble(1, 1000))
+                .closureBonus(randomString(1, 100))
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
@@ -103,7 +103,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(randomDouble(1, 1000))
+                .closureBonus(randomString(1, 100))
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
@@ -129,7 +129,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(randomDouble(1, 1000))
+                .closureBonus(randomString(1, 100))
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
@@ -155,7 +155,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(randomDouble(1, 1000))
+                .closureBonus(randomString(1, 100))
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
@@ -181,7 +181,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(randomDouble(1, 1000))
+                .closureBonus(randomString(1, 100))
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
@@ -207,7 +207,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(randomDouble(1, 1000))
+                .closureBonus(randomString(1, 100))
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
@@ -233,7 +233,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(randomDouble(1, 1000))
+                .closureBonus(randomString(1, 100))
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
@@ -259,7 +259,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(-1.0)
-                .closureBonus(randomDouble(1, 1000))
+                .closureBonus(randomString(1, 100))
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
@@ -285,7 +285,7 @@ public class JobRepositoryTests {
                 .currency(Currency.INR)
                 .description(randomString(10, 100))
                 .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(-1.0)
+                .closureBonus("")
                 .closureBonusPaymentDate(LocalDateTime.now())
                 .cvRatePaymentDate(LocalDateTime.now())
                 .build();
