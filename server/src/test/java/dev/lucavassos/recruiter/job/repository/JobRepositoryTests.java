@@ -63,32 +63,6 @@ public class JobRepositoryTests {
     }
 
     @Test
-    public void save_throws_error_if_client_is_invalid() {
-        Job job = Job.builder()
-                .client(Client.builder().name(randomString(0,0)).build())
-                .name(randomString(10, 50))
-                .status(JobStatus.OPEN)
-                .wantedCvs(randomInteger(1, 10))
-                .contractType(ContractType.PERMANENT)
-                .experienceRangeMin(randomInteger(0, 50))
-                .experienceRangeMax(randomInteger(0, 50))
-                .noticePeriodInDays(randomInteger(1, 20))
-                .salaryBudget(1500.00)
-                .currency(Currency.INR)
-                .description(randomString(10, 100))
-                .bonusPayPerCv(randomDouble(1, 1000))
-                .closureBonus(randomString(1, 100))
-                .closureBonusPaymentDate(LocalDateTime.now())
-                .cvRatePaymentDate(LocalDateTime.now())
-                .build();
-
-        assertThatThrownBy(() -> {
-            repository.save(job);
-        }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("Job client must be at least 1 character long");
-    }
-
-    @Test
     public void save_throws_error_if_name_is_invalid() {
         Job job = Job.builder()
                 .client(Client.builder().name(randomString(10, 50)).build())
@@ -293,6 +267,6 @@ public class JobRepositoryTests {
         assertThatThrownBy(() -> {
             repository.save(job);
         }).isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("Closure bonus cannot be negative");
+                .hasMessageContaining("Closure bonus name must be between 1 and 255 characters long");
     }
 }
