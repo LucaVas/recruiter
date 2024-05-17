@@ -54,8 +54,12 @@ public class EntityInitializer {
                 .name(RoleName.ADMIN)
                 .description("Administrator role")
                 .build();
+        Role tester = Role.builder()
+                .name(RoleName.TESTER)
+                .description("Tester role")
+                .build();
 
-        roleRepository.saveAll(List.of(recruiter, admin));
+        roleRepository.saveAll(List.of(recruiter, admin, tester));
     }
 
     @Transactional
