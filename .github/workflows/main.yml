@@ -5,6 +5,27 @@ on: push
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    env:
+      DB_HOST: localhost
+      DB_NAME: recruiter-test-db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_SSL: disable
+      SERVER_PORT: 3000
+      CLIENT_BASE_URL: http://localhost:5173
+      CLIENT_RESET_PASSWORD_URL: ${{ vars.CLIENT_RESET_PASSWORD_URL }}
+      EMAIL_HOST: ${{ vars.EMAIL_HOST }}
+      EMAIL_PORT: ${{ vars.EMAIL_PORT }}
+      EMAIL_SERVICE_DEBUG: true
+      EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      GOOGLE_CLOUD_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}
+      GOOGLE_CLOUD_PROJECT_ID: ${{ secrets.GOOGLE_CLOUD_PROJECT_ID }}
+      JWT_EXPIRATION_MS: ${{ vars.JWT_EXPIRATION_MS }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      RESET_PASSWORD_TOKEN_EXPIRATION_SECONDS: ${{ vars.RESET_PASSWORD_TOKEN_EXPIRATION_SECONDS }}
+
     services:
       postgres:
         image: postgres:latest
@@ -28,6 +49,14 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -56,29 +85,10 @@ jobs:
 
       - name: Run server tests
         working-directory: server
-        run: mvn test
+        run: mvn -B test
 
       - name: Run server
         working-directory: server/target
-        env:
-          DB_HOST: localhost
-          DB_NAME: recruiter-test-db
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_SSL: disable
-          SERVER_PORT: 3000
-          CLIENT_BASE_URL: http://localhost:5173
-          CLIENT_RESET_PASSWORD_URL: ${{ vars.CLIENT_RESET_PASSWORD_URL }}
-          EMAIL_HOST: ${{ vars.EMAIL_HOST }}
-          EMAIL_PORT: ${{ vars.EMAIL_PORT }}
-          EMAIL_SERVICE_DEBUG: true
-          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          GOOGLE_CLOUD_BUCKET_NAME: ${{ secrets.GOOGLE_CLOUD_BUCKET_NAME }}
-          GOOGLE_CLOUD_PROJECT_ID: ${{ secrets.GOOGLE_CLOUD_PROJECT_ID }}
-          JWT_EXPIRATION_MS: ${{ vars.JWT_EXPIRATION_MS }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          RESET_PASSWORD_TOKEN_EXPIRATION_SECONDS: ${{ vars.RESET_PASSWORD_TOKEN_EXPIRATION_SECONDS }}
         run: java -jar recruiter-1.0-SNAPSHOT.jar &
 
       - name: Build front end for E2E tests
@@ -101,7 +111,7 @@ jobs:
           max-attempts: 5
           retry-delay: 5s
           url: http://localhost:3000/actuator/info
-      
+
       # - name: Test client E2E
       #   working-directory: client
       #   run: npm run test:e2e
