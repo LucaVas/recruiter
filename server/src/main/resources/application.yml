@@ -13,7 +13,7 @@ google:
 password:
     reset:
         token:
-            expirationInSeconds: ${RESET_PASSWORD_TOKEN_EXPIRATION}
+            expirationInSeconds: ${RESET_PASSWORD_TOKEN_EXPIRATION_SECONDS}
 
 client:
     base-url: ${CLIENT_BASE_URL}
