@@ -67,14 +67,14 @@ jobs:
 
       - name: Build with Maven and skip tests
         working-directory: server
-        run: mvn -B package --file pom.xml -DskipTests
+        run: mvn -B package --file pom.xml 
       
-      - name: Run server tests
-        working-directory: server
-        run: mvn -B test
-        env:
-          DB_USER: postgres
-          DB_PASSWORD: postgres
+      # - name: Run server tests
+      #   working-directory: server
+      #   run: mvn -B test
+      #   env:
+      #     DB_USER: postgres
+      #     DB_PASSWORD: postgres
 
       - name: Install client dependencies
         working-directory: client
