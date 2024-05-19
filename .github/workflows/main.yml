@@ -64,6 +64,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      
+      - name: Print environment variables
+        run: printenv | grep DB_
 
       - name: Build with Maven and skip tests
         working-directory: server
