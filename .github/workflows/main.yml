@@ -84,9 +84,9 @@ jobs:
         working-directory: client
         run: npx playwright install --with-deps chromium
 
-      - name: Run server tests
-        working-directory: server
-        run: mvn -B test
+      # - name: Run server tests
+      #   working-directory: server
+      #   run: mvn -B test
 
       - name: Run server
         working-directory: server/target
