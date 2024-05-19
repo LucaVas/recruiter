@@ -9,11 +9,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.List;
 import java.util.Optional;
 
-import static dev.lucavassos.recruiter.testUtils.RandomUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -27,6 +26,13 @@ public class RoleRepositoryTests {
 
     @Test
     public void findAll_retrievesAllRoles_ifSaved() {
+
+        // GIVEN
+        Role recruiterRole = Role.builder().name(RoleName.RECRUITER).description("Recruiter").build();
+        Role adminRole = Role.builder().name(RoleName.ADMIN).description("Admin").build();
+        Role testerRole = Role.builder().name(RoleName.TESTER).description("Tester").build();
+        roleRepository.saveAll(List.of(recruiterRole, adminRole, testerRole));
+
         // WHEN
         Optional<Role> recruiter = roleRepository.findByName(RoleName.RECRUITER);
         Optional<Role> admin = roleRepository.findByName(RoleName.ADMIN);
@@ -36,6 +42,9 @@ public class RoleRepositoryTests {
         assertThat(recruiter).isPresent();
         assertThat(admin).isPresent();
         assertThat(tester).isPresent();
+        assertThat(recruiter.get().getName()).isEqualTo(RoleName.RECRUITER);
+        assertThat(admin.get().getName()).isEqualTo(RoleName.ADMIN);
+        assertThat(tester.get().getName()).isEqualTo(RoleName.TESTER);
     }
 
 }

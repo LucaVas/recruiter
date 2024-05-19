@@ -13,6 +13,7 @@ jobs:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_SSL: disable
+      DDL_AUTO: create
       SERVER_PORT: 3000
       CLIENT_BASE_URL: http://localhost:5173
       CLIENT_RESET_PASSWORD_URL: ${{ vars.CLIENT_RESET_PASSWORD_URL }}
@@ -84,13 +85,13 @@ jobs:
         working-directory: client
         run: npx playwright install --with-deps chromium
 
-      # - name: Run server tests
-      #   working-directory: server
-      #   run: mvn -B test
-
       - name: Run server
         working-directory: server/target
         run: java -jar recruiter-1.0-SNAPSHOT.jar &
+
+      - name: Run server tests
+        working-directory: server
+        run: mvn -B test
 
       - name: Build front end for E2E tests
         working-directory: client

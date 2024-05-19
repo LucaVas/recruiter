@@ -1,0 +1,5 @@
+---- Create users
+--INSERT INTO users (name, email, password, phone, city, country, approved, role_id, created_dtime, modified_dtime)
+--VALUES ('recruiter', 'recruiter@mail.com', 'YourEncodedPassword123!', '1234567890', 'Test city', 'India', true, (SELECT id FROM roles WHERE name = 'RECRUITER'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+--       ('recruiter2', 'recruiter2@mail.com', 'YourEncodedPassword123!', '1234567892', 'Test city 2', 'India', true, (SELECT id FROM roles WHERE name = 'RECRUITER'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+--       ('admin', 'admin@mail.com', 'YourEncodedPassword123!', '1234567891', 'Test city', 'India', true, (SELECT id FROM roles WHERE name = 'ADMIN'), CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
