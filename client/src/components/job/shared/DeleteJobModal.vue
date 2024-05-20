@@ -23,7 +23,7 @@ defineEmits<{
       header="Are you sure?"
       :style="{ width: '25rem' }"
     >
-      <h3>Please, confirm this job deletion.</h3>
+      <h3>Please, confirm this job deletion: this action is irreversible.</h3>
       <Divider />
       <div class="flex justify-end gap-2">
         <Button

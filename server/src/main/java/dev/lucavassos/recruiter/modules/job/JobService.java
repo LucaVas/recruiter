@@ -224,13 +224,23 @@ public class JobService {
 
     @Transactional
     public JobDto getJobById(Long id) {
-        Job job = repository.findOneById(id).orElseThrow(
+        Job job = repository
+                .findOneById(id).orElseThrow(
                 () -> new ResourceNotFoundException(
                         "Job with id [%d] not found".formatted(id)
                 )
         );
 
-        log.info("Job found: [{}]", job);
+        User user = getAuthUser();
+
+        if (job.getStatus() == JobStatus.DELETED) {
+            throw new ResourceNotFoundException("Job with id %d not found".formatted(id));
+        }
+        if (job.getStatus() == JobStatus.ARCHIVED && user.getRoleName() != RoleName.ADMIN) {
+            throw new AccessDeniedException("Job is not accessible");
+        }
+
+        log.info("Job retrieved: [{}]", job);
 
         return jobDtoMapper.apply(job);
     }
@@ -245,7 +255,7 @@ public class JobService {
 
         User user = getAuthUser();
 
-        if (request.status() != null && job.getStatus() != request.status() && job.getStatus() != JobStatus.ARCHIVED) {
+        if (request.status() != null && job.getStatus() != request.status() && job.getStatus() != JobStatus.DELETED) {
             job.setStatus(request.status());
             saveJobInHistoryTable(job, user);
         }

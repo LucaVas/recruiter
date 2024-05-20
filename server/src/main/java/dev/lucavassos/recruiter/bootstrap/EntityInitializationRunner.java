@@ -21,13 +21,13 @@ public class EntityInitializationRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
         entityManager.createNativeQuery("SELECT 1").getSingleResult();
-//        entityInitializer.createRoles();
-//        entityInitializer.createUsers();
-//        entityInitializer.createClients();
-//        entityInitializer.saveSkills();
-//        entityInitializer.saveJobs();
-//        entityInitializer.saveQuestions();
-//        entityInitializer.saveCandidates();
+        entityInitializer.createRoles();
+        entityInitializer.createUsers();
+        entityInitializer.createClients();
+        entityInitializer.saveSkills();
+        entityInitializer.saveJobs();
+        entityInitializer.saveQuestions();
+        entityInitializer.saveCandidates();
 
     }
 }

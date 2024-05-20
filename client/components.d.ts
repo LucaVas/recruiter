@@ -70,6 +70,7 @@ declare module 'vue' {
     JobPaymentDetails: typeof import('./src/components/job/shared/JobPaymentDetails.vue')['default']
     JobSkills: typeof import('./src/components/job/job-page/JobSkills.vue')['default']
     JobStatus: typeof import('./src/components/job/update-job/JobStatus.vue')['default']
+    JobStatusComponent: typeof import('./src/components/job/update-job/JobStatusComponent.vue')['default']
     JobTitle: typeof import('./src/components/job/job-page/JobTitle.vue')['default']
     Menu: typeof import('primevue/menu')['default']
     Message: typeof import('primevue/message')['default']
