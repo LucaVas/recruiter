@@ -4,5 +4,6 @@ public enum JobStatus {
     OPEN,
     NO_CV_ACCEPTED,
     CLOSED,
-    ARCHIVED
+    ARCHIVED,
+    DELETED
 }

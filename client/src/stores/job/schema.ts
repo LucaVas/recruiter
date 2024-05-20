@@ -29,7 +29,7 @@ export type Job = {
 
 export type ContractType = 'PERMANENT' | 'TEMPORARY';
 export type Currency = 'INR';
-export type JobStatus = 'OPEN' | 'NO_CV_ACCEPTED' | 'CLOSED' | 'ARCHIVED';
+export type JobStatus = 'OPEN' | 'NO_CV_ACCEPTED' | 'CLOSED' | 'ARCHIVED' | 'DELETED';
 
 // backend domain objects
 export type NewJobRequest = Omit<
