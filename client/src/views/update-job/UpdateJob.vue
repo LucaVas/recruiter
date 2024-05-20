@@ -19,7 +19,7 @@
       <JobPaymentDetails :disabled="jobDetails.status === 'DELETED'" :jobDetails="jobDetails" />
       <Skills
         :disabled="jobDetails.status === 'DELETED'"
-        :skills="jobDetails.skills"
+        :skills="jobDetails.skills && skills"
         @update="(skills) => (jobDetails!.skills = skills)"
       />
     </div>
@@ -60,8 +60,10 @@ import {
   clients,
   changingStatus,
   deletingJob,
+  skills,
 } from './index';
 import { showSuccess } from '../../utils/errorUtils';
+import { getAllSkills } from '@/stores/skill';
 
 // variables
 const route = useRoute();
@@ -135,11 +137,22 @@ async function delJob(id: number) {
   }
 }
 
+const loadSkills = async () => {
+  try {
+    skills.value = await getAllSkills();
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  }
+};
+
 // init
 onMounted(async () => {
   await Promise.all([
     (jobDetails.value = await loadJobData(Number(jobId.value))),
     (clients.value = await getAllClients()),
+    loadSkills(),
   ]);
 });
 </script>

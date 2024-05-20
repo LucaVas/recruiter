@@ -5,7 +5,6 @@ export const jobStatuses = ref<{ name: string; value: JobStatus }[]>([
   { name: 'Open', value: 'OPEN' },
   { name: 'Closed', value: 'CLOSED' },
   { name: 'No CV accepted', value: 'NO_CV_ACCEPTED' },
-  { name: 'Archived', value: 'ARCHIVED' },
 ]);
 export const contractTypes = ref<{ name: string; value: ContractType }[]>([
   { name: 'Permanent', value: 'PERMANENT' },
