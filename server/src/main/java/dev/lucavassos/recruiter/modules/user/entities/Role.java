@@ -31,6 +31,6 @@ public class Role {
     private LocalDateTime createdDTime;
 
     @UpdateTimestamp
-    @Column(name = "updated_dtime")
+    @Column(name = "modified_dtime")
     private LocalDateTime modifiedDTime;
 }

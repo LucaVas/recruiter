@@ -17,7 +17,7 @@
           type="button"
           size="small"
           label="Change Status"
-          v-if="status !== 'ARCHIVED'"
+          v-if="status !== 'DELETED'"
           @click="toggle"
           aria-haspopup="true"
           aria-controls="overlay_tmenu"
@@ -45,7 +45,7 @@ import { getSeverity, getStatusIcon, formatStatus } from '../shared/utils';
 // props
 const { status, createdAt } = defineProps<{
   status: JobStatus;
-  createdAt: string;
+  createdAt: Date;
 }>();
 
 // emits
@@ -89,6 +89,14 @@ const splitButtonChoices = ref([
     },
   },
   {
+    label: 'Archive Job',
+    icon: 'pi pi-folder',
+    condition: status !== 'ARCHIVED',
+    command: async () => {
+      emits('changeStatus', 'ARCHIVED');
+    },
+  },
+  {
     label: 'Delete',
     icon: 'pi pi-trash',
     condition: isAdmin.value,
@@ -102,4 +110,3 @@ const getSplitButtonChoices = function (): MenuItem[] {
   return splitButtonChoices.value.filter((choice) => choice.condition);
 };
 </script>
-@/stores/job/schema

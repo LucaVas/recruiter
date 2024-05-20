@@ -13,6 +13,7 @@ jobs:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_SSL: disable
+      DDL_AUTO: create
       SERVER_PORT: 3000
       CLIENT_BASE_URL: http://localhost:5173
       CLIENT_RESET_PASSWORD_URL: ${{ vars.CLIENT_RESET_PASSWORD_URL }}
@@ -63,10 +64,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      
+      - name: Print environment variables
+        run: printenv | grep DB_
 
       - name: Build with Maven and skip tests
         working-directory: server
-        run: mvn -B package --file pom.xml -DskipTests
+        run: mvn -B package --file pom.xml 
+      
+      # - name: Run server tests
+      #   working-directory: server
+      #   run: mvn -B test
+      #   env:
+      #     DB_USER: postgres
+      #     DB_PASSWORD: postgres
 
       - name: Install client dependencies
         working-directory: client
@@ -83,10 +94,6 @@ jobs:
       - name: Install Playwright Browsers
         working-directory: client
         run: npx playwright install --with-deps chromium
-
-      # - name: Run server tests
-      #   working-directory: server
-      #   run: mvn -B test
 
       - name: Run server
         working-directory: server/target

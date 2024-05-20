@@ -21,7 +21,7 @@ defineEmits<{
       type="button"
       size="small"
       label="Apply"
-      v-if="status !== 'ARCHIVED'"
+      v-if="status === 'OPEN' && !isAdmin"
       @click="router.push({ name: 'NewCandidacy', params: { id: id } })"
     />
     <div>
@@ -32,7 +32,7 @@ defineEmits<{
         label="View Details"
         outlined
         class="hidden sm:block"
-        v-if="status !== 'ARCHIVED'"
+        v-if="status !== 'DELETED'"
         @click="$emit('openModal')"
       />
       <Button
@@ -41,7 +41,7 @@ defineEmits<{
         icon="pi pi-eye"
         outlined
         class="block min-w-max sm:hidden"
-        v-if="status !== 'ARCHIVED'"
+        v-if="status !== 'DELETED'"
         @click="$emit('openModal')"
       />
     </div>
@@ -55,7 +55,7 @@ defineEmits<{
         label="Edit"
         outlined
         class="hidden sm:block"
-        v-if="status !== 'ARCHIVED' && isAdmin"
+        v-if="status !== 'DELETED' && isAdmin"
         @click="router.push({ name: 'UpdateJob', params: { id: id } })"
       />
       <Button
@@ -65,7 +65,7 @@ defineEmits<{
         icon="pi pi-file-edit"
         outlined
         class="visible min-w-max sm:hidden"
-        v-if="status !== 'ARCHIVED' && isAdmin"
+        v-if="status !== 'DELETED' && isAdmin"
         @click="router.push({ name: 'UpdateJob', params: { id: id } })"
       />
     </div>
@@ -78,7 +78,7 @@ defineEmits<{
         label="Delete"
         outlined
         class="hidden sm:block"
-        v-if="status !== 'ARCHIVED' && isAdmin"
+        v-if="status !== 'DELETED' && isAdmin"
         @click="$emit('deleteJob')"
       />
       <Button
@@ -88,11 +88,10 @@ defineEmits<{
         icon="pi pi-trash"
         outlined
         class="block min-w-max sm:hidden"
-        v-if="status !== 'ARCHIVED' && isAdmin"
+        v-if="status !== 'DELETED' && isAdmin"
         @click="$emit('deleteJob')"
       />
     </div>
   </div>
   <Divider />
 </template>
-@/stores/job/schema

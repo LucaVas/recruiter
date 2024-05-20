@@ -42,6 +42,16 @@ public class GlobalExceptionHandler {
         return errorDetail;
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    ProblemDetail handleResourceNotFoundException(ResourceNotFoundException e) {
+        e.printStackTrace();
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        errorDetail.setType(URI.create("https://www.rfc-editor.org/rfc/rfc9110.html#name-404-not-found"));
+        errorDetail.setProperty("description", "The resource was not found");
+
+        return errorDetail;
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     ProblemDetail handleAccessDeniedException(AccessDeniedException e) {
         e.printStackTrace();

@@ -3,6 +3,7 @@ import type { Job } from '@/stores/job/schema';
 import JobMetadataEntry from '../metadata/JobMetadataEntry.vue';
 import { capitalize } from '@/utils/stringUtils';
 import { formatDate } from '@/utils/dateUtils';
+import { formatStatus } from '../shared/utils';
 
 const { job } = defineProps<{
   job: Job;
@@ -19,6 +20,6 @@ const { job } = defineProps<{
     <JobMetadataEntry :icon="'pi-file'" :content="`${job.wantedCvs} CVs wanted`" />
     <JobMetadataEntry :icon="'pi-users'" :content="`${job.numberOfCandidates ?? 0} candidates`" />
     <JobMetadataEntry :icon="'pi-calendar'" :content="formatDate(job.createdDTime)" />
-    <JobMetadataEntry :icon="'pi-info-circle'" :content="job.status" />
+    <JobMetadataEntry :icon="'pi-info-circle'" :content="formatStatus(job.status) ?? ''" />
   </div>
 </template>

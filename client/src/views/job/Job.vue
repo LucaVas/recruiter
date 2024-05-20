@@ -28,10 +28,11 @@ const delJob = async (id: number) => {
   deletingJob.value = true;
   try {
     await deleteJob(id);
+    deleteJobModalOpen.value = false;
     showSuccess(toast, 'Job deleted successfully.');
     setTimeout(() => {
-      router.go(0);
-    }, 2000);
+      router.push({ name: 'Dashboard' });
+    }, 1500);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -48,6 +49,9 @@ onMounted(async () => {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
+    setTimeout(() => {
+      router.push({ name: 'Dashboard' });
+    }, 3000);
   }
 });
 </script>
@@ -74,4 +78,5 @@ onMounted(async () => {
 
     <JobSkills :isNewJob="false" :skills="job.skills" />
   </div>
+  <ProgressSpinner v-else />
 </template>

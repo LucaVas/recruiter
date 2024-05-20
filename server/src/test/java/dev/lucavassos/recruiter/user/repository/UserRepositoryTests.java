@@ -6,6 +6,7 @@ import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -32,6 +33,13 @@ public class UserRepositoryTests {
     @Autowired
     private TestEntityManager manager;
 
+    @BeforeEach
+    public void createRoles() {
+        Role recruiterRole = Role.builder().name(RoleName.RECRUITER).description("Recruiter").build();
+        Role adminRole = Role.builder().name(RoleName.ADMIN).description("Admin").build();
+        roleRepository.save(recruiterRole);
+        roleRepository.save(adminRole);
+    }
 
     @Test
     public void save_creates_new_user() {

@@ -4,21 +4,21 @@
   </div>
   <div v-else class="flex w-full flex-col gap-8 pb-6">
     <div v-if="!jobUpdated" class="flex h-full w-full flex-col gap-6">
-      <JobStatus
+      <JobStatusComponent
         :status="jobDetails.status"
         :createdAt="jobDetails.createdDTime"
         @delete="delJob(jobDetails.id)"
         @changeStatus="(status: JobStatus) => changeStatus(jobDetails!.id, status)"
       />
       <JobInformation
-        :disabled="jobDetails.status === 'ARCHIVED'"
+        :disabled="jobDetails.status === 'DELETED'"
         :jobDetails="jobDetails"
         :clients="clients"
       />
-      <JobHiringDetails :disabled="jobDetails.status === 'ARCHIVED'" :jobDetails="jobDetails" />
-      <JobPaymentDetails :disabled="jobDetails.status === 'ARCHIVED'" :jobDetails="jobDetails" />
+      <JobHiringDetails :disabled="jobDetails.status === 'DELETED'" :jobDetails="jobDetails" />
+      <JobPaymentDetails :disabled="jobDetails.status === 'DELETED'" :jobDetails="jobDetails" />
       <Skills
-        :disabled="jobDetails.status === 'ARCHIVED'"
+        :disabled="jobDetails.status === 'DELETED'"
         :skills="jobDetails.skills"
         @update="(skills) => (jobDetails!.skills = skills)"
       />
@@ -28,7 +28,7 @@
       :saving="updatingJob"
       :saved="jobUpdated"
       :isUpdate="true"
-      :visible="jobDetails.status !== 'ARCHIVED'"
+      :visible="jobDetails.status !== 'DELETED'"
       @save="update(jobDetails!)"
     />
   </div>
@@ -40,6 +40,7 @@ import JobHiringDetails from '@/components/job/shared/JobHiringDetails.vue';
 import JobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue';
 import Skills from '@/components/job/shared/Skills.vue';
 import JobFooter from '@/components/job/shared/JobFooter.vue';
+import JobStatusComponent from '@/components/job/update-job/JobStatusComponent.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ProgressSpinner from 'primevue/progressspinner';
@@ -51,7 +52,16 @@ import Success from '@/components/Success.vue';
 import { getAllClients } from '@/stores/client';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
-import { loading, updatingJob, jobUpdated, jobDetails, clients } from './index';
+import {
+  loading,
+  updatingJob,
+  jobUpdated,
+  jobDetails,
+  clients,
+  changingStatus,
+  deletingJob,
+} from './index';
+import { showSuccess } from '../../utils/errorUtils';
 
 // variables
 const route = useRoute();
@@ -91,28 +101,37 @@ async function update(job: Job) {
 }
 
 async function changeStatus(id: number, status: JobStatus) {
-  updatingJob.value = true;
+  changingStatus.value = true;
   try {
     await changeJobStatus(id, status);
-    jobUpdated.value = true;
-    router.go(0);
+    showSuccess(toast, 'Job status changed successfully.');
+    await Promise.all([
+      (jobDetails.value = await loadJobData(Number(jobId.value))),
+      (clients.value = await getAllClients()),
+    ]);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
-    updatingJob.value = false;
+    changingStatus.value = false;
   }
 }
 
 async function delJob(id: number) {
+  deletingJob.value = true;
   try {
     await deleteJob(id);
-    router.go(0);
+    router.push({ name: 'Dashboard' });
+    setTimeout(() => {
+      showSuccess(toast, 'Job deleted successfully.');
+    }, 1000);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    deletingJob.value = false;
   }
 }
 

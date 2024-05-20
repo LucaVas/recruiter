@@ -224,13 +224,23 @@ public class JobService {
 
     @Transactional
     public JobDto getJobById(Long id) {
-        Job job = repository.findOneById(id).orElseThrow(
+        Job job = repository
+                .findOneById(id).orElseThrow(
                 () -> new ResourceNotFoundException(
                         "Job with id [%d] not found".formatted(id)
                 )
         );
 
-        log.info("Job found: [{}]", job);
+        User user = getAuthUser();
+
+        if (job.getStatus() == JobStatus.DELETED) {
+            throw new ResourceNotFoundException("Job with id %d not found".formatted(id));
+        }
+        if (job.getStatus() == JobStatus.ARCHIVED && user.getRoleName() != RoleName.ADMIN) {
+            throw new AccessDeniedException("Job is not accessible");
+        }
+
+        log.info("Job retrieved: [{}]", job);
 
         return jobDtoMapper.apply(job);
     }
@@ -245,7 +255,7 @@ public class JobService {
 
         User user = getAuthUser();
 
-        if (request.status() != null && job.getStatus() != request.status() && job.getStatus() != JobStatus.ARCHIVED) {
+        if (request.status() != null && job.getStatus() != request.status() && job.getStatus() != JobStatus.DELETED) {
             job.setStatus(request.status());
             saveJobInHistoryTable(job, user);
         }
@@ -257,20 +267,20 @@ public class JobService {
     public List<JobDto> getAllJobs() {
         log.info("Retrieving {} jobs", 1000);
 
+        User user = getAuthUser();
+
         List<Job> jobs = repository.findAll();
 
-        List<JobDto> jobsDtos = jobs.stream()
-                .filter(job -> job.getStatus() != JobStatus.ARCHIVED)
-                .map(job -> {
-                    Set<Candidacy> candidacies = new HashSet<>(candidacyRepository.findByJob(job));
-                    job.setNumberOfCandidates(candidacies.size());
-                    return jobDtoMapper.apply(job);
-                })
+        List<JobDto> jobDtos = jobs.stream()
+                .filter(job -> job.getStatus() != JobStatus.DELETED &&
+                        (user.getRoleName() == RoleName.ADMIN || job.getStatus() != JobStatus.ARCHIVED))
+                .peek(job -> job.setNumberOfCandidates(candidacyRepository.findByJob(job).size()))
+                .map(jobDtoMapper)
                 .toList();
 
         log.info("Jobs retrieved: {}", jobs);
 
-        return jobsDtos;
+        return jobDtos;
     }
 
     @Transactional
@@ -284,13 +294,9 @@ public class JobService {
         );
 
         User user = getAuthUser();
-        if (!user.isAdmin()) {
-            log.error("User with id {} is not authorized to delete this job", user.getId());
-            throw new AccessDeniedException("User is unauthorized to delete this job");
-        }
 
-        if (job.getStatus() != JobStatus.ARCHIVED) {
-            job.setStatus(JobStatus.ARCHIVED);
+        if (job.getStatus() != JobStatus.DELETED) {
+            job.setStatus(JobStatus.DELETED);
             Job jobDeleted = repository.save(job);
             log.info("Job {} deleted successfully", jobDeleted.getId());
             saveJobInHistoryTable(job, user);

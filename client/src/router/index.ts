@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { authenticate, showForAdmin } from './guards';
+import { authenticate, hideForAdmin, showForAdmin } from './guards';
 import DashboardLayout from '@/layouts/dashboard/DashboardLayout.vue';
 
 const router = createRouter({
@@ -24,10 +24,12 @@ const router = createRouter({
         {
           path: '/candidacies/job=:id',
           name: 'NewCandidacy',
+          beforeEnter: [hideForAdmin],
           component: () => import('@/views/new-candidacy/NewCandidacy.vue'),
         },
         {
           path: '/candidacies/edit/job=:jobId&candidate=:pan',
+          beforeEnter: [showForAdmin],
           name: 'UpdateCandidacy',
           component: () => import('@/views/update-candidacy/UpdateCandidacy.vue'),
         },
@@ -54,6 +56,7 @@ const router = createRouter({
         },
         {
           path: '/jobs/update/:id',
+          beforeEnter: [showForAdmin],
           name: 'UpdateJob',
           component: () => import('@/views/update-job/UpdateJob.vue'),
         },
