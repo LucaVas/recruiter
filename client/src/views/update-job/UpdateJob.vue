@@ -105,9 +105,10 @@ async function changeStatus(id: number, status: JobStatus) {
   try {
     await changeJobStatus(id, status);
     showSuccess(toast, 'Job status changed successfully.');
-    setTimeout(() => {
-      router.go(0);
-    }, 1000);
+    await Promise.all([
+      (jobDetails.value = await loadJobData(Number(jobId.value))),
+      (clients.value = await getAllClients()),
+    ]);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);

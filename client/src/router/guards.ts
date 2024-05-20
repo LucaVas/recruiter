@@ -12,6 +12,12 @@ export const showForAdmin = () => {
   return true;
 };
 
+export const hideForAdmin = () => {
+  if (isAdmin.value) return { name: 'Dashboard' };
+
+  return true;
+};
+
 export const hideForAuth = () => {
   if (isLoggedIn.value) return { name: 'Dashboard' };
 

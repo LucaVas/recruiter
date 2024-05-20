@@ -33,14 +33,28 @@ export const menuItems = ref<MenuItem[]>([
         name: 'My Candidacies',
         shortcut: '⌘+J',
         view: 'CandidaciesPage',
-        privileges: ['RECRUITER', 'ADMIN'],
+        privileges: ['RECRUITER'],
+      },
+      {
+        icon: 'pi pi-list',
+        name: 'All Candidacies',
+        shortcut: '⌘+J',
+        view: 'CandidaciesPage',
+        privileges: ['ADMIN'],
       },
       {
         icon: 'pi pi-users',
         name: 'My Candidates',
         shortcut: '⌘+J',
         view: 'CandidatesPage',
-        privileges: ['RECRUITER', 'ADMIN'],
+        privileges: ['RECRUITER'],
+      },
+      {
+        icon: 'pi pi-users',
+        name: 'All Candidates',
+        shortcut: '⌘+J',
+        view: 'CandidatesPage',
+        privileges: ['ADMIN'],
       },
     ],
   },
@@ -59,13 +73,6 @@ export const menuItems = ref<MenuItem[]>([
   {
     group: 'Profile',
     links: [
-      {
-        name: 'My performance',
-        icon: 'pi pi-chart-line',
-        shortcut: '⌘+P',
-        view: 'Dashboard',
-        privileges: ['RECRUITER', 'ADMIN'],
-      },
       {
         name: 'Settings',
         icon: 'pi pi-cog',

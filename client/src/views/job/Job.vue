@@ -32,7 +32,7 @@ const delJob = async (id: number) => {
     showSuccess(toast, 'Job deleted successfully.');
     setTimeout(() => {
       router.push({ name: 'Dashboard' });
-    }, 2000);
+    }, 1500);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -49,6 +49,9 @@ onMounted(async () => {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
+    setTimeout(() => {
+      router.push({ name: 'Dashboard' });
+    }, 3000);
   }
 });
 </script>

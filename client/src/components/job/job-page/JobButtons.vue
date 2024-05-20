@@ -21,7 +21,7 @@ defineEmits<{
       type="button"
       size="small"
       label="Apply"
-      v-if="status !== 'DELETED'"
+      v-if="status === 'OPEN' && !isAdmin"
       @click="router.push({ name: 'NewCandidacy', params: { id: id } })"
     />
     <div>
