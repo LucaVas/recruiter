@@ -59,40 +59,24 @@ public class CandidacyService {
                 SecurityContextHolder.getContext().getAuthentication();
         User userPrincipal = (User) authentication.getPrincipal();
 
+        User recruiter = userRepository
+                .findOneById(userPrincipal.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Recruiter not found"));
+        Job job = jobRepository
+                .findOneByIdAndStatusNot(candidacy.jobId(), JobStatus.DELETED)
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
+        Candidate candidate = candidateRepository
+                .findOneByPan(candidacy.candidatePan())
+                .orElseThrow(() -> new ResourceNotFoundException("Candidate not found"));
 
-        // find recruiter
-        User recruiter = userRepository.findOneById(userPrincipal.getId()).orElseThrow(
-                () -> {
-                    log.error("Recruiter with ID {} not found", userPrincipal.getId());
-                    return new ResourceNotFoundException("Recruiter not found");
-                }
-        );
-        // find job
-        Job job = jobRepository.findOneByIdAndStatusNot(candidacy.jobId(), JobStatus.DELETED).orElseThrow(
-                () -> {
-                    log.error("Job with ID {} not found", candidacy.jobId());
-                    return new ResourceNotFoundException("Job not found");
-                }
-        );
-        // find candidate
-        Candidate candidate = candidateRepository.findOneByPan(candidacy.candidatePan()).orElseThrow(
-                () -> {
-                    log.error("Candidate with Pan {} not found", candidacy.candidatePan());
-                    return new ResourceNotFoundException("Candidate not found");
-                }
-        );
-
-        if (candidacyRepository.existsByJobAndCandidate(job, candidate)) {
-            log.error("Candidacy already exists for job {} and candidate {}", job, candidate);
+        if (candidacyRepository.existsByJobAndCandidate(job, candidate))
             throw new RequestValidationException("Candidacy already exists");
-        }
 
         if (candidacy.resume() != null) validateFile(candidacy.resume());
 
-        CandidacyId candidacyId = new CandidacyId(candidate.getPan(), job.getId());
         Candidacy newCandidacy = saveCandidacy(
                 Candidacy.builder()
-                        .id(candidacyId)
+                        .id(new CandidacyId(candidate.getPan(), job.getId()))
                         .job(job)
                         .candidate(candidate)
                         .recruiter(recruiter)
@@ -129,10 +113,8 @@ public class CandidacyService {
                         .build();
                 candidacyFileRepository.save(file);
             } catch (IOException ioe) {
-                log.error("Error while uploading resume: {}", ioe.getMessage());
                 throw new ServerException("Error while uploading resume");
             } catch (Exception e) {
-                log.error("Error while saving candidacy file: {}", e.getMessage());
                 throw new DatabaseException("Error while saving candidacy file");
             }
         }
@@ -141,20 +123,17 @@ public class CandidacyService {
 
     @Transactional
     public CandidacyDto getCandidacy(Long jobId, String pan) {
-        Candidacy candidacy = findIfExist(jobId, pan);
-        return candidacyDtoMapper.apply(candidacy);
+        return candidacyDtoMapper.apply(findIfExist(jobId, pan));
     }
 
     @Transactional
     public List<CandidacyDto> getAllCandidacies() {
-
         User user = getAuthUser();
-        List<Candidacy> candidacies = candidacyRepository.findAll();
-
-        return candidacies
+        return candidacyRepository
+                .findAll()
                 .stream()
                 .filter(candidacy -> user.isAdmin() || candidacy.getRecruiter().getId().equals(user.getId()))
-                .map(candidacy -> candidacyDtoMapper.apply(candidacy))
+                .map(candidacyDtoMapper)
                 .toList();
     }
 
@@ -162,15 +141,14 @@ public class CandidacyService {
     public CandidacyDto updateCandidacy(Long jobId, String pan, UpdateCandidacyRequest request) {
 
         boolean changes = false;
-        log.info("Updating candidacy with jobId {} and pan {}", jobId, pan);
+        log.debug("Updating candidacy with jobId {} and pan {}", jobId, pan);
 
         Candidacy candidacy = findIfExist(jobId, pan);
 
         User user = getAuthUser();
-        if (!isUserAuthorized(user, candidacy)) {
-            log.error("User with id {} is not authorized to modify this candidacy", user.getId());
+        if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to modify this candidacy");
-        }
+
 
         if (request.relevantExperience() != null && request.relevantExperience() != candidacy.getRelevantExperience()) {
             candidacy.setRelevantExperience(request.relevantExperience());
@@ -207,7 +185,7 @@ public class CandidacyService {
         }
 
         Candidacy updatedCandidacy = saveCandidacy(candidacy);
-        log.info("Candidacy updated: [{}]", updatedCandidacy);
+        log.debug("Candidacy updated: [{}]", updatedCandidacy);
 
         return candidacyDtoMapper.apply(updatedCandidacy);
     }
@@ -216,33 +194,24 @@ public class CandidacyService {
     public void addCandidacyComment(Long jobId, String pan, NewCandidacyCommentRequest comment) {
 
         Candidacy candidacy = findIfExist(jobId, pan);
-
         User user = getAuthUser();
-        if (!isUserAuthorized(user, candidacy)) {
-            log.error("User with id {} is not authorized to add comments to this candidacy", user.getId());
+        if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to add comments to this candidacy");
-        }
 
-        try {
-            candidacyCommentRepository.save(
-                    CandidacyComment.builder()
-                            .text(comment.text())
-                            .candidacy(candidacy)
-                            .author(user)
-                            .build()
-            );
-        } catch (Exception e) {
-            log.error("Database error while adding comment to candidacy: {}", e.getMessage());
-            throw new DatabaseException(e.getMessage());
-        }
+        saveCandidacyComment(
+                CandidacyComment.builder()
+                        .text(comment.text())
+                        .candidacy(candidacy)
+                        .author(user)
+                        .build());
     }
 
     @Transactional
     public List<CandidacyCommentDto> getCandidacyComments(Long jobId, String pan) {
 
         Candidacy candidacy = findIfExist(jobId, pan);
-
-        return candidacyCommentRepository.findByCandidacy(candidacy)
+        return candidacyCommentRepository
+                .findByCandidacy(candidacy)
                 .stream()
                 .map(candidacyCommentDtoMapper)
                 .toList();
@@ -252,8 +221,8 @@ public class CandidacyService {
     public List<CandidacyFileDto> getCandidacyFiles(Long jobId, String pan) {
 
         Candidacy candidacy = findIfExist(jobId, pan);
-
-        return candidacyFileRepository.findByCandidacy(candidacy)
+        return candidacyFileRepository
+                .findByCandidacy(candidacy)
                 .stream()
                 .map(candidacyFileDtoMapper)
                 .toList();
@@ -262,32 +231,25 @@ public class CandidacyService {
     @Transactional
     public void deleteCandidacyFile(Long fileId) {
 
-        CandidacyFile file = candidacyFileRepository.findById(fileId).orElseThrow(
-                () -> {
-                    log.error("Candidacy file with id {} not found", fileId);
-                    return new ResourceNotFoundException("Candidacy file not found");
-                }
-        );
+        CandidacyFile file = candidacyFileRepository
+                .findById(fileId)
+                .orElseThrow(() -> new ResourceNotFoundException("Candidacy file not found"));
 
         Candidacy candidacy = file.getCandidacy();
 
         User user = getAuthUser();
-        if (!isUserAuthorized(user, candidacy)) {
-            log.error("User with id {} is not authorized to delete this file", user.getId());
+        if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to delete this file");
-        }
 
         try {
             resumeHandler.deleteResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
         } catch (Exception e) {
-            log.error("Error while deleting resume: {}", e.getMessage());
             throw new ServerException("Error while deleting resume");
         }
 
         try {
             candidacyFileRepository.delete(file);
         } catch (Exception e) {
-            log.error("Database error while deleting candidacy file: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -295,20 +257,14 @@ public class CandidacyService {
     @Transactional
     public byte[] getCandidacyFile(Long fileId) {
 
-        CandidacyFile file = candidacyFileRepository.findById(fileId).orElseThrow(
-                () -> {
-                    log.error("Candidacy file with id {} not found", fileId);
-                    return new ResourceNotFoundException("Candidacy file not found");
-                }
-        );
+        CandidacyFile file = candidacyFileRepository
+                .findById(fileId)
+                .orElseThrow(() -> new ResourceNotFoundException("Candidacy file not found"));
 
         Candidacy candidacy = file.getCandidacy();
-
         User user = getAuthUser();
-        if (!isUserAuthorized(user, candidacy)) {
-            log.error("User with id {} is not authorized to get this file", user.getId());
+        if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to get this file");
-        }
 
         return resumeHandler.getResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
     }
@@ -317,17 +273,13 @@ public class CandidacyService {
     public void deleteCandidacy(Long jobId, String pan) {
 
         Candidacy candidacy = findIfExist(jobId, pan);
-
         User user = getAuthUser();
-        if (!isUserAuthorized(user, candidacy)) {
-            log.error("User with id {} is not authorized to delete this candidacy", user.getId());
+        if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to delete this candidacy");
-        }
 
         try {
             candidacyRepository.delete(candidacy);
         } catch (Exception e) {
-            log.error("Database error while deleting candidacy: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -337,15 +289,12 @@ public class CandidacyService {
 
         Candidacy candidacy = findIfExist(jobId, pan);
         User user = getAuthUser();
-        if (!isUserAuthorized(user, candidacy)) {
-            log.error("User with id {} is not authorized to upload fles to this candidacy", user.getId());
+        if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to upload files to this candidacy");
-        }
 
-        if (files == null || files.isEmpty()) {
-            log.error("No files were provided to upload");
+        if (files == null || files.isEmpty())
             throw new RequestValidationException("No files were provided to upload");
-        }
+
         files.forEach(file -> {
             validateFile(file);
             UUID uniqueId = UUID.randomUUID();
@@ -362,10 +311,8 @@ public class CandidacyService {
                         .build();
                 candidacyFileRepository.save(newFile);
             } catch (IOException ioe) {
-                log.error("Error while uploading resume: {}", ioe.getMessage());
                 throw new ServerException("Error while uploading resume");
             } catch (Exception e) {
-                log.error("Error while saving candidacy file: {}", e.getMessage());
                 throw new DatabaseException("Error while saving candidacy file");
             }
         });
@@ -374,9 +321,9 @@ public class CandidacyService {
 
 
     @Transactional
-    private CandidacyComment saveCandidacyComment(CandidacyComment comment) {
+    private void saveCandidacyComment(CandidacyComment comment) {
         try {
-            return candidacyCommentRepository.save(comment);
+            candidacyCommentRepository.save(comment);
         } catch (Exception e) {
             log.error("Database error while adding comment to candidacy: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
@@ -407,27 +354,16 @@ public class CandidacyService {
 
     @Transactional
     private Candidacy findIfExist(Long jobId, String pan) {
-        Job job = jobRepository.findOneByIdAndStatusNot(jobId, JobStatus.DELETED)
-                .orElseThrow(
-                () -> {
-                    log.error("Job with id {} not found", jobId);
-                    return new ResourceNotFoundException("Job not found");
-                }
-        );
-        Candidate candidate = candidateRepository.findOneByPan(pan).orElseThrow(
-                () -> {
-                    log.error("Candidate with pan {} not found", pan);
-                    return new ResourceNotFoundException("Candidate not found");
-                }
-        );
+        Job job = jobRepository
+                .findOneByIdAndStatusNot(jobId, JobStatus.DELETED)
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
+        Candidate candidate = candidateRepository
+                .findOneByPan(pan)
+                .orElseThrow(() -> new ResourceNotFoundException("Candidate not found"));
 
-        return candidacyRepository.findByJobAndCandidate(job, candidate)
-                .orElseThrow(
-                        () -> {
-                            log.error("Candidacy with job {} and candidate {} not found", job, candidate);
-                            return new ResourceNotFoundException("Candidacy not found");
-                        }
-                );
+        return candidacyRepository
+                .findByJobAndCandidate(job, candidate)
+                .orElseThrow(() -> new ResourceNotFoundException("Candidacy not found"));
     }
 
     private boolean isUserAuthorized(User recruiter, Candidacy candidacy) {
@@ -436,14 +372,10 @@ public class CandidacyService {
     }
 
     private void validateFile(MultipartFile file) {
-        if (file.getSize() > 5242880) {
-            log.error("File size exceeds the limit of 5MB");
+        if (file.getSize() > 5242880)
             throw new RequestValidationException("File size exceeds the limit of 5MB");
-        }
 
-        if (!Objects.equals(file.getContentType(), "application/pdf")) {
-            log.error("File type not allowed: {}", file.getContentType());
+        if (!Objects.equals(file.getContentType(), "application/pdf"))
             throw new RequestValidationException("File type is not allowed. Only PDF files are accepted.");
-        }
     }
 }
