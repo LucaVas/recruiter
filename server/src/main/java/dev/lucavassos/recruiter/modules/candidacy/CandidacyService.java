@@ -12,6 +12,7 @@ import dev.lucavassos.recruiter.modules.candidacy.repository.dto.*;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
+import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
@@ -67,7 +68,7 @@ public class CandidacyService {
                 }
         );
         // find job
-        Job job = jobRepository.findOneById(candidacy.jobId()).orElseThrow(
+        Job job = jobRepository.findOneByIdAndStatusNot(candidacy.jobId(), JobStatus.DELETED).orElseThrow(
                 () -> {
                     log.error("Job with ID {} not found", candidacy.jobId());
                     return new ResourceNotFoundException("Job not found");
@@ -406,7 +407,8 @@ public class CandidacyService {
 
     @Transactional
     private Candidacy findIfExist(Long jobId, String pan) {
-        Job job = jobRepository.findOneById(jobId).orElseThrow(
+        Job job = jobRepository.findOneByIdAndStatusNot(jobId, JobStatus.DELETED)
+                .orElseThrow(
                 () -> {
                     log.error("Job with id {} not found", jobId);
                     return new ResourceNotFoundException("Job not found");

@@ -60,7 +60,7 @@ public class JobController {
     @GetMapping("/jobs")
     public ResponseEntity<List<JobDto>> getAllJobs() {
         LOG.info("Received request for all jobs.");
-        return new ResponseEntity<>(service.getAllJobs(), HttpStatus.OK);
+        return new ResponseEntity<>(service.getAllJobs(1, 1000), HttpStatus.OK);
     }
 
     @GetMapping("/jobs/{jobId}")
