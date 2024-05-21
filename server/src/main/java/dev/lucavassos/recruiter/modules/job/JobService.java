@@ -179,6 +179,14 @@ public class JobService {
             job.setClosureBonus(request.closureBonus());
             changes = true;
         }
+        if (request.closureBonusPaymentDate() != null && !request.closureBonusPaymentDate().equals(job.getClosureBonusPaymentDate())) {
+            job.setClosureBonusPaymentDate(request.closureBonusPaymentDate());
+            changes = true;
+        }
+        if (request.cvRatePaymentDate() != null && !request.cvRatePaymentDate().equals(job.getCvRatePaymentDate())) {
+            job.setCvRatePaymentDate(request.cvRatePaymentDate());
+            changes = true;
+        }
         if (request.skills() != null) {
             List<Skill> skills = skillRepository
                     .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toList()));
