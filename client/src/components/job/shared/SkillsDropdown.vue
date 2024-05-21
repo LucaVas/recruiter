@@ -8,9 +8,8 @@ const loading = ref(false);
 const selectedSkill = ref<Skill>();
 
 // props
-const { disabled, skills } = defineProps<{
+const { skills } = defineProps<{
   skills: Skill[];
-  disabled: boolean;
 }>();
 
 // emits
@@ -30,7 +29,6 @@ defineEmits<{
       optionLabel="name"
       placeholder="Select a Skill"
       class="w-full"
-      :disabled="disabled"
     >
       <template #value="slotProps">
         <div v-if="slotProps.value" class="align-items-center flex">

@@ -35,7 +35,7 @@ export default () => {
     (error) => {
       if (axios.isAxiosError(error)) {
         const title = error.response?.data.title;
-        const message = error.response?.data.description;
+        const message = error.response?.data.detail;
         const statusCode = error.response?.status;
         throw new ApiError(message, statusCode, title);
       }
@@ -48,9 +48,10 @@ export default () => {
       return response;
     },
     (error) => {
+      console.log(error)
       if (axios.isAxiosError(error)) {
         const title = error.response?.data.title;
-        const message = error.response?.data.description;
+        const message = error.response?.data.detail;
         const statusCode = error.response?.status;
 
         if (message.includes("JWT token")) {

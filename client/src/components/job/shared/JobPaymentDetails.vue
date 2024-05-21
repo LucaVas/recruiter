@@ -1,3 +1,28 @@
+<script setup lang="ts">
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import Calendar from 'primevue/calendar';
+import { ref } from 'vue';
+import InputText from 'primevue/inputtext';
+
+// props
+const { jobPaymentDetails } = defineProps<{
+  jobPaymentDetails: {
+    bonusPayPerCv: number;
+    cvRatePaymentDate: Date;
+    closureBonus: string;
+    closureBonusPaymentDate: Date;
+  };
+}>();
+
+// emits
+const emit = defineEmits<{
+  (e: 'input', content: typeof details.value): void;
+}>();
+
+const details = ref(jobPaymentDetails);
+</script>
+
 <template>
   <div class="card flex flex-col gap-8">
     <div class="flex w-full flex-col gap-6 sm:flex-row">
@@ -12,7 +37,6 @@
             :min="0"
             v-model="details.bonusPayPerCv"
             required
-            :disabled="disabled"
             @input="emit('input', details)"
           />
         </InputGroup>
@@ -32,7 +56,6 @@
             iconDisplay="input"
             inputId="icondisplay"
             required
-            :disabled="disabled"
             @date-select="emit('input', details)"
           />
         </InputGroup>
@@ -50,7 +73,6 @@
             id="closureBonus"
             v-model="details.closureBonus"
             required
-            :disabled="disabled"
             @input="emit('input', details)"
           />
         </InputGroup>
@@ -72,7 +94,6 @@
             iconDisplay="input"
             inputId="icondisplay"
             required
-            :disabled="disabled"
             @date-select="emit('input', details)"
           />
         </InputGroup>
@@ -80,25 +101,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import Calendar from 'primevue/calendar';
-import { ref } from 'vue';
-import type { Job, NewJobRequest } from '@/stores/job/schema';
-import InputText from 'primevue/inputtext';
-
-// props
-const { jobDetails, disabled } = defineProps<{
-  jobDetails: Job | NewJobRequest;
-  disabled: boolean;
-}>();
-
-// emits
-const emit = defineEmits<{
-  (e: 'input', content: typeof details.value): void;
-}>();
-
-const details = ref(jobDetails);
-</script>
