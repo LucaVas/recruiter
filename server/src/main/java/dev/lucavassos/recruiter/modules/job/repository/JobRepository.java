@@ -2,7 +2,6 @@ package dev.lucavassos.recruiter.modules.job.repository;
 
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
-import dev.lucavassos.recruiter.modules.user.entities.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;

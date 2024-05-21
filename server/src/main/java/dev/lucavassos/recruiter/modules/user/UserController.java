@@ -5,11 +5,9 @@ import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "api/v1")
 public class UserController {
 
-    @Autowired
-    private UserService service;
+    private final UserService service;
 
     @PostMapping("/users/approvals")
     public ResponseEntity<?> approveUser(

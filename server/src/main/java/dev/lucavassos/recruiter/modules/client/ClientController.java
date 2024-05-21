@@ -3,8 +3,8 @@ package dev.lucavassos.recruiter.modules.client;
 import dev.lucavassos.recruiter.modules.client.domain.NewClientRequest;
 import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "api/v1")
 public class ClientController {
 
-    @Autowired
-    private ClientService service;
+    private final ClientService service;
 
 
     @GetMapping("/clients")

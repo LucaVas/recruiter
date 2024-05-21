@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyFilesUploadRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
@@ -8,8 +7,8 @@ import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyCommen
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyDto;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.CandidacyFileDto;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,16 +17,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URL;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "api/v1")
 public class CandidacyController {
 
-    @Autowired
-    private CandidacyService service;
+    private final CandidacyService service;
 
     @RequestMapping(value = "/candidacies", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addCandidacy(@Valid NewCandidacyRequest request) {
@@ -40,7 +38,7 @@ public class CandidacyController {
     public ResponseEntity<CandidacyDto> updateCandidacy(
             @PathVariable Long jobId,
             @PathVariable String pan,
-            @Valid @RequestBody UpdateCandidacyRequest request) throws Exception {
+            @Valid @RequestBody UpdateCandidacyRequest request) {
         log.info("Received request to update candidacy: {}", request);
         return ResponseEntity.ok(service.updateCandidacy(jobId, pan, request));
     }
