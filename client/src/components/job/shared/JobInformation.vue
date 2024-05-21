@@ -88,21 +88,23 @@ import Dropdown from 'primevue/dropdown';
 import ClientModal from '@/components/client/ClientModal.vue';
 import { ref } from 'vue';
 import { jobStatuses, contractTypes } from './utils';
-import type { Job, NewJobRequest } from '@/stores/job/schema';
-import type { Client } from '@/stores/client/schema';
 import ClientDropdown from './ClientDropdown.vue';
 import { createClient } from '@/stores/client/index';
-import type { NewClient } from '@/stores/client/schema';
+import type { Client, NewClient } from '@/stores/client/schema';
 import { useToast } from 'primevue/usetoast';
-import { ApiError } from '@/utils/types';
-import { showError } from '@/utils/errorUtils';
-import { DEFAULT_SERVER_ERROR } from '@/consts';
+import { handleError } from '@/utils/errorUtils';
+import type { ContractType, JobStatus } from '@/stores/job/schema';
 
 const toast = useToast();
 
 // props
-const { job, clients } = defineProps<{
-  job: Job | NewJobRequest;
+const { jobInformation, clients } = defineProps<{
+  jobInformation: {
+    client: Client;
+    name: string;
+    status: JobStatus;
+    contractType: ContractType;
+  };
   clients: Client[];
 }>();
 
@@ -112,9 +114,7 @@ const create = async (client: NewClient) => {
     emit('selectClient', newClient);
     clientModalOpen.value = false;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message, err.title);
-    else if (err instanceof Error) showError(toast, err.message);
-    else showError(toast, DEFAULT_SERVER_ERROR);
+    handleError(toast, err);
   }
 };
 
@@ -125,5 +125,5 @@ const emit = defineEmits<{
 }>();
 
 const clientModalOpen = ref(false);
-const details = ref(job);
+const details = ref(jobInformation);
 </script>

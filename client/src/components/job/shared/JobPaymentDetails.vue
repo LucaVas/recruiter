@@ -1,3 +1,28 @@
+<script setup lang="ts">
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import Calendar from 'primevue/calendar';
+import { ref } from 'vue';
+import InputText from 'primevue/inputtext';
+
+// props
+const { jobPaymentDetails } = defineProps<{
+  jobPaymentDetails: {
+    bonusPayPerCv: number;
+    cvRatePaymentDate: Date;
+    closureBonus: string;
+    closureBonusPaymentDate: Date;
+  };
+}>();
+
+// emits
+const emit = defineEmits<{
+  (e: 'input', content: typeof details.value): void;
+}>();
+
+const details = ref(jobPaymentDetails);
+</script>
+
 <template>
   <div class="card flex flex-col gap-8">
     <div class="flex w-full flex-col gap-6 sm:flex-row">
@@ -76,24 +101,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import Calendar from 'primevue/calendar';
-import { ref } from 'vue';
-import type { Job, NewJobRequest } from '@/stores/job/schema';
-import InputText from 'primevue/inputtext';
-
-// props
-const { job } = defineProps<{
-  job: Job | NewJobRequest;
-}>();
-
-// emits
-const emit = defineEmits<{
-  (e: 'input', content: typeof details.value): void;
-}>();
-
-const details = ref(job);
-</script>

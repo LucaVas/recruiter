@@ -44,11 +44,22 @@ onMounted(async () => {
   <div class="flex w-full flex-col gap-8 pb-6">
     <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
       <JobInformation
-        :disabled="false"
-        :job="job"
+        :jobInformation="{
+          client: job.client,
+          name: job.name,
+          status: job.status,
+          contractType: job.contractType,
+        }"
         :clients="clients"
         :selectedClient="job.client"
-        @input="(details) => (job = details)"
+        @input="
+          (details) => {
+            job.client = details.client;
+            job.name = details.name;
+            job.status = details.status;
+            job.contractType = details.contractType;
+          }
+        "
         @selectClient="
           (client) => {
             job.client = client;
@@ -56,8 +67,44 @@ onMounted(async () => {
           }
         "
       />
-      <JobHiringDetails @input="(details) => (job = details)" :disabled="false" :job="job" />
-      <NowJobPaymentDetails :disabled="false" :job="job" @input="(details) => (job = details)" />
+      <JobHiringDetails
+        :jobHiringDetails="{
+          wantedCvs: job.wantedCvs,
+          noticePeriodInDays: job.noticePeriodInDays,
+          experienceRangeMin: job.experienceRangeMin,
+          experienceRangeMax: job.experienceRangeMax,
+          salaryBudget: job.salaryBudget,
+          currency: job.currency,
+          description: job.description,
+        }"
+        @input="
+          (details) => {
+            job.wantedCvs = details.wantedCvs;
+            job.noticePeriodInDays = details.noticePeriodInDays;
+            job.experienceRangeMin = details.experienceRangeMin;
+            job.experienceRangeMax = details.experienceRangeMax;
+            job.salaryBudget = details.salaryBudget;
+            job.currency = details.currency;
+            job.description = details.description;
+          }
+        "
+      />
+      <NowJobPaymentDetails
+        :jobPaymentDetails="{
+          bonusPayPerCv: job.bonusPayPerCv,
+          cvRatePaymentDate: job.cvRatePaymentDate,
+          closureBonus: job.closureBonus,
+          closureBonusPaymentDate: job.closureBonusPaymentDate,
+        }"
+        @input="
+          (details) => {
+            job.bonusPayPerCv = details.bonusPayPerCv;
+            job.cvRatePaymentDate = details.cvRatePaymentDate;
+            job.closureBonus = details.closureBonus;
+            job.closureBonusPaymentDate = details.closureBonusPaymentDate;
+          }
+        "
+      />
       <div class="space-y-3">
         <NewSkillModal
           :visible="skillModalOpen"

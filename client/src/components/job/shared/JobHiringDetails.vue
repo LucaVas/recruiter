@@ -5,11 +5,18 @@ import Dropdown from 'primevue/dropdown';
 import Textarea from 'primevue/textarea';
 import type { Currency } from '@/stores/job/schema';
 import { ref } from 'vue';
-import type { Job, NewJobRequest } from '@/stores/job/schema';
 
 // props
-const { job } = defineProps<{
-  job: Job | NewJobRequest;
+const { jobHiringDetails } = defineProps<{
+  jobHiringDetails: {
+    wantedCvs: number;
+    noticePeriodInDays: number;
+    experienceRangeMin: number;
+    experienceRangeMax: number;
+    salaryBudget: number;
+    currency: Currency;
+    description: string;
+  };
 }>();
 
 // emits
@@ -18,7 +25,7 @@ const emit = defineEmits<{
 }>();
 
 // variables
-const details = ref(job);
+const details = ref(jobHiringDetails);
 const currencies = ref<Currency[]>(['INR']);
 </script>
 
