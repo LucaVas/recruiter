@@ -237,6 +237,8 @@ public class JobService {
 
         List<Job> jobs = repository.findAllByStatusNot(JobStatus.DELETED, limit);
 
+        log.info("Jobs retrieved: {}", jobs);
+
         User user = getAuthUser();
         List<JobDto> jobDtos = jobs.stream()
                 .filter(job -> user.getRoleName() == RoleName.ADMIN || job.getStatus() != JobStatus.ARCHIVED)

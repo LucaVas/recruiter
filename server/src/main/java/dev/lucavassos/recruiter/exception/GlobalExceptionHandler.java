@@ -132,6 +132,17 @@ public class GlobalExceptionHandler {
         return errorDetail;
     }
 
+    @ExceptionHandler(RequestValidationException.class)
+    ProblemDetail handleRequestValidationException(RequestValidationException e) {
+        e.printStackTrace();
+
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        errorDetail.setType(URI.create("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request"));
+        errorDetail.setProperty("description", "One of more fields are invalid");
+
+        return errorDetail;
+    }
+
     @ExceptionHandler({Exception.class, DatabaseException.class})
     ProblemDetail handlException(Exception e) {
         e.printStackTrace();

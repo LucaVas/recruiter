@@ -12,7 +12,6 @@
             :min="0"
             v-model="details.bonusPayPerCv"
             required
-            :disabled="disabled"
             @input="emit('input', details)"
           />
         </InputGroup>
@@ -32,7 +31,6 @@
             iconDisplay="input"
             inputId="icondisplay"
             required
-            :disabled="disabled"
             @date-select="emit('input', details)"
           />
         </InputGroup>
@@ -50,7 +48,6 @@
             id="closureBonus"
             v-model="details.closureBonus"
             required
-            :disabled="disabled"
             @input="emit('input', details)"
           />
         </InputGroup>
@@ -72,7 +69,6 @@
             iconDisplay="input"
             inputId="icondisplay"
             required
-            :disabled="disabled"
             @date-select="emit('input', details)"
           />
         </InputGroup>
@@ -90,9 +86,8 @@ import type { Job, NewJobRequest } from '@/stores/job/schema';
 import InputText from 'primevue/inputtext';
 
 // props
-const { jobDetails, disabled } = defineProps<{
-  jobDetails: Job | NewJobRequest;
-  disabled: boolean;
+const { job } = defineProps<{
+  job: Job | NewJobRequest;
 }>();
 
 // emits
@@ -100,5 +95,5 @@ const emit = defineEmits<{
   (e: 'input', content: typeof details.value): void;
 }>();
 
-const details = ref(jobDetails);
+const details = ref(job);
 </script>

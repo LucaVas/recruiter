@@ -43,12 +43,7 @@
       <label class="text-sm" for="jobName">Job Name</label>
       <InputGroup>
         <InputGroupAddon> <i class="pi pi-briefcase"></i></InputGroupAddon>
-        <InputText
-          id="jobName"
-          v-model="details.name"
-          @input="emit('input', details)"
-          :disabled="disabled"
-        />
+        <InputText id="jobName" v-model="details.name" @input="emit('input', details)" />
       </InputGroup>
     </div>
 
@@ -64,7 +59,6 @@
             id="jobStatus"
             class="w-full"
             @change="emit('input', details)"
-            :disabled="disabled"
           />
         </InputGroup>
       </div>
@@ -79,7 +73,6 @@
             optionValue="value"
             class="w-full"
             @change="emit('input', details)"
-            :disabled="disabled"
           />
         </InputGroup>
       </div>
@@ -108,10 +101,9 @@ import { DEFAULT_SERVER_ERROR } from '@/consts';
 const toast = useToast();
 
 // props
-const { jobDetails, clients, disabled } = defineProps<{
-  jobDetails: Job | NewJobRequest;
+const { job, clients } = defineProps<{
+  job: Job | NewJobRequest;
   clients: Client[];
-  disabled: boolean;
 }>();
 
 const create = async (client: NewClient) => {
@@ -133,5 +125,5 @@ const emit = defineEmits<{
 }>();
 
 const clientModalOpen = ref(false);
-const details = ref(jobDetails);
+const details = ref(job);
 </script>

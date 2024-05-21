@@ -22,8 +22,9 @@
           aria-haspopup="true"
           aria-controls="overlay_tmenu"
           class="h-10 min-w-fit"
+          outlined
         />
-        <TieredMenu ref="menu" id="overlay_tmenu" :model="getSplitButtonChoices()" popup />
+        <TieredMenu ref="menu" id="overlay_tmenu" :model="splitButtonChoices" popup />
       </div>
     </div>
     <p class="min-w-fit">Created on: {{ formatDate(createdAt) }}</p>
@@ -37,8 +38,6 @@ import Button from 'primevue/button';
 import type { JobStatus } from '@/stores/job/schema';
 import { formatDate } from '@/utils/dateUtils';
 import { ref } from 'vue';
-import type { MenuItem } from 'primevue/menuitem';
-import { isAdmin } from '@/stores/auth';
 import DeleteJobModal from '@/components/job/shared/DeleteJobModal.vue';
 import { getSeverity, getStatusIcon, formatStatus } from '../shared/utils';
 
@@ -67,7 +66,6 @@ const splitButtonChoices = ref([
   {
     label: 'Open Job',
     icon: 'pi pi-lock-open',
-    condition: status !== 'OPEN',
     command: async () => {
       emits('changeStatus', 'OPEN');
     },
@@ -75,7 +73,6 @@ const splitButtonChoices = ref([
   {
     label: 'No CV Accepted',
     icon: 'pi pi-lock',
-    condition: status !== 'NO_CV_ACCEPTED',
     command: async () => {
       emits('changeStatus', 'NO_CV_ACCEPTED');
     },
@@ -83,7 +80,6 @@ const splitButtonChoices = ref([
   {
     label: 'Close Job',
     icon: 'pi pi-times-circle',
-    condition: status !== 'CLOSED',
     command: async () => {
       emits('changeStatus', 'CLOSED');
     },
@@ -91,7 +87,6 @@ const splitButtonChoices = ref([
   {
     label: 'Archive Job',
     icon: 'pi pi-folder',
-    condition: status !== 'ARCHIVED',
     command: async () => {
       emits('changeStatus', 'ARCHIVED');
     },
@@ -99,14 +94,10 @@ const splitButtonChoices = ref([
   {
     label: 'Delete',
     icon: 'pi pi-trash',
-    condition: isAdmin.value,
     command: () => {
       deleteJobModalOpen.value = true;
     },
   },
 ]);
 
-const getSplitButtonChoices = function (): MenuItem[] {
-  return splitButtonChoices.value.filter((choice) => choice.condition);
-};
 </script>
