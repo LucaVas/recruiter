@@ -1,7 +1,8 @@
 package dev.lucavassos.recruiter.modules.skill.domain;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record NewSkillRequest(
-        @NotNull(message = "Skill name cannot be empty") String name
+        @NotBlank(message = "Skill name is required")
+        String name
 ){}

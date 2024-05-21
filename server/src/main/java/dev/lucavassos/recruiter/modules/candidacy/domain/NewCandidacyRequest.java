@@ -12,32 +12,34 @@ public record NewCandidacyRequest(
 
         @NotNull Long jobId,
 
-        @NotBlank(message = "Pan cannot be empty")
-        @Length(min = 10, max = 10, message = "Pan must have 10 characters")
+        @NotBlank(message = "Candidate pan is required")
+        @Length(min = 10, max = 10, message = "Candidate pan must have 10 characters")
         String candidatePan,
 
-        @NotNull(message = "Relevant experience cannot be empty")
-        @Min(value = 0, message = "Relevant experience must be a positive number")
-        @Max(value = 50, message = "Relevant experience must be less than 51 years")
+        @NotNull(message = "Candidate relevant experience is required")
+        @Min(value = 0, message = "Candidate relevant experience must be a positive number")
+        @Max(value = 50, message = "Candidate relevant experience must be less than 51 years")
         Double relevantExperience,
 
-        @NotNull(message = "Expected CTC cannot be empty")
-        @Min(value = 0, message = "Expected CTC must be a positive number")
+        @NotNull(message = "Candidate expected CTC is required")
+        @Min(value = 0, message = "Candidate expected CTC must be a positive number")
         Double expectedCtc,
 
-        @NotNull(message = "Official notice period cannot be empty")
-        @Min(value = 0, message = "Official notice period must be a positive number")
+        @NotNull(message = "Candidate official notice period is required")
+        @Min(value = 0, message = "Candidate official notice period must be a positive number")
         Double officialNoticePeriod,
 
-        @NotNull(message = "Actual notice period cannot be empty")
-        @Min(value = 0, message = "Actual notice period must be a positive number")
+        @NotNull(message = "Candidate actual notice period is required")
+        @Min(value = 0, message = "Candidate actual notice period must be a positive number")
         Double actualNoticePeriod,
 
         @Nullable
         CandidacyStatus status,
 
         String reasonForQuickJoin,
+
         String recruiterComment,
+
         @Nullable MultipartFile resume
 ) {
 }

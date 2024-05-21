@@ -27,14 +27,14 @@ public class JobController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JobResponse> addJob(
             @Valid @RequestBody NewJobRequest request) {
-        log.info("Received request to add new job: {}", request);
+        log.debug("Received request to add new job: {}", request);
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }
 
     @PutMapping("/jobs/{jobId}")
     public ResponseEntity<JobResponse> updateJob(
             @Valid @RequestBody UpdateJobRequest request) {
-        log.trace("Received request to update job");
+        log.debug("Received request to update job");
         return new ResponseEntity<>(service.updateJob(request), HttpStatus.CREATED);
     }
 
@@ -42,7 +42,7 @@ public class JobController {
     public ResponseEntity<?> changeJobStatus(
             @PathVariable("jobId") Long id,
             @Valid @RequestBody ChangeJobStatusRequest request) {
-        log.info("Received request to change job status: {}", request);
+        log.debug("Received request to change job status: {}", request);
         service.changeJobStatus(id, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -50,20 +50,20 @@ public class JobController {
     @DeleteMapping("/jobs/{jobId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteJob(@PathVariable("jobId") Long id) {
-        log.info("Received request to delete job: {}", id);
+        log.debug("Received request to delete job: {}", id);
         service.deleteJob(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/jobs")
     public ResponseEntity<List<JobDto>> getAllJobs() {
-        LOG.info("Received request for all jobs.");
+        log.debug("Received request for all jobs.");
         return new ResponseEntity<>(service.getAllJobs(0, 1000), HttpStatus.OK);
     }
 
     @GetMapping("/jobs/{jobId}")
     public ResponseEntity<JobDto> getJob(@PathVariable("jobId") Long id) {
-        log.info("Received request to get details for job: {}", id);
+        log.debug("Received request to get details for job: {}", id);
         JobDto job = service.getJobById(id);
         return ResponseEntity
                 .status(HttpStatus.OK)

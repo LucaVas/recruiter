@@ -8,11 +8,11 @@ public record UserApprovalRequest(
 
         @NotNull Long userId,
 
-        @NotNull(message = "Approved value cannot be empty")
+        @NotNull(message = "User approved value is required")
         Boolean approved,
 
-        @NotBlank(message = "Comment cannot be empty")
-        @Length(min = 1, max = 255, message = "Comment must be between 1 and 255 characters")
+        @NotBlank(message = "User approval comment is required")
+        @Length(max = 255, message = "User approval comment must be less than 255 characters")
         String comment
 ) {
 }

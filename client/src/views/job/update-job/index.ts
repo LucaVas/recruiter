@@ -17,7 +17,6 @@ export const loading = ref(false);
 export const initializingJob = ref(false);
 export const updatingJob = ref(false);
 export const changingStatus = ref(false);
-export const jobUpdated = ref(false);
 
 export const initializeJob = async (jobId: number, toast: ToastServiceMethods) => {
   initializingJob.value = true;
@@ -37,11 +36,12 @@ export const initializeJob = async (jobId: number, toast: ToastServiceMethods) =
   }
 };
 
-export const update = async (job: Job, toast: ToastServiceMethods) => {
+export const update = async (job: Job | undefined, toast: ToastServiceMethods) => {
+  if (!job) return;
   updatingJob.value = true;
   try {
     await updateJob(job);
-    jobUpdated.value = true;
+    showSuccess(toast, 'Job updated successfully.');
   } catch (err) {
     handleError(toast, err);
   } finally {

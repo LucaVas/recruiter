@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import JobInformation from '@/components/job/shared/JobInformation.vue';
+import JobClientSection from '@/components/job/JobClientSection.vue';
 import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
-import JobHiringDetails from '@/components/job/shared/JobHiringDetails.vue';
-import NowJobPaymentDetails from '@/components/job/shared/JobPaymentDetails.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import QuestionSearchModal from '@/components/question/QuestionSearchModal.vue';
 import IconField from 'primevue/iconfield';
@@ -11,7 +9,6 @@ import InputText from 'primevue/inputtext';
 import { useToast } from 'primevue/usetoast';
 import { onMounted } from 'vue';
 import Success from '@/components/Success.vue';
-import JobFooter from '@/components/job/shared/JobFooter.vue';
 import type { NewSkill, Skill } from '@/stores/skill/schema';
 import QuestionModal from '@/components/question/QuestionModal.vue';
 import QuestionsTable from '@/components/question/QuestionsTable.vue';
@@ -32,8 +29,16 @@ import {
 } from './index';
 import type NewSkillModal from '@/components/skill/NewSkillModal.vue';
 import { createNewSkill, creatingSkill, skillModalOpen } from '../jobCommons';
+import { useRouter } from 'vue-router';
+import TextInput from '@/components/shared/TextInput.vue';
+import NumberInput from '@/components/shared/NumberInput.vue';
+import DateInput from '@/components/shared/DateInput.vue';
+import TextArea from '@/components/shared/TextArea.vue';
+import DropDown from '@/components/shared/DropDown.vue';
+import { contractTypes, jobStatuses } from '@/components/job/shared/utils';
 
 const toast = useToast();
+const router = useRouter();
 
 onMounted(async () => {
   await Promise.all([loadClients(toast), loadSkills(toast)]);
@@ -43,68 +48,114 @@ onMounted(async () => {
 <template>
   <div class="flex w-full flex-col gap-8 pb-6">
     <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
-      <JobInformation
-        :jobInformation="{
-          client: job.client,
-          name: job.name,
-          status: job.status,
-          contractType: job.contractType,
-        }"
+      <JobClientSection
+        :client="job.client"
         :clients="clients"
-        :selectedClient="job.client"
-        @input="
-          (details) => {
-            job.client = details.client;
-            job.name = details.name;
-            job.status = details.status;
-            job.contractType = details.contractType;
-          }
-        "
-        @selectClient="
+        @select="
           (client) => {
             job.client = client;
             clients.push(client);
           }
         "
       />
-      <JobHiringDetails
-        :jobHiringDetails="{
-          wantedCvs: job.wantedCvs,
-          noticePeriodInDays: job.noticePeriodInDays,
-          experienceRangeMin: job.experienceRangeMin,
-          experienceRangeMax: job.experienceRangeMax,
-          salaryBudget: job.salaryBudget,
-          currency: job.currency,
-          description: job.description,
-        }"
-        @input="
-          (details) => {
-            job.wantedCvs = details.wantedCvs;
-            job.noticePeriodInDays = details.noticePeriodInDays;
-            job.experienceRangeMin = details.experienceRangeMin;
-            job.experienceRangeMax = details.experienceRangeMax;
-            job.salaryBudget = details.salaryBudget;
-            job.currency = details.currency;
-            job.description = details.description;
-          }
-        "
+
+      <TextInput
+        label="Job Name"
+        :icon="'pi-briefcase'"
+        :model="job.name"
+        @input="(name) => (job.name = name)"
       />
-      <NowJobPaymentDetails
-        :jobPaymentDetails="{
-          bonusPayPerCv: job.bonusPayPerCv,
-          cvRatePaymentDate: job.cvRatePaymentDate,
-          closureBonus: job.closureBonus,
-          closureBonusPaymentDate: job.closureBonusPaymentDate,
-        }"
-        @input="
-          (details) => {
-            job.bonusPayPerCv = details.bonusPayPerCv;
-            job.cvRatePaymentDate = details.cvRatePaymentDate;
-            job.closureBonus = details.closureBonus;
-            job.closureBonusPaymentDate = details.closureBonusPaymentDate;
-          }
-        "
+
+      <div class="flex flex-col gap-6 sm:flex-row">
+        <DropDown
+          :model="job.status"
+          label="Job Status"
+          :options="jobStatuses"
+          @select="(status) => (job.status = status)"
+        />
+
+        <DropDown
+          :model="job.contractType"
+          label="Contract Type"
+          :options="contractTypes"
+          @select="(contractType) => (job.contractType = contractType)"
+        />
+      </div>
+
+      <div class="flex flex-col gap-6 sm:flex-row">
+        <NumberInput
+          label="Wanted CVs"
+          icon="pi-file"
+          :model="job.wantedCvs"
+          :min="0"
+          @input="(wantedCvs) => (job.wantedCvs = wantedCvs)"
+        />
+
+        <NumberInput
+          label="Notice Period"
+          icon="pi-calendar-times"
+          :model="job.noticePeriodInDays"
+          :min="0"
+          trailing="days"
+          @input="(noticePeriodInDays) => (job.noticePeriodInDays = noticePeriodInDays)"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-sm">Experience range</label>
+        <div class="flex flex-col gap-6 sm:flex-row">
+          <NumberInput
+            leading="From"
+            trailing="Years"
+            :min="0"
+            :model="job.experienceRangeMin"
+            @input="(experienceRangeMin) => (job.experienceRangeMin = experienceRangeMin)"
+          />
+          <NumberInput
+            leading="To"
+            trailing="Years"
+            :min="0"
+            :model="job.experienceRangeMax"
+            @input="(experienceRangeMax) => (job.experienceRangeMax = experienceRangeMax)"
+          />
+        </div>
+      </div>
+
+      <NumberInput
+        label="Salary Budget"
+        icon="pi-money-bill"
+        :model="job.salaryBudget"
+        :min="0"
+        trailing="INR"
+        @input="(salaryBudget) => (job.salaryBudget = salaryBudget)"
       />
+
+      <TextArea label="Job Description" :model="job.description" />
+
+      <div class="flex w-full flex-col gap-6 sm:flex-row">
+        <NumberInput
+          label="Payment per CV Upload"
+          icon="pi-wallet"
+          trailing="INR"
+          :model="job.bonusPayPerCv"
+          :min="0"
+        />
+        <DateInput
+          label="Payment Date per CV Upload"
+          icon="pi-wallet"
+          :model="job.cvRatePaymentDate"
+        />
+      </div>
+
+      <div class="flex w-full flex-col gap-6 sm:flex-row">
+        <TextInput label="Candidate Joining Bonus" icon="pi-money-bill" :model="job.closureBonus" />
+        <DateInput
+          label="Candidate Joining Bonus Payment Date"
+          icon="pi-money-bill"
+          :model="job.closureBonusPaymentDate"
+        />
+      </div>
+
       <div class="space-y-3">
         <NewSkillModal
           :visible="skillModalOpen"
@@ -195,12 +246,9 @@ onMounted(async () => {
       <Success :message="'Job created successfully!'" />
     </div>
 
-    <JobFooter
-      :visible="true"
-      :saving="creatingJob"
-      :saved="jobCreated"
-      :isUpdate="false"
-      @save="create(job, toast)"
-    />
+    <div class="flex w-full justify-between">
+      <Button outlined label="Back" size="small" :loading="creatingJob" @click="router.go(-1)" />
+      <Button label="Create Job" @click="create(job, toast)" />
+    </div>
   </div>
 </template>

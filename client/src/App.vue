@@ -5,6 +5,5 @@ import Toast from 'primevue/toast';
 
 <template>
   <Toast position="top-center" />
-
   <RouterView />
 </template>

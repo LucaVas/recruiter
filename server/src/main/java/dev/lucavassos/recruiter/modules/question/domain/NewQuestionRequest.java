@@ -6,19 +6,20 @@ import jakarta.validation.constraints.*;
 import java.util.List;
 
 public record NewQuestionRequest(
-        @NotNull(message = "Question text cannot be empty") String text,
+        @NotBlank(message = "Question text is required")
+        String text,
 
-        @Nullable String division,
+        @Nullable
+        String division,
 
-        @NotNull(message = "Question title cannot be empty")
-        @Size(max = 255, message = "Title answer must be less than 255 characters")
+        @NotBlank(message = "Question title is required")
         String title,
 
-        @NotNull(message = "Question answer cannot be empty")
+        @NotNull(message = "Question answer is required")
         @Size(max = 500, message = "Question answer must be less than 500 characters")
         String answer,
 
-        @NotNull(message = "Client ID cannot be empty")
+        @NotNull(message = "Client ID is required")
         Long clientId,
 
         @Nullable

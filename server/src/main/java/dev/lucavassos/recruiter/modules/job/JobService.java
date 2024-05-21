@@ -111,7 +111,7 @@ public class JobService {
 
         boolean changes = false;
         Long id = request.id();
-        log.debug("Updating job with id {}", id);
+        log.info("Updating job with id {}: {}", id, request);
 
         Job job = repository
                 .findOneByIdAndStatusNot(id, JobStatus.DELETED)

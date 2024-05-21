@@ -27,21 +27,6 @@ const details = ref(jobPaymentDetails);
   <div class="card flex flex-col gap-8">
     <div class="flex w-full flex-col gap-6 sm:flex-row">
       <div class="flex w-full flex-col gap-2">
-        <label class="text-sm" for="bonusPayPerCv">Payment per CV Upload (INR)</label>
-        <InputGroup>
-          <InputGroupAddon>
-            <i class="pi pi-wallet" />
-          </InputGroupAddon>
-          <InputNumber
-            id="bonusPayPerCv"
-            :min="0"
-            v-model="details.bonusPayPerCv"
-            required
-            @input="emit('input', details)"
-          />
-        </InputGroup>
-      </div>
-      <div class="flex w-full flex-col gap-2">
         <label class="text-sm" for="cvRatePaymentDate">Payment Date per CV Upload</label>
         <InputGroup>
           <InputGroupAddon>
@@ -63,20 +48,7 @@ const details = ref(jobPaymentDetails);
     </div>
 
     <div class="flex w-full flex-col gap-6 sm:flex-row">
-      <div class="flex w-full flex-col gap-2">
-        <label class="text-sm" for="closureBonus">Candidate Joining Bonus (INR)</label>
-        <InputGroup>
-          <InputGroupAddon>
-            <i class="pi pi-money-bill" />
-          </InputGroupAddon>
-          <InputText
-            id="closureBonus"
-            v-model="details.closureBonus"
-            required
-            @input="emit('input', details)"
-          />
-        </InputGroup>
-      </div>
+
       <div class="flex w-full flex-col gap-2">
         <label class="text-sm" for="closureBonusPaymentDate"
           >Candidate Joining Bonus Payment Date</label
