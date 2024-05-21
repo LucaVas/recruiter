@@ -43,12 +43,7 @@
       <label class="text-sm" for="jobName">Job Name</label>
       <InputGroup>
         <InputGroupAddon> <i class="pi pi-briefcase"></i></InputGroupAddon>
-        <InputText
-          id="jobName"
-          v-model="details.name"
-          @input="emit('input', details)"
-          :disabled="disabled"
-        />
+        <InputText id="jobName" v-model="details.name" @input="emit('input', details)" />
       </InputGroup>
     </div>
 
@@ -64,7 +59,6 @@
             id="jobStatus"
             class="w-full"
             @change="emit('input', details)"
-            :disabled="disabled"
           />
         </InputGroup>
       </div>
@@ -79,7 +73,6 @@
             optionValue="value"
             class="w-full"
             @change="emit('input', details)"
-            :disabled="disabled"
           />
         </InputGroup>
       </div>
@@ -95,23 +88,24 @@ import Dropdown from 'primevue/dropdown';
 import ClientModal from '@/components/client/ClientModal.vue';
 import { ref } from 'vue';
 import { jobStatuses, contractTypes } from './utils';
-import type { Job, NewJobRequest } from '@/stores/job/schema';
-import type { Client } from '@/stores/client/schema';
 import ClientDropdown from './ClientDropdown.vue';
 import { createClient } from '@/stores/client/index';
-import type { NewClient } from '@/stores/client/schema';
+import type { Client, NewClient } from '@/stores/client/schema';
 import { useToast } from 'primevue/usetoast';
-import { ApiError } from '@/utils/types';
-import { showError } from '@/utils/errorUtils';
-import { DEFAULT_SERVER_ERROR } from '@/consts';
+import { handleError } from '@/utils/errorUtils';
+import type { ContractType, JobStatus } from '@/stores/job/schema';
 
 const toast = useToast();
 
 // props
-const { jobDetails, clients, disabled } = defineProps<{
-  jobDetails: Job | NewJobRequest;
+const { jobInformation, clients } = defineProps<{
+  jobInformation: {
+    client: Client;
+    name: string;
+    status: JobStatus;
+    contractType: ContractType;
+  };
   clients: Client[];
-  disabled: boolean;
 }>();
 
 const create = async (client: NewClient) => {
@@ -120,9 +114,7 @@ const create = async (client: NewClient) => {
     emit('selectClient', newClient);
     clientModalOpen.value = false;
   } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message, err.title);
-    else if (err instanceof Error) showError(toast, err.message);
-    else showError(toast, DEFAULT_SERVER_ERROR);
+    handleError(toast, err);
   }
 };
 
@@ -133,5 +125,5 @@ const emit = defineEmits<{
 }>();
 
 const clientModalOpen = ref(false);
-const details = ref(jobDetails);
+const details = ref(jobInformation);
 </script>

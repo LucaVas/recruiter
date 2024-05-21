@@ -15,7 +15,7 @@ defineEmits<{
 
 <template>
   <div class="flex w-full justify-between">
-    <Button v-if="!saved" label="Back" size="small" :loading="saving" @click="router.go(-1)" />
+    <Button v-if="!saved" outlined label="Back" size="small" :loading="saving" @click="router.go(-1)" />
     <div>
       <Button
         v-if="!saved"

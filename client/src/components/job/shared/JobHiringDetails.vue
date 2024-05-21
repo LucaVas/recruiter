@@ -5,12 +5,18 @@ import Dropdown from 'primevue/dropdown';
 import Textarea from 'primevue/textarea';
 import type { Currency } from '@/stores/job/schema';
 import { ref } from 'vue';
-import type { Job, NewJobRequest } from '@/stores/job/schema';
 
 // props
-const { jobDetails, disabled } = defineProps<{
-  jobDetails: Job | NewJobRequest;
-  disabled: boolean;
+const { jobHiringDetails } = defineProps<{
+  jobHiringDetails: {
+    wantedCvs: number;
+    noticePeriodInDays: number;
+    experienceRangeMin: number;
+    experienceRangeMax: number;
+    salaryBudget: number;
+    currency: Currency;
+    description: string;
+  };
 }>();
 
 // emits
@@ -19,7 +25,7 @@ const emit = defineEmits<{
 }>();
 
 // variables
-const details = ref(jobDetails);
+const details = ref(jobHiringDetails);
 const currencies = ref<Currency[]>(['INR']);
 </script>
 
@@ -37,7 +43,6 @@ const currencies = ref<Currency[]>(['INR']);
             :min="0"
             v-model="details.wantedCvs"
             required
-            :disabled="disabled"
             @input="emit('input', details)"
           />
         </InputGroup>
@@ -53,7 +58,6 @@ const currencies = ref<Currency[]>(['INR']);
             :min="0"
             v-model="details.noticePeriodInDays"
             required
-            :disabled="disabled"
             @input="emit('input', details)"
           />
           <InputGroupAddon class="min-w-fit">days</InputGroupAddon>
@@ -72,7 +76,6 @@ const currencies = ref<Currency[]>(['INR']);
               :min="0"
               v-model="details.experienceRangeMin"
               required
-              :disabled="disabled"
               @input="emit('input', details)"
             />
             <InputGroupAddon class="min-w-fit"> Years </InputGroupAddon>
@@ -86,7 +89,6 @@ const currencies = ref<Currency[]>(['INR']);
               :min="0"
               v-model="details.experienceRangeMax"
               required
-              :disabled="disabled"
               @input="emit('input', details)"
             />
             <InputGroupAddon class="min-w-fit"> Years </InputGroupAddon>
@@ -107,7 +109,6 @@ const currencies = ref<Currency[]>(['INR']);
           :min="0"
           v-model="details.salaryBudget"
           required
-          :disabled="disabled"
           @input="emit('input', details)"
         />
 
@@ -119,7 +120,6 @@ const currencies = ref<Currency[]>(['INR']);
           class="min-w-fit"
           @change="emit('input', details)"
           required
-          :disabled="disabled"
         />
       </InputGroup>
     </div>
@@ -135,9 +135,7 @@ const currencies = ref<Currency[]>(['INR']);
         placeholder="Tell us what is the job about..."
         style="resize: none"
         required
-        :disabled="disabled"
         @input="emit('input', details)"
-        :invalid="details.description === ''"
       />
     </div>
   </div>

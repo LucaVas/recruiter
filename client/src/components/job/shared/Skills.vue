@@ -5,9 +5,8 @@ import { ref } from 'vue';
 import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
 import type { Skill } from '@/stores/skill/schema';
 
-const { skills, disabled } = defineProps<{
+const { skills } = defineProps<{
   skills: Skill[];
-  disabled: boolean;
 }>();
 
 const onRowReorder = (event: DataTableRowReorderEvent) => {
@@ -37,7 +36,7 @@ const details = ref(skills);
 <template>
   <div class="flex flex-col gap-2">
     <label for="skills">Skills</label>
-    <SkillsDropdown :skills="skills" :disabled="disabled" @addSkill="(skill) => addSkill(skill)" />
+    <SkillsDropdown :skills="skills" @addSkill="(skill) => addSkill(skill)" />
     <DataTable
       scrollable
       scrollHeight="15rem"
@@ -51,14 +50,7 @@ const details = ref(skills);
       <Column field="name" style="width: 90%"></Column>
       <Column style="flex: 0 0 4rem">
         <template #body="{ data }">
-          <Button
-            type="button"
-            icon="pi pi-times"
-            text
-            size="small"
-            @click="removeSkill(data)"
-            :disabled="disabled"
-          />
+          <Button type="button" icon="pi pi-times" text size="small" @click="removeSkill(data)" />
         </template>
       </Column>
     </DataTable>

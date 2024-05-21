@@ -14,6 +14,7 @@ declare module 'vue' {
     Avatar: typeof import('primevue/avatar')['default']
     Badge: typeof import('primevue/badge')['default']
     Button: typeof import('primevue/button')['default']
+    Calendar: typeof import('primevue/calendar')['default']
     CandidaciesTable: typeof import('./src/components/tables/candidacies/CandidaciesTable.vue')['default']
     CandidaciesTableActionButtonsColumn: typeof import('./src/components/tables/candidacies/CandidaciesTableActionButtonsColumn.vue')['default']
     CandidaciesTableHeader: typeof import('./src/components/tables/candidacies/CandidaciesTableHeader.vue')['default']
