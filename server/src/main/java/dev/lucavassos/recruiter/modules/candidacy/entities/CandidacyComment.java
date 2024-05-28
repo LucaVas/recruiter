@@ -2,10 +2,7 @@ package dev.lucavassos.recruiter.modules.candidacy.entities;
 
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Builder
+@ToString
 @Table(name="candidacy_comments")
 public class CandidacyComment {
 

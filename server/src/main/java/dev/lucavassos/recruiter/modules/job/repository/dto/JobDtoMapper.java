@@ -1,7 +1,8 @@
 package dev.lucavassos.recruiter.modules.job.repository.dto;
 
+import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDtoMapper;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
+import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDtoMapper;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,16 +13,19 @@ import java.util.function.Function;
 public class JobDtoMapper implements Function<Job, JobDto> {
 
     @Autowired
-    private QuestionDtoMapper questionMapper;
+    private QuestionnaireDtoMapper questionnaireDtoMapper;
 
     @Autowired
     private SkillDtoMapper skillMapper;
+
+    @Autowired
+    private ClientDtoMapper clientDtoMapper;
 
     @Override
     public JobDto apply(Job job) {
         return new JobDto(
                 job.getId(),
-                job.getClient(),
+                clientDtoMapper.apply(job.getClient()),
                 job.getName(),
                 job.getStatus(),
                 job.getWantedCvs(),
@@ -38,7 +42,7 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 job.getCvRatePaymentDate(),
                 job.getClosureBonusPaymentDate(),
                 job.getNumberOfCandidates(),
-                job.getQuestions().stream().map(questionMapper).toList(),
+                questionnaireDtoMapper.apply(job.getQuestionnaire()),
                 job.getCreatedDTime(),
                 job.getModifiedDTime()
         );

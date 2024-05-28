@@ -13,7 +13,7 @@ const { label, icon, model, min, max, leading, trailing } = defineProps<{
   trailing?: string;
   leading?: string;
 }>();
-const emit = defineEmits<{
+defineEmits<{
   (e: 'input', content: number): void;
 }>();
 const number = ref(model);
@@ -25,7 +25,7 @@ const number = ref(model);
     <InputGroup>
       <InputGroupAddon v-if="icon"><i :class="`pi ${icon}`" /></InputGroupAddon>
       <InputGroupAddon v-if="leading" class="min-w-fit">{{ leading }}</InputGroupAddon>
-      <InputNumber v-model="number" :min="min" :max="max" @input="emit('input', number)" />
+      <InputNumber v-model="number" :min="min" :max="max" @update:modelValue="$emit('input', number)" />
       <InputGroupAddon v-if="trailing" class="min-w-fit">{{ trailing }}</InputGroupAddon>
     </InputGroup>
   </div>

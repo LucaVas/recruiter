@@ -15,7 +15,7 @@
           <ClientDropdown
             :clients="clients"
             :client="selectedClient"
-            @selectClient="(client) => (selectedClient = client)"
+            @selectClient="(client) => { selectedClient = client; $emit('select', client) }"
           />
         </InputGroup>
         <Button
@@ -61,8 +61,8 @@ const { client, clients } = defineProps<{
 
 const create = async (client: NewClient) => {
   try {
-    const newClient = await createClient(client);
-    emit('select', newClient);
+    selectedClient.value = await createClient(client);
+    emit('select', selectedClient.value);
     clientModalOpen.value = false;
   } catch (err) {
     handleError(toast, err);

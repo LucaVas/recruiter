@@ -1,11 +1,12 @@
 package dev.lucavassos.recruiter.modules.job.repository.dto;
 
-import dev.lucavassos.recruiter.modules.client.entities.Client;
+import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.domain.ContractType;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
+import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,8 @@ import java.util.List;
 public record JobDto(
         @NotNull Long id,
 
-        Client client,
+        @Valid
+        ClientDto client,
 
         @NotBlank(message = "Name cannot be empty") String name,
         @NotNull(message = "Status cannot be empty") JobStatus status,
@@ -24,7 +26,7 @@ public record JobDto(
         Integer wantedCvs,
 
         List<SkillDto> skills,
-        @NotNull(message = "Contracy type cannot be empty") ContractType contractType,
+        @NotNull(message = "Contract type cannot be empty") ContractType contractType,
 
         @NotNull(message = "Experience range minimum cannot be empty")
         @Min(value = 0, message = "Experience range minimum must be a positive number")
@@ -60,7 +62,8 @@ public record JobDto(
         @Min(value = 0, message = "Number of candidates must be a positive number")
         Integer numberOfCandidates,
 
-        List<QuestionDto> questions,
+        @Valid
+        QuestionnaireDto questionnaire,
 
         LocalDateTime createdDTime,
         LocalDateTime modifiedDTime

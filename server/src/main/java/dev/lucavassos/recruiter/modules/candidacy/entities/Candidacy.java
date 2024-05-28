@@ -7,10 +7,7 @@ import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -23,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Builder
+@ToString
 @Table(name="candidacies")
 public class Candidacy {
 

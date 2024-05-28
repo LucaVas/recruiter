@@ -21,8 +21,11 @@ client:
 
 logging:
     level:
+        root: INFO
         org:
+            hibernate: INFO
             springframwork:
+                web: DEBUG
                 mail: DEBUG
 
 management:
@@ -64,13 +67,11 @@ spring:
                 format-sql: true
                 jdbc:
                     time_zone: UTC
-        show-sql: true
+        show-sql: false
     datasource:
         platform: postgres
 #        url: jdbc:postgresql://${DB_HOST}${DB_PORT}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}&sslmode=${DB_SSL}
-        url: jdbc:postgresql://localhost:5432/recruiter
-        name: postgres
-        password: postgres
+        url: jdbc:postgresql://localhost:5432/recruiter?user=postgres&password=postgres&sslmode=disable
         driverClassName: org.postgresql.Driver
     flyway:
         enabled: false

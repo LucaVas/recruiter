@@ -14,8 +14,8 @@ import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
+import dev.lucavassos.recruiter.modules.question.entity.Questionnaire;
 import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
@@ -70,8 +70,18 @@ public class JobService {
                                         .build()
                         ));
 
-        List<Question> questions = questionRepository
-                .findAllById(request.questions().stream().map(QuestionDto::id).collect(Collectors.toList()));
+        Questionnaire questionnaire = Questionnaire.builder()
+                .title(request.questionnaire().title())
+                .questions(request.questionnaire().questions().stream()
+                        .map(questionDto -> Question.builder()
+                                .text(questionDto.text())
+                                .answer(questionDto.answer())
+                                .active(true)
+                                .questionType(questionDto.questionType())
+                                .build())
+                        .collect(Collectors.toSet()))
+                .client(client)
+                .build();
 
         User recruiter = getAuthUser();
         Job job = Job.builder()
@@ -92,7 +102,7 @@ public class JobService {
                 .cvRatePaymentDate(request.cvRatePaymentDate())
                 .closureBonusPaymentDate(request.closureBonusPaymentDate())
                 .recruiter(recruiter)
-                .questions(questions)
+                .questionnaire(questionnaire)
                 .build();
         Job createdJob = saveJob(job);
         saveJobInHistoryTable(createdJob, recruiter);
@@ -244,8 +254,6 @@ public class JobService {
         log.debug("Retrieving {} jobs", 1000);
 
         List<Job> jobs = repository.findAllByStatusNot(JobStatus.DELETED, limit);
-
-        log.info("Jobs retrieved: {}", jobs);
 
         User user = getAuthUser();
         List<JobDto> jobDtos = jobs.stream()
