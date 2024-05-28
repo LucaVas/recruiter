@@ -28,20 +28,25 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="space-y-4 border p-4">
-    <div class="flex items-center gap-4">
-      <TextInput :model="question" @input="q => $emit('updateQuestion', q)" placeholder="Write your question here" />
-      <Dropdown
-        class="min-w"
-        placeholder="Select a type"
-        v-model="type"
-        :options="questionTypes"
-        @change="$emit('updateType', type)"
-        option-label="label"
-        option-value="value"
+  <div class="space-y-4 border p-4 bg-slate-100">
+    <div class="flex flex-col items-center gap-4 sm:flex-row">
+      <TextInput
+      class="w-full"
+        :model="question"
+        @input="(q) => $emit('updateQuestion', q)"
+        placeholder="Write your question here"
       />
-      <div class="flex items-center justify-center">
-        <Button icon="pi pi-trash" class="p-panel-header-icon" @click="$emit('remove')" unstyled />
+      <div class="w-full sm:w-1/3 flex justify-between gap-3">
+        <Dropdown
+          class="w-full md:min-w-fit"
+          placeholder="Select a type"
+          v-model="type"
+          :options="questionTypes"
+          @change="$emit('updateType', type)"
+          option-label="label"
+          option-value="value"
+        />
+        <Button icon="pi pi-trash" class="p-panel-header-icon min-w-fit" @click="$emit('remove')" unstyled />
       </div>
     </div>
     <Textarea

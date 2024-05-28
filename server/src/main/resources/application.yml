@@ -21,12 +21,12 @@ client:
 
 logging:
     level:
-        root: INFO
+        root: warn
         org:
-            hibernate: INFO
-            springframwork:
-                web: DEBUG
-                mail: DEBUG
+            hibernate: error
+            springframework:
+                web: debug
+                mail: debug
 
 management:
     endpoints:
