@@ -22,14 +22,14 @@ public class ClientController {
 
     @GetMapping("/clients")
     public ResponseEntity<List<ClientDto>> getAllClients() {
-        log.info("Received request for all clients.");
+        log.debug("Received request for all clients.");
         return new ResponseEntity<>(service.getAllClients(0, 2000), HttpStatus.OK);
     }
 
     @PostMapping("/clients")
     public ResponseEntity<ClientDto> addClient(
             @Valid @RequestBody NewClientRequest request) {
-        log.info("Received request to add client: {}", request);
+        log.debug("Received request to add client: {}", request);
         return new ResponseEntity<>(service.addClient(request), HttpStatus.CREATED);
     }
 }

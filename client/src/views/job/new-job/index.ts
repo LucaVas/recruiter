@@ -9,7 +9,6 @@ import { handleError } from '@/utils/errorUtils';
 import type { ToastServiceMethods } from 'primevue/toastservice';
 import { ref } from 'vue';
 
-
 export const job = ref<NewJobRequest>({
   client: {} as Client,
   name: '',
@@ -29,6 +28,28 @@ export const job = ref<NewJobRequest>({
   closureBonusPaymentDate: new Date(),
   cvRatePaymentDate: new Date(),
 });
+
+export const initJob = (): void => {
+  job.value = {
+    client: {} as Client,
+    name: '',
+    status: 'OPEN',
+    contractType: 'TEMPORARY',
+    wantedCvs: 0,
+    experienceRangeMin: 0,
+    experienceRangeMax: 0,
+    noticePeriodInDays: 0,
+    skills: [],
+    salaryBudget: 0,
+    currency: 'INR',
+    description: '',
+    bonusPayPerCv: 0,
+    closureBonus: 'Not Applicable',
+    questionnaire: {} as Questionnaire,
+    closureBonusPaymentDate: new Date(),
+    cvRatePaymentDate: new Date(),
+  };
+}
 
 export const removeSkill = (job: NewJobRequest, skill: Skill): void => {
   if (!job.skills.includes(skill)) return;

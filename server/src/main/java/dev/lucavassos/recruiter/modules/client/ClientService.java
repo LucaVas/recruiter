@@ -28,7 +28,7 @@ public class ClientService {
 
     @Transactional
     public List<ClientDto> getAllClients(Integer pageNumber, Integer pageSize) {
-        log.info("Retrieving {} clients", pageSize);
+        log.debug("Retrieving {} clients", pageSize);
 
         Pageable limit = PageRequest.of(pageNumber, pageSize);
         List<ClientDto> clients =
@@ -37,14 +37,14 @@ public class ClientService {
                         .map(clientDtoMapper)
                         .toList();
 
-        log.info("Clients retrieved: {} ({})", clients, clients.size());
+        log.debug("Clients retrieved: {} ({})", clients, clients.size());
 
         return clients;
     }
 
     @Transactional
     public ClientDto addClient(NewClientRequest request) {
-        log.info("Adding client: {}", request);
+        log.debug("Adding client: {}", request);
 
         if (clientRepository.existsByName(request.name())) {
             throw new BadRequestException("Client already exists");
@@ -53,7 +53,7 @@ public class ClientService {
         Client newClient = Client.builder().name(request.name()).industry(request.industry()).build();
         ClientDto client = clientDtoMapper.apply(saveClient(newClient));
 
-        log.info("Client added: {}", client);
+        log.debug("Client added: {}", client);
 
         return client;
     }

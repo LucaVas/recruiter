@@ -18,6 +18,7 @@ import {
   loadSkills,
   addSkill,
   removeSkill,
+  initJob
 } from './index';
 import type NewSkillModal from '@/components/skill/NewSkillModal.vue';
 import { createNewSkill, creatingSkill, skillModalOpen } from '../jobCommons';
@@ -39,6 +40,7 @@ onMounted(async () => {
 
 <template>
   <div class="flex w-full flex-col gap-8 pb-6">
+    {{ job }}
     <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
       <JobClientSection
         :client="job.client"
@@ -186,7 +188,7 @@ onMounted(async () => {
             label="New"
             icon="pi pi-plus"
             @click="skillModalOpen = true"
-            class="hidden min-w-fit md:block"
+            class="hidden min-w-fit md:flex"
           />
           <Button icon="pi pi-plus" @click="skillModalOpen = true" class="min-w-fit md:hidden" />
         </div>
@@ -204,11 +206,21 @@ onMounted(async () => {
       <Success :message="'Job created successfully!'" />
     </div>
 
-    {{ job }}
-
-    <div class="flex w-full justify-between">
+    <div v-if="!jobCreated" class="flex w-full justify-between">
       <Button outlined label="Back" size="small" :loading="creatingJob" @click="router.go(-1)" />
       <Button label="Create Job" @click="create(job, toast)" />
+    </div>
+    <div v-else class="flex w-full justify-end">
+      <Button
+        label="Back to Dashboard"
+        @click="
+          {
+            router.push({ name: 'Dashboard' });
+          }
+          jobCreated = false;
+          initJob()
+        "
+      />
     </div>
   </div>
 </template>

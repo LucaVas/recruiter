@@ -3,23 +3,28 @@ import Button from 'primevue/button';
 import QuestionCard from './QuestionCard.vue';
 import { ref } from 'vue';
 import type { NewQuestion, NewQuestionnaire } from '@/stores/question/schema';
+import { v4 } from 'uuid';
 
-const questions = ref<NewQuestion[]>([]);
+const questions = ref<{ localId: string; question: NewQuestion }[]>([]);
 const title = ref('');
 
 const createQuestion = () => {
   questions.value.push({
-    text: '',
-    answer: '',
-    questionType: 'OPEN_QUESTION',
+    localId: v4(),
+    question: {
+      text: '',
+      answer: '',
+      questionType: 'OPEN_QUESTION',
+    },
   });
 };
 
-const removeQuestion = (index: number) => {
-  questions.value.splice(index, 1);
+const removeQuestion = (localId: string) => {
+  questions.value = questions.value.filter((q) => q.localId !== localId);
+
   emits('updateQuestionnaire', {
     title: title.value,
-    questions: questions.value,
+    questions: questions.value.map((q) => q.question),
   });
 };
 
@@ -31,7 +36,7 @@ const emits = defineEmits<{
 <template>
   <div>
     <label class="text-md">Questionnaire</label>
-    <div class="flex gap-4 mt-3">
+    <div class="mt-3 flex gap-4">
       <TextInput
         :model="title"
         @input="
@@ -39,47 +44,53 @@ const emits = defineEmits<{
             title = t;
             $emit('updateQuestionnaire', {
               title,
-              questions,
+              questions: questions.map((q) => q.question),
             });
           }
         "
         placeholder="Questionnaire Title"
       />
-      <Button icon="pi pi-plus" outlined label="New" @click="createQuestion()" />
+      <Button
+        icon="pi pi-plus"
+        class="hidden min-w-fit md:flex"
+        outlined
+        label="New"
+        @click="createQuestion()"
+      />
+      <Button icon="pi pi-plus" class="min-w-fit md:hidden" outlined @click="createQuestion()" />
     </div>
-    
+
     <div class="mt-3 space-y-3">
       <QuestionCard
-        :text="question.text"
-        :answer="question.answer"
-        :index="questions.indexOf(question)"
-        @remove="removeQuestion(questions.indexOf(question))"
-        v-for="question in questions"
-        :key="questions.indexOf(question)"
+        :text="item.question.text"
+        :answer="item.question.answer"
+        @remove="removeQuestion(item.localId)"
+        v-for="item in questions"
+        :key="item.localId"
         @updateQuestion="
           (q) => {
-            question.text = q;
+            item.question.text = q;
             $emit('updateQuestionnaire', {
               title,
-              questions,
+              questions: questions.map((q) => q.question),
             });
           }
         "
         @updateAnswer="
           (a) => {
-            question.answer = a;
+            item.question.answer = a;
             $emit('updateQuestionnaire', {
               title,
-              questions,
+              questions: questions.map((q) => q.question),
             });
           }
         "
         @updateType="
           (t) => {
-            question.questionType = t;
+            item.question.questionType = t;
             $emit('updateQuestionnaire', {
               title,
-              questions,
+              questions: questions.map((q) => q.question),
             });
           }
         "
