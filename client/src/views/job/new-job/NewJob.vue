@@ -2,16 +2,11 @@
 import JobClientSection from '@/components/job/JobClientSection.vue';
 import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
-import QuestionSearchModal from '@/components/question/QuestionSearchModal.vue';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import InputText from 'primevue/inputtext';
+import JobQuestionnaire from '@/components/questionnaire/JobQuestionnaire.vue';
 import { useToast } from 'primevue/usetoast';
 import { onMounted } from 'vue';
 import Success from '@/components/Success.vue';
 import type { NewSkill, Skill } from '@/stores/skill/schema';
-import QuestionModal from '@/components/question/QuestionModal.vue';
-import QuestionsTable from '@/components/question/QuestionsTable.vue';
 import {
   job,
   create,
@@ -23,9 +18,6 @@ import {
   loadSkills,
   addSkill,
   removeSkill,
-  openQuestionModal,
-  openQuestionSearchModal,
-  createAndAddQuestion,
 } from './index';
 import type NewSkillModal from '@/components/skill/NewSkillModal.vue';
 import { createNewSkill, creatingSkill, skillModalOpen } from '../jobCommons';
@@ -52,9 +44,9 @@ onMounted(async () => {
         :client="job.client"
         :clients="clients"
         @select="
-          (client) => {
+          async (client) => {
             job.client = client;
-            clients.push(client);
+            await loadClients(toast);
           }
         "
       />
@@ -130,7 +122,11 @@ onMounted(async () => {
         @input="(salaryBudget) => (job.salaryBudget = salaryBudget)"
       />
 
-      <TextArea label="Job Description" :model="job.description" />
+      <TextArea
+        label="Job Description"
+        :model="job.description"
+        @input="(description) => (job.description = description)"
+      />
 
       <div class="flex w-full flex-col gap-6 sm:flex-row">
         <NumberInput
@@ -138,21 +134,31 @@ onMounted(async () => {
           icon="pi-wallet"
           trailing="INR"
           :model="job.bonusPayPerCv"
+          @input="(bonusPayPerCv) => (job.bonusPayPerCv = bonusPayPerCv)"
           :min="0"
         />
         <DateInput
           label="Payment Date per CV Upload"
           icon="pi-wallet"
           :model="job.cvRatePaymentDate"
+          @select="(cvRatePaymentDate) => (job.cvRatePaymentDate = cvRatePaymentDate)"
         />
       </div>
 
       <div class="flex w-full flex-col gap-6 sm:flex-row">
-        <TextInput label="Candidate Joining Bonus" icon="pi-money-bill" :model="job.closureBonus" />
+        <TextInput
+          label="Candidate Joining Bonus"
+          icon="pi-money-bill"
+          :model="job.closureBonus"
+          @input="(closureBonus) => (job.closureBonus = closureBonus)"
+        />
         <DateInput
           label="Candidate Joining Bonus Payment Date"
           icon="pi-money-bill"
           :model="job.closureBonusPaymentDate"
+          @select="
+            (closureBonusPaymentDate) => (job.closureBonusPaymentDate = closureBonusPaymentDate)
+          "
         />
       </div>
 
@@ -191,60 +197,14 @@ onMounted(async () => {
           :skills="job.skills"
         />
       </div>
-      <div class="space-y-3">
-        <QuestionModal
-          :clients="clients"
-          :visible="openQuestionModal"
-          :isUpdate="false"
-          @close="openQuestionModal = false"
-          @save="
-            (question) => {
-              createAndAddQuestion(question, toast);
-              openQuestionModal = false;
-            }
-          "
-        />
-        <QuestionSearchModal
-          :questionsSelected="job.questions"
-          :visible="openQuestionSearchModal"
-          @close="openQuestionSearchModal = false"
-          @selectOrUnselectQuestions="
-            (questions) => {
-              job.questions.push(...questions);
-              openQuestionSearchModal = false;
-            }
-          "
-        />
-        <label>Questions</label>
 
-        <div class="flex flex-row gap-3">
-          <IconField iconPosition="left" class="w-full">
-            <InputIcon class="pi pi-search"> </InputIcon>
-            <InputText
-              placeholder="Search"
-              class="w-full"
-              @click="openQuestionSearchModal = true"
-            />
-          </IconField>
-
-          <Button
-            label="New"
-            icon="pi pi-plus"
-            @click="openQuestionModal = true"
-            class="hidden min-w-fit md:block"
-          />
-          <Button icon="pi pi-plus" @click="openQuestionModal = true" class="min-w-fit md:hidden" />
-        </div>
-        <QuestionsTable
-          :visible="job.questions.length > 0"
-          :questions="job.questions"
-          @removeQuestion="(question) => job.questions?.splice(job.questions.indexOf(question), 1)"
-        />
-      </div>
+      <JobQuestionnaire @updateQuestionnaire="(q) => (job.questionnaire = q)" />
     </div>
     <div v-else class="flex h-full w-full items-center justify-center">
       <Success :message="'Job created successfully!'" />
     </div>
+
+    {{ job }}
 
     <div class="flex w-full justify-between">
       <Button outlined label="Back" size="small" :loading="creatingJob" @click="router.go(-1)" />

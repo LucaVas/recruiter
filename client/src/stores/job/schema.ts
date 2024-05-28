@@ -1,5 +1,5 @@
 import type { Client } from '../client/schema';
-import type { Question } from '../question/schema';
+import type { NewQuestionnaire } from '../question/schema';
 import type { Skill } from '../skill/schema';
 
 // backend dtos
@@ -22,7 +22,7 @@ export type Job = {
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
   numberOfCandidates: number | null;
-  questions: Question[];
+  questionnaire: NewQuestionnaire;
   createdDTime: Date;
   modifiedDTime: Date;
 };

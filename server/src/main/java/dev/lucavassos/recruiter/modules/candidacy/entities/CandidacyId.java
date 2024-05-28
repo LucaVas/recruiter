@@ -10,6 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@ToString
 @Embeddable
 public class CandidacyId implements Serializable {
     private String candidatePan;

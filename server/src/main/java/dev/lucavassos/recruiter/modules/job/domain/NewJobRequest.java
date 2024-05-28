@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.modules.job.domain;
 
 import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
+import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -67,5 +67,6 @@ public record NewJobRequest (
         @Future(message = "Job payment date per CV upload must be in the future")
         LocalDateTime cvRatePaymentDate,
 
-        List<QuestionDto> questions
+        @Valid
+        QuestionnaireDto questionnaire
 ){}

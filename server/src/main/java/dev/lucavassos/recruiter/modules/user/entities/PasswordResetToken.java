@@ -1,10 +1,7 @@
 package dev.lucavassos.recruiter.modules.user.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Builder
+@ToString
 @Table(name="password_reset_tokens")
 public class PasswordResetToken {
 

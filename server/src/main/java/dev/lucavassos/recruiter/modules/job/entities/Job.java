@@ -5,6 +5,7 @@ import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
+import dev.lucavassos.recruiter.modules.question.entity.Questionnaire;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
@@ -24,6 +25,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@ToString
 @Builder
 @Table(name="jobs")
 public class Job {
@@ -103,12 +105,9 @@ public class Job {
     @JoinColumn(name = "recruiter_id")
     private User recruiter;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "jobs_questions",
-            joinColumns = @JoinColumn(name = "job_id"),
-            inverseJoinColumns = @JoinColumn(name = "question_id"))
-    private List<Question> questions = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "questionnaire_id")
+    private Questionnaire questionnaire;
 
     @CreationTimestamp
     @Column(nullable = false, name = "created_dtime")

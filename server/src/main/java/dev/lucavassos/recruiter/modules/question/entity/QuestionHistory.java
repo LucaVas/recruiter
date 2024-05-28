@@ -1,14 +1,9 @@
 package dev.lucavassos.recruiter.modules.question.entity;
 
-import dev.lucavassos.recruiter.modules.job.entities.Job;
-import dev.lucavassos.recruiter.modules.skill.entities.Skill;
+import dev.lucavassos.recruiter.modules.question.domain.QuestionType;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Builder
+@ToString
 @Table(name="questions_history")
 public class QuestionHistory {
 
@@ -27,7 +23,6 @@ public class QuestionHistory {
     private Long id;
 
     @Column(nullable = false, name = "title")
-    @Size(min = 1, message = "Question title must be at least 1 character long")
     private String title;
 
     @Column(nullable = false)
@@ -39,8 +34,10 @@ public class QuestionHistory {
     @Column(nullable = false)
     private Boolean active = true;
 
-    @Column(name = "division")
-    private String division;
+
+    @Column(nullable = false, name = "type")
+    @Enumerated(EnumType.STRING)
+    private QuestionType questionType;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "question_id")

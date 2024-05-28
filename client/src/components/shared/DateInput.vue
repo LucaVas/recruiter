@@ -31,7 +31,8 @@ const date = ref(model);
         iconDisplay="input"
         inputId="icondisplay"
         required
-        @dateSelect="emit('select', date)"
+        @update:modelValue="emit('select', date)"
+        touchUI
       />
       <InputGroupAddon v-if="trailing" class="min-w-fit">{{ trailing }}</InputGroupAddon>
     </InputGroup>

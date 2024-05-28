@@ -23,7 +23,7 @@ const text = ref(model);
       cols="30"
       :placeholder="placeholder"
       style="resize: none"
-      @input="emit('input', text)"
+      @update:modelValue="emit('input', text)"
     />
   </div>
 </template>

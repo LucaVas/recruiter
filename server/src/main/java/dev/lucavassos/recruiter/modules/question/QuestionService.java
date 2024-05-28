@@ -4,23 +4,25 @@ import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
-import dev.lucavassos.recruiter.modules.question.domain.NewQuestionRequest;
+import dev.lucavassos.recruiter.modules.question.domain.NewQuestion;
+import dev.lucavassos.recruiter.modules.question.domain.NewQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
+import dev.lucavassos.recruiter.modules.question.entity.Questionnaire;
 import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
+import dev.lucavassos.recruiter.modules.question.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
-import dev.lucavassos.recruiter.modules.skill.entities.Skill;
+import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDto;
+import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDtoMapper;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -29,60 +31,60 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final ClientRepository clientRepository;
-    private final SkillRepository skillRepository;
+    private final QuestionnaireRepository questionnaireRepository;
     private final QuestionDtoMapper questionDtoMapper;
+    private final QuestionnaireDtoMapper questionnaireDtoMapper;
 
     @Transactional
-    public List<QuestionDto> getQuestionsByTitleOrClient(String findByTitleOrClient) {
-        log.info("Retrieving questions for title / client {}", findByTitleOrClient);
+    public List<QuestionnaireDto> getQuestionnaireByTitleOrClient(String findByTitleOrClient) {
+        log.debug("Retrieving questionnaire for title / client {}", findByTitleOrClient);
 
-        List<Question> questions = questionRepository.findByTitleOrClient(findByTitleOrClient);
+        List<Questionnaire> questionnaires = questionnaireRepository.findByTitleOrClient(findByTitleOrClient);
 
-        List<QuestionDto> questionDtos = questions.stream()
-                .map(questionDtoMapper)
+        List<QuestionnaireDto> questionnaireDtos = questionnaires.stream()
+                .map(questionnaireDtoMapper)
                 .toList();
 
-        log.info("{} questions retrieved: {}", questionDtos.size(), questionDtos);
+        log.info("{} questions retrieved: {}", questionnaireDtos.size(), questionnaireDtos);
 
-        return questionDtos;
+        return questionnaireDtos;
     }
 
     @Transactional
-    public QuestionDto createQuestion(NewQuestionRequest request) {
-        log.info("Creating new question");
+    public QuestionnaireDto createQuestionnaire(NewQuestionnaireRequest request) {
 
-        Client client = clientRepository.findById(request.clientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
-        List<Skill> skills = new ArrayList<>();
-        if (request.skillNames() != null && !request.skillNames().isEmpty()) {
-            request.skillNames().stream()
-                    .map(skillName -> skillRepository.findByName(skillName)
-                                .orElseGet(() -> skillRepository.save(Skill.builder().name(skillName).build()))
-                    ).forEach(skills::add);
-        }
+        Questionnaire questionnaire = buildQuestionnaire(request);
 
-        log.info("Skills: {}", skills);
-
-        Question question;
         try {
-            question = Question.builder()
-                    .title(request.title())
-                    .text(request.text())
-                    .answer(request.answer())
-                    .client(client)
-                    .skills(new HashSet<>(skills))
-                    .active(true)
-                    .build();
-            questionRepository.save(question);
+            Questionnaire createdQuestionnaire = questionnaireRepository.save(questionnaire);
+            return questionnaireDtoMapper.apply(createdQuestionnaire);
         } catch (Exception e) {
             throw new ServerException(e.getMessage());
         }
+    }
 
-        QuestionDto questionDto = questionDtoMapper.apply(question);
+    private Questionnaire buildQuestionnaire(NewQuestionnaireRequest request) {
+        Client client = clientRepository.findById(request.clientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
-        log.info("Question created: {}", questionDto);
+        Set<Question> questions = request.questions().stream()
+                .map(this::buildQuestion)
+                .collect(Collectors.toSet());
 
-        return questionDto;
+        return Questionnaire.builder()
+                .title(request.title())
+                .questions(questions)
+                .client(client)
+                .build();
+    }
+
+    private Question buildQuestion(NewQuestion newQuestion) {
+        return Question.builder()
+                .text(newQuestion.text())
+                .answer(newQuestion.answer())
+                .active(true)
+                .questionType(newQuestion.type())
+                .build();
     }
 
 }

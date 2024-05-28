@@ -2,14 +2,13 @@ import { getAllClients } from '@/stores/client';
 import type { Client } from '@/stores/client/schema';
 import { createJob } from '@/stores/job';
 import type { NewJobRequest } from '@/stores/job/schema';
-import { createQuestion } from '@/stores/question';
-import type { QuestionForm } from '@/stores/question/schema';
+import type { Questionnaire } from '@/stores/question/schema';
 import { getAllSkills } from '@/stores/skill';
 import type { Skill } from '@/stores/skill/schema';
 import { handleError } from '@/utils/errorUtils';
-import { capitalizeText, capitalizeWords } from '@/utils/stringUtils';
 import type { ToastServiceMethods } from 'primevue/toastservice';
-import { capitalize, ref } from 'vue';
+import { ref } from 'vue';
+
 
 export const job = ref<NewJobRequest>({
   client: {} as Client,
@@ -26,7 +25,7 @@ export const job = ref<NewJobRequest>({
   description: '',
   bonusPayPerCv: 0,
   closureBonus: 'Not Applicable',
-  questions: [],
+  questionnaire: {} as Questionnaire,
   closureBonusPaymentDate: new Date(),
   cvRatePaymentDate: new Date(),
 });
@@ -72,26 +71,6 @@ export const loadClients = async (toast: ToastServiceMethods) => {
 
 export const loadSkills = async (toast: ToastServiceMethods) => {
   try {
-    skills.value = await getAllSkills();
-  } catch (err) {
-    handleError(toast, err);
-  }
-};
-
-export const createAndAddQuestion = async (
-  question: QuestionForm,
-  toast: ToastServiceMethods
-): Promise<void> => {
-  try {
-    const newQuestion = await createQuestion({
-      ...question,
-      text: capitalizeText(question.text),
-      title: capitalizeWords(question.title),
-      answer: capitalizeText(question.answer),
-      division: capitalize(question.division),
-      skillNames: question.skillNames.map((s) => capitalize(s)),
-    });
-    job.value.questions.push(newQuestion);
     skills.value = await getAllSkills();
   } catch (err) {
     handleError(toast, err);
