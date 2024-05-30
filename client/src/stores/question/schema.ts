@@ -9,7 +9,7 @@ export type NewQuestionnaire = Pick<Questionnaire, 'title'> & { questions: NewQu
 
 export interface Question {
   text: string;
-  answer: string;
+  answer: string | null;
   questionType: QuestionType;
 }
 export type QuestionType = 'SHORT' | 'PARAGRAPH' | 'YES_NO' | 'OPEN_QUESTION';

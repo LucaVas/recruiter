@@ -10,7 +10,7 @@ import type { QuestionType } from '@/stores/question/schema';
 
 const { text, answer } = defineProps<{
   text: string;
-  answer: string;
+  answer: string | null;
 }>();
 
 const question = ref(text);
@@ -21,7 +21,7 @@ const radioButton = ref(answer);
 
 defineEmits<{
   (e: 'remove'): void;
-  (e: 'updateAnswer', answer: string): void;
+  (e: 'updateAnswer', answer: string | null): void;
   (e: 'updateQuestion', question: string): void;
   (e: 'updateType', type: QuestionType): void;
 }>();

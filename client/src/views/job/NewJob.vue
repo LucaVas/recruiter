@@ -9,20 +9,8 @@ import { onMounted } from 'vue';
 import Success from '@/components/Success.vue';
 import PageHeaderBanner from '@/components/job/PageHeaderBanner.vue';
 import type { NewSkill, Skill } from '@/stores/skill/schema';
-import {
-  job,
-  create,
-  creatingJob,
-  jobCreated,
-  clients,
-  loadClients,
-  skills,
-  loadSkills,
-  addSkill,
-  removeSkill,
-} from './index';
 import type NewSkillModal from '@/components/skill/NewSkillModal.vue';
-import { createNewSkill, creatingSkill, skillModalOpen } from '../jobCommons';
+import { createNewSkill, creatingSkill, skillModalOpen } from './jobCommons';
 import { useRouter } from 'vue-router';
 import TextInput from '@/components/shared/TextInput.vue';
 import NumberInput from '@/components/shared/NumberInput.vue';
@@ -30,9 +18,81 @@ import DateInput from '@/components/shared/DateInput.vue';
 import TextArea from '@/components/shared/TextArea.vue';
 import DropDown from '@/components/shared/DropDown.vue';
 import { contractTypes, jobStatuses } from '@/components/job/utils';
+import { getAllClients } from '@/stores/client';
+import type { Client } from '@/stores/client/schema';
+import { createJob } from '@/stores/job';
+import type { NewJobRequest } from '@/stores/job/schema';
+import { getAllSkills } from '@/stores/skill';
+import { handleError } from '@/utils/errorUtils';
+import type { ToastServiceMethods } from 'primevue/toastservice';
+import { ref } from 'vue';
 
 const toast = useToast();
 const router = useRouter();
+
+const job = ref<NewJobRequest>({
+  name: '',
+  client: {} as Client,
+  status: 'OPEN',
+  contractType: 'PERMANENT',
+  wantedCvs: 0,
+  noticePeriodInDays: 0,
+  experienceRangeMin: 0,
+  experienceRangeMax: 0,
+  salaryBudget: 0,
+  description: '',
+  bonusPayPerCv: 0,
+  currency: 'INR',
+  cvRatePaymentDate: new Date(),
+  closureBonus: 'Not Applicable',
+  closureBonusPaymentDate: new Date(),
+  skills: [],
+  questionnaire: { title: '', questions: [] },
+});
+const jobCreated = ref(false);
+const creatingJob = ref(false);
+
+const clients = ref<Client[]>([]);
+const skills = ref<Skill[]>([]);
+
+const removeSkill = (job: NewJobRequest, skill: Skill): void => {
+  if (!job.skills.includes(skill)) return;
+  job.skills.splice(job.skills.indexOf(skill), 1);
+};
+
+const addSkill = (job: NewJobRequest, skill: Skill | undefined): void => {
+  if (!job || !skill) return;
+  if (job.skills.some((s: Skill) => s.name === skill.name)) return;
+  job.skills.unshift(skill);
+};
+
+const create = async (job: NewJobRequest, toast: ToastServiceMethods): Promise<void> => {
+  creatingJob.value = true;
+  try {
+    await createJob(job);
+    jobCreated.value = true;
+  } catch (err) {
+    handleError(toast, err);
+  } finally {
+    creatingJob.value = false;
+  }
+};
+
+const loadClients = async (toast: ToastServiceMethods) => {
+  try {
+    clients.value = await getAllClients();
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
+
+const loadSkills = async (toast: ToastServiceMethods) => {
+  try {
+    skills.value = await getAllSkills();
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
 
 onMounted(async () => {
   await Promise.all([loadClients(toast), loadSkills(toast)]);
@@ -49,6 +109,7 @@ onMounted(async () => {
         :clients="clients"
         @select="
           async (client) => {
+            if (!job) return;
             job.client = client;
             await loadClients(toast);
           }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import { delJob, deletingJob, deleteJobModalOpen } from '../jobCommons';
-import { getJobDetails, job, modalOpen } from './index';
+import { delJob, deletingJob, deleteJobModalOpen } from './jobCommons';
 import { useToast } from 'primevue/usetoast';
 import { useRoute, useRouter } from 'vue-router';
 import JobTitle from '@/components/job/job-page/JobTitle.vue';
@@ -12,6 +11,20 @@ import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import JobHiringDetailsModal from '@/components/job/job-page/JobHiringDetailsModal.vue';
 import DeleteJobModal from '@/components/job/DeleteJobModal.vue';
 import { handleError } from '@/utils/errorUtils';
+import { ref } from 'vue';
+import { getJob } from '@/stores/job/index';
+import type { Job } from '@/stores/job/schema';
+
+const loading = ref(false);
+const job = ref<Job>();
+
+// modal
+const modalOpen = ref(false);
+
+const getJobDetails = async (id: number) => {
+  loading.value = true;
+  return await getJob(id);
+};
 
 // route
 const router = useRouter();

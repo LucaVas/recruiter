@@ -42,11 +42,11 @@ const emits = defineEmits<{
 </script>
 
 <template>
-  {{ questionnaire }}
   <div>
     <label class="text-md">Questionnaire</label>
     <div class="mt-3 flex gap-4">
       <InputText
+        class="w-full"
         placeholder="Questionnaire Title"
         :modelValue="questionnaire.title"
         @update:modelValue="
