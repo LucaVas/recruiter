@@ -1,7 +1,6 @@
 package dev.lucavassos.recruiter.modules.job;
 
 import dev.lucavassos.recruiter.modules.job.domain.ChangeJobStatusRequest;
-import dev.lucavassos.recruiter.modules.job.domain.JobResponse;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
@@ -25,14 +24,14 @@ public class JobController {
 
     @PostMapping("/jobs")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<JobResponse> addJob(
+    public ResponseEntity<JobDto> addJob(
             @Valid @RequestBody NewJobRequest request) {
         log.debug("Received request to add new job: {}", request);
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }
 
     @PutMapping("/jobs/{jobId}")
-    public ResponseEntity<JobResponse> updateJob(
+    public ResponseEntity<JobDto> updateJob(
             @Valid @RequestBody UpdateJobRequest request) {
         log.debug("Received request to update job");
         return new ResponseEntity<>(service.updateJob(request), HttpStatus.CREATED);

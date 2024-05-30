@@ -1,22 +1,22 @@
 import axiosApi from '../api';
-import type { JobDto, JobStatus, NewJobRequest } from './store';
+import type { Job, JobStatus, NewJob } from './schema';
 
 const api = axiosApi();
 
 export class JobApi {
-  async getJob(id: number): Promise<JobDto> {
+  async getJob(id: number): Promise<Job> {
     const { data } = await api.get(`/jobs/${id}`);
     return data;
   }
-  async getAllJobs(): Promise<JobDto[]> {
+  async getAllJobs(): Promise<Job[]> {
     const { data } = await api.get(`/jobs`);
     return data;
   }
-  async addJob(newJob: NewJobRequest): Promise<JobDto> {
+  async addJob(newJob: NewJob): Promise<Job> {
     const { data } = await api.post(`/jobs`, newJob);
     return data;
   }
-  async updateJob(id: number, job: JobDto): Promise<JobDto> {
+  async updateJob(id: number, job: Job): Promise<Job> {
     const { data } = await api.put(`/jobs/${id}`, job);
     return data;
   }

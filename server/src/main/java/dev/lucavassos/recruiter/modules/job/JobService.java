@@ -52,7 +52,7 @@ public class JobService {
     private final QuestionRepository questionRepository;
 
     @Transactional
-    public JobResponse addJob(NewJobRequest request) {
+    public JobDto addJob(NewJobRequest request) {
         log.debug("Initiating new job creation process...");
 
         List<Skill> skills = skillRepository
@@ -110,14 +110,12 @@ public class JobService {
         log.debug("New job created: [{}]", createdJob);
         monitoringProcessor.incrementJobsCounter();
 
-        return new JobResponse(
-                createdJob.getId(),
-                jobDtoMapper.apply(createdJob)
-        );
+        return jobDtoMapper.apply(createdJob);
+
     }
 
     @Transactional
-    public JobResponse updateJob(UpdateJobRequest request) {
+    public JobDto updateJob(UpdateJobRequest request) {
 
         boolean changes = false;
         Long id = request.id();
@@ -213,11 +211,7 @@ public class JobService {
         saveJobInHistoryTable(job, recruiter);
 
         log.debug("Job updated: [{}]", job);
-        return new JobResponse(
-                job.getId(),
-                jobDtoMapper.apply(job)
-        );
-
+        return jobDtoMapper.apply(job);
     }
 
     @Transactional
