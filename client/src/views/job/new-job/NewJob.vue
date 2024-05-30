@@ -18,7 +18,7 @@ import {
   loadSkills,
   addSkill,
   removeSkill,
-  initJob
+  initJob,
 } from './index';
 import type NewSkillModal from '@/components/skill/NewSkillModal.vue';
 import { createNewSkill, creatingSkill, skillModalOpen } from '../jobCommons';
@@ -199,27 +199,22 @@ onMounted(async () => {
         />
       </div>
 
-      <JobQuestionnaire :questionnaire="job.questionnaire" @updateQuestionnaire="(q) => (job.questionnaire = q)" />
-    </div>
-    <div v-else class="flex h-full w-full items-center justify-center">
-      <Success :message="'Job created successfully!'" />
+      <JobQuestionnaire
+        :questionnaire="job.questionnaire"
+        @updateQuestionnaire="(q) => (job.questionnaire = q)"
+      />
     </div>
 
     <div v-if="!jobCreated" class="flex w-full justify-between">
       <Button outlined label="Back" size="small" :loading="creatingJob" @click="router.go(-1)" />
       <Button label="Create Job" @click="create(job, toast)" />
     </div>
-    <div v-else class="flex w-full justify-end">
-      <Button
-        label="Back to Dashboard"
-        @click="
-          {
-            router.push({ name: 'Dashboard' });
-          }
-          jobCreated = false;
-          initJob()
-        "
-      />
-    </div>
+
+    <Success
+      :visible="jobCreated"
+      :title="'Job created!'"
+      :message="'Job is created, and you will see it shortly in your dashboard'"
+      @close="router.push({ name: 'Dashboard' })"
+    />
   </div>
 </template>

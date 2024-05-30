@@ -57,6 +57,7 @@ declare module 'vue' {
     FilesUploader: typeof import('./src/components/uploader/FilesUploader.vue')['default']
     Header: typeof import('./src/components/tables/shared/Header.vue')['default']
     HiringDetails: typeof import('./src/components/candidacy/HiringDetails.vue')['default']
+    Image: typeof import('primevue/image')['default']
     InputMask: typeof import('primevue/inputmask')['default']
     InputNumber: typeof import('primevue/inputnumber')['default']
     InputSwitch: typeof import('primevue/inputswitch')['default']
