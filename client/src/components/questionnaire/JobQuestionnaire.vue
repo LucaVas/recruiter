@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
 import QuestionCard from './QuestionCard.vue';
+import InputText from 'primevue/inputtext';
 import { ref } from 'vue';
 import type { NewQuestion, NewQuestionnaire, Questionnaire } from '@/stores/question/schema';
 import { v4 } from 'uuid';
 
 const { questionnaire } = defineProps<{ questionnaire: Questionnaire }>();
 
+const content = ref(questionnaire);
+
 const questions = ref<{ localId: string; question: NewQuestion }[]>(
   questionnaire.questions
     ? questionnaire.questions.map((q) => ({ localId: v4(), question: q }))
     : []
 );
-const title = ref(questionnaire.title);
 
 const createQuestion = () => {
   questions.value.push({
@@ -29,7 +31,7 @@ const removeQuestion = (localId: string) => {
   questions.value = questions.value.filter((q) => q.localId !== localId);
 
   emits('updateQuestionnaire', {
-    title: title.value,
+    ...content.value,
     questions: questions.value.map((q) => q.question),
   });
 };
@@ -40,21 +42,22 @@ const emits = defineEmits<{
 </script>
 
 <template>
+  {{ questionnaire }}
   <div>
     <label class="text-md">Questionnaire</label>
     <div class="mt-3 flex gap-4">
-      <TextInput
-        :model="title"
-        @input="
-          (t: string) => {
-            title = t;
+      <InputText
+        placeholder="Questionnaire Title"
+        :modelValue="questionnaire.title"
+        @update:modelValue="
+          (t) => {
+            t ? (content.title = t) : null;
             $emit('updateQuestionnaire', {
-              title,
+              ...content,
               questions: questions.map((q) => q.question),
             });
           }
         "
-        placeholder="Questionnaire Title"
       />
       <Button
         icon="pi pi-plus"
@@ -77,7 +80,7 @@ const emits = defineEmits<{
           (q) => {
             item.question.text = q;
             $emit('updateQuestionnaire', {
-              title,
+              ...content,
               questions: questions.map((q) => q.question),
             });
           }
@@ -86,7 +89,7 @@ const emits = defineEmits<{
           (a) => {
             item.question.answer = a;
             $emit('updateQuestionnaire', {
-              title,
+              ...content,
               questions: questions.map((q) => q.question),
             });
           }
@@ -95,7 +98,7 @@ const emits = defineEmits<{
           (t) => {
             item.question.questionType = t;
             $emit('updateQuestionnaire', {
-              title,
+              ...content,
               questions: questions.map((q) => q.question),
             });
           }
