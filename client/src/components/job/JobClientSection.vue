@@ -14,11 +14,13 @@
           </InputGroupAddon>
           <div class="flex w-full justify-center">
             <Dropdown
-              :modelValue="client"
+              :modelValue="selectedClient"
               :options="clients"
-              @update:modelValue="
-                selectedClient = client;
-                $emit('select', client);
+              @update:model-value="
+                (client: Client) => {
+                  selectedClient = client;
+                  $emit('select', client);
+                }
               "
               filter
               optionLabel="name"

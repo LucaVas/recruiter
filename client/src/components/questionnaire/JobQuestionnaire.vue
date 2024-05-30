@@ -71,8 +71,7 @@ const emits = defineEmits<{
 
     <div class="mt-3 space-y-3">
       <QuestionCard
-        :text="item.question.text"
-        :answer="item.question.answer"
+        :question="item.question"
         @remove="removeQuestion(item.localId)"
         v-for="item in questions"
         :key="item.localId"

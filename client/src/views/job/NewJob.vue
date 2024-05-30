@@ -109,7 +109,6 @@ onMounted(async () => {
         :clients="clients"
         @select="
           async (client) => {
-            if (!job) return;
             job.client = client;
             await loadClients(toast);
           }

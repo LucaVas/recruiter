@@ -372,8 +372,8 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
 
   <Success
     :visible="jobUpdated"
-    :title="'Job created!'"
-    :message="'Job is created, and you will see it shortly in your dashboard'"
+    :title="'Job updated!'"
+    :message="'Job is updated, and you will see it shortly in your dashboard'"
     @close="
       {
         jobUpdated = false;

@@ -6,18 +6,17 @@ import RadioButton from 'primevue/radiobutton';
 import Button from 'primevue/button';
 import { ref } from 'vue';
 import { questionTypes } from './questionTypes';
-import type { QuestionType } from '@/stores/question/schema';
+import type { Question, QuestionType } from '@/stores/question/schema';
 
-const { text, answer } = defineProps<{
-  text: string;
-  answer: string | null;
+const { question } = defineProps<{
+  question: Question;
 }>();
 
-const question = ref(text);
-const type = ref<QuestionType>('OPEN_QUESTION');
-const shortAnswer = ref(answer);
-const longAnswer = ref(answer);
-const radioButton = ref(answer);
+const questionText = ref(question.text);
+const type = ref<QuestionType>(question.questionType ?? 'OPEN_QUESTION');
+const shortAnswer = ref(question.answer);
+const longAnswer = ref(question.answer);
+const radioButton = ref(question.answer);
 
 defineEmits<{
   (e: 'remove'): void;
@@ -28,15 +27,15 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="space-y-4 border p-4 bg-slate-100">
+  <div class="space-y-4 border bg-slate-100 p-4">
     <div class="flex flex-col items-center gap-4 sm:flex-row">
       <TextInput
-      class="w-full"
-        :model="question"
+        class="w-full"
+        :model="questionText"
         @input="(q) => $emit('updateQuestion', q)"
         placeholder="Write your question here"
       />
-      <div class="w-full sm:w-1/3 flex justify-between gap-3">
+      <div class="flex w-full justify-between gap-3 sm:w-1/3">
         <Dropdown
           class="w-full md:min-w-fit"
           placeholder="Select a type"
@@ -46,7 +45,12 @@ defineEmits<{
           option-label="label"
           option-value="value"
         />
-        <Button icon="pi pi-trash" class="p-panel-header-icon min-w-fit" @click="$emit('remove')" unstyled />
+        <Button
+          icon="pi pi-trash"
+          class="p-panel-header-icon min-w-fit"
+          @click="$emit('remove')"
+          unstyled
+        />
       </div>
     </div>
     <Textarea
