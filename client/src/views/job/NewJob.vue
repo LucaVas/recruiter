@@ -21,7 +21,7 @@ import { contractTypes, jobStatuses } from '@/components/job/utils';
 import { getAllClients } from '@/stores/client';
 import type { Client } from '@/stores/client/schema';
 import { createJob } from '@/stores/job';
-import type { NewJobRequest } from '@/stores/job/schema';
+import type { NewJob } from '@/stores/job/schema';
 import { getAllSkills } from '@/stores/skill';
 import { handleError } from '@/utils/errorUtils';
 import type { ToastServiceMethods } from 'primevue/toastservice';
@@ -30,7 +30,7 @@ import { ref } from 'vue';
 const toast = useToast();
 const router = useRouter();
 
-const job = ref<NewJobRequest>({
+const job = ref<NewJob>({
   name: '',
   client: {} as Client,
   status: 'OPEN',
@@ -55,18 +55,18 @@ const creatingJob = ref(false);
 const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
 
-const removeSkill = (job: NewJobRequest, skill: Skill): void => {
+const removeSkill = (job: NewJob, skill: Skill): void => {
   if (!job.skills.includes(skill)) return;
   job.skills.splice(job.skills.indexOf(skill), 1);
 };
 
-const addSkill = (job: NewJobRequest, skill: Skill | undefined): void => {
+const addSkill = (job: NewJob, skill: Skill | undefined): void => {
   if (!job || !skill) return;
   if (job.skills.some((s: Skill) => s.name === skill.name)) return;
   job.skills.unshift(skill);
 };
 
-const create = async (job: NewJobRequest, toast: ToastServiceMethods): Promise<void> => {
+const create = async (job: NewJob, toast: ToastServiceMethods): Promise<void> => {
   creatingJob.value = true;
   try {
     await createJob(job);

@@ -51,7 +51,7 @@ const emits = defineEmits<{
         :modelValue="questionnaire.title"
         @update:modelValue="
           (t) => {
-            t ? (content.title = t) : null;
+            content.title = t ?? '';
             $emit('updateQuestionnaire', {
               ...content,
               questions: questions.map((q) => q.question),

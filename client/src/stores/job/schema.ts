@@ -19,12 +19,16 @@ export interface JobI {
   closureBonus: string;
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
-  numberOfCandidates: number | null;
   questionnaire: NewQuestionnaire;
 }
 
-export type Job = JobI & { id: number; createdDTime: Date; modifiedDTime: Date };
-export type NewJob = JobI
+export type Job = JobI & {
+  id: number;
+  createdDTime: Date;
+  modifiedDTime: Date;
+  numberOfCandidates: number | null;
+};
+export type NewJob = JobI;
 
 export type ContractType = 'PERMANENT' | 'TEMPORARY';
 export type Currency = 'INR';
