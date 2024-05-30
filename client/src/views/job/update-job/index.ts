@@ -8,8 +8,31 @@ import { ref } from 'vue';
 import { loadJobData } from '../jobCommons';
 import { getAllClients } from '@/stores/client';
 import { changeJobStatus, updateJob } from '@/stores/job';
+import type { Questionnaire } from '@/stores/question/schema';
 
-export const job = ref<Job>();
+export const job = ref<Job>({
+  id: 0,
+  client: {} as Client,
+  name: '',
+  status: 'OPEN',
+  contractType: 'TEMPORARY',
+  wantedCvs: 0,
+  experienceRangeMin: 0,
+  experienceRangeMax: 0,
+  noticePeriodInDays: 0,
+  skills: [],
+  salaryBudget: 0,
+  currency: 'INR',
+  description: '',
+  bonusPayPerCv: 0,
+  closureBonus: 'Not Applicable',
+  numberOfCandidates: null,
+  questionnaire: {} as Questionnaire,
+  closureBonusPaymentDate: new Date(),
+  cvRatePaymentDate: new Date(),
+  createdDTime: new Date(),
+  modifiedDTime: new Date()
+});
 export const clients = ref<Client[]>([]);
 export const skills = ref<Skill[]>([]);
 export const loading = ref(false);
@@ -62,8 +85,8 @@ export const changeStatus = async (id: number, status: JobStatus, toast: ToastSe
   }
 };
 
-export const addSkill = (job: Job | undefined, skill: Skill): void => {
-  if (!job) return;
+export const addSkill = (job: Job | undefined, skill: Skill | undefined): void => {
+  if (!job || !skill) return;
   if (job.skills.some((s: Skill) => s.name === skill.name)) return;
   job.skills.unshift(skill);
 };

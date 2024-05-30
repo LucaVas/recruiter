@@ -231,7 +231,7 @@ public class JobService {
             throw new AccessDeniedException("Job is not accessible");
         }
 
-        log.debug("Job retrieved: [{}]", job);
+        log.warn("Job retrieved: [{}]", job);
         return jobDtoMapper.apply(job);
     }
 

@@ -12,9 +12,7 @@ public class ClientDtoMapper implements Function<Client, ClientDto> {
         return new ClientDto(
                 client.getId(),
                 client.getName(),
-                client.getIndustry(),
-                client.getCreatedDTime(),
-                client.getModifiedDTime()
+                client.getIndustry()
         );
     }
 }

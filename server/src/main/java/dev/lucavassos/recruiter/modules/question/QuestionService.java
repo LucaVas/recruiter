@@ -8,13 +8,10 @@ import dev.lucavassos.recruiter.modules.question.domain.NewQuestion;
 import dev.lucavassos.recruiter.modules.question.domain.NewQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.question.entity.Question;
 import dev.lucavassos.recruiter.modules.question.entity.Questionnaire;
-import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.question.repository.QuestionnaireRepository;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDtoMapper;
-import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,7 +26,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class QuestionService {
 
-    private final QuestionRepository questionRepository;
     private final ClientRepository clientRepository;
     private final QuestionnaireRepository questionnaireRepository;
     private final QuestionDtoMapper questionDtoMapper;

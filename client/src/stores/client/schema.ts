@@ -21,15 +21,10 @@ export const industries: { name: string; value: Industry }[] = [
   { name: 'Other', value: 'OTHER' },
 ];
 
-export type Client = {
-  id: number;
+export interface Client {
   name: string;
   industry: Industry;
-  createdDTime: Date;
-  modifiedDTime: Date;
-};
+}
 
-export type NewClient = {
-  name: string;
-  industry: Industry;
-};
+export type ClientDto = Client & { id: number };
+export type NewClient = Client;

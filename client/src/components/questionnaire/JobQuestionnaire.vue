@@ -2,11 +2,17 @@
 import Button from 'primevue/button';
 import QuestionCard from './QuestionCard.vue';
 import { ref } from 'vue';
-import type { NewQuestion, NewQuestionnaire } from '@/stores/question/schema';
+import type { NewQuestion, NewQuestionnaire, Questionnaire } from '@/stores/question/schema';
 import { v4 } from 'uuid';
 
-const questions = ref<{ localId: string; question: NewQuestion }[]>([]);
-const title = ref('');
+const { questionnaire } = defineProps<{ questionnaire: Questionnaire }>();
+
+const questions = ref<{ localId: string; question: NewQuestion }[]>(
+  questionnaire.questions
+    ? questionnaire.questions.map((q) => ({ localId: v4(), question: q }))
+    : []
+);
+const title = ref(questionnaire.title);
 
 const createQuestion = () => {
   questions.value.push({

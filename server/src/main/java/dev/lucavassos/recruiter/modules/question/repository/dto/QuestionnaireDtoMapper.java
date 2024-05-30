@@ -17,9 +17,7 @@ public class QuestionnaireDtoMapper implements Function<Questionnaire, Questionn
         return new QuestionnaireDto(
                 questionnaire.getId(),
                 questionnaire.getTitle(),
-                questionnaire.getQuestions().stream().map(questionDtoMapper).collect(Collectors.toSet()),
-                questionnaire.getCreatedDTime(),
-                questionnaire.getModifiedDTime()
+                questionnaire.getQuestions().stream().map(questionDtoMapper).collect(Collectors.toSet())
         );
     }
 }

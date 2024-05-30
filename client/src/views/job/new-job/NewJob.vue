@@ -40,7 +40,6 @@ onMounted(async () => {
 
 <template>
   <div class="flex w-full flex-col gap-8 pb-6">
-    {{ job }}
     <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
       <JobClientSection
         :client="job.client"
@@ -200,7 +199,7 @@ onMounted(async () => {
         />
       </div>
 
-      <JobQuestionnaire @updateQuestionnaire="(q) => (job.questionnaire = q)" />
+      <JobQuestionnaire :questionnaire="job.questionnaire" @updateQuestionnaire="(q) => (job.questionnaire = q)" />
     </div>
     <div v-else class="flex h-full w-full items-center justify-center">
       <Success :message="'Job created successfully!'" />

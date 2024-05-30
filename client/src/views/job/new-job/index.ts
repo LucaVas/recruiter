@@ -24,7 +24,7 @@ export const job = ref<NewJobRequest>({
   description: '',
   bonusPayPerCv: 0,
   closureBonus: 'Not Applicable',
-  questionnaire: {} as Questionnaire,
+  questionnaire: { title: '', questions: [] },
   closureBonusPaymentDate: new Date(),
   cvRatePaymentDate: new Date(),
 });
@@ -49,7 +49,7 @@ export const initJob = (): void => {
     closureBonusPaymentDate: new Date(),
     cvRatePaymentDate: new Date(),
   };
-}
+};
 
 export const removeSkill = (job: NewJobRequest, skill: Skill): void => {
   if (!job.skills.includes(skill)) return;
