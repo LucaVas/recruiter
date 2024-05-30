@@ -1,6 +1,6 @@
 <template>
   <div class="flex w-full flex-col gap-8 pb-6">
-    <div v-if="!candidacySubmitted" class="flex h-full w-full flex-col gap-6">
+    <div class="flex h-full w-full flex-col gap-6">
       <div v-if="job">
         <CandidacyHeader
           :status="job.status"
@@ -40,9 +40,12 @@
       <FilesUploader @addFile="(files: File[]) => (resume = files[0])" />
     </div>
 
-    <div v-else class="flex h-full w-full items-center justify-center">
-      <Success :message="'Candidacy submitted successfully!'" />
-    </div>
+    <Success
+      :visible="candidacySubmitted"
+      title="Candidacy submitted"
+      message="Candidacy submitted successfully!"
+      @close="{candidacySubmitted = false; router.push({ name: 'CandidaciesPage' })}"
+    />
 
     <CandidacyFooter
       v-if="job"
@@ -62,7 +65,7 @@ import CandidacyHiringDetailsModal from '@/components/candidacy/header/Candidacy
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import { getJob } from '@/stores/job';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { findCandidate } from '@/stores/candidate';
 import { submitCandidacy } from '@/stores/candidacy';
 import { ApiError } from '@/utils/types';
@@ -94,6 +97,7 @@ import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const jobId = ref<number>();
 const toast = useToast();
+const router = useRouter();
 
 async function submit(selectedCandidate: Candidate | null | undefined) {
   if (!selectedCandidate || !jobId.value) return;

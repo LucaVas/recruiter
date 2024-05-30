@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import JobClientSection from '@/components/job/JobClientSection.vue';
-import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
+import SkillsDropdown from '@/components/job/SkillsDropdown.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import JobQuestionnaire from '@/components/questionnaire/JobQuestionnaire.vue';
 import { useToast } from 'primevue/usetoast';
+import Divider from 'primevue/divider';
 import { onMounted } from 'vue';
 import Success from '@/components/Success.vue';
+import PageHeaderBanner from '@/components/job/PageHeaderBanner.vue';
 import type { NewSkill, Skill } from '@/stores/skill/schema';
 import {
   job,
@@ -18,7 +20,6 @@ import {
   loadSkills,
   addSkill,
   removeSkill,
-  initJob,
 } from './index';
 import type NewSkillModal from '@/components/skill/NewSkillModal.vue';
 import { createNewSkill, creatingSkill, skillModalOpen } from '../jobCommons';
@@ -28,7 +29,7 @@ import NumberInput from '@/components/shared/NumberInput.vue';
 import DateInput from '@/components/shared/DateInput.vue';
 import TextArea from '@/components/shared/TextArea.vue';
 import DropDown from '@/components/shared/DropDown.vue';
-import { contractTypes, jobStatuses } from '@/components/job/shared/utils';
+import { contractTypes, jobStatuses } from '@/components/job/utils';
 
 const toast = useToast();
 const router = useRouter();
@@ -39,8 +40,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex w-full flex-col gap-8 pb-6">
-    <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
+  <div class="flex w-full flex-col">
+    <PageHeaderBanner title="New Job" />
+
+    <div class="flex flex-col gap-6">
       <JobClientSection
         :client="job.client"
         :clients="clients"
@@ -205,16 +208,17 @@ onMounted(async () => {
       />
     </div>
 
-    <div v-if="!jobCreated" class="flex w-full justify-between">
+    <Divider />
+    <div class="flex w-full justify-between">
       <Button outlined label="Back" size="small" :loading="creatingJob" @click="router.go(-1)" />
       <Button label="Create Job" @click="create(job, toast)" />
     </div>
-
-    <Success
-      :visible="jobCreated"
-      :title="'Job created!'"
-      :message="'Job is created, and you will see it shortly in your dashboard'"
-      @close="router.push({ name: 'Dashboard' })"
-    />
   </div>
+
+  <Success
+    :visible="jobCreated"
+    :title="'Job created!'"
+    :message="'Job is created, and you will see it shortly in your dashboard'"
+    @close="router.push({ name: 'Dashboard' })"
+  />
 </template>

@@ -1,36 +1,3 @@
-<template>
-  <div class="flex flex-col items-start justify-between md:flex-row md:items-center">
-    <div class="flex w-full flex-row items-center justify-between gap-2 md:justify-normal">
-      <Tag
-        :icon="getStatusIcon(status)"
-        :severity="getSeverity(status)"
-        class="h-10 min-w-fit px-4"
-        :value="formatStatus(status)"
-      />
-      <div class="card flex justify-center">
-        <DeleteJobModal
-          :visible="deleteJobModalOpen"
-          @closeModal="deleteJobModalOpen = false"
-          @deleteJob="$emit('delete')"
-        />
-        <Button
-          type="button"
-          size="small"
-          label="Change Status"
-          v-if="status !== 'DELETED'"
-          @click="toggle"
-          aria-haspopup="true"
-          aria-controls="overlay_tmenu"
-          class="h-10 min-w-fit"
-          outlined
-        />
-        <TieredMenu ref="menu" id="overlay_tmenu" :model="splitButtonChoices" popup />
-      </div>
-    </div>
-    <p class="min-w-fit">Created on: {{ formatDate(createdAt) }}</p>
-  </div>
-</template>
-
 <script setup lang="ts">
 import Tag from 'primevue/tag';
 import TieredMenu from 'primevue/tieredmenu';
@@ -38,8 +5,8 @@ import Button from 'primevue/button';
 import type { JobStatus } from '@/stores/job/schema';
 import { formatDate } from '@/utils/dateUtils';
 import { ref } from 'vue';
-import DeleteJobModal from '@/components/job/shared/DeleteJobModal.vue';
-import { getSeverity, getStatusIcon, formatStatus } from '../shared/utils';
+import DeleteJobModal from './DeleteJobModal.vue';
+import { getSeverity, getStatusIcon, formatStatus } from './utils';
 
 // props
 const { status, createdAt } = defineProps<{
@@ -99,5 +66,37 @@ const splitButtonChoices = ref([
     },
   },
 ]);
-
 </script>
+
+<template>
+  <div class="flex flex-col items-start justify-between md:flex-row md:items-center">
+    <div class="flex w-full flex-row items-center justify-between gap-2 md:justify-normal">
+      <Tag
+        :icon="getStatusIcon(status)"
+        :severity="getSeverity(status)"
+        class="h-10 min-w-fit px-4"
+        :value="formatStatus(status)"
+      />
+      <div class="card flex justify-center">
+        <DeleteJobModal
+          :visible="deleteJobModalOpen"
+          @closeModal="deleteJobModalOpen = false"
+          @deleteJob="$emit('delete')"
+        />
+        <Button
+          type="button"
+          size="small"
+          label="Change Status"
+          v-if="status !== 'DELETED'"
+          @click="toggle"
+          aria-haspopup="true"
+          aria-controls="overlay_tmenu"
+          class="h-10 min-w-fit"
+          outlined
+        />
+        <TieredMenu ref="menu" id="overlay_tmenu" :model="splitButtonChoices" popup />
+      </div>
+    </div>
+    <p class="min-w-fit">Created on: {{ formatDate(createdAt) }}</p>
+  </div>
+</template>

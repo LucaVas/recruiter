@@ -13,7 +13,7 @@ import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DashboardJobCard from '@/components/job/jobs-table/DashboardJobCard.vue';
 import DashboardJobInfoCard from '@/components/job/jobs-table/DashboardJobInfoCard.vue';
-import { formatStatus, getSeverity } from '@/components/job/shared/utils';
+import { formatStatus, getSeverity } from '@/components/job/utils';
 
 const loading = ref(false);
 const jobs = ref<Job[]>();

@@ -31,7 +31,7 @@ export const job = ref<Job>({
   closureBonusPaymentDate: new Date(),
   cvRatePaymentDate: new Date(),
   createdDTime: new Date(),
-  modifiedDTime: new Date()
+  modifiedDTime: new Date(),
 });
 export const clients = ref<Client[]>([]);
 export const skills = ref<Skill[]>([]);
@@ -39,6 +39,7 @@ export const loading = ref(false);
 
 export const initializingJob = ref(false);
 export const updatingJob = ref(false);
+export const jobUpdated = ref(false);
 export const changingStatus = ref(false);
 
 export const initializeJob = async (jobId: number, toast: ToastServiceMethods) => {
@@ -64,7 +65,7 @@ export const update = async (job: Job | undefined, toast: ToastServiceMethods) =
   updatingJob.value = true;
   try {
     await updateJob(job);
-    showSuccess(toast, 'Job updated successfully.');
+    jobUpdated.value = true;
   } catch (err) {
     handleError(toast, err);
   } finally {
