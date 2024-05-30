@@ -40,7 +40,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex w-full flex-col">
+  <div class="flex w-full flex-col justify-evenly gap-3">
     <PageHeaderBanner title="New Job" />
 
     <div class="flex flex-col gap-6">

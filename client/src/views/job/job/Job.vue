@@ -10,7 +10,7 @@ import JobButtons from '@/components/job/job-page/JobButtons.vue';
 import JobDescription from '@/components/job/job-page/JobDescription.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import JobHiringDetailsModal from '@/components/job/job-page/JobHiringDetailsModal.vue';
-import DeleteJobModal from '@/components/job/shared/DeleteJobModal.vue';
+import DeleteJobModal from '@/components/job/DeleteJobModal.vue';
 import { handleError } from '@/utils/errorUtils';
 
 // route

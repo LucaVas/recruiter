@@ -45,10 +45,10 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
     <ProgressSpinner />
   </div>
 
-  <div v-else class="flex w-full flex-col">
-    <PageHeaderBanner title="New Job" />
+  <div v-else class="flex w-full flex-col justify-evenly gap-3">
+    <PageHeaderBanner title="Update Job" />
 
-    <div>
+    <body class="flex flex-col gap-6">
       <JobStatusComponent
         :status="job.status"
         :createdAt="new Date(job.createdDTime)"
@@ -290,13 +290,13 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
         :questionnaire="job.questionnaire"
         @updateQuestionnaire="(q) => (job.questionnaire = q)"
       />
-    </div>
+    </body>
 
     <Divider />
-    <div class="flex w-full justify-between">
+    <footer class="flex justify-between">
       <Button outlined label="Back" size="small" :loading="updatingJob" @click="router.go(-1)" />
       <Button label="Update Job" @click="update(job, toast)" />
-    </div>
+    </footer>
   </div>
 
   <Success

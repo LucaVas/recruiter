@@ -69,7 +69,7 @@ const splitButtonChoices = ref([
 </script>
 
 <template>
-  <div class="flex flex-col items-start justify-between md:flex-row md:items-center">
+  <div class="flex flex-col items-start justify-between md:flex-row md:items-center gap-3">
     <div class="flex w-full flex-row items-center justify-between gap-2 md:justify-normal">
       <Tag
         :icon="getStatusIcon(status)"

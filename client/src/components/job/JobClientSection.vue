@@ -12,11 +12,31 @@
           <InputGroupAddon>
             <i class="pi pi-user"></i>
           </InputGroupAddon>
-          <ClientDropdown
-            :clients="clients"
-            :client="selectedClient"
-            @selectClient="(client) => { selectedClient = client; $emit('select', client) }"
-          />
+          <div class="flex w-full justify-center">
+            <Dropdown
+              :modelValue="client"
+              :options="clients"
+              @update:modelValue="
+                selectedClient = client;
+                $emit('select', client);
+              "
+              filter
+              optionLabel="name"
+              placeholder="Select a Client"
+              class="md:w-14rem w-full"
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value" class="flex items-center">
+                  <div>{{ slotProps.value.name }}</div>
+                </div>
+              </template>
+              <template #option="slotProps">
+                <div class="align-items-center flex">
+                  <div>{{ slotProps.option.name }}</div>
+                </div>
+              </template>
+            </Dropdown>
+          </div>
         </InputGroup>
         <Button
           size="small"
@@ -45,7 +65,6 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import ClientModal from '@/components/client/ClientModal.vue';
 import { ref } from 'vue';
-import ClientDropdown from './ClientDropdown.vue';
 import { createClient } from '@/stores/client/index';
 import type { Client, NewClient } from '@/stores/client/schema';
 import { useToast } from 'primevue/usetoast';

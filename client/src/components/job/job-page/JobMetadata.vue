@@ -3,7 +3,7 @@ import type { Job } from '@/stores/job/schema';
 import JobMetadataEntry from '../metadata/JobMetadataEntry.vue';
 import { capitalize } from '@/utils/stringUtils';
 import { formatDate } from '@/utils/dateUtils';
-import { formatStatus } from '../shared/utils';
+import { formatStatus } from '../utils';
 
 const { job } = defineProps<{
   job: Job;
