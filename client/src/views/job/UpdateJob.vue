@@ -105,6 +105,8 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
   <div v-else class="flex w-full flex-col justify-evenly gap-3">
     <PageHeaderBanner title="Update Job" />
 
+    {{ job }}
+
     <body class="flex flex-col gap-6">
       <JobStatusComponent
         :status="job.status"

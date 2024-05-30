@@ -2,22 +2,18 @@ package dev.lucavassos.recruiter.modules.question.entity;
 
 import dev.lucavassos.recruiter.modules.question.domain.QuestionType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Builder
-@ToString
 @Table(name="questions")
 public class Question {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,18 +24,18 @@ public class Question {
     @Column(name = "answer", length = 500)
     private String answer;
 
-    @Column(nullable = false, name = "active")
-    private Boolean active = true;
-
     @Column(nullable = false, name = "type")
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
-    private LocalDateTime createdDTime;
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    private LocalDateTime modifiedDTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    private Questionnaire questionnaire;
 }

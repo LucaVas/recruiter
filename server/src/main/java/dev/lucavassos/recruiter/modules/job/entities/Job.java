@@ -34,7 +34,7 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "client_id")
     private Client client;
 
@@ -106,7 +106,7 @@ public class Job {
     private User recruiter;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "questionnaire_id")
+    @JoinColumn(name = "questionnaire_title")
     private Questionnaire questionnaire;
 
     @CreationTimestamp
