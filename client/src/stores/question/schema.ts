@@ -1,10 +1,11 @@
 export interface Questionnaire {
   title: string;
+  clientName: string,
   questions: Question[];
 }
 
 export type QuestionnaireDto = Questionnaire & { id: number };
-export type NewQuestionnaire = Pick<Questionnaire, 'title'> & { questions: NewQuestion[] };
+export type NewQuestionnaire = Omit<Questionnaire, 'questions'> & { questions: NewQuestion[] };
 
 
 export interface Question {

@@ -97,6 +97,7 @@ declare module 'vue' {
     Question: typeof import('./src/components/questionnaire/Question.vue')['default']
     QuestionCard: typeof import('./src/components/questionnaire/QuestionCard.vue')['default']
     QuestionModal: typeof import('./src/components/question/QuestionModal.vue')['default']
+    QuestionnaireModal: typeof import('./src/components/questionnaire/QuestionnaireModal.vue')['default']
     Questions: typeof import('./src/components/job/shared/Questions.vue')['default']
     QuestionSearch: typeof import('./src/components/question/QuestionSearch.vue')['default']
     QuestionSearchModal: typeof import('./src/components/question/QuestionSearchModal.vue')['default']

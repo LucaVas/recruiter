@@ -9,9 +9,9 @@ public record NewQuestionnaireRequest(
         @NotBlank(message = "Questionnaire title is required")
         String title,
 
-        @Valid
-        List<NewQuestion> questions,
+        @NotBlank(message = "Client name is required")
+        String clientName,
 
-        @NotNull(message = "Client ID is required")
-        Long clientId
+        @Valid
+        List<NewQuestion> questions
 ){}
