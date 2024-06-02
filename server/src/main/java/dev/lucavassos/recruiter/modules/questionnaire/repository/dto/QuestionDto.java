@@ -1,6 +1,6 @@
-package dev.lucavassos.recruiter.modules.question.repository.dto;
+package dev.lucavassos.recruiter.modules.questionnaire.repository.dto;
 
-import dev.lucavassos.recruiter.modules.question.domain.QuestionType;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;

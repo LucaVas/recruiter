@@ -2,7 +2,7 @@ package dev.lucavassos.recruiter.modules.job.repository.dto;
 
 import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDtoMapper;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDtoMapper;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDtoMapper;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

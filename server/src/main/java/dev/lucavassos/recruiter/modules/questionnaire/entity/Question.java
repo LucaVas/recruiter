@@ -1,6 +1,6 @@
-package dev.lucavassos.recruiter.modules.question.entity;
+package dev.lucavassos.recruiter.modules.questionnaire.entity;
 
-import dev.lucavassos.recruiter.modules.question.domain.QuestionType;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,6 +36,6 @@ public class Question {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Questionnaire questionnaire;
 }

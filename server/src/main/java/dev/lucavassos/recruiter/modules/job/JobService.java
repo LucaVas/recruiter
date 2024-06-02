@@ -16,11 +16,12 @@ import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
-import dev.lucavassos.recruiter.modules.question.entity.Question;
-import dev.lucavassos.recruiter.modules.question.entity.Questionnaire;
-import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
-import dev.lucavassos.recruiter.modules.question.repository.QuestionnaireRepository;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDto;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionDto;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
@@ -206,6 +207,7 @@ public class JobService {
                 changes = true;
             }
         }
+        job.setQuestionnaire(updateQuestionnaire(job, request.questionnaire()));
 
 
         if (!changes) {
@@ -305,13 +307,47 @@ public class JobService {
 
     }
 
-    private Questionnaire saveQuestionnaire(Questionnaire questionnaire) {
-        try {
-            return questionnaireRepository.save(questionnaire);
-        } catch (Exception e) {
-            log.error("Error while saving questionnaire: {}", e.getMessage());
-            throw new DatabaseException(e.getMessage());
+    private Questionnaire updateQuestionnaire(Job job, QuestionnaireDto questionnaireDto) {
+        Questionnaire questionnaire = questionnaireRepository
+                .findById(job.getQuestionnaire().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
+
+        if (!questionnaire.getTitle().equals(questionnaireDto.title())) {
+            questionnaire.setTitle(questionnaireDto.title());
         }
+
+        Set<Question> questions = updateQuestions(questionnaireDto);
+        questionnaire.setQuestions(questions);
+
+        return questionnaire;
+    }
+
+    private Set<Question> updateQuestions(QuestionnaireDto questionnaireDto) {
+        Set<Question> questions = new HashSet<>();
+        for (QuestionDto questionDto : questionnaireDto.questions()) {
+            if (questionDto.id() == null) {
+                Question question = Question.builder()
+                        .text(questionDto.text())
+                        .answer(questionDto.answer())
+                        .questionType(questionDto.questionType())
+                        .build();
+                questions.add(question);
+            } else {
+                Question question = questionRepository
+                        .findById(questionDto.id()).orElseThrow(() -> new ResourceNotFoundException("Question not found"));
+                if (!question.getText().equals(questionDto.text())) {
+                    question.setText(questionDto.text());
+                }
+                if (!question.getAnswer().equals(questionDto.answer())) {
+                    question.setAnswer(questionDto.answer());
+                }
+                if (!question.getQuestionType().equals(questionDto.questionType())) {
+                    question.setQuestionType(questionDto.questionType());
+                }
+                questions.add(question);
+            }
+        }
+        return questions;
     }
 
     private void saveJobInHistoryTable(Job job, User user) {

@@ -1,6 +1,6 @@
-package dev.lucavassos.recruiter.modules.question.repository.dto;
+package dev.lucavassos.recruiter.modules.questionnaire.repository.dto;
 
-import dev.lucavassos.recruiter.modules.question.entity.Question;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

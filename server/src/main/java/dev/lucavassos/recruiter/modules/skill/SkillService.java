@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.modules.skill;
 
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionDtoMapper;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionDtoMapper;
 import dev.lucavassos.recruiter.modules.skill.domain.NewSkillRequest;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;

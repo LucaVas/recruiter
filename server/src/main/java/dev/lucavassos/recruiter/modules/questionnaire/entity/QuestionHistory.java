@@ -1,6 +1,6 @@
-package dev.lucavassos.recruiter.modules.question.entity;
+package dev.lucavassos.recruiter.modules.questionnaire.entity;
 
-import dev.lucavassos.recruiter.modules.question.domain.QuestionType;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import lombok.*;

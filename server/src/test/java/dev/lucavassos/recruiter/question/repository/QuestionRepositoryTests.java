@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.question.repository;
 
-import dev.lucavassos.recruiter.modules.question.entity.Question;
-import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

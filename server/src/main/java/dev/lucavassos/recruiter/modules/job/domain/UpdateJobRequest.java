@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.modules.job.domain;
 
 import dev.lucavassos.recruiter.modules.client.entities.Client;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDto;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

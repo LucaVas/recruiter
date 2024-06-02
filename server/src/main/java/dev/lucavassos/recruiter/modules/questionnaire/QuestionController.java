@@ -1,15 +1,13 @@
-package dev.lucavassos.recruiter.modules.question;
+package dev.lucavassos.recruiter.modules.questionnaire;
 
-import dev.lucavassos.recruiter.modules.question.domain.NewQuestionnaireRequest;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDto;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionnaireRequest;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,15 +25,5 @@ public class QuestionController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(questionnaire);
-    }
-
-    @GetMapping(path = "/questionnaires/search")
-    public ResponseEntity<List<QuestionnaireDto>> getQuestionnaires(
-            @RequestParam("titleOrClientOrSkill") String findByTitleOrClient) {
-        log.debug("Received request to get questionnaires for title / client {}", findByTitleOrClient);
-        List<QuestionnaireDto> questionnaires = service.getQuestionnaireByTitleOrClient(findByTitleOrClient);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(questionnaires);
     }
 }
