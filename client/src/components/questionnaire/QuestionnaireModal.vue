@@ -22,6 +22,7 @@ const emits = defineEmits<{
   (e: 'save', content: Questionnaire): void;
 }>();
 
+const titleSearch = ref('');
 const questionnaires = ref<Questionnaire[]>([]);
 const tmpQuestionnaire = ref<NewQuestionnaire>({
   title: '',
@@ -43,23 +44,41 @@ const mappedClients = ref<{ name: string; label: number }[]>();
 <template>
   <Dialog
     :visible="visible"
-    @show="getQuestionnaires('IBM')"
     @update:visible="$emit('close')"
     closeOnEscape
     modal
     header="New Question"
     class="w-[90%] sm:w-2/3 md:w-2/3 lg:w-1/3"
   >
-    {{ questionnaires }}
-    <!-- <div class="mb-5 flex flex-col gap-2">
-      <InputGroup>
-        <InputGroupAddon>
-          <i class="pi pi-id-card"></i>
-        </InputGroupAddon>
-        <InputText placeholder="Title" autocomplete="off" v-model="questionForm.title" />
-      </InputGroup>
+    <div class="mb-5 flex flex-col gap-2">
+      <div>
+        <div class="flex w-full flex-row gap-3">
+          <InputGroup class="flex w-full flex-row">
+            <InputText
+              autofocus
+              v-model="titleSearch"
+              @keypress="
+                ($event) => {
+                  if ($event.key === 'Enter' && titleSearch !== '') {
+                    getQuestionnaires(titleSearch);
+                  }
+                }
+              "
+              class="w-full"
+            />
+            <Button
+              icon="pi pi-search"
+              @click="titleSearch !== '' ? getQuestionnaires(titleSearch) : null"
+            />
+          </InputGroup>
+        </div>
+        <small id="question-input-help" v-show="titleSearch === ''" class="text-gray-500"
+          >Type question title or client name</small
+        >
+      </div>
+      {{ questionnaires }}
 
-      <InputGroup>
+      <!-- <InputGroup>
         <InputGroupAddon>
           <i class="pi pi-building"></i>
         </InputGroupAddon>
@@ -116,8 +135,8 @@ const mappedClients = ref<{ name: string; label: number }[]>();
           autocomplete="off"
           v-model="questionForm.answer"
         />
-      </InputGroup>
-    </div> -->
+      </InputGroup> -->
+    </div>
 
     <div class="flex justify-end gap-2">
       <Button label="Cancel" severity="secondary" @click="$emit('close')" />
