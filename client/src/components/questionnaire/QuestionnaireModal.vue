@@ -6,8 +6,12 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Chips from 'primevue/chips';
 import { ref } from 'vue';
-import { type NewQuestionnaire, type Questionnaire } from '@/stores/question/schema';
+import { type NewQuestionnaire, type Questionnaire } from '@/stores/questionnaire/schema';
+import { getQuestionnairesByClient } from '@/stores/questionnaire/api';
+import { useToast } from 'primevue/usetoast';
+import { handleError } from '@/utils/errorUtils';
 
+const toast = useToast();
 const { questionnaire, visible } = defineProps<{
   questionnaire: Questionnaire;
   visible: boolean;
@@ -18,11 +22,20 @@ const emits = defineEmits<{
   (e: 'save', content: Questionnaire): void;
 }>();
 
+const questionnaires = ref<Questionnaire[]>([]);
 const tmpQuestionnaire = ref<NewQuestionnaire>({
   title: '',
   clientName: '',
   questions: [],
 });
+
+const getQuestionnaires = async (clientName: string) => {
+  try {
+    questionnaires.value = await getQuestionnairesByClient(clientName);
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
 
 const mappedClients = ref<{ name: string; label: number }[]>();
 </script>
@@ -30,19 +43,15 @@ const mappedClients = ref<{ name: string; label: number }[]>();
 <template>
   <Dialog
     :visible="visible"
-    @show="
-      mappedClients = clients.map((c) => ({
-        name: c.name,
-        label: c.id,
-      }))
-    "
+    @show="getQuestionnaires('IBM')"
     @update:visible="$emit('close')"
     closeOnEscape
     modal
     header="New Question"
     class="w-[90%] sm:w-2/3 md:w-2/3 lg:w-1/3"
   >
-    <div class="mb-5 flex flex-col gap-2">
+    {{ questionnaires }}
+    <!-- <div class="mb-5 flex flex-col gap-2">
       <InputGroup>
         <InputGroupAddon>
           <i class="pi pi-id-card"></i>
@@ -108,11 +117,11 @@ const mappedClients = ref<{ name: string; label: number }[]>();
           v-model="questionForm.answer"
         />
       </InputGroup>
-    </div>
+    </div> -->
 
     <div class="flex justify-end gap-2">
       <Button label="Cancel" severity="secondary" @click="$emit('close')" />
-      <Button label="Save" @click="emits('save', questionForm)" />
+      <Button label="Save" @click="emits('save', tmpQuestionnaire)" />
     </div>
   </Dialog>
 </template>

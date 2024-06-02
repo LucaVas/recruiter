@@ -26,6 +26,7 @@ import { getAllSkills } from '@/stores/skill';
 import { handleError } from '@/utils/errorUtils';
 import type { ToastServiceMethods } from 'primevue/toastservice';
 import { ref } from 'vue';
+import QuestionnaireModal from '@/components/questionnaire/QuestionnaireModal.vue';
 
 const toast = useToast();
 const router = useRouter();
@@ -262,10 +263,9 @@ onMounted(async () => {
         />
       </div>
 
-      <JobQuestionnaire
-        :questionnaire="job.questionnaire"
-        @updateQuestionnaire="(q) => (job.questionnaire = q)"
-      />
+      <QuestionnaireModal :questionnaire="job.questionnaire" :visible="true" />
+
+        <!-- <JobQuestionnaire :questionnaire="job.questionnaire" @updateQuestionnaire="(q) => (job.questionnaire = q)"/>  -->
     </div>
 
     <Divider />

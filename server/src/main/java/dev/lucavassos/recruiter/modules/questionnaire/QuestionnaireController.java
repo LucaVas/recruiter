@@ -32,9 +32,9 @@ public class QuestionnaireController {
 //                .body(questionnaire);
 //    }
 
-    @GetMapping("/questionnaires/client={clientName}")
+    @GetMapping("/questionnaires/search")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnaires (@PathVariable String clientName) {
+    public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnaires (@RequestParam("client") String clientName) {
         log.debug("Received new request to get questionnaires for client {}", clientName);
         List<QuestionnaireDto> questionnaires = service.getAllQuestionnaires(clientName, 0, 1000);
         return ResponseEntity
