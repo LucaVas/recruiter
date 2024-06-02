@@ -22,14 +22,7 @@ export const industries: { name: string; value: Industry }[] = [
 ];
 
 export type Client = {
-  id: number;
+  id: number
   name: string;
   industry: Industry;
-  createdDTime: Date;
-  modifiedDTime: Date;
-};
-
-export type NewClient = {
-  name: string;
-  industry: Industry;
-};
+}

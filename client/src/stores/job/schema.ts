@@ -2,9 +2,7 @@ import type { Client } from '../client/schema';
 import type { NewQuestionnaire } from '../question/schema';
 import type { Skill } from '../skill/schema';
 
-// backend dtos
-export type Job = {
-  id: number;
+export interface JobI {
   client: Client;
   name: string;
   status: JobStatus;
@@ -21,22 +19,21 @@ export type Job = {
   closureBonus: string;
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
-  numberOfCandidates: number | null;
   questionnaire: NewQuestionnaire;
+}
+
+export type Job = JobI & {
+  id: number;
   createdDTime: Date;
   modifiedDTime: Date;
+  numberOfCandidates: number | null;
 };
+export type NewJob = JobI;
 
 export type ContractType = 'PERMANENT' | 'TEMPORARY';
 export type Currency = 'INR';
 export type JobStatus = 'OPEN' | 'NO_CV_ACCEPTED' | 'CLOSED' | 'ARCHIVED' | 'DELETED';
 
-// backend domain objects
-export type NewJobRequest = Omit<
-  Job,
-  'id' | 'comments' | 'numberOfCandidates' | 'createdDTime' | 'modifiedDTime'
->;
-export type UpdateJobRequest = NewJobRequest;
 export type ChangeJobStatusRequest = { status: JobStatus };
 export type DeleteJob = { id: number };
 

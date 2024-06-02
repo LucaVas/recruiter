@@ -1,6 +1,6 @@
-package dev.lucavassos.recruiter.modules.question.repository.dto;
+package dev.lucavassos.recruiter.modules.questionnaire.repository.dto;
 
-import dev.lucavassos.recruiter.modules.question.entity.Questionnaire;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +15,9 @@ public class QuestionnaireDtoMapper implements Function<Questionnaire, Questionn
     @Override
     public QuestionnaireDto apply(Questionnaire questionnaire) {
         return new QuestionnaireDto(
-                questionnaire.getId(),
-                questionnaire.getTitle(),
-                questionnaire.getQuestions().stream().map(questionDtoMapper).collect(Collectors.toSet()),
-                questionnaire.getCreatedDTime(),
-                questionnaire.getModifiedDTime()
+                questionnaire.getId().getTitle(),
+                questionnaire.getId().getClientName(),
+                questionnaire.getQuestions().stream().map(questionDtoMapper).collect(Collectors.toSet())
         );
     }
 }

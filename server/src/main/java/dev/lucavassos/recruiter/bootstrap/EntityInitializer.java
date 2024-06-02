@@ -11,11 +11,12 @@ import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
-import dev.lucavassos.recruiter.modules.question.domain.QuestionType;
-import dev.lucavassos.recruiter.modules.question.entity.Question;
-import dev.lucavassos.recruiter.modules.question.entity.Questionnaire;
-import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
-import dev.lucavassos.recruiter.modules.question.repository.QuestionnaireRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
@@ -96,28 +97,30 @@ public class EntityInitializer {
         Set<Skill> skills = new HashSet<>(skillRepository.findAll());
         User recruiter = userRepository.findOneByName("recruiter").orElseThrow(RuntimeException::new);
         User recruiter2 = userRepository.findOneByName("recruiter2").orElseThrow(RuntimeException::new);
+
+        QuestionnaireId id = QuestionnaireId.builder()
+                .title("Java Developer")
+                .clientName("IBM")
+                .build();
         Questionnaire questionnaire = Questionnaire.builder()
-                .title("IBM Java Developer")
+                .id(id)
                 .questions(
                         Set.of(
                                 Question.builder()
                                         .text("How many years of experience does the candidate have in SPRING MVC?")
                                         .questionType(QuestionType.OPEN_QUESTION)
-                                        .active(true)
                                         .build(),
                                 Question.builder()
                                         .text("How many years of experience does the candidate have in PLSQL?")
                                         .questionType(QuestionType.OPEN_QUESTION)
-                                        .active(true)
                                         .build(),
                                 Question.builder()
                                         .text("How many years of experience does the candidate have as an Architect?")
                                         .questionType(QuestionType.OPEN_QUESTION)
-                                        .active(true)
                                         .build()
                         )
                 )
-                .client(clients.stream().filter(j -> j.getName().equals("IBM")).findFirst().orElseThrow())
+                .client(clients.stream().filter(client -> client.getName().equals("IBM")).findFirst().orElseThrow(RuntimeException::new))
                 .build();
 
         Job job1 = Job.builder()

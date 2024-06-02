@@ -4,7 +4,7 @@ import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.domain.ContractType;
-import dev.lucavassos.recruiter.modules.question.repository.dto.QuestionnaireDto;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

@@ -1,7 +1,9 @@
 package dev.lucavassos.recruiter.modules.job.domain;
 
 import dev.lucavassos.recruiter.modules.client.entities.Client;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -11,6 +13,7 @@ import java.util.List;
 public record UpdateJobRequest (
         @NotNull Long id,
 
+        @Valid
         Client client,
 
         @NotBlank(message = "Job name is required")
@@ -66,5 +69,6 @@ public record UpdateJobRequest (
         @Future(message = "Job payment date per CV upload must be in the future")
         LocalDateTime cvRatePaymentDate,
 
-        String comments
+        @Valid
+        QuestionnaireDto questionnaire
 ){}

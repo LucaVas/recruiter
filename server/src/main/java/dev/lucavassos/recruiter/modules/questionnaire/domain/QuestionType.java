@@ -1,4 +1,4 @@
-package dev.lucavassos.recruiter.modules.question.domain;
+package dev.lucavassos.recruiter.modules.questionnaire.domain;
 
 public enum QuestionType {
     SHORT,

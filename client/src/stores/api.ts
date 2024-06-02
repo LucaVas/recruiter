@@ -54,7 +54,7 @@ export default () => {
         const message = error.response?.data.detail;
         const statusCode = error.response?.status;
 
-        if (message.includes("JWT token")) {
+        if (message.includes("JWT")) {
           logout();
           window.location.reload();
           return

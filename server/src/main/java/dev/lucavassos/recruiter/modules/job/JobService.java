@@ -6,16 +6,23 @@ import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
-import dev.lucavassos.recruiter.modules.job.domain.*;
+import dev.lucavassos.recruiter.modules.job.domain.ChangeJobStatusRequest;
+import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
+import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
+import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
 import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
-import dev.lucavassos.recruiter.modules.question.entity.Question;
-import dev.lucavassos.recruiter.modules.question.entity.Questionnaire;
-import dev.lucavassos.recruiter.modules.question.repository.QuestionRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionDto;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
@@ -33,7 +40,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -49,39 +56,24 @@ public class JobService {
     private final JobDtoMapper jobDtoMapper;
     private final MonitoringProcessor monitoringProcessor;
     private final ClientRepository clientRepository;
+    private final QuestionnaireRepository questionnaireRepository;
     private final QuestionRepository questionRepository;
 
     @Transactional
-    public JobResponse addJob(NewJobRequest request) {
-        log.debug("Initiating new job creation process...");
+    public JobDto addJob(NewJobRequest request) {
+        log.debug("Adding new job: {}", request);
 
         List<Skill> skills = skillRepository
                 .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toList()));
-
         log.debug("Skills found: {}", skills);
 
         Client client = clientRepository
                 .findByName(request.client().name())
-                .orElse(
-                        clientRepository.save(
-                                Client.builder()
-                                        .name(request.client().name())
-                                        .industry(request.client().industry())
-                                        .build()
-                        ));
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
+        log.debug("Client found: {}", client);
 
-        Questionnaire questionnaire = Questionnaire.builder()
-                .title(request.questionnaire().title())
-                .questions(request.questionnaire().questions().stream()
-                        .map(questionDto -> Question.builder()
-                                .text(questionDto.text())
-                                .answer(questionDto.answer())
-                                .active(true)
-                                .questionType(questionDto.questionType())
-                                .build())
-                        .collect(Collectors.toSet()))
-                .client(client)
-                .build();
+        // prepare the questionnaire with questions
+        Questionnaire questionnaire = buildQuestionnaire(request.questionnaire());
 
         User recruiter = getAuthUser();
         Job job = Job.builder()
@@ -110,14 +102,31 @@ public class JobService {
         log.debug("New job created: [{}]", createdJob);
         monitoringProcessor.incrementJobsCounter();
 
-        return new JobResponse(
-                createdJob.getId(),
-                jobDtoMapper.apply(createdJob)
-        );
+        return jobDtoMapper.apply(createdJob);
+    }
+
+    private Questionnaire buildQuestionnaire(QuestionnaireDto questionnaireDto) {
+        Set<Question> questions = new HashSet<>(
+                questionnaireDto.questions().stream()
+                        .map(questionDto -> Question.builder()
+                                .text(questionDto.text())
+                                .answer(questionDto.answer())
+                                .questionType(questionDto.questionType())
+                                .build()).toList());
+
+
+        QuestionnaireId id = QuestionnaireId.builder()
+                .title(questionnaireDto.title())
+                .clientName(questionnaireDto.clientName())
+                .build();
+        return Questionnaire.builder()
+                .id(id)
+                .questions(questions)
+                .build();
     }
 
     @Transactional
-    public JobResponse updateJob(UpdateJobRequest request) {
+    public JobDto updateJob(UpdateJobRequest request) {
 
         boolean changes = false;
         Long id = request.id();
@@ -127,7 +136,7 @@ public class JobService {
                 .findOneByIdAndStatusNot(id, JobStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found."));
         Client client = clientRepository
-                .findById(request.client().getId())
+                .findByName(request.client().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
         User recruiter = getAuthUser();
@@ -205,6 +214,8 @@ public class JobService {
                 changes = true;
             }
         }
+        job.setQuestionnaire(updateQuestionnaire(job, request.questionnaire()));
+
 
         if (!changes) {
             throw new RequestValidationException("No updates were made to data.");
@@ -213,11 +224,7 @@ public class JobService {
         saveJobInHistoryTable(job, recruiter);
 
         log.debug("Job updated: [{}]", job);
-        return new JobResponse(
-                job.getId(),
-                jobDtoMapper.apply(job)
-        );
-
+        return jobDtoMapper.apply(job);
     }
 
     @Transactional
@@ -231,7 +238,7 @@ public class JobService {
             throw new AccessDeniedException("Job is not accessible");
         }
 
-        log.debug("Job retrieved: [{}]", job);
+        log.warn("Job retrieved: [{}]", job);
         return jobDtoMapper.apply(job);
     }
 
@@ -305,6 +312,45 @@ public class JobService {
             throw new DatabaseException(e.getMessage());
         }
 
+    }
+
+    private Questionnaire updateQuestionnaire(Job job, QuestionnaireDto questionnaireDto) {
+        Questionnaire questionnaire = questionnaireRepository
+                .findById(job.getQuestionnaire().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
+
+        Set<Question> questions = updateQuestions(questionnaireDto);
+        questionnaire.setQuestions(questions);
+
+        return questionnaire;
+    }
+
+    private Set<Question> updateQuestions(QuestionnaireDto questionnaireDto) {
+        Set<Question> questions = new HashSet<>();
+        for (QuestionDto questionDto : questionnaireDto.questions()) {
+            if (questionDto.id() == null) {
+                Question question = Question.builder()
+                        .text(questionDto.text())
+                        .answer(questionDto.answer())
+                        .questionType(questionDto.questionType())
+                        .build();
+                questions.add(question);
+            } else {
+                Question question = questionRepository
+                        .findById(questionDto.id()).orElseThrow(() -> new ResourceNotFoundException("Question not found"));
+                if (!question.getText().equals(questionDto.text())) {
+                    question.setText(questionDto.text());
+                }
+                if (!question.getAnswer().equals(questionDto.answer())) {
+                    question.setAnswer(questionDto.answer());
+                }
+                if (!question.getQuestionType().equals(questionDto.questionType())) {
+                    question.setQuestionType(questionDto.questionType());
+                }
+                questions.add(question);
+            }
+        }
+        return questions;
     }
 
     private void saveJobInHistoryTable(Job job, User user) {

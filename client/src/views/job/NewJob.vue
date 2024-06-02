@@ -1,37 +1,98 @@
 <script setup lang="ts">
 import JobClientSection from '@/components/job/JobClientSection.vue';
-import SkillsDropdown from '@/components/job/shared/SkillsDropdown.vue';
+import SkillsDropdown from '@/components/job/SkillsDropdown.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import JobQuestionnaire from '@/components/questionnaire/JobQuestionnaire.vue';
 import { useToast } from 'primevue/usetoast';
+import Divider from 'primevue/divider';
 import { onMounted } from 'vue';
 import Success from '@/components/Success.vue';
+import PageHeaderBanner from '@/components/job/PageHeaderBanner.vue';
 import type { NewSkill, Skill } from '@/stores/skill/schema';
-import {
-  job,
-  create,
-  creatingJob,
-  jobCreated,
-  clients,
-  loadClients,
-  skills,
-  loadSkills,
-  addSkill,
-  removeSkill,
-  initJob
-} from './index';
 import type NewSkillModal from '@/components/skill/NewSkillModal.vue';
-import { createNewSkill, creatingSkill, skillModalOpen } from '../jobCommons';
+import { createNewSkill, creatingSkill, skillModalOpen } from './jobCommons';
 import { useRouter } from 'vue-router';
 import TextInput from '@/components/shared/TextInput.vue';
 import NumberInput from '@/components/shared/NumberInput.vue';
 import DateInput from '@/components/shared/DateInput.vue';
 import TextArea from '@/components/shared/TextArea.vue';
 import DropDown from '@/components/shared/DropDown.vue';
-import { contractTypes, jobStatuses } from '@/components/job/shared/utils';
+import { contractTypes, jobStatuses } from '@/components/job/utils';
+import { getAllClients } from '@/stores/client';
+import type { Client } from '@/stores/client/schema';
+import { createJob } from '@/stores/job';
+import type { NewJob } from '@/stores/job/schema';
+import { getAllSkills } from '@/stores/skill';
+import { handleError } from '@/utils/errorUtils';
+import type { ToastServiceMethods } from 'primevue/toastservice';
+import { ref } from 'vue';
 
 const toast = useToast();
 const router = useRouter();
+
+const job = ref<NewJob>({
+  name: '',
+  client: {} as Client,
+  status: 'OPEN',
+  contractType: 'PERMANENT',
+  wantedCvs: 0,
+  noticePeriodInDays: 0,
+  experienceRangeMin: 0,
+  experienceRangeMax: 0,
+  salaryBudget: 0,
+  description: '',
+  bonusPayPerCv: 0,
+  currency: 'INR',
+  cvRatePaymentDate: new Date(),
+  closureBonus: 'Not Applicable',
+  closureBonusPaymentDate: new Date(),
+  skills: [],
+  questionnaire: { title: '', questions: [] },
+});
+const jobCreated = ref(false);
+const creatingJob = ref(false);
+
+const clients = ref<Client[]>([]);
+const skills = ref<Skill[]>([]);
+
+const removeSkill = (job: NewJob, skill: Skill): void => {
+  if (!job.skills.includes(skill)) return;
+  job.skills.splice(job.skills.indexOf(skill), 1);
+};
+
+const addSkill = (job: NewJob, skill: Skill | undefined): void => {
+  if (!job || !skill) return;
+  if (job.skills.some((s: Skill) => s.name === skill.name)) return;
+  job.skills.unshift(skill);
+};
+
+const create = async (job: NewJob, toast: ToastServiceMethods): Promise<void> => {
+  creatingJob.value = true;
+  try {
+    await createJob(job);
+    jobCreated.value = true;
+  } catch (err) {
+    handleError(toast, err);
+  } finally {
+    creatingJob.value = false;
+  }
+};
+
+const loadClients = async (toast: ToastServiceMethods) => {
+  try {
+    clients.value = await getAllClients();
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
+
+const loadSkills = async (toast: ToastServiceMethods) => {
+  try {
+    skills.value = await getAllSkills();
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
 
 onMounted(async () => {
   await Promise.all([loadClients(toast), loadSkills(toast)]);
@@ -39,9 +100,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex w-full flex-col gap-8 pb-6">
-    {{ job }}
-    <div v-if="!jobCreated" class="flex h-full w-full flex-col gap-6">
+  <div class="flex w-full flex-col justify-evenly gap-3">
+    <PageHeaderBanner title="New Job" />
+
+    <div class="flex flex-col gap-6">
       <JobClientSection
         :client="job.client"
         :clients="clients"
@@ -200,27 +262,23 @@ onMounted(async () => {
         />
       </div>
 
-      <JobQuestionnaire @updateQuestionnaire="(q) => (job.questionnaire = q)" />
-    </div>
-    <div v-else class="flex h-full w-full items-center justify-center">
-      <Success :message="'Job created successfully!'" />
+      <JobQuestionnaire
+        :questionnaire="job.questionnaire"
+        @updateQuestionnaire="(q) => (job.questionnaire = q)"
+      />
     </div>
 
-    <div v-if="!jobCreated" class="flex w-full justify-between">
+    <Divider />
+    <div class="flex w-full justify-between">
       <Button outlined label="Back" size="small" :loading="creatingJob" @click="router.go(-1)" />
       <Button label="Create Job" @click="create(job, toast)" />
     </div>
-    <div v-else class="flex w-full justify-end">
-      <Button
-        label="Back to Dashboard"
-        @click="
-          {
-            router.push({ name: 'Dashboard' });
-          }
-          jobCreated = false;
-          initJob()
-        "
-      />
-    </div>
   </div>
+
+  <Success
+    :visible="jobCreated"
+    :title="'Job created!'"
+    :message="'Job is created, and you will see it shortly in your dashboard'"
+    @close="router.push({ name: 'Dashboard' })"
+  />
 </template>

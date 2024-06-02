@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
 import QuestionCard from './QuestionCard.vue';
+import InputText from 'primevue/inputtext';
 import { ref } from 'vue';
-import type { NewQuestion, NewQuestionnaire } from '@/stores/question/schema';
+import type { NewQuestion, NewQuestionnaire, Questionnaire } from '@/stores/question/schema';
 import { v4 } from 'uuid';
 
-const questions = ref<{ localId: string; question: NewQuestion }[]>([]);
-const title = ref('');
+const { questionnaire } = defineProps<{ questionnaire: Questionnaire }>();
+
+const content = ref(questionnaire);
+
+const questions = ref<{ localId: string; question: NewQuestion }[]>(
+  questionnaire.questions
+    ? questionnaire.questions.map((q) => ({ localId: v4(), question: q }))
+    : []
+);
 
 const createQuestion = () => {
   questions.value.push({
@@ -23,7 +31,7 @@ const removeQuestion = (localId: string) => {
   questions.value = questions.value.filter((q) => q.localId !== localId);
 
   emits('updateQuestionnaire', {
-    title: title.value,
+    ...content.value,
     questions: questions.value.map((q) => q.question),
   });
 };
@@ -37,18 +45,19 @@ const emits = defineEmits<{
   <div>
     <label class="text-md">Questionnaire</label>
     <div class="mt-3 flex gap-4">
-      <TextInput
-        :model="title"
-        @input="
-          (t: string) => {
-            title = t;
+      <InputText
+        class="w-full"
+        placeholder="Questionnaire Title"
+        :modelValue="questionnaire.title"
+        @update:modelValue="
+          (t) => {
+            content.title = t ?? '';
             $emit('updateQuestionnaire', {
-              title,
+              ...content,
               questions: questions.map((q) => q.question),
             });
           }
         "
-        placeholder="Questionnaire Title"
       />
       <Button
         icon="pi pi-plus"
@@ -62,8 +71,7 @@ const emits = defineEmits<{
 
     <div class="mt-3 space-y-3">
       <QuestionCard
-        :text="item.question.text"
-        :answer="item.question.answer"
+        :question="item.question"
         @remove="removeQuestion(item.localId)"
         v-for="item in questions"
         :key="item.localId"
@@ -71,7 +79,7 @@ const emits = defineEmits<{
           (q) => {
             item.question.text = q;
             $emit('updateQuestionnaire', {
-              title,
+              ...content,
               questions: questions.map((q) => q.question),
             });
           }
@@ -80,7 +88,7 @@ const emits = defineEmits<{
           (a) => {
             item.question.answer = a;
             $emit('updateQuestionnaire', {
-              title,
+              ...content,
               questions: questions.map((q) => q.question),
             });
           }
@@ -89,7 +97,7 @@ const emits = defineEmits<{
           (t) => {
             item.question.questionType = t;
             $emit('updateQuestionnaire', {
-              title,
+              ...content,
               questions: questions.map((q) => q.question),
             });
           }

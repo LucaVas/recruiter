@@ -1,26 +1,21 @@
-export type Questionnaire = {
-  id: number;
+export interface Questionnaire {
   title: string;
   questions: Question[];
-  createdDTime: Date;
-  modifiedDTime: Date;
-};
+}
 
-export type Question = {
-  id: number;
+export type QuestionnaireDto = Questionnaire & { id: number };
+export type NewQuestionnaire = Pick<Questionnaire, 'title'> & { questions: NewQuestion[] };
+
+
+export interface Question {
   text: string;
-  answer: string;
-  active: boolean;
+  answer: string | null;
   questionType: QuestionType;
-  createdDTime: Date;
-  modifiedDTime: Date;
-};
-
+}
 export type QuestionType = 'SHORT' | 'PARAGRAPH' | 'YES_NO' | 'OPEN_QUESTION';
+
+export type QuestionDto = Question & { id: number };
+export type NewQuestion = Question;
 
 
 export type QuestionForm = Pick<Question, 'text' | 'answer'> & { skillNames: string[] };
-
-export type NewQuestionnaire = Pick<Questionnaire, 'title'> & { questions: NewQuestion[] };
-
-export type NewQuestion = Pick<Question, 'text' | 'answer' | 'questionType'>;
