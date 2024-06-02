@@ -29,6 +29,7 @@
         <google-cloud-storage.version>2.37.0</google-cloud-storage.version>
         <guava.version>33.2.0-jre</guava.version>
         <flyway.version>10.13.0</flyway.version>
+        <hibernate-core.version>7.0.0.Alpha2</hibernate-core.version>
     </properties>
 
     <dependencies>
@@ -113,6 +114,12 @@
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate-core.version}</version>
+        </dependency>
+
         <!-- Flyway for migrations-->
         <dependency>
             <groupId>org.flywaydb</groupId>

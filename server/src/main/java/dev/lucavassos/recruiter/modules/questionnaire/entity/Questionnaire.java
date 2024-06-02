@@ -25,7 +25,7 @@ public class Questionnaire {
     @MapsId("clientName")
     private Client client;
 
-    @OneToMany(mappedBy="questionnaire", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy="questionnaire", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     // actions on questionnaire are cascaded to questions
     private Set<Question> questions;
 
