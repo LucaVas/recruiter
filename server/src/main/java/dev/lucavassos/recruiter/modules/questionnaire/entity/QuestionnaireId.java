@@ -3,15 +3,14 @@ package dev.lucavassos.recruiter.modules.questionnaire.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Size;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 @EqualsAndHashCode
+@Builder
 @Embeddable
 public class QuestionnaireId implements Serializable {
 
@@ -19,7 +18,7 @@ public class QuestionnaireId implements Serializable {
     @Size(min = 1, message = "Question title must be at least 1 character long")
     private String title;
 
-    @Column(name = "client_id")
-    private Long clientId;
+    @Column(name = "client_name")
+    private String clientName;
 
 }

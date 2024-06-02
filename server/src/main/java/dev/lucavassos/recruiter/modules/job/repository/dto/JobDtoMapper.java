@@ -43,8 +43,8 @@ public class JobDtoMapper implements Function<Job, JobDto> {
                 job.getClosureBonusPaymentDate(),
                 job.getNumberOfCandidates(),
                 questionnaireDtoMapper.apply(job.getQuestionnaire()),
-                job.getCreatedDTime(),
-                job.getModifiedDTime()
+                job.getCreatedAt(),
+                job.getUpdatedAt()
         );
     }
 }

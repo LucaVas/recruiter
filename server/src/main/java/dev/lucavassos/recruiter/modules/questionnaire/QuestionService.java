@@ -8,6 +8,7 @@ import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestion;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionDtoMapper;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
@@ -52,8 +53,9 @@ public class QuestionService {
                 .map(this::buildQuestion)
                 .collect(Collectors.toSet());
 
+        QuestionnaireId id = new QuestionnaireId(request.title(), client.getName());
         return Questionnaire.builder()
-                .title(request.title())
+                .id(id)
                 .questions(questions)
                 .build();
     }

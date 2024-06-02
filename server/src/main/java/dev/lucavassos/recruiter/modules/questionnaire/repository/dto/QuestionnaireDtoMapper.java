@@ -15,8 +15,8 @@ public class QuestionnaireDtoMapper implements Function<Questionnaire, Questionn
     @Override
     public QuestionnaireDto apply(Questionnaire questionnaire) {
         return new QuestionnaireDto(
-                questionnaire.getId(),
-                questionnaire.getTitle(),
+                questionnaire.getId().getTitle(),
+                questionnaire.getId().getClientName(),
                 questionnaire.getQuestions().stream().map(questionDtoMapper).collect(Collectors.toSet())
         );
     }

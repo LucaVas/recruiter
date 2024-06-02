@@ -18,6 +18,7 @@ import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionDto;
@@ -67,7 +68,7 @@ public class JobService {
         log.debug("Skills found: {}", skills);
 
         Client client = clientRepository
-                .findById(request.client().id())
+                .findByName(request.client().name())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
         log.debug("Client found: {}", client);
 
@@ -112,8 +113,14 @@ public class JobService {
                                 .answer(questionDto.answer())
                                 .questionType(questionDto.questionType())
                                 .build()).toList());
-        return Questionnaire.builder()
+
+
+        QuestionnaireId id = QuestionnaireId.builder()
                 .title(questionnaireDto.title())
+                .clientName(questionnaireDto.clientName())
+                .build();
+        return Questionnaire.builder()
+                .id(id)
                 .questions(questions)
                 .build();
     }
@@ -129,7 +136,7 @@ public class JobService {
                 .findOneByIdAndStatusNot(id, JobStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found."));
         Client client = clientRepository
-                .findById(request.client().getId())
+                .findByName(request.client().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
         User recruiter = getAuthUser();
@@ -311,10 +318,6 @@ public class JobService {
         Questionnaire questionnaire = questionnaireRepository
                 .findById(job.getQuestionnaire().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
-
-        if (!questionnaire.getTitle().equals(questionnaireDto.title())) {
-            questionnaire.setTitle(questionnaireDto.title());
-        }
 
         Set<Question> questions = updateQuestions(questionnaireDto);
         questionnaire.setQuestions(questions);

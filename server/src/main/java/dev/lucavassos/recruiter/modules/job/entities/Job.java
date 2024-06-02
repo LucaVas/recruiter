@@ -107,6 +107,7 @@ public class Job {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "questionnaire_title")
+    @JoinColumn(name = "questionnaire_clientName")
     private Questionnaire questionnaire;
 
     @CreationTimestamp

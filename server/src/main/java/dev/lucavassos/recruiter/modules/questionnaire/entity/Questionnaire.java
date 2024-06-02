@@ -20,7 +20,7 @@ public class Questionnaire {
     private QuestionnaireId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("clientId")
+    @MapsId("clientName")
     private Client client;
 
     @OneToMany(mappedBy="questionnaire", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)

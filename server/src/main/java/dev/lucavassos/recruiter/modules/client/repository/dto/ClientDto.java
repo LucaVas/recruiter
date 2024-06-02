@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public record ClientDto(
-        Long id,
         @NotBlank(message = "Client name is required") String name,
         @NotNull(message = "Client industry is required") Industry industry
 ) {}
