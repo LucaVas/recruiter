@@ -31,9 +31,7 @@ public class QuestionRepositoryTests {
 
         String questionText = randomString(10, 50);
         Question question = Question.builder()
-                .title(randomString(10, 50))
                 .text(questionText)
-                .active(true)
                 .answer(randomString(10, 50))
                 .build();
 
@@ -41,16 +39,13 @@ public class QuestionRepositoryTests {
 
         Question existsQuestion = manager.find(Question.class, savedQuestion.getId());
 
-        assertThat(existsQuestion.getActive()).isEqualTo(true);
         assertThat(existsQuestion.getText()).isEqualTo(questionText);
     }
 
     @Test
     public void save_throws_error_if_question_text_is_invalid() {
         Question questionWithShortText = Question.builder()
-                .title(randomString(10, 50))
                 .text("")
-                .active(true)
                 .answer(randomString(10, 50))
                 .build();
 
