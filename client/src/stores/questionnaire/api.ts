@@ -5,7 +5,7 @@ import axiosApi from '../api';
 const api = axiosApi();
 
 // functions
-export async function getQuestionnairesByClient(clientName: string): Promise<Questionnaire[]> {
-  const { data } = await api.get(`/questionnaires/search?client=${clientName}`);
+export async function getQuestionnairesByClient(clientOrTitle: string): Promise<Questionnaire[]> {
+  const { data } = await api.get(`/questionnaires/search?clientOrTitle=${clientOrTitle}`);
   return data;
 }

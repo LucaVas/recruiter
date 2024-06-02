@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,15 +43,12 @@ public class QuestionnaireService {
 
 
     @Transactional
-    public List<QuestionnaireDto> getAllQuestionnaires(String clientName, Integer pageNumber, Integer pageSize) {
+    public List<QuestionnaireDto> getAllQuestionnaires(String clientOrTitle, Integer pageNumber, Integer pageSize) {
 
         Pageable limit = PageRequest.of(pageNumber, pageSize);
         log.debug("Retrieving {} questionnaires", pageSize);
 
-        Client client = clientRepository.findByName(clientName)
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
-
-        List<Questionnaire> questionnaires = repository.findAllByClient(client, limit);
+        List<Questionnaire> questionnaires = repository.findByIdTitleOrIdClientName(clientOrTitle, clientOrTitle, limit);
 
         log.debug("Jobs retrieved: {}", questionnaires);
         return questionnaires.stream().map(questionnaireDtoMapper).collect(Collectors.toList());

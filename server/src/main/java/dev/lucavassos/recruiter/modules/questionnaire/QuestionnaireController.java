@@ -1,11 +1,8 @@
 package dev.lucavassos.recruiter.modules.questionnaire;
 
-import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,9 +31,9 @@ public class QuestionnaireController {
 
     @GetMapping("/questionnaires/search")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnaires (@RequestParam("client") String clientName) {
-        log.debug("Received new request to get questionnaires for client {}", clientName);
-        List<QuestionnaireDto> questionnaires = service.getAllQuestionnaires(clientName, 0, 1000);
+    public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnaires (@RequestParam("clientOrTitle") String clientOrTitle) {
+        log.debug("Received new request to get questionnaires for client {}", clientOrTitle);
+        List<QuestionnaireDto> questionnaires = service.getAllQuestionnaires(clientOrTitle, 0, 1000);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(questionnaires);

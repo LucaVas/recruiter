@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface QuestionnaireRepository extends JpaRepository<Questionnaire, Long> {
+public interface QuestionnaireRepository extends JpaRepository<Questionnaire, QuestionnaireId> {
 
     Optional<Questionnaire> findById(QuestionnaireId questionnaireId);
-    List<Questionnaire> findAllByClient(Client client, Pageable pageable);
+    List<Questionnaire> findByIdTitleOrIdClientName(String title, String clientName, Pageable pageable);
 }
 

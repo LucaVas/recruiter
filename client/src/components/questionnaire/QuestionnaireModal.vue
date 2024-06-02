@@ -22,7 +22,7 @@ const emits = defineEmits<{
   (e: 'save', content: Questionnaire): void;
 }>();
 
-const titleSearch = ref('');
+const clientOrTitle = ref('');
 const questionnaires = ref<Questionnaire[]>([]);
 const tmpQuestionnaire = ref<NewQuestionnaire>({
   title: '',
@@ -56,11 +56,11 @@ const mappedClients = ref<{ name: string; label: number }[]>();
           <InputGroup class="flex w-full flex-row">
             <InputText
               autofocus
-              v-model="titleSearch"
+              v-model="clientOrTitle"
               @keypress="
                 ($event) => {
-                  if ($event.key === 'Enter' && titleSearch !== '') {
-                    getQuestionnaires(titleSearch);
+                  if ($event.key === 'Enter' && clientOrTitle !== '') {
+                    getQuestionnaires(clientOrTitle);
                   }
                 }
               "
@@ -68,12 +68,12 @@ const mappedClients = ref<{ name: string; label: number }[]>();
             />
             <Button
               icon="pi pi-search"
-              @click="titleSearch !== '' ? getQuestionnaires(titleSearch) : null"
+              @click="clientOrTitle !== '' ? getQuestionnaires(clientOrTitle) : null"
             />
           </InputGroup>
         </div>
-        <small id="question-input-help" v-show="titleSearch === ''" class="text-gray-500"
-          >Type question title or client name</small
+        <small id="question-input-help" v-show="clientOrTitle === ''" class="text-gray-500"
+          >Type questionnaire title or client name</small
         >
       </div>
       {{ questionnaires }}
