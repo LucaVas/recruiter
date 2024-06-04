@@ -13,5 +13,6 @@ public interface QuestionnaireRepository extends JpaRepository<Questionnaire, Qu
 
     Optional<Questionnaire> findById(QuestionnaireId questionnaireId);
     List<Questionnaire> findByIdTitleOrIdClientName(String title, String clientName, Pageable pageable);
+    Boolean existsByIdClientNameAndIdTitle(String clientName, String title);
 }
 

@@ -61,9 +61,9 @@ const create = async (questionnaire: NewQuestionnaire) => {
   try {
     questionnaire.questions = questions.value.map((q) => q.question);
     questionnaire.clientName = client.name;
-    await saveNewQuestionnaire(questionnaire);
+    const newQuestionnaire = await saveNewQuestionnaire(questionnaire);
+    console.log(newQuestionnaire)
     init();
-    console.log(tmpQuestionnaire.value);
     emits('close');
     // await createJob(job);
   } catch (err) {

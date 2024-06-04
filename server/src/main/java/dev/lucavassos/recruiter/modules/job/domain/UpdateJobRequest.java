@@ -22,7 +22,7 @@ public record UpdateJobRequest (
         @NotNull(message = "Job status is required")
         JobStatus status,
 
-        @NotNull(message = "Job contract type is required")
+        @NotNull(message = "Job contract questionType is required")
         ContractType contractType,
 
         @NotNull(message = "Job wanted CVs number is required")

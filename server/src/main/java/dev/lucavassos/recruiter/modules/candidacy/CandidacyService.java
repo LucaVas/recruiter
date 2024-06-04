@@ -376,6 +376,6 @@ public class CandidacyService {
             throw new RequestValidationException("File size exceeds the limit of 5MB");
 
         if (!Objects.equals(file.getContentType(), "application/pdf"))
-            throw new RequestValidationException("File type is not allowed. Only PDF files are accepted.");
+            throw new RequestValidationException("File questionType is not allowed. Only PDF files are accepted.");
     }
 }

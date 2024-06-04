@@ -26,7 +26,7 @@ public record JobDto(
         Integer wantedCvs,
 
         List<SkillDto> skills,
-        @NotNull(message = "Contract type cannot be empty") ContractType contractType,
+        @NotNull(message = "Contract questionType cannot be empty") ContractType contractType,
 
         @NotNull(message = "Experience range minimum cannot be empty")
         @Min(value = 0, message = "Experience range minimum must be a positive number")

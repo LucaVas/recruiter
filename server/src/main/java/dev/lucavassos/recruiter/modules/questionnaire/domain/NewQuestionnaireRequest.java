@@ -13,5 +13,6 @@ public record NewQuestionnaireRequest(
         String clientName,
 
         @Valid
+        @NotEmpty(message = "Questionnaire must have at least one question")
         List<NewQuestion> questions
 ){}

@@ -1,6 +1,10 @@
 package dev.lucavassos.recruiter.modules.questionnaire;
 
+import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,5 +40,13 @@ public class QuestionnaireController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(questionnaires);
+    }
+
+    @PostMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<QuestionnaireDto> saveQuestionnaire(
+            @Valid @RequestBody NewQuestionnaireRequest request) {
+        log.debug("Received request to save new questionnaire: {}", request);
+        return new ResponseEntity<>(service.saveQuestionnaire(request), HttpStatus.CREATED);
     }
 }
