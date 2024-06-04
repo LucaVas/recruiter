@@ -3,7 +3,10 @@ package dev.lucavassos.recruiter.modules.questionnaire.entity;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,7 +18,7 @@ import java.util.Set;
 @Data
 @Entity
 @Builder
-@Table(name="questionnaires")
+@Table(name = "questionnaires")
 public class Questionnaire {
 
     @EmbeddedId
@@ -25,7 +28,7 @@ public class Questionnaire {
     @MapsId("clientName")
     private Client client;
 
-    @OneToMany(mappedBy="questionnaire", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "questionnaire", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     // actions on questionnaire are cascaded to questions
     private Set<Question> questions;
 

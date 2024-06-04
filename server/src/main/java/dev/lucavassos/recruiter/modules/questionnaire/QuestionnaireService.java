@@ -4,12 +4,15 @@ import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
+import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestion;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDtoMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +35,7 @@ public class QuestionnaireService {
     private final ClientRepository clientRepository;
     private final QuestionnaireRepository repository;
     private final QuestionnaireDtoMapper questionnaireDtoMapper;
+    private final QuestionRepository questionRepository;
 
 
     @Transactional
@@ -97,6 +102,45 @@ public class QuestionnaireService {
                 .answer(newQuestion.answer())
                 .questionType(newQuestion.questionType())
                 .build();
+    }
+
+    private Questionnaire updateQuestionnaire(Job job, QuestionnaireDto questionnaireDto) {
+        Questionnaire questionnaire = repository
+                .findByIdTitleAndIdClientName(job.getQuestionnaire().getId().getTitle(), job.getQuestionnaire().getId().getClientName())
+                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
+
+        Set<Question> questions = updateQuestions(questionnaireDto);
+        questionnaire.setQuestions(questions);
+
+        return questionnaire;
+    }
+
+    private Set<Question> updateQuestions(QuestionnaireDto questionnaireDto) {
+        Set<Question> questions = new HashSet<>();
+        for (QuestionDto questionDto : questionnaireDto.questions()) {
+            if (questionDto.id() == null) {
+                Question question = Question.builder()
+                        .text(questionDto.text())
+                        .answer(questionDto.answer())
+                        .questionType(questionDto.questionType())
+                        .build();
+                questions.add(question);
+            } else {
+                Question question = questionRepository
+                        .findById(questionDto.id()).orElseThrow(() -> new ResourceNotFoundException("Question not found"));
+                if (!question.getText().equals(questionDto.text())) {
+                    question.setText(questionDto.text());
+                }
+                if (!question.getAnswer().equals(questionDto.answer())) {
+                    question.setAnswer(questionDto.answer());
+                }
+                if (!question.getQuestionType().equals(questionDto.questionType())) {
+                    question.setQuestionType(questionDto.questionType());
+                }
+                questions.add(question);
+            }
+        }
+        return questions;
     }
 
 }

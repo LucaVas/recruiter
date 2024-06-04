@@ -1,7 +1,6 @@
 package dev.lucavassos.recruiter.utils;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.time.Duration;

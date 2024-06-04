@@ -11,7 +11,9 @@ import java.util.Optional;
 public interface QuestionnaireRepository extends JpaRepository<Questionnaire, QuestionnaireId> {
 
     List<Questionnaire> findByIdTitleOrIdClientName(String title, String clientName, Pageable pageable);
+
     Optional<Questionnaire> findByIdTitleAndIdClientName(String title, String clientName);
+
     Boolean existsByIdClientNameAndIdTitle(String clientName, String title);
 }
 

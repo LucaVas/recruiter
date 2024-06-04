@@ -18,8 +18,8 @@ public record SignupRequest(
         @NotBlank(message = "Password cannot be empty")
         @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()-+=])[A-Za-z\\d!@#$%^&*()-+=]{8,64}$",
                 message = "Password must be between 8 and 64 characters long "
-                + "and contain at least one uppercase letter, one lowercase letter, "
-                + "one digit, and one special character")
+                        + "and contain at least one uppercase letter, one lowercase letter, "
+                        + "one digit, and one special character")
         String password,
 
         @NotBlank(message = "Mobile cannot be empty")

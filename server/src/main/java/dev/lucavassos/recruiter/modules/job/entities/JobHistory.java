@@ -1,12 +1,8 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
-import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
-import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
-import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -14,8 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -23,7 +17,7 @@ import java.util.Set;
 @Entity
 @Builder
 @ToString
-@Table(name="jobs_history")
+@Table(name = "jobs_history")
 public class JobHistory {
 
     @Id

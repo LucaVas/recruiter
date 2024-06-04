@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CandidacyFileRepository extends JpaRepository<CandidacyFile, Long> {
- List<CandidacyFile> findByCandidacy(Candidacy candidacy);
+    List<CandidacyFile> findByCandidacy(Candidacy candidacy);
 }

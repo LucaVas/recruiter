@@ -12,12 +12,13 @@ import Success from '@/components/Success.vue';
 import PageHeaderBanner from '@/components/job/PageHeaderBanner.vue';
 import NewSkillModal from '@/components/skill/NewSkillModal.vue';
 import QuestionnaireDropdown from '@/components/job/QuestionnaireDropdown.vue';
+import NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue';
 // primevue
 import { useToast } from 'primevue/usetoast';
 import Divider from 'primevue/divider';
 import type { ToastServiceMethods } from 'primevue/toastservice';
 // vue
-import { onMounted, computed } from 'vue';
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 // stores
@@ -33,8 +34,6 @@ import { getAllQuestionnaires } from '@/stores/questionnaire/api';
 import { handleError } from '@/utils/errorUtils';
 import { createNewSkill, creatingSkill, skillModalOpen } from './jobCommons';
 import { contractTypes, jobStatuses } from '@/components/job/utils';
-import type NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue';
-import { watch } from 'fs';
 
 const toast = useToast();
 const router = useRouter();

@@ -2,7 +2,6 @@ package dev.lucavassos.recruiter.modules.candidacy.entities;
 
 import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
-import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
@@ -21,7 +20,7 @@ import java.util.List;
 @Entity
 @Builder
 @ToString
-@Table(name="candidacies")
+@Table(name = "candidacies")
 public class Candidacy {
 
     @EmbeddedId

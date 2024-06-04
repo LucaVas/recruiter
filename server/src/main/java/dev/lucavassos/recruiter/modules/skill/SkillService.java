@@ -28,7 +28,7 @@ public class SkillService {
     @Transactional
     public List<SkillDto> getAllSkills(Integer pageNumber, Integer pageSize) {
 
-        Pageable limit = PageRequest.of(pageNumber,pageSize);
+        Pageable limit = PageRequest.of(pageNumber, pageSize);
         log.debug("Retrieving {} skills", limit.getPageSize());
 
 
@@ -44,7 +44,7 @@ public class SkillService {
     }
 
     @Transactional
-    public SkillDto createSkill (NewSkillRequest request) {
+    public SkillDto createSkill(NewSkillRequest request) {
         log.debug("Creating new skill: {}", request);
         if (skillRepository.existsByName(request.name())) {
             throw new DuplicateResourceException("Skill with name %s already exists".formatted(request.name()));

@@ -4,11 +4,13 @@ import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
-import dev.lucavassos.recruiter.modules.user.domain.*;
+import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
+import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
+import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
 import dev.lucavassos.recruiter.modules.user.entities.PasswordResetToken;
+import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.PasswordResetTokenRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import dev.lucavassos.recruiter.service.email.EmailService;
@@ -30,7 +32,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserService  {
+public class UserService {
 
     @Value("${password.reset.token.expirationInSeconds}")
     private Integer expirationInSeconds;
@@ -74,7 +76,7 @@ public class UserService  {
 
         User approvedUser = userRepository.save(user);
 
-        log.info("User approved: {}", approvedUser );
+        log.info("User approved: {}", approvedUser);
     }
 
     public List<UserDto> getAllUsers() {
@@ -94,10 +96,10 @@ public class UserService  {
         User userByEmail = userRepository
                 .findOneByEmail(request.email())
                 .orElseThrow(() -> {
-                    String message = String.format("User with email %s not found", request.email());
-                        log.error(message);
+                            String message = String.format("User with email %s not found", request.email());
+                            log.error(message);
                             return new ResourceNotFoundException(message);
-                }
+                        }
                 );
 
         User userByName = userRepository

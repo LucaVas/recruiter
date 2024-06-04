@@ -1,7 +1,9 @@
 package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
-import dev.lucavassos.recruiter.modules.user.domain.*;
+import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
+import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
+import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;

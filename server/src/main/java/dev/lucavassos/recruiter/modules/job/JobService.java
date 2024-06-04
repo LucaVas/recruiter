@@ -16,13 +16,8 @@ import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
-import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
-import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
-import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
-import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionDto;
-import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
@@ -40,7 +35,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -57,7 +52,6 @@ public class JobService {
     private final MonitoringProcessor monitoringProcessor;
     private final ClientRepository clientRepository;
     private final QuestionnaireRepository questionnaireRepository;
-    private final QuestionRepository questionRepository;
 
     @Transactional
     public JobDto addJob(NewJobRequest request) {
@@ -108,26 +102,6 @@ public class JobService {
         return jobDtoMapper.apply(createdJob);
     }
 
-    private Questionnaire buildQuestionnaire(QuestionnaireDto questionnaireDto) {
-        Set<Question> questions = new HashSet<>(
-                questionnaireDto.questions().stream()
-                        .map(questionDto -> Question.builder()
-                                .text(questionDto.text())
-                                .answer(questionDto.answer())
-                                .questionType(questionDto.questionType())
-                                .build()).toList());
-
-
-        QuestionnaireId id = QuestionnaireId.builder()
-                .title(questionnaireDto.title())
-                .clientName(questionnaireDto.clientName())
-                .build();
-        return Questionnaire.builder()
-                .id(id)
-                .questions(questions)
-                .build();
-    }
-
     @Transactional
     public JobDto updateJob(UpdateJobRequest request) {
 
@@ -141,6 +115,9 @@ public class JobService {
         Client client = clientRepository
                 .findByName(request.client().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
+        Questionnaire questionnaire = questionnaireRepository
+                .findByIdTitleAndIdClientName(request.questionnaire().title(), request.questionnaire().clientName())
+                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
 
         User recruiter = getAuthUser();
         if (!isUserAuthorized(recruiter, job)) {
@@ -217,8 +194,7 @@ public class JobService {
                 changes = true;
             }
         }
-        job.setQuestionnaire(updateQuestionnaire(job, request.questionnaire()));
-
+        job.setQuestionnaire(questionnaire);
 
         if (!changes) {
             throw new RequestValidationException("No updates were made to data.");
@@ -315,45 +291,6 @@ public class JobService {
             throw new DatabaseException(e.getMessage());
         }
 
-    }
-
-    private Questionnaire updateQuestionnaire(Job job, QuestionnaireDto questionnaireDto) {
-        Questionnaire questionnaire = questionnaireRepository
-                .findByIdTitleAndIdClientName(job.getQuestionnaire().getId().getTitle(), job.getQuestionnaire().getId().getClientName())
-                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
-
-        Set<Question> questions = updateQuestions(questionnaireDto);
-        questionnaire.setQuestions(questions);
-
-        return questionnaire;
-    }
-
-    private Set<Question> updateQuestions(QuestionnaireDto questionnaireDto) {
-        Set<Question> questions = new HashSet<>();
-        for (QuestionDto questionDto : questionnaireDto.questions()) {
-            if (questionDto.id() == null) {
-                Question question = Question.builder()
-                        .text(questionDto.text())
-                        .answer(questionDto.answer())
-                        .questionType(questionDto.questionType())
-                        .build();
-                questions.add(question);
-            } else {
-                Question question = questionRepository
-                        .findById(questionDto.id()).orElseThrow(() -> new ResourceNotFoundException("Question not found"));
-                if (!question.getText().equals(questionDto.text())) {
-                    question.setText(questionDto.text());
-                }
-                if (!question.getAnswer().equals(questionDto.answer())) {
-                    question.setAnswer(questionDto.answer());
-                }
-                if (!question.getQuestionType().equals(questionDto.questionType())) {
-                    question.setQuestionType(questionDto.questionType());
-                }
-                questions.add(question);
-            }
-        }
-        return questions;
     }
 
     private void saveJobInHistoryTable(Job job, User user) {

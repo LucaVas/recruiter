@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @EntityScan(basePackages = "dev.lucavassos.recruiter.modules")
 public class RecruiterApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(RecruiterApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(RecruiterApplication.class, args);
+    }
 }

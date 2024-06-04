@@ -9,9 +9,13 @@ import java.util.Optional;
 
 public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     boolean existsCandidateByEmail(String email);
+
     boolean existsCandidateByPhone(String phone);
+
     boolean existsCandidateByPan(String pan);
+
     Optional<Candidate> findOneByPan(String pan);
+
     @Query("SELECT c FROM Candidate c WHERE c.pan = :usernameOrEmail OR c.phone = :usernameOrEmail OR c.email = :usernameOrEmail")
     Optional<Candidate> findOneByPanOrPhoneOrEmail(@Param("usernameOrEmail") String usernameOrEmail);
 }

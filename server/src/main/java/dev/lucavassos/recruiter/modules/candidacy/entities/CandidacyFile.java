@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @ToString
 @Builder
-@Table(name="candidacy_files")
+@Table(name = "candidacy_files")
 public class CandidacyFile {
 
     @Id

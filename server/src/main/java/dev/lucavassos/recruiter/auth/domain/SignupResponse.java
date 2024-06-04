@@ -1,6 +1,6 @@
 package dev.lucavassos.recruiter.auth.domain;
 
-public record SignupResponse (
+public record SignupResponse(
         Long id
 ) {
 }

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @ToString
-@Table(name="skills_history")
+@Table(name = "skills_history")
 public class SkillHistory {
 
     @Id

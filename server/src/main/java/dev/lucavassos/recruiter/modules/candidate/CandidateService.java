@@ -226,7 +226,7 @@ public class CandidateService {
 
     private boolean isUserAuthorized(User recruiter, Candidate candidate) {
         return recruiter.getRoleName() == RoleName.ADMIN
-               || candidate.getRecruiter().getId().equals(recruiter.getId());
+                || candidate.getRecruiter().getId().equals(recruiter.getId());
     }
 
     private void saveCandidateInHistoryTable(Candidate candidate, User user) {

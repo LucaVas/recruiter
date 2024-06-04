@@ -1,8 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidate.entities;
 
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
-import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
-import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -18,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @ToString
-@Table(name="candidates_history")
+@Table(name = "candidates_history")
 public class CandidateHistory {
 
     @Id

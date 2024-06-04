@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record UpdateJobRequest (
+public record UpdateJobRequest(
         @NotNull Long id,
 
         @Valid
@@ -71,4 +71,4 @@ public record UpdateJobRequest (
 
         @Valid
         QuestionnaireDto questionnaire
-){}
+) {}

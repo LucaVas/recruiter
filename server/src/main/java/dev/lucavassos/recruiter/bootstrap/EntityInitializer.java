@@ -6,9 +6,9 @@ import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository
 import dev.lucavassos.recruiter.modules.client.domain.Industry;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
+import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
-import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
@@ -19,8 +19,8 @@ import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionReposit
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
-import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
+import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
@@ -79,15 +79,15 @@ public class EntityInitializer {
     @Transactional
     public void saveSkills() {
         skillRepository.saveAll(List.of(
-            Skill.builder().name("Java").build(),
-            Skill.builder().name("Python").build(),
-            Skill.builder().name("Tableau").build(),
-            Skill.builder().name("Big Data").build(),
-            Skill.builder().name("PL/SQL").build(),
-            Skill.builder().name("Critical Thinking").build(),
-            Skill.builder().name("Cloud Architecture").build(),
-            Skill.builder().name("AWS").build(),
-            Skill.builder().name("Google Cloud").build()
+                Skill.builder().name("Java").build(),
+                Skill.builder().name("Python").build(),
+                Skill.builder().name("Tableau").build(),
+                Skill.builder().name("Big Data").build(),
+                Skill.builder().name("PL/SQL").build(),
+                Skill.builder().name("Critical Thinking").build(),
+                Skill.builder().name("Cloud Architecture").build(),
+                Skill.builder().name("AWS").build(),
+                Skill.builder().name("Google Cloud").build()
         ));
     }
 
@@ -252,10 +252,10 @@ public class EntityInitializer {
                 .status(JobStatus.OPEN)
                 .wantedCvs(9)
                 .skills(skills.stream().filter(
-                        skill -> skill.getName().equals("Cloud Architecture")
-                        || skill.getName().equals("AWS")
-                        || skill.getName().equals("Google Cloud")
-                ).collect(Collectors.toList())
+                                skill -> skill.getName().equals("Cloud Architecture")
+                                        || skill.getName().equals("AWS")
+                                        || skill.getName().equals("Google Cloud")
+                        ).collect(Collectors.toList())
                 )
                 .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(10)

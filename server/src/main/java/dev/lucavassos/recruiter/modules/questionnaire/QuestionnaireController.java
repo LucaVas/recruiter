@@ -1,7 +1,5 @@
 package dev.lucavassos.recruiter.modules.questionnaire;
 
-import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import jakarta.validation.Valid;

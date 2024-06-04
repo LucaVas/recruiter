@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @ToString
 @Builder
-@Table(name="clients_error_logs")
+@Table(name = "clients_error_logs")
 public class ClientErrorLog {
 
     @Id

@@ -15,4 +15,4 @@ public record CandidateDto(
         CandidateStatus status,
         LocalDateTime createdDTime,
         LocalDateTime modifiedDTime
-){}
+) {}

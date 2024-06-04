@@ -14,7 +14,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,12 +29,14 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
+    @Getter
+    @Setter
     private Long id;
 
     @Column(nullable = false, unique = true)
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters long")
-    @Getter @Setter
+    @Getter
+    @Setter
     private String name;
 
     @Column(nullable = false, unique = true)
@@ -48,57 +53,69 @@ public class User implements UserDetails {
 
     @Column(nullable = false, unique = true)
     @Size(min = 10, max = 10, message = "Phone number must be 10 characters long")
-    @Getter @Setter
+    @Getter
+    @Setter
     private String phone;
 
     @Column(nullable = false)
     @Size(min = 3, max = 50, message = "City name must be between 3 and 50 characters long")
-    @Getter @Setter
+    @Getter
+    @Setter
     private String city;
 
     @Column(nullable = false)
     @Size(min = 3, max = 50, message = "Country name must be between 3 and 50 characters long")
-    @Getter @Setter
+    @Getter
+    @Setter
     private String country;
 
     @Column
-    @Getter @Setter
+    @Getter
+    @Setter
     private String comment;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    @Getter @Setter
+    @Getter
+    @Setter
     private Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-    @Getter @Setter
+    @Getter
+    @Setter
     private PasswordResetToken passwordResetToken;
 
     @Column(nullable = false)
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean approved = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approver_id")
-    @Getter @Setter
+    @Getter
+    @Setter
     private User approver;
 
     @Column(name = "approved_dtime")
-    @Getter @Setter
+    @Getter
+    @Setter
     private LocalDateTime approvedDTime;
 
     @OneToMany(mappedBy = "recruiter")
-    @Getter @Setter
+    @Getter
+    @Setter
     private Set<Candidacy> candidacies = new HashSet<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")
-    @Getter @Setter
+    @Getter
+    @Setter
     private LocalDateTime createdDTime;
 
     @UpdateTimestamp
     @Column(name = "modified_dtime")
-    @Getter @Setter
+    @Getter
+    @Setter
     private LocalDateTime modifiedDTime;
 
     public RoleName getRoleName() {
