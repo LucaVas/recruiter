@@ -88,6 +88,7 @@ declare module 'vue' {
     NavbarGroup: typeof import('./src/components/navbar/NavbarGroup.vue')['default']
     NavbarHeader: typeof import('./src/components/navbar/NavbarHeader.vue')['default']
     NewCommentContainer: typeof import('./src/components/comments/shared/NewCommentContainer.vue')['default']
+    NewQuestionnaireModal: typeof import('./src/components/questionnaire/NewQuestionnaireModal.vue')['default']
     NewSkillModal: typeof import('./src/components/skill/NewSkillModal.vue')['default']
     NumberInput: typeof import('./src/components/shared/NumberInput.vue')['default']
     PageForm: typeof import('./src/components/PageForm.vue')['default']

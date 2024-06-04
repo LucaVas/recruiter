@@ -33,6 +33,7 @@ import { getAllQuestionnaires } from '@/stores/questionnaire/api';
 import { handleError } from '@/utils/errorUtils';
 import { createNewSkill, creatingSkill, skillModalOpen } from './jobCommons';
 import { contractTypes, jobStatuses } from '@/components/job/utils';
+import type NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue';
 
 const toast = useToast();
 const router = useRouter();
@@ -281,16 +282,9 @@ onMounted(async () => {
       </div>
 
       <div class="space-y-3">
-        <NewSkillModal
-          :visible="skillModalOpen"
-          :creatingSkill="creatingSkill"
-          @close="skillModalOpen = false"
-          @save="
-            async (newSkill: NewSkill) => {
-              const skill = await createNewSkill(newSkill, toast);
-              addSkill(job, skill);
-            }
-          "
+        <NewQuestionnaireModal
+          :visible="newQuestionnaireModalOpen"
+          @close="newQuestionnaireModalOpen = false"
         />
         <label>Questionnaire</label>
         <div class="flex gap-3">
