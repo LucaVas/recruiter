@@ -17,7 +17,7 @@ import { useToast } from 'primevue/usetoast';
 import Divider from 'primevue/divider';
 import type { ToastServiceMethods } from 'primevue/toastservice';
 // vue
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 // stores
@@ -34,6 +34,7 @@ import { handleError } from '@/utils/errorUtils';
 import { createNewSkill, creatingSkill, skillModalOpen } from './jobCommons';
 import { contractTypes, jobStatuses } from '@/components/job/utils';
 import type NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue';
+import { watch } from 'fs';
 
 const toast = useToast();
 const router = useRouter();
@@ -65,6 +66,7 @@ const newQuestionnaireModalOpen = ref(false);
 const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
 const questionnaires = ref<Questionnaire[]>([]);
+
 
 const removeSkill = (job: NewJob, skill: Skill): void => {
   if (!job.skills.includes(skill)) return;
@@ -281,12 +283,14 @@ onMounted(async () => {
         />
       </div>
 
-      <div class="space-y-3">
+      <div v-if="job.client.name" class="space-y-3">
         <NewQuestionnaireModal
           :visible="newQuestionnaireModalOpen"
+          :client="job.client"
           @close="newQuestionnaireModalOpen = false"
         />
         <label>Questionnaire</label>
+
         <div class="flex gap-3">
           <QuestionnaireDropdown
             :questionnaires="questionnaires"
@@ -294,20 +298,25 @@ onMounted(async () => {
             @selectQuestionnaire="(q: Questionnaire) => (job.questionnaire = q)"
           />
           <Button
+            :disabled="!job.client.name"
             label="New"
             icon="pi pi-plus"
             @click="newQuestionnaireModalOpen = true"
             class="hidden min-w-fit md:flex"
           />
           <Button
+            :disabled="!job.client.name"
             icon="pi pi-plus"
             @click="newQuestionnaireModalOpen = true"
             class="min-w-fit md:hidden"
           />
         </div>
 
-        <div v-if="job.questionnaire.title !== ''" class="border-slate-150 mt-10 flex items-center w-full rounded-md border p-4">
-          <span class="min-w-fit flex gap-4">
+        <div
+          v-if="job.questionnaire.title !== ''"
+          class="border-slate-150 mt-10 flex w-full items-center rounded-md border p-4"
+        >
+          <span class="flex min-w-fit gap-4">
             <Button unstyled icon="pi pi-trash" @click="job.questionnaire = emptyQuestionnaire" />
             <Button unstyled icon="pi pi-file-edit" />
           </span>
@@ -317,12 +326,6 @@ onMounted(async () => {
             <span>{{ job.questionnaire.title }}</span>
           </div>
         </div>
-
-        <!-- <JobSkills
-          :isNewJob="true"
-          @remove="(skill: Skill) => removeSkill(job, skill)"
-          :skills="job.skills"
-        /> -->
       </div>
     </div>
 

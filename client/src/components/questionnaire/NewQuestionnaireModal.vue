@@ -9,10 +9,13 @@ import { handleError } from '@/utils/errorUtils';
 import { useToast } from 'primevue/usetoast';
 import type { NewQuestion } from '@/stores/question/schema';
 import { v4 } from 'uuid';
+import { saveNewQuestionnaire, updateQuestionnaire } from '../../stores/questionnaire/api';
+import type { Client } from '@/stores/client/schema';
 
-const { visible, questionnaire } = defineProps<{
+const { visible, questionnaire, client } = defineProps<{
   visible: boolean;
   questionnaire?: Questionnaire;
+  client: Client;
 }>();
 const emits = defineEmits<{
   (e: 'close'): void;
@@ -56,7 +59,9 @@ const init = () => {
 const create = async (questionnaire: NewQuestionnaire) => {
   creatingOrUpdating.value = true;
   try {
-    console.log('created', questionnaire);
+    questionnaire.questions = questions.value.map((q) => q.question);
+    questionnaire.clientName = client.name;
+    await saveNewQuestionnaire(questionnaire);
     init();
     console.log(tmpQuestionnaire.value);
     emits('close');
@@ -70,7 +75,8 @@ const create = async (questionnaire: NewQuestionnaire) => {
 const update = async (questionnaire: Questionnaire) => {
   creatingOrUpdating.value = true;
   try {
-    console.log('updated', questionnaire);
+    questionnaire.questions = questions.value.map((q) => q.question);
+    await updateQuestionnaire(questionnaire.title, questionnaire);
     init();
     emits('close');
     // await createJob(job);
@@ -129,21 +135,25 @@ const update = async (questionnaire: Questionnaire) => {
           />
         </div>
       </div>
+      <Divider />
 
-      <div class="mt-5 flex justify-end gap-2">
-        <Button
-          label="Cancel"
-          severity="secondary"
-          @click="$emit('close')"
-          :loading="creatingOrUpdating"
-          :disabled="creatingOrUpdating"
-        />
-        <Button
-          :label="questionnaire ? 'Save' : 'Create'"
-          @click="questionnaire ? update(tmpQuestionnaire) : create(tmpQuestionnaire)"
-          :loading="creatingOrUpdating"
-          :disabled="creatingOrUpdating"
-        />
+      <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <span class="min-w-fit font-semibold">Client: {{ client.name }}</span>
+        <div class="flex w-full justify-between sm:justify-end gap-4">
+          <Button
+            label="Cancel"
+            severity="secondary"
+            @click="$emit('close')"
+            :loading="creatingOrUpdating"
+            :disabled="creatingOrUpdating"
+          />
+          <Button
+            :label="questionnaire ? 'Save' : 'Create'"
+            @click="questionnaire ? update(tmpQuestionnaire) : create(tmpQuestionnaire)"
+            :loading="creatingOrUpdating"
+            :disabled="creatingOrUpdating"
+          />
+        </div>
       </div>
     </Dialog>
   </div>
