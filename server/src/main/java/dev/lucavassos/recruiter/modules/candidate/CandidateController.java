@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.modules.candidate;
 
-import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateResponse;
+import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
 import dev.lucavassos.recruiter.modules.candidate.domain.UpdateCandidateRequest;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
 import jakarta.validation.Valid;

@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface CandidacyRepository extends JpaRepository<Candidacy, Long> {
     Boolean existsByJobAndCandidate(Job job, Candidate candidate);
+
     Optional<Candidacy> findByJobAndCandidate(Job job, Candidate candidate);
+
     List<Candidacy> findByJob(Job job);
 }

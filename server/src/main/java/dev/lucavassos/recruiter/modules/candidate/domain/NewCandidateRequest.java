@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.modules.candidate.domain;
 
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
 
 @Builder

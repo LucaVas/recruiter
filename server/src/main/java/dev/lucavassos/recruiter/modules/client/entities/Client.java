@@ -5,7 +5,10 @@ import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name="clients")
+@Table(name = "clients")
 public class Client {
 
     @Id

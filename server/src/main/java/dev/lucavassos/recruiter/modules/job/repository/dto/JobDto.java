@@ -1,9 +1,9 @@
 package dev.lucavassos.recruiter.modules.job.repository.dto;
 
 import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
+import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
-import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public record JobDto(
         Integer wantedCvs,
 
         List<SkillDto> skills,
-        @NotNull(message = "Contract type cannot be empty") ContractType contractType,
+        @NotNull(message = "Contract questionType cannot be empty") ContractType contractType,
 
         @NotNull(message = "Experience range minimum cannot be empty")
         @Min(value = 0, message = "Experience range minimum must be a positive number")

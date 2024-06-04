@@ -4,5 +4,5 @@ public record LoginResponse(
         AuthUserInfoDto user,
         String token,
         String tokenType
-){
+) {
 }

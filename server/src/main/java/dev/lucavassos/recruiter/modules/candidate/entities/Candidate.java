@@ -20,7 +20,7 @@ import java.util.Set;
 @Entity
 @Builder
 @ToString
-@Table(name="candidates")
+@Table(name = "candidates")
 public class Candidate {
 
     @Id

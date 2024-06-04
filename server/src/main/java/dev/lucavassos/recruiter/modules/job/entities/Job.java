@@ -18,7 +18,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,7 +26,7 @@ import java.util.Set;
 @Setter
 @ToString
 @Builder
-@Table(name="jobs")
+@Table(name = "jobs")
 public class Job {
 
     @Id

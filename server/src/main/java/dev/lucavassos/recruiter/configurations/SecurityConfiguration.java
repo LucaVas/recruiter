@@ -47,15 +47,15 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                                // allow unauthenticated requests to following endpoints
-                                .requestMatchers(
-                                        "api/v*/auth/login/**",
-                                        "api/v*/auth/signup/**",
-                                        "api/v*/auth/resetPassword/**",
-                                        "/actuator/**"
-                                ).permitAll()
-                                // all other requests should be authenticated
-                                .anyRequest().authenticated()
+                        // allow unauthenticated requests to following endpoints
+                        .requestMatchers(
+                                "api/v*/auth/login/**",
+                                "api/v*/auth/signup/**",
+                                "api/v*/auth/resetPassword/**",
+                                "/actuator/**"
+                        ).permitAll()
+                        // all other requests should be authenticated
+                        .anyRequest().authenticated()
                 )
                 // each request is handled as new request
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -78,7 +78,7 @@ public class SecurityConfiguration {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**",configuration);
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }

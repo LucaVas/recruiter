@@ -1,17 +1,23 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
-import dev.lucavassos.recruiter.exception.*;
-import dev.lucavassos.recruiter.modules.candidacy.domain.*;
+import dev.lucavassos.recruiter.exception.DatabaseException;
+import dev.lucavassos.recruiter.exception.RequestValidationException;
+import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.exception.ServerException;
+import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
+import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
+import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
+import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyFile;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyId;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyCommentRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyFileRepository;
+import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.*;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
-import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
@@ -376,6 +382,6 @@ public class CandidacyService {
             throw new RequestValidationException("File size exceeds the limit of 5MB");
 
         if (!Objects.equals(file.getContentType(), "application/pdf"))
-            throw new RequestValidationException("File type is not allowed. Only PDF files are accepted.");
+            throw new RequestValidationException("File questionType is not allowed. Only PDF files are accepted.");
     }
 }

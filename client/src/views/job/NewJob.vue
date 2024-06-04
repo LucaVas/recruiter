@@ -1,34 +1,43 @@
 <script setup lang="ts">
-import JobClientSection from '@/components/job/JobClientSection.vue';
-import SkillsDropdown from '@/components/job/SkillsDropdown.vue';
-import JobSkills from '@/components/job/job-page/JobSkills.vue';
-import JobQuestionnaire from '@/components/questionnaire/JobQuestionnaire.vue';
-import { useToast } from 'primevue/usetoast';
-import Divider from 'primevue/divider';
-import { onMounted } from 'vue';
-import Success from '@/components/Success.vue';
-import PageHeaderBanner from '@/components/job/PageHeaderBanner.vue';
-import type { NewSkill, Skill } from '@/stores/skill/schema';
-import type NewSkillModal from '@/components/skill/NewSkillModal.vue';
-import { createNewSkill, creatingSkill, skillModalOpen } from './jobCommons';
-import { useRouter } from 'vue-router';
+// components
 import TextInput from '@/components/shared/TextInput.vue';
 import NumberInput from '@/components/shared/NumberInput.vue';
 import DateInput from '@/components/shared/DateInput.vue';
 import TextArea from '@/components/shared/TextArea.vue';
 import DropDown from '@/components/shared/DropDown.vue';
-import { contractTypes, jobStatuses } from '@/components/job/utils';
+import JobClientSection from '@/components/job/JobClientSection.vue';
+import SkillsDropdown from '@/components/job/SkillsDropdown.vue';
+import JobSkills from '@/components/job/job-page/JobSkills.vue';
+import Success from '@/components/Success.vue';
+import PageHeaderBanner from '@/components/job/PageHeaderBanner.vue';
+import NewSkillModal from '@/components/skill/NewSkillModal.vue';
+import QuestionnaireDropdown from '@/components/job/QuestionnaireDropdown.vue';
+import NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue';
+// primevue
+import { useToast } from 'primevue/usetoast';
+import Divider from 'primevue/divider';
+import type { ToastServiceMethods } from 'primevue/toastservice';
+// vue
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+// stores
+import type { NewSkill, Skill } from '@/stores/skill/schema';
 import { getAllClients } from '@/stores/client';
 import type { Client } from '@/stores/client/schema';
 import { createJob } from '@/stores/job';
 import type { NewJob } from '@/stores/job/schema';
 import { getAllSkills } from '@/stores/skill';
+import type { Questionnaire } from '@/stores/question/schema';
+import { getAllQuestionnaires } from '@/stores/questionnaire/api';
+// utils
 import { handleError } from '@/utils/errorUtils';
-import type { ToastServiceMethods } from 'primevue/toastservice';
-import { ref } from 'vue';
+import { createNewSkill, creatingSkill, skillModalOpen } from './jobCommons';
+import { contractTypes, jobStatuses } from '@/components/job/utils';
 
 const toast = useToast();
 const router = useRouter();
+const emptyQuestionnaire = { title: '', clientName: '', questions: [] } satisfies Questionnaire;
 
 const job = ref<NewJob>({
   name: '',
@@ -47,13 +56,15 @@ const job = ref<NewJob>({
   closureBonus: 'Not Applicable',
   closureBonusPaymentDate: new Date(),
   skills: [],
-  questionnaire: { title: '', questions: [] },
+  questionnaire: emptyQuestionnaire,
 });
 const jobCreated = ref(false);
 const creatingJob = ref(false);
+const newQuestionnaireModalOpen = ref(false);
 
 const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
+const questionnaires = ref<Questionnaire[]>([]);
 
 const removeSkill = (job: NewJob, skill: Skill): void => {
   if (!job.skills.includes(skill)) return;
@@ -94,8 +105,16 @@ const loadSkills = async (toast: ToastServiceMethods) => {
   }
 };
 
+const loadQuestionnaires = async (toast: ToastServiceMethods) => {
+  try {
+    questionnaires.value = await getAllQuestionnaires();
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
+
 onMounted(async () => {
-  await Promise.all([loadClients(toast), loadSkills(toast)]);
+  await Promise.all([loadClients(toast), loadSkills(toast), loadQuestionnaires(toast)]);
 });
 </script>
 
@@ -262,10 +281,57 @@ onMounted(async () => {
         />
       </div>
 
-      <JobQuestionnaire
-        :questionnaire="job.questionnaire"
-        @updateQuestionnaire="(q) => (job.questionnaire = q)"
-      />
+      <div v-if="job.client.name" class="space-y-3">
+        <NewQuestionnaireModal
+          :visible="newQuestionnaireModalOpen"
+          :client="job.client"
+          @close="newQuestionnaireModalOpen = false"
+          @select="
+            async (q: Questionnaire) => {
+              job.questionnaire = q;
+              await loadQuestionnaires(toast);
+              newQuestionnaireModalOpen = false;
+            }
+          "
+        />
+        <label>Questionnaire</label>
+
+        <div class="flex gap-3">
+          <QuestionnaireDropdown
+            :questionnaires="questionnaires"
+            class="w-full"
+            @selectQuestionnaire="(q: Questionnaire) => (job.questionnaire = q)"
+          />
+          <Button
+            :disabled="!job.client.name"
+            label="New"
+            icon="pi pi-plus"
+            @click="newQuestionnaireModalOpen = true"
+            class="hidden min-w-fit md:flex"
+          />
+          <Button
+            :disabled="!job.client.name"
+            icon="pi pi-plus"
+            @click="newQuestionnaireModalOpen = true"
+            class="min-w-fit md:hidden"
+          />
+        </div>
+
+        <div
+          v-if="job.questionnaire.title !== ''"
+          class="border-slate-150 mt-10 flex w-full items-center rounded-md border p-4"
+        >
+          <span class="flex min-w-fit gap-4">
+            <Button unstyled icon="pi pi-trash" @click="job.questionnaire = emptyQuestionnaire" />
+            <Button unstyled icon="pi pi-file-edit" />
+          </span>
+          <Divider layout="vertical" />
+          <div class="space-x-2">
+            <span>{{ job.questionnaire.clientName }}</span>
+            <span>{{ job.questionnaire.title }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <Divider />

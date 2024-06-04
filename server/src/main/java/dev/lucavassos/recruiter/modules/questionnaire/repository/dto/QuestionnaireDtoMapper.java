@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public class QuestionnaireDtoMapper implements Function<Questionnaire, QuestionnaireDto> {
 
     private final QuestionDtoMapper questionDtoMapper;
+
     @Override
     public QuestionnaireDto apply(Questionnaire questionnaire) {
         return new QuestionnaireDto(

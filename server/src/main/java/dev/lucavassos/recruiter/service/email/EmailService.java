@@ -21,8 +21,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendEmail(String to, String name, String resetToken, Integer expirationInMinutes) throws MessagingException
-    {
+    public void sendEmail(String to, String name, String resetToken, Integer expirationInMinutes) throws MessagingException {
         String htmlContent = "Hi %s, <br/><br/> "
                 + "<p>You are receiving this email since you requested to reset your password. "
                 + "If it wasn't you, please ignore this email altogether.<br/><br/>"

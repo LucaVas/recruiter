@@ -58,24 +58,31 @@ public class MonitoringProcessor {
     public void incrementJobsCounter() {
         jobsCounter.inc();
     }
+
     public void incrementUsersCounter() {
         usersCounter.inc();
     }
+
     public void incrementCandidatesCounter() {
         candidatesCounter.inc();
     }
+
     public void incrementCandidaciesCounter() {
         candidaciesCounter.inc();
     }
+
     public void observeGetSingleJob(Instant start) {
         getSingleJob.observe(durationInSecondsBetweenNowAnd(start));
     }
+
     public void observeGetMultipleJobs(Instant start) {
         getMultipleJobs.observe(durationInSecondsBetweenNowAnd(start));
     }
+
     public void observeGetLoginTime(Instant start) {
         getLoginTime.observe(durationInSecondsBetweenNowAnd(start));
     }
+
     public void observeGetSignupTime(Instant start) {
         getSignupTime.observe(durationInSecondsBetweenNowAnd(start));
     }

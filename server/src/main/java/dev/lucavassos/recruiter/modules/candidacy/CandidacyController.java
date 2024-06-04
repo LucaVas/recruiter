@@ -125,7 +125,7 @@ public class CandidacyController {
             @PathVariable Long jobId,
             @PathVariable String pan,
             @RequestParam("files") List<MultipartFile> files
-            ) {
+    ) {
 
         log.info("Received request to add {} files to candidacy with job ID {} and candidate pan {}", files.size(), jobId, pan);
         service.addFilesToCandidacy(jobId, pan, files);

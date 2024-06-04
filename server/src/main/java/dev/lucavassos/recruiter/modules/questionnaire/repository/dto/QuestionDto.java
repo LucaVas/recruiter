@@ -16,6 +16,6 @@ public record QuestionDto(
         @Length(max = 255, message = "Question answer must be less than 500 characters")
         String answer,
 
-        @NotNull(message = "Question type is required")
+        @NotNull(message = "Question questionType is required")
         QuestionType questionType
 ) {}

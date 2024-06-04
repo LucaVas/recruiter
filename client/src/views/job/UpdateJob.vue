@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { delJob, createNewSkill, skillModalOpen, creatingSkill, loadJobData } from './jobCommons';
+import { delJob, createNewSkill, skillModalOpen, creatingSkill } from './jobCommons';
 import JobStatusComponent from '@/components/job/UpdateJobStatus.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -16,14 +16,15 @@ import JobClientSection from '@/components/job/JobClientSection.vue';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputGroup from 'primevue/inputgroup';
 import InputText from 'primevue/inputtext';
-import JobQuestionnaire from '@/components/questionnaire/JobQuestionnaire.vue';
 import Textarea from 'primevue/textarea';
 import PageHeaderBanner from '@/components/job/PageHeaderBanner.vue';
 import type { ToastServiceMethods } from 'primevue/toastservice';
 import { getAllClients } from '@/stores/client';
 import { getAllSkills } from '@/stores/skill';
 import { handleError, showSuccess } from '@/utils/errorUtils';
-import { changeJobStatus, updateJob } from '@/stores/job';
+import { changeJobStatus, getJob, updateJob } from '@/stores/job';
+import type { Questionnaire } from '@/stores/question/schema';
+import { getAllQuestionnaires } from '@/stores/questionnaire/api';
 
 const route = useRoute();
 const jobId = ref(route.params.id);
@@ -32,23 +33,55 @@ const toast = useToast();
 const job = ref<Job>();
 const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
+const questionnaires = ref<Questionnaire[]>([]);
+const emptyQuestionnaire = { title: '', clientName: '', questions: [] } satisfies Questionnaire;
 
 const initializingJob = ref(false);
 const updatingJob = ref(false);
 const jobUpdated = ref(false);
 const changingStatus = ref(false);
+const newQuestionnaireModalOpen = ref(false);
+
+const loadQuestionnaires = async (toast: ToastServiceMethods) => {
+  try {
+    questionnaires.value = await getAllQuestionnaires();
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
+const loadClients = async (toast: ToastServiceMethods) => {
+  try {
+    clients.value = await getAllClients();
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
+
+const loadSkills = async (toast: ToastServiceMethods) => {
+  try {
+    skills.value = await getAllSkills();
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
+
+const loadJobData = async (jobId: number, toast: ToastServiceMethods) => {
+  try {
+    job.value = await getJob(jobId);
+  } catch (err) {
+    handleError(toast, err);
+  }
+};
 
 const initializeJob = async (jobId: number, toast: ToastServiceMethods) => {
   initializingJob.value = true;
   try {
-    const [d, c, s] = await Promise.all([
+    await Promise.all([
       loadJobData(jobId, toast),
-      getAllClients(),
-      getAllSkills(),
+      loadClients(toast),
+      loadSkills(toast),
+      loadQuestionnaires(toast),
     ]);
-    job.value = d;
-    clients.value = c;
-    skills.value = s;
   } catch (err) {
     handleError(toast, err);
   } finally {
@@ -104,8 +137,6 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
 
   <div v-else class="flex w-full flex-col justify-evenly gap-3">
     <PageHeaderBanner title="Update Job" />
-
-    {{ job }}
 
     <body class="flex flex-col gap-6">
       <JobStatusComponent
@@ -359,10 +390,57 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
         />
       </div>
 
-      <JobQuestionnaire
-        :questionnaire="job.questionnaire"
-        @updateQuestionnaire="(q) => (job ? (job.questionnaire = q) : null)"
-      />
+      <div v-if="job.client.name" class="space-y-3">
+        <NewQuestionnaireModal
+          :visible="newQuestionnaireModalOpen"
+          :client="job.client"
+          @close="newQuestionnaireModalOpen = false"
+          @select="
+            async (q: Questionnaire) => {
+              job ? (job.questionnaire = q) : null;
+              await loadQuestionnaires(toast);
+              newQuestionnaireModalOpen = false;
+            }
+          "
+        />
+        <label>Questionnaire</label>
+
+        <div class="flex gap-3">
+          <QuestionnaireDropdown
+            :questionnaires="questionnaires"
+            class="w-full"
+            @selectQuestionnaire="(q: Questionnaire) => (job ? (job.questionnaire = q) : null)"
+          />
+          <Button
+            :disabled="!job.client.name"
+            label="New"
+            icon="pi pi-plus"
+            @click="newQuestionnaireModalOpen = true"
+            class="hidden min-w-fit md:flex"
+          />
+          <Button
+            :disabled="!job.client.name"
+            icon="pi pi-plus"
+            @click="newQuestionnaireModalOpen = true"
+            class="min-w-fit md:hidden"
+          />
+        </div>
+
+        <div
+          v-if="job.questionnaire.title !== ''"
+          class="border-slate-150 mt-10 flex w-full items-center rounded-md border p-4"
+        >
+          <span class="flex min-w-fit gap-4">
+            <Button unstyled icon="pi pi-trash" @click="job.questionnaire = emptyQuestionnaire" />
+            <Button unstyled icon="pi pi-file-edit" />
+          </span>
+          <Divider layout="vertical" />
+          <div class="space-x-2">
+            <span>{{ job.questionnaire.clientName }}</span>
+            <span>{{ job.questionnaire.title }}</span>
+          </div>
+        </div>
+      </div>
     </body>
 
     <Divider />

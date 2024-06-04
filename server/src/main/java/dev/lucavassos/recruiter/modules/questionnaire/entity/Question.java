@@ -2,7 +2,10 @@ package dev.lucavassos.recruiter.modules.questionnaire.entity;
 
 import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,7 +15,9 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Builder
-@Table(name="questions")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "questions")
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
