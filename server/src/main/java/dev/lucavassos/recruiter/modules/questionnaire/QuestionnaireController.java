@@ -13,27 +13,26 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1")
+@RequestMapping(value = "api/v1/questionnaires")
 public class QuestionnaireController {
 
     private final QuestionnaireService service;
 
-//    @PostMapping("/questionnaires")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<QuestionnaireDto> createQuestionnaire(
-//            @Valid @RequestBody NewQuestionnaireRequest request) {
-//        log.debug("Received new request to create questionnaire: {}", request);
-//        QuestionnaireDto questionnaire = service.createQuestionnaire(request);
-//        return ResponseEntity
-//                .status(HttpStatus.CREATED)
-//                .body(questionnaire);
-//    }
-
-    @GetMapping("/questionnaires/search")
+    @GetMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnaires (@RequestParam("clientOrTitle") String clientOrTitle) {
-        log.debug("Received new request to get questionnaires for client {}", clientOrTitle);
-        List<QuestionnaireDto> questionnaires = service.getAllQuestionnaires(clientOrTitle, 0, 1000);
+    public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnairesByClientOrTitle(@RequestParam("clientOrTitle") String clientOrTitle) {
+        log.debug("Received new request to get questionnaires for client/title {}", clientOrTitle);
+        List<QuestionnaireDto> questionnaires = service.getAllQuestionnairesByClientOrTitle(clientOrTitle, 0, 1000);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(questionnaires);
+    }
+
+    @GetMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnaires() {
+        log.debug("Received new request to get all questionnaires");
+        List<QuestionnaireDto> questionnaires = service.getAllQuestionnaires(0, 1000);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(questionnaires);

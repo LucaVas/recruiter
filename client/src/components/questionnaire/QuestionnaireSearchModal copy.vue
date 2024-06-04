@@ -47,7 +47,7 @@ const mappedClients = ref<{ name: string; label: number }[]>();
     @update:visible="$emit('close')"
     closeOnEscape
     modal
-    header="New Question"
+    header="Questionnaire"
     class="w-[90%] sm:w-2/3 md:w-2/3 lg:w-1/3"
   >
     <div class="mb-5 flex flex-col gap-2">
