@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.questionnaire.repository;
 
-import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
 import org.springframework.data.domain.Pageable;
@@ -11,8 +10,8 @@ import java.util.Optional;
 
 public interface QuestionnaireRepository extends JpaRepository<Questionnaire, QuestionnaireId> {
 
-    Optional<Questionnaire> findById(QuestionnaireId questionnaireId);
     List<Questionnaire> findByIdTitleOrIdClientName(String title, String clientName, Pageable pageable);
+    Optional<Questionnaire> findByIdTitleAndIdClientName(String title, String clientName);
     Boolean existsByIdClientNameAndIdTitle(String clientName, String title);
 }
 

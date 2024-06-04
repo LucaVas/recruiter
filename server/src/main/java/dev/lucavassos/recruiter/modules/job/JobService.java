@@ -73,7 +73,10 @@ public class JobService {
         log.debug("Client found: {}", client);
 
         // prepare the questionnaire with questions
-        Questionnaire questionnaire = buildQuestionnaire(request.questionnaire());
+        Questionnaire questionnaire = questionnaireRepository
+                .findByIdTitleAndIdClientName(request.questionnaire().title(), request.questionnaire().clientName())
+                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
+        log.debug("Questionnaire found: {}", questionnaire);
 
         User recruiter = getAuthUser();
         Job job = Job.builder()
@@ -316,7 +319,7 @@ public class JobService {
 
     private Questionnaire updateQuestionnaire(Job job, QuestionnaireDto questionnaireDto) {
         Questionnaire questionnaire = questionnaireRepository
-                .findById(job.getQuestionnaire().getId())
+                .findByIdTitleAndIdClientName(job.getQuestionnaire().getId().getTitle(), job.getQuestionnaire().getId().getClientName())
                 .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
 
         Set<Question> questions = updateQuestions(questionnaireDto);

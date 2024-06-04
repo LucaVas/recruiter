@@ -19,7 +19,7 @@ const { visible, questionnaire, client } = defineProps<{
 }>();
 const emits = defineEmits<{
   (e: 'close'): void;
-  (e: 'save', skill: NewQuestionnaire): void;
+  (e: 'select', questionnaire: Questionnaire): void;
 }>();
 
 const tmpQuestionnaire = questionnaire
@@ -62,9 +62,9 @@ const create = async (questionnaire: NewQuestionnaire) => {
     questionnaire.questions = questions.value.map((q) => q.question);
     questionnaire.clientName = client.name;
     const newQuestionnaire = await saveNewQuestionnaire(questionnaire);
-    console.log(newQuestionnaire)
+    console.log(newQuestionnaire);
     init();
-    emits('close');
+    emits('select', newQuestionnaire);
     // await createJob(job);
   } catch (err) {
     handleError(toast, err);
@@ -76,9 +76,9 @@ const update = async (questionnaire: Questionnaire) => {
   creatingOrUpdating.value = true;
   try {
     questionnaire.questions = questions.value.map((q) => q.question);
-    await updateQuestionnaire(questionnaire.title, questionnaire);
+    const updatedQuestionnaire = await updateQuestionnaire(questionnaire.title, questionnaire);
     init();
-    emits('close');
+    emits('select', updatedQuestionnaire);
     // await createJob(job);
   } catch (err) {
     handleError(toast, err);
@@ -139,7 +139,7 @@ const update = async (questionnaire: Questionnaire) => {
 
       <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center">
         <span class="min-w-fit font-semibold">Client: {{ client.name }}</span>
-        <div class="flex w-full justify-between sm:justify-end gap-4">
+        <div class="flex w-full justify-between gap-4 sm:justify-end">
           <Button
             label="Cancel"
             severity="secondary"

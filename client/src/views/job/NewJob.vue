@@ -67,7 +67,6 @@ const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
 const questionnaires = ref<Questionnaire[]>([]);
 
-
 const removeSkill = (job: NewJob, skill: Skill): void => {
   if (!job.skills.includes(skill)) return;
   job.skills.splice(job.skills.indexOf(skill), 1);
@@ -288,6 +287,13 @@ onMounted(async () => {
           :visible="newQuestionnaireModalOpen"
           :client="job.client"
           @close="newQuestionnaireModalOpen = false"
+          @select="
+            async (q: Questionnaire) => {
+              job.questionnaire = q;
+              await loadQuestionnaires(toast);
+              newQuestionnaireModalOpen = false;
+            }
+          "
         />
         <label>Questionnaire</label>
 
