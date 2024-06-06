@@ -39,6 +39,13 @@ public class QuestionnaireService {
 
 
     @Transactional
+    public QuestionnaireDto getQuestionnaire(String clientName, String title) {
+        Questionnaire questionnaire = repository.findByIdTitleAndIdClientName(title, clientName)
+                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
+        return questionnaireDtoMapper.apply(questionnaire);
+    }
+
+    @Transactional
     public List<QuestionnaireDto> getAllQuestionnairesByClientOrTitle(String clientOrTitle, Integer pageNumber, Integer pageSize) {
 
         Pageable limit = PageRequest.of(pageNumber, pageSize);

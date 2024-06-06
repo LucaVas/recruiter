@@ -20,6 +20,15 @@ public class QuestionnaireController {
 
     private final QuestionnaireService service;
 
+    @GetMapping("/{clientName}/{title}")
+    public ResponseEntity<QuestionnaireDto> getQuestionnaire(@PathVariable("clientName") String clientName, @PathVariable("title") String title) {
+        log.debug("Received new request to get questionnaires for client {} and title {}", clientName, title);
+        QuestionnaireDto questionnaire = service.getQuestionnaire(clientName, title);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(questionnaire);
+    }
+
     @GetMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnairesByClientOrTitle(@RequestParam("clientOrTitle") String clientOrTitle) {

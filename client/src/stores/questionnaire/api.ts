@@ -6,6 +6,13 @@ import type { NewQuestionnaire } from '../question/schema';
 const api = axiosApi();
 
 // functions
+export const getQuestionnairesById = async (
+  clientName: string, title: string
+): Promise<Questionnaire> => {
+  const { data } = await api.get(`/questionnaires/${clientName}/${title}`);
+  return data;
+};
+
 export const getQuestionnairesByClient = async (
   clientOrTitle: string
 ): Promise<Questionnaire[]> => {
