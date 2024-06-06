@@ -24,7 +24,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
 @Builder
 @Table(name = "jobs")
 public class Job {

@@ -14,6 +14,7 @@ import { handleError } from '@/utils/errorUtils';
 import { ref } from 'vue';
 import { getJob } from '@/stores/job/index';
 import type { Job } from '@/stores/job/schema';
+import JobQuestionnairePanel from '@/components/job/job-page/JobQuestionnairePanel.vue';
 
 const loading = ref(false);
 const job = ref<Job>();
@@ -67,8 +68,8 @@ onMounted(async () => {
     />
     <JobDescription :description="job.description" />
     <h3 class="text-lg font-medium">Skills</h3>
-
     <JobSkills :isNewJob="false" :skills="job.skills" />
+    <JobQuestionnairePanel :questionnaire="job.questionnaire" />
   </div>
   <ProgressSpinner v-else />
 </template>
