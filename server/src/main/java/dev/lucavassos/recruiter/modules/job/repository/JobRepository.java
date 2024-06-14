@@ -20,7 +20,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     Optional<Job> findOneByIdAndStatusNot(Long id, JobStatus status);
 
-    @Query("SELECT j FROM Job j LEFT JOIN FETCH j.questionnaire WHERE j.id = :id AND p.status != :status")
+    @Query("SELECT j FROM Job j LEFT JOIN FETCH j.questionnaire WHERE j.id = :id AND j.status != :status")
     Optional<Questionnaire> findByIdAndStatusNotWithQuestionnaire(@Param("id") Long id, @Param("status") JobStatus status);
 
 }

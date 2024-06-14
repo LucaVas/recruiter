@@ -107,10 +107,10 @@ public class User implements UserDetails {
     private Set<Candidacy> candidacies = new HashSet<>();
 
     @OneToMany(
-            mappedBy = "user",
+            mappedBy = "recruiter",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private Set<Job> comments = new HashSet<>();
+    private Set<Job> jobs = new HashSet<>();
 
     @Getter
     @CreationTimestamp

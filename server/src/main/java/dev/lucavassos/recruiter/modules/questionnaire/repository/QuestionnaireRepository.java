@@ -19,7 +19,7 @@ public interface QuestionnaireRepository extends JpaRepository<Questionnaire, Lo
 
     Boolean existsByClientNameAndTitle(String clientName, String title);
 
-    @Query("SELECT q FROM Questionnaire q LEFT JOIN FETCH p.question WHERE p.id = :id")
+    @Query("SELECT q FROM Questionnaire q LEFT JOIN FETCH q.questions WHERE q.id = :id")
     Optional<Questionnaire> findByIdWithQuestions(@Param("id") Long id);
 }
 
