@@ -113,16 +113,12 @@ public class User implements UserDetails {
     private Set<Job> comments = new HashSet<>();
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
-    @Getter
-    @Setter
-    private LocalDateTime createdDTime;
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    @Getter
-    @Setter
-    private LocalDateTime modifiedDTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public RoleName getRoleName() {
         return this.role.getName();

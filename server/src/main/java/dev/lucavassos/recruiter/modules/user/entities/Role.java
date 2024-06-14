@@ -2,7 +2,10 @@ package dev.lucavassos.recruiter.modules.user.entities;
 
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -27,10 +30,10 @@ public class Role {
     private String description;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
-    private LocalDateTime createdDTime;
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    private LocalDateTime modifiedDTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

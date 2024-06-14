@@ -27,10 +27,10 @@ public class ClientErrorLog {
     private Integer code;
 
     @CreationTimestamp
-    @Column(nullable = false, name = "created_dtime")
-    private LocalDateTime createdDTime;
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false, name = "updated_dtime")
-    private LocalDateTime updatedDTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
