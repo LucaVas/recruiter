@@ -21,7 +21,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     @Query("SELECT j FROM Job j " +
             "LEFT JOIN FETCH j.client " +
-            "LEFT JOIN FETCH j.skills " +
             "WHERE j.status != :status")
-    List<Job> findAllByStatusWithClientAndSkills(JobStatus status, Pageable pageable);
+    List<Job> findAllByStatusWithClient(JobStatus status, Pageable pageable);
 }

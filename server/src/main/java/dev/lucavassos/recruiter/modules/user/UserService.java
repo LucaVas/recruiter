@@ -34,15 +34,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Value("${password.reset.token.expirationInSeconds}")
-    private Integer expirationInSeconds;
-
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenGenerator resetTokenGenerator;
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
     private final EmailService emailService;
+    @Value("${password.reset.token.expirationInSeconds}")
+    private Integer expirationInSeconds;
 
     public void approveUser(UserApprovalRequest request) {
 

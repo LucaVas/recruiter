@@ -7,7 +7,6 @@ export interface JobI {
   name: string;
   status: JobStatus;
   wantedCvs: number;
-  skills: Skill[];
   contractType: ContractType;
   experienceRangeMin: number;
   experienceRangeMax: number;
@@ -19,16 +18,23 @@ export interface JobI {
   closureBonus: string;
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
-  questionnaire: NewQuestionnaire;
 }
 
 export type Job = JobI & {
   id: number;
+  numberOfCandidates: number | null;
   createdAt: Date;
   updatedAt: Date;
-  numberOfCandidates: number | null;
 };
 export type NewJob = JobI;
+export type JobWithSkillsAndQuestionnaire = JobI & {
+  id: number;
+  numberOfCandidates: number | null;
+  skills: Skill[];
+  questionnaire: NewQuestionnaire;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type ContractType = 'PERMANENT' | 'TEMPORARY';
 export type Currency = 'INR';

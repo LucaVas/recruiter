@@ -3,7 +3,7 @@ package dev.lucavassos.recruiter.modules.job;
 import dev.lucavassos.recruiter.modules.job.domain.ChangeJobStatusRequest;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,14 +24,14 @@ public class JobController {
 
     @PostMapping("/jobs")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<JobDto> addJob(
+    public ResponseEntity<JobDTO> addJob(
             @Valid @RequestBody NewJobRequest request) {
         log.debug("Received request to add new job: {}", request);
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }
 
     @PutMapping("/jobs/{jobId}")
-    public ResponseEntity<JobDto> updateJob(
+    public ResponseEntity<JobDTO> updateJob(
             @Valid @RequestBody UpdateJobRequest request) {
         log.debug("Received request to update job");
         return new ResponseEntity<>(service.updateJob(request), HttpStatus.CREATED);
@@ -55,15 +55,15 @@ public class JobController {
     }
 
     @GetMapping("/jobs")
-    public ResponseEntity<List<JobDto>> getAllJobs() {
+    public ResponseEntity<List<JobDTO>> getAllJobs() {
         log.debug("Received request for all jobs.");
         return new ResponseEntity<>(service.getAllJobs(0, 1000), HttpStatus.OK);
     }
 
     @GetMapping("/jobs/{jobId}")
-    public ResponseEntity<JobDto> getJob(@PathVariable("jobId") Long id) {
+    public ResponseEntity<JobDTO> getJob(@PathVariable("jobId") Long id) {
         log.debug("Received request to get details for job: {}", id);
-        JobDto job = service.getJobById(id);
+        JobDTO job = service.getJobById(id);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(job);

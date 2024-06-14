@@ -14,8 +14,8 @@ import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
 import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTO;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTOMapper;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
@@ -48,13 +48,13 @@ public class JobService {
     private final CandidacyRepository candidacyRepository;
     private final SkillRepository skillRepository;
     private final UserRepository userRepository;
-    private final JobDtoMapper jobDtoMapper;
+    private final JobDTOMapper jobDtoMapper;
     private final MonitoringProcessor monitoringProcessor;
     private final ClientRepository clientRepository;
     private final QuestionnaireRepository questionnaireRepository;
 
     @Transactional
-    public JobDto addJob(NewJobRequest request) {
+    public JobDTO addJob(NewJobRequest request) {
         log.debug("Adding new job: {}", request);
 
         List<Skill> skills = skillRepository
@@ -103,7 +103,7 @@ public class JobService {
     }
 
     @Transactional
-    public JobDto updateJob(UpdateJobRequest request) {
+    public JobDTO updateJob(UpdateJobRequest request) {
 
         boolean changes = false;
         Long id = request.id();
@@ -207,7 +207,7 @@ public class JobService {
     }
 
     @Transactional
-    public JobDto getJobById(Long id) {
+    public JobDTO getJobById(Long id) {
         Job job = repository
                 .findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(id, JobStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
@@ -235,23 +235,21 @@ public class JobService {
     }
 
     @Transactional
-    public List<JobDto> getAllJobs(Integer pageNumber, Integer pageSize) {
+    public List<JobDTO> getAllJobs(Integer pageNumber, Integer pageSize) {
         Pageable limit = PageRequest.of(pageNumber, pageSize);
         log.debug("Retrieving {} jobs", 1000);
 
-        List<Job> jobs = repository.findAllByStatusWithClientAndSkills(JobStatus.DELETED, limit);
-
-        jobs.forEach(System.out::println);
+        List<Job> jobs = repository.findAllByStatusWithClient(JobStatus.DELETED, limit);
 
         User user = getAuthUser();
-        List<JobDto> jobDtos = jobs.stream()
+        List<JobDTO> jobDTOs = jobs.stream()
                 .filter(job -> user.getRoleName() == RoleName.ADMIN || job.getStatus() != JobStatus.ARCHIVED)
                 .peek(job -> job.setNumberOfCandidates(candidacyRepository.findByJob(job).size()))
                 .map(jobDtoMapper)
                 .toList();
 
-        log.debug("Jobs retrieved: {}", jobs);
-        return jobDtos;
+        jobDTOs.forEach(job -> log.debug("Job retrieved: {}", job));
+        return jobDTOs;
     }
 
     @Transactional

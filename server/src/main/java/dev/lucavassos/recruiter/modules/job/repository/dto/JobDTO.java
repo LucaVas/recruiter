@@ -4,20 +4,18 @@ import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
 import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
-import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @Builder
-public class JobDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class JobDTO {
 
     @NotNull
     private Long id;
@@ -34,8 +32,6 @@ public class JobDto {
     @NotNull(message = "Wanted CVs cannot be empty")
     @Min(value = 1, message = "Wanted CVs number must be greater than 0")
     private Integer wantedCvs;
-
-    private List<SkillDto> skills;
 
     @NotNull(message = "Contract questionType cannot be empty")
     private ContractType contractType;
