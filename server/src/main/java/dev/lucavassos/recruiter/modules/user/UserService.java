@@ -159,7 +159,7 @@ public class UserService {
                         );
 
         LocalDateTime now = LocalDateTime.now();
-        if (ChronoUnit.SECONDS.between(token.getCreatedDTime(), now) > expirationInSeconds) {
+        if (ChronoUnit.SECONDS.between(token.getCreatedAt(), now) > expirationInSeconds) {
             log.error("Token expired.");
             throw new BadRequestException("Invalid token. Please request a new one.");
         }

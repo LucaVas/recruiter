@@ -112,10 +112,13 @@ public class User implements UserDetails {
             orphanRemoval = true)
     private Set<Job> comments = new HashSet<>();
 
+    @Getter
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
+    @Getter
+    @Setter
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

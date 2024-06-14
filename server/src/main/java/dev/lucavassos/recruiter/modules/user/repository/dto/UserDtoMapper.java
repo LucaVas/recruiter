@@ -25,8 +25,8 @@ public class UserDtoMapper implements Function<User, UserDto> {
                 ),
                 user.getComment(),
                 user.getApprovedDTime(),
-                user.getCreatedDTime(),
-                user.getModifiedDTime()
+                user.getCreatedAt(),
+                user.getUpdatedAt()
 
         );
     }

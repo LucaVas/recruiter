@@ -15,8 +15,8 @@ public class CandidacyFileDtoMapper implements Function<CandidacyFile, Candidacy
                 file.getType(),
                 file.getName(),
                 file.getUniqueId(),
-                file.getCreatedDTime(),
-                file.getModifiedDTime()
+                file.getCreatedAt(),
+                file.getUpdatedAt()
         );
     }
 }
