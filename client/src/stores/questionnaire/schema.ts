@@ -1,11 +1,14 @@
+import type { Client } from "../client/schema";
+
 export interface Questionnaire {
   title: string;
-  clientName: string,
+  client: Client,
   questions: Question[];
 }
 
 export type QuestionnaireDto = Questionnaire & { id: number };
 export type NewQuestionnaire = Omit<Questionnaire, 'questions'> & { questions: NewQuestion[] };
+export type UpdatedQuestionnaire = Omit<Questionnaire, 'clientName'>;
 
 
 export interface Question {

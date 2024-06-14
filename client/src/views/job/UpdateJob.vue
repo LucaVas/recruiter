@@ -13,6 +13,7 @@ import type { NewSkill, Skill } from '@/stores/skill/schema';
 import type { Client } from '@/stores/client/schema';
 import { contractTypes } from '@/components/job/utils';
 import JobClientSection from '@/components/job/JobClientSection.vue';
+import NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue'
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputGroup from 'primevue/inputgroup';
 import InputText from 'primevue/inputtext';
@@ -23,7 +24,7 @@ import { getAllClients } from '@/stores/client';
 import { getAllSkills } from '@/stores/skill';
 import { handleError, showSuccess } from '@/utils/errorUtils';
 import { changeJobStatus, getJob, updateJob } from '@/stores/job';
-import type { Questionnaire } from '@/stores/question/schema';
+import type { Questionnaire } from '@/stores/questionnaire/schema';
 import { getAllQuestionnaires } from '@/stores/questionnaire/api';
 
 const route = useRoute();
@@ -34,7 +35,7 @@ const job = ref<Job>();
 const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
 const questionnaires = ref<Questionnaire[]>([]);
-const emptyQuestionnaire = { title: '', clientName: '', questions: [] } satisfies Questionnaire;
+const emptyQuestionnaire = { title: '', client: {} as Client, questions: [] } satisfies Questionnaire;
 
 const initializingJob = ref(false);
 const updatingJob = ref(false);
@@ -394,6 +395,7 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
         <NewQuestionnaireModal
           :visible="newQuestionnaireModalOpen"
           :client="job.client"
+          :questionnaire="job.questionnaire"
           @close="newQuestionnaireModalOpen = false"
           @select="
             async (q: Questionnaire) => {
@@ -432,7 +434,7 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
         >
           <span class="flex min-w-fit gap-4">
             <Button unstyled icon="pi pi-trash" @click="job.questionnaire = emptyQuestionnaire" />
-            <Button unstyled icon="pi pi-file-edit" />
+            <Button unstyled icon="pi pi-file-edit" @click="newQuestionnaireModalOpen = true" />
           </span>
           <Divider layout="vertical" />
           <div class="space-x-2">

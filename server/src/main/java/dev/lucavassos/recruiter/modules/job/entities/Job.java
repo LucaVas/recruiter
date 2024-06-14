@@ -32,10 +32,6 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "client_id")
-    private Client client;
-
     @Column(nullable = false, name = "name")
     @Size(min = 1, message = "Job name must be at least 1 character long")
     private String name;
@@ -100,12 +96,13 @@ public class Job {
     private Integer numberOfCandidates;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recruiter_id")
     private User recruiter;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "questionnaire_title")
-    @JoinColumn(name = "questionnaire_clientName")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private Client client;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "questionnaire_id")
     private Questionnaire questionnaire;
 
     @CreationTimestamp

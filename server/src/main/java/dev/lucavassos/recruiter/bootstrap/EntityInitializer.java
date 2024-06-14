@@ -14,7 +14,6 @@ import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
-import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
@@ -64,7 +63,7 @@ public class EntityInitializer {
                 .description("Tester role")
                 .build();
 
-        roleRepository.saveAll(List.of(recruiter, admin, tester));
+        roleRepository.saveAllAndFlush(List.of(recruiter, admin, tester));
     }
 
     @Transactional
@@ -73,12 +72,12 @@ public class EntityInitializer {
         Client ibm = Client.builder().name("IBM").industry(Industry.IT).build();
         Client infosys = Client.builder().name("Infosys").industry(Industry.IT).build();
 
-        clientRepository.saveAll(List.of(accenture, ibm, infosys));
+        clientRepository.saveAllAndFlush(List.of(accenture, ibm, infosys));
     }
 
     @Transactional
     public void saveSkills() {
-        skillRepository.saveAll(List.of(
+        skillRepository.saveAllAndFlush(List.of(
                 Skill.builder().name("Java").build(),
                 Skill.builder().name("Python").build(),
                 Skill.builder().name("Tableau").build(),
@@ -91,19 +90,12 @@ public class EntityInitializer {
         ));
     }
 
-    @Transactional
-    public void saveJobs() {
-        Set<Client> clients = new HashSet<>(clientRepository.findAll());
-        Set<Skill> skills = new HashSet<>(skillRepository.findAll());
-        User recruiter = userRepository.findOneByName("recruiter").orElseThrow(RuntimeException::new);
-        User recruiter2 = userRepository.findOneByName("recruiter2").orElseThrow(RuntimeException::new);
 
-        QuestionnaireId id = QuestionnaireId.builder()
-                .title("Java Developer")
-                .clientName("IBM")
-                .build();
+    @Transactional
+    public void saveQuestionnaires() {
+        Set<Client> clients = new HashSet<>(clientRepository.findAll());
         Questionnaire questionnaire = Questionnaire.builder()
-                .id(id)
+                .title("Java Developer")
                 .questions(
                         Set.of(
                                 Question.builder()
@@ -122,6 +114,16 @@ public class EntityInitializer {
                 )
                 .client(clients.stream().filter(client -> client.getName().equals("IBM")).findFirst().orElseThrow(RuntimeException::new))
                 .build();
+        questionnaireRepository.saveAndFlush(questionnaire);
+    }
+
+    @Transactional
+    public void saveJobs() {
+        Set<Client> clients = new HashSet<>(clientRepository.findAll());
+        Set<Skill> skills = new HashSet<>(skillRepository.findAll());
+        Questionnaire questionnaire = questionnaireRepository.findByTitleAndClientName("Java Developer", "IBM").orElseThrow(RuntimeException::new);
+        User recruiter = userRepository.findOneByName("recruiter").orElseThrow(RuntimeException::new);
+        User recruiter2 = userRepository.findOneByName("recruiter2").orElseThrow(RuntimeException::new);
 
         Job job1 = Job.builder()
                 .client(clients.stream().filter(client -> client.getName().equals("Accenture")).findFirst().orElseThrow(RuntimeException::new))
@@ -279,7 +281,7 @@ public class EntityInitializer {
                 .questionnaire(questionnaire)
                 .build();
 
-        jobRepository.saveAll(List.of(job1, job2, job3, job4, job5));
+        jobRepository.saveAllAndFlush(List.of(job1, job2, job3, job4, job5));
     }
 
     @Transactional
@@ -333,7 +335,7 @@ public class EntityInitializer {
                         .recruiter(recruiter2)
                         .build()));
 
-        candidateRepository.saveAll(candidates);
+        candidateRepository.saveAllAndFlush(candidates);
     }
 
     @Transactional
@@ -374,6 +376,6 @@ public class EntityInitializer {
                 .role(adminRole)
                 .build();
 
-        userRepository.saveAll(List.of(recruiter, recruiter2, admin));
+        userRepository.saveAllAndFlush(List.of(recruiter, recruiter2, admin));
     }
 }

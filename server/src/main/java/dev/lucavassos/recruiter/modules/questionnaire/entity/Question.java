@@ -31,6 +31,9 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Questionnaire questionnaire;
+
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;

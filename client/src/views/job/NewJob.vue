@@ -66,6 +66,8 @@ const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
 const questionnaires = ref<Questionnaire[]>([]);
 
+const editQuestionnaire = ref<Questionnaire>({ title: '', clientName: '', questions: [] });
+
 const removeSkill = (job: NewJob, skill: Skill): void => {
   if (!job.skills.includes(skill)) return;
   job.skills.splice(job.skills.indexOf(skill), 1);
@@ -283,6 +285,7 @@ onMounted(async () => {
 
       <div v-if="job.client.name" class="space-y-3">
         <NewQuestionnaireModal
+          :questionnaire="editQuestionnaire"
           :visible="newQuestionnaireModalOpen"
           :client="job.client"
           @close="newQuestionnaireModalOpen = false"
@@ -323,7 +326,16 @@ onMounted(async () => {
         >
           <span class="flex min-w-fit gap-4">
             <Button unstyled icon="pi pi-trash" @click="job.questionnaire = emptyQuestionnaire" />
-            <Button unstyled icon="pi pi-file-edit" />
+            <Button
+              unstyled
+              icon="pi pi-file-edit"
+              @click="
+                {
+                  editQuestionnaire = job.questionnaire;
+                  newQuestionnaireModalOpen = true;
+                }
+              "
+            />
           </span>
           <Divider layout="vertical" />
           <div class="space-x-2">

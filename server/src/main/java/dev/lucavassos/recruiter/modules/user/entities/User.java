@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.user.entities;
 
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
+import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -104,6 +105,12 @@ public class User implements UserDetails {
     @Getter
     @Setter
     private Set<Candidacy> candidacies = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<Job> comments = new HashSet<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_dtime")

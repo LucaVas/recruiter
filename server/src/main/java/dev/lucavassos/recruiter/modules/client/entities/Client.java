@@ -5,11 +5,15 @@ import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -30,11 +34,19 @@ public class Client {
     @Enumerated(EnumType.STRING)
     private Industry industry;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE) // delete jobs associated to client
-    private Set<Job> jobs;
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "client",
+            cascade = CascadeType.REMOVE, // delete jobs associated to client
+            orphanRemoval = true)
+    private Set<Job> jobs = new HashSet<>();
 
-    @OneToMany(mappedBy = "client")
-    private Set<Questionnaire> questionnaires;
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "client",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<Questionnaire> questionnaires = new HashSet<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

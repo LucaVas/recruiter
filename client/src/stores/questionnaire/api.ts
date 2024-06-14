@@ -1,6 +1,6 @@
-import { type Questionnaire } from './schema';
+import { type Questionnaire, type UpdatedQuestionnaire } from './schema';
 import axiosApi from '../api';
-import type { NewQuestionnaire } from '../question/schema';
+import type { NewQuestionnaire } from '../questionnaire/schema';
 
 // vars
 const api = axiosApi();
@@ -28,16 +28,14 @@ export const getAllQuestionnaires = async (): Promise<Questionnaire[]> => {
 export const saveNewQuestionnaire = async (
   questionnaire: NewQuestionnaire
 ): Promise<Questionnaire> => {
-  console.log('create questionnaire', questionnaire)
   const { data } = await api.post(`/questionnaires/`, questionnaire);
   return data;
 };
 
 export const updateQuestionnaire = async (
   title: string,
-  questionnaire: Questionnaire
+  questionnaire: UpdatedQuestionnaire
 ): Promise<Questionnaire> => {
-  console.log('update questionnaire', questionnaire)
   const { data } = await api.post(`/questionnaires/${title}`, questionnaire);
   return data;
 };
