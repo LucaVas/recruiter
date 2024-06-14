@@ -68,11 +68,11 @@ public class UserService {
 
 
         user.setApproved(request.approved());
-        user.setApprovedDTime(DateTimeUtils.getCurrentDTime());
+        user.setApprovedAt(DateTimeUtils.getCurrentDTime());
         user.setApprover(approver);
         user.setComment(request.comment());
 
-        log.info("User to approve: {} on {}", user.getComment(), user.getApprovedDTime());
+        log.info("User to approve: {} on {}", user.getComment(), user.getApprovedAt());
 
         User approvedUser = userRepository.save(user);
 

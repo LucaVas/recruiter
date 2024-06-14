@@ -99,7 +99,7 @@ public class User implements UserDetails {
     @Column(name = "approved_dtime")
     @Getter
     @Setter
-    private LocalDateTime approvedDTime;
+    private LocalDateTime approvedAt;
 
     @OneToMany(mappedBy = "recruiter")
     @Getter
