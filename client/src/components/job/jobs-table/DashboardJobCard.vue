@@ -4,7 +4,7 @@
       <h2 class="font-semibold">{{ job.name }}</h2>
       <h4 class="italic">{{ job.client.name }}</h4>
     </div>
-    <footer class="text-slate-400">{{ formatDate(job.createdDTime) }}</footer>
+    <footer class="text-slate-400">{{ formatDate(job.createdAt) }}</footer>
   </div>
 </template>
 

@@ -110,7 +110,7 @@ public class JobService {
         log.info("Updating job with id {}: {}", id, request);
 
         Job job = repository
-                .findOneByIdAndStatusNot(id, JobStatus.DELETED)
+                .findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(id, JobStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found."));
         Client client = clientRepository
                 .findByName(request.client().getName())
@@ -209,7 +209,7 @@ public class JobService {
     @Transactional
     public JobDto getJobById(Long id) {
         Job job = repository
-                .findOneByIdAndStatusNot(id, JobStatus.DELETED)
+                .findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(id, JobStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
 
         User user = getAuthUser();
@@ -223,7 +223,7 @@ public class JobService {
 
     @Transactional
     public void changeJobStatus(Long id, ChangeJobStatusRequest request) {
-        Job job = repository.findOneByIdAndStatusNot(id, JobStatus.DELETED)
+        Job job = repository.findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(id, JobStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
 
         User user = getAuthUser();
@@ -239,7 +239,9 @@ public class JobService {
         Pageable limit = PageRequest.of(pageNumber, pageSize);
         log.debug("Retrieving {} jobs", 1000);
 
-        List<Job> jobs = repository.findAllByStatusNot(JobStatus.DELETED, limit);
+        List<Job> jobs = repository.findAllByStatusWithClientAndSkills(JobStatus.DELETED, limit);
+
+        jobs.forEach(System.out::println);
 
         User user = getAuthUser();
         List<JobDto> jobDtos = jobs.stream()
@@ -256,7 +258,7 @@ public class JobService {
     public void deleteJob(Long id) {
         log.debug("Deleting job {}", id);
         Job job = repository
-                .findOneByIdAndStatusNot(id, JobStatus.DELETED)
+                .findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(id, JobStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
 
         User user = getAuthUser();

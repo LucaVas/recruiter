@@ -10,9 +10,9 @@ export type User = {
   comments: string;
   approved: boolean;
   approver: Recruiter;
-  approvedDTime: Date;
-  createdDTime: Date;
-  modifiedDTime: Date;
+  approvedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type Recruiter = Pick<User, 'id' | 'name'>;
@@ -23,8 +23,8 @@ export type Role = {
   id: number;
   name: RoleName;
   description: string;
-  createdDTime: Date;
-  modifiedDTime: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 export type RoleName = 'RECRUITER' | 'ADMIN' | 'TESTER';
 

@@ -25,6 +25,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@ToString
 @Table(name = "jobs")
 public class Job {
 
@@ -43,13 +44,6 @@ public class Job {
     @Column(nullable = false, name = "wanted_cvs")
     @Min(value = 0, message = "Wanted CVs cannot be negative")
     private Integer wantedCvs;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "jobs_skills",
-            joinColumns = @JoinColumn(name = "job_id"),
-            inverseJoinColumns = @JoinColumn(name = "skill_id"))
-    private List<Skill> skills = new ArrayList<>();
 
     @Column(nullable = false, name = "contract_type")
     @Enumerated(EnumType.STRING)
@@ -94,6 +88,13 @@ public class Job {
     private LocalDateTime closureBonusPaymentDate;
 
     private Integer numberOfCandidates;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "jobs_skills",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<Skill> skills = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User recruiter;

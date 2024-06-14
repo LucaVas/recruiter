@@ -352,6 +352,7 @@ public class EntityInitializer {
                 .city("Test city")
                 .country("India")
                 .approved(true)
+                .approvedAt(LocalDateTime.now())
                 .role(recruiterRole)
                 .build();
 
@@ -372,6 +373,7 @@ public class EntityInitializer {
                 .phone("1234567891")
                 .city("Test city")
                 .country("India")
+                .approvedAt(LocalDateTime.now())
                 .approved(true)
                 .role(adminRole)
                 .build();

@@ -1,5 +1,5 @@
 import type { Client } from '../client/schema';
-import type { NewQuestionnaire } from '../question/schema';
+import type { NewQuestionnaire } from '../questionnaire/schema';
 import type { Skill } from '../skill/schema';
 
 export interface JobI {
@@ -24,8 +24,8 @@ export interface JobI {
 
 export type Job = JobI & {
   id: number;
-  createdDTime: Date;
-  modifiedDTime: Date;
+  createdAt: Date;
+  updatedAt: Date;
   numberOfCandidates: number | null;
 };
 export type NewJob = JobI;
