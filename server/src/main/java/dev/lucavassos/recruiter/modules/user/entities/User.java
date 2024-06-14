@@ -74,7 +74,7 @@ public class User implements UserDetails {
     @Setter
     private String comment;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     @Getter
     @Setter

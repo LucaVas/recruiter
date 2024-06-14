@@ -44,7 +44,7 @@ public class Job {
     @Min(value = 0, message = "Wanted CVs cannot be negative")
     private Integer wantedCvs;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "jobs_skills",
             joinColumns = @JoinColumn(name = "job_id"),
@@ -98,7 +98,7 @@ public class Job {
     @ManyToOne(fetch = FetchType.LAZY)
     private User recruiter;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Client client;
 
     @ManyToOne(fetch = FetchType.LAZY)
