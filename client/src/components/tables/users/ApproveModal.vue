@@ -34,7 +34,12 @@ defineEmits<{
           size="small"
           icon="pi pi-times"
           outlined
-          @click="$emit('close')"
+          @click="
+            {
+              $emit('close');
+              comment = '';
+            }
+          "
         ></Button>
         <Button
           type="button"
@@ -42,7 +47,12 @@ defineEmits<{
           icon="pi pi-check"
           severity="success"
           label="Save"
-          @click="$emit('approve', comment)"
+          @click="
+            {
+              $emit('approve', comment);
+              comment = '';
+            }
+          "
         ></Button>
       </div>
     </Dialog>
