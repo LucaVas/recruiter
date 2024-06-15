@@ -68,13 +68,12 @@ public class JobService {
 
         // prepare the questionnaire with questions
         Questionnaire questionnaire = questionnaireRepository
-                .findByTitleAndClientName(request.questionnaire().title(), request.questionnaire().client().getName())
+                .findByTitleAndClientName(request.questionnaire().getTitle(), request.questionnaire().getClient().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
         log.debug("Questionnaire found: {}", questionnaire);
 
         User recruiter = getAuthUser();
         Job job = Job.builder()
-                .client(client)
                 .name(request.name())
                 .status(request.status())
                 .contractType(request.contractType())
@@ -90,8 +89,8 @@ public class JobService {
                 .closureBonus(request.closureBonus())
                 .cvRatePaymentDate(request.cvRatePaymentDate())
                 .closureBonusPaymentDate(request.closureBonusPaymentDate())
-                .recruiter(recruiter)
                 .questionnaire(questionnaire)
+                .client(client)
                 .build();
         Job createdJob = saveJob(job);
         saveJobInHistoryTable(createdJob, recruiter);
@@ -116,7 +115,7 @@ public class JobService {
                 .findByName(request.client().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
         Questionnaire questionnaire = questionnaireRepository
-                .findByTitleAndClientName(request.questionnaire().title(), request.questionnaire().client().getName())
+                .findByTitleAndClientName(request.questionnaire().getTitle(), request.questionnaire().getClient().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
 
         User recruiter = getAuthUser();
@@ -217,8 +216,11 @@ public class JobService {
             throw new AccessDeniedException("Job is not accessible");
         }
 
-        log.warn("Job retrieved: [{}]", job);
-        return jobDtoMapper.apply(job);
+        JobDTO jobDto = jobDtoMapper.apply(job);
+
+        log.info("Job retrieved: {}", jobDto);
+
+        return jobDto;
     }
 
     @Transactional
@@ -239,7 +241,7 @@ public class JobService {
         Pageable limit = PageRequest.of(pageNumber, pageSize);
         log.debug("Retrieving {} jobs", 1000);
 
-        List<Job> jobs = repository.findAllByStatusWithClient(JobStatus.DELETED, limit);
+        List<Job> jobs = repository.findByStatusNot(JobStatus.DELETED, limit);
 
         User user = getAuthUser();
         List<JobDTO> jobDTOs = jobs.stream()

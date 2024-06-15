@@ -4,17 +4,21 @@ import dev.lucavassos.recruiter.modules.client.repository.dto.ClientDto;
 import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
+import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class JobDTO {
 
     @NotNull
@@ -76,6 +80,11 @@ public class JobDTO {
     @NotNull(message = "Number of candidates cannot be empty")
     @Min(value = 0, message = "Number of candidates must be a positive number")
     private Integer numberOfCandidates;
+
+    List<SkillDto> skills;
+
+    @Valid
+    private QuestionnaireDto questionnaire;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

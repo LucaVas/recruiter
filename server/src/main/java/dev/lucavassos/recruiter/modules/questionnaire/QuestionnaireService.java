@@ -23,9 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -107,22 +106,22 @@ public class QuestionnaireService {
             throw new DuplicateResourceException("Questionnaire with title %s and client %s already exists".formatted(title, questionnaire.getClient().getName()));
         }
 
-        Set<Question> questions = updateQuestions(request);
+        List<Question> questions = updateQuestions(request);
         questionnaire.setTitle(request.getTitle());
-        questionnaire.setQuestions(questions);
+        questionnaire.getQuestions().addAll(questions);
 
         Questionnaire saved = updateQuestionnaire(questionnaire);
 
-        return questionnaireDtoMapper.apply(questionnaire);
+        return questionnaireDtoMapper.apply(saved);
     }
 
     private Questionnaire buildQuestionnaire(NewQuestionnaireRequest request) {
         Client client = clientRepository.findByName(request.getClient().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
-        Set<Question> questions = request.getQuestions().stream()
+        List<Question> questions = request.getQuestions().stream()
                 .map(this::buildQuestion)
-                .collect(Collectors.toSet());
+                .toList();
 
         return Questionnaire.builder()
                 .title(request.getTitle())
@@ -140,8 +139,8 @@ public class QuestionnaireService {
     }
 
 
-    private Set<Question> updateQuestions(UpdateQuestionnaireRequest request) {
-        Set<Question> questions = new HashSet<>();
+    private List<Question> updateQuestions(UpdateQuestionnaireRequest request) {
+        List<Question> questions = new ArrayList<>();
         for (QuestionDto questionDto : request.getQuestions()) {
             Question question;
             if (questionDto.id() == null) {

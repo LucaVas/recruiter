@@ -21,6 +21,10 @@ public class JobDTOMapper implements Function<Job, JobDTO> {
 
     @Override
     public JobDTO apply(Job job) {
+        job.getClient();
+        job.getSkills().size();
+        job.getQuestionnaire();
+
         return JobDTO.builder()
                 .id(job.getId())
                 .client(clientDtoMapper.apply(job.getClient()))
@@ -39,6 +43,8 @@ public class JobDTOMapper implements Function<Job, JobDTO> {
                 .cvRatePaymentDate(job.getCvRatePaymentDate())
                 .closureBonusPaymentDate(job.getClosureBonusPaymentDate())
                 .numberOfCandidates(job.getNumberOfCandidates())
+                .skills(job.getSkills().stream().map(skillMapper).toList())
+                .questionnaire(questionnaireDtoMapper.apply(job.getQuestionnaire()))
                 .createdAt(job.getCreatedAt())
                 .updatedAt(job.getUpdatedAt())
                 .build();

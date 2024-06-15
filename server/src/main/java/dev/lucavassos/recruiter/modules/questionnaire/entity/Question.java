@@ -31,7 +31,8 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "questionnaire_id")
     private Questionnaire questionnaire;
 
     @CreationTimestamp

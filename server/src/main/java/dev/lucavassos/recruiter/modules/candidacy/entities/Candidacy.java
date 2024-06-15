@@ -23,20 +23,27 @@ import java.util.List;
 @Table(name = "candidacies")
 public class Candidacy {
 
-    @EmbeddedId
-    CandidacyId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @MapsId("jobId")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id")
+    @ManyToOne(
+            fetch = FetchType.LAZY // EAGER is by default
+    )
+    @JoinColumn(name = "job_id", nullable = false)
     private Job job;
 
-    @MapsId("candidatePan")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "candidate_pan")
+    // unidirectional
+    @ManyToOne(
+            fetch = FetchType.LAZY // EAGER is by default
+    )
+    @JoinColumn(name = "candidate_id", nullable = false)
     private Candidate candidate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // unidirectional
+    @ManyToOne(
+            fetch = FetchType.LAZY // EAGER is by default
+    )
     @JoinColumn(name = "recruiter_id")
     private User recruiter;
 
@@ -59,14 +66,12 @@ public class Candidacy {
     @Column(name = "reason_for_quick_join")
     private String reasonForQuickJoin;
 
-    @OneToMany(mappedBy = "candidacy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<CandidacyHistory> candidacyHistories;
-
+    // unidirectional
     @OneToMany(
-            mappedBy = "candidacy",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JoinColumn(name = "candidacy_id")
     private List<CandidacyComment> comments = new ArrayList<>();
 
     @Column(nullable = false, name = "status")

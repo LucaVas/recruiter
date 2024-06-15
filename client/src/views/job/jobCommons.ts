@@ -1,7 +1,7 @@
 import type { ToastServiceMethods } from 'primevue/toastservice';
 import type { Router } from 'vue-router';
 import { ref } from 'vue';
-import { deleteJob, getJob } from '@/stores/job';
+import { deleteJob, getFullJob } from '@/stores/job';
 import { handleError, showSuccess } from '@/utils/errorUtils';
 import type { NewSkill } from '@/stores/skill/schema';
 import { createSkill } from '@/stores/skill';
@@ -32,7 +32,7 @@ export const delJob = async (id: number, router: Router, toast: ToastServiceMeth
 export const loadJobData = async (jobId: number, toast: ToastServiceMethods) => {
   loadingJob.value = true;
   try {
-    const job = await getJob(jobId);
+    const job = await getFullJob(jobId);
     return job;
   } catch (err) {
     handleError(toast, err);

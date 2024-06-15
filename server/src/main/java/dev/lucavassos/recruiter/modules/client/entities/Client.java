@@ -13,8 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -34,19 +33,11 @@ public class Client {
     @Enumerated(EnumType.STRING)
     private Industry industry;
 
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            mappedBy = "client",
-            cascade = CascadeType.REMOVE, // delete jobs associated to client
-            orphanRemoval = true)
-    private Set<Job> jobs = new HashSet<>();
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Job> jobs;
 
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            mappedBy = "client",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private Set<Questionnaire> questionnaires = new HashSet<>();
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Questionnaire> questionnaires;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

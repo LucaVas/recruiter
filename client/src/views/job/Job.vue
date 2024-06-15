@@ -12,19 +12,28 @@ import JobHiringDetailsModal from '@/components/job/job-page/JobHiringDetailsMod
 import DeleteJobModal from '@/components/job/DeleteJobModal.vue';
 import { handleError } from '@/utils/errorUtils';
 import { ref } from 'vue';
-import { getJob } from '@/stores/job/index';
-import type { Job } from '@/stores/job/schema';
+import { getFullJob } from '@/stores/job/index';
+import type { FullJob } from '@/stores/job/schema';
 import JobQuestionnairePanel from '@/components/job/job-page/JobQuestionnairePanel.vue';
 
 const loading = ref(false);
-const job = ref<Job>();
+const job = ref<FullJob>();
 
 // modal
 const modalOpen = ref(false);
 
 const getJobDetails = async (id: number) => {
   loading.value = true;
-  return await getJob(id);
+  try {
+    job.value = await getFullJob(id);
+  } catch (err) {
+    handleError(toast, err);
+    setTimeout(() => {
+      router.push({ name: 'Dashboard' });
+    }, 3000);
+  } finally {
+    loading.value = false;
+  }
 };
 
 // route
@@ -38,19 +47,13 @@ const toast = useToast();
 // functions
 
 onMounted(async () => {
-  try {
-    job.value = await getJobDetails(id);
-  } catch (err) {
-    handleError(toast, err);
-    setTimeout(() => {
-      router.push({ name: 'Dashboard' });
-    }, 3000);
-  }
+  await getJobDetails(id);
 });
 </script>
 
 <template>
-  <div v-if="job" class="flex w-full flex-col items-start gap-4">
+  {{ job }}
+  <!-- <div v-if="job" class="flex w-full flex-col items-start gap-4">
     <JobTitle :title="job.name" />
     <JobMetadata :job="job" />
     <JobHiringDetailsModal :visible="modalOpen" @close="modalOpen = false" :job="job" />
@@ -71,5 +74,5 @@ onMounted(async () => {
     <JobSkills :isNewJob="false" :skills="job.skills" />
     <JobQuestionnairePanel :questionnaire="job.questionnaire" />
   </div>
-  <ProgressSpinner v-else />
+  <ProgressSpinner v-else /> -->
 </template>

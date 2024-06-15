@@ -97,7 +97,7 @@ public class EntityInitializer {
         Questionnaire questionnaire = Questionnaire.builder()
                 .title("Java Developer")
                 .questions(
-                        Set.of(
+                        List.of(
                                 Question.builder()
                                         .text("How many years of experience does the candidate have in SPRING MVC?")
                                         .questionType(QuestionType.OPEN_QUESTION)

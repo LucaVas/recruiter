@@ -11,7 +11,6 @@ import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyFile;
-import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyId;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyCommentRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyFileRepository;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
@@ -80,29 +79,28 @@ public class CandidacyService {
 
         if (candidacy.resume() != null) validateFile(candidacy.resume());
 
-        Candidacy newCandidacy = saveCandidacy(
-                Candidacy.builder()
-                        .id(new CandidacyId(candidate.getPan(), job.getId()))
-                        .job(job)
-                        .candidate(candidate)
-                        .recruiter(recruiter)
-                        .relevantExperience(candidacy.relevantExperience())
-                        .expectedCtc(candidacy.expectedCtc())
-                        .officialNoticePeriod(candidacy.officialNoticePeriod())
-                        .actualNoticePeriod(candidacy.actualNoticePeriod())
-                        .reasonForQuickJoin(candidacy.reasonForQuickJoin())
-                        .status(candidacy.status() != null ? candidacy.status() : CandidacyStatus.SENT_TO_CLIENT)
-                        .build()
-        );
-        monitoringProcessor.incrementCandidaciesCounter();
+        Candidacy newCandidacy = Candidacy.builder()
+                .job(job)
+                .candidate(candidate)
+                .recruiter(recruiter)
+                .relevantExperience(candidacy.relevantExperience())
+                .expectedCtc(candidacy.expectedCtc())
+                .officialNoticePeriod(candidacy.officialNoticePeriod())
+                .actualNoticePeriod(candidacy.actualNoticePeriod())
+                .reasonForQuickJoin(candidacy.reasonForQuickJoin())
+                .status(candidacy.status() != null ? candidacy.status() : CandidacyStatus.SENT_TO_CLIENT)
+                .build();
 
         if (!StringUtils.isBlank(candidacy.recruiterComment())) {
-            saveCandidacyComment(CandidacyComment.builder()
+            CandidacyComment comment = CandidacyComment.builder()
                     .text(candidacy.recruiterComment())
-                    .candidacy(newCandidacy)
                     .author(recruiter)
-                    .build());
+                    .build();
+            newCandidacy.getComments().add(comment);
         }
+
+        Candidacy saved = saveCandidacy(newCandidacy);
+        monitoringProcessor.incrementCandidaciesCounter();
 
         if (candidacy.resume() != null) {
             UUID uniqueId = UUID.randomUUID();
@@ -128,8 +126,11 @@ public class CandidacyService {
     }
 
     @Transactional
-    public CandidacyDto getCandidacy(Long jobId, String pan) {
-        return candidacyDtoMapper.apply(findIfExist(jobId, pan));
+    public CandidacyDto getCandidacy(Long id) {
+        Candidacy candidacy = candidacyRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Candidacy not found"));
+        return candidacyDtoMapper.apply(candidacy);
     }
 
     @Transactional
@@ -144,12 +145,14 @@ public class CandidacyService {
     }
 
     @Transactional
-    public CandidacyDto updateCandidacy(Long jobId, String pan, UpdateCandidacyRequest request) {
+    public CandidacyDto updateCandidacy(Long id, UpdateCandidacyRequest request) {
 
         boolean changes = false;
-        log.debug("Updating candidacy with jobId {} and pan {}", jobId, pan);
+        log.debug("Updating candidacy with id {}", id);
 
-        Candidacy candidacy = findIfExist(jobId, pan);
+        Candidacy candidacy = candidacyRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Candidacy not found"));
 
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy))
@@ -204,21 +207,19 @@ public class CandidacyService {
         if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to add comments to this candidacy");
 
-        saveCandidacyComment(
-                CandidacyComment.builder()
-                        .text(comment.text())
-                        .candidacy(candidacy)
-                        .author(user)
-                        .build());
+        CandidacyComment newComment = CandidacyComment.builder()
+                .text(comment.text())
+                .author(user)
+                .build();
+        candidacy.getComments().add(newComment);
+        candidacyRepository.save(candidacy);
     }
 
     @Transactional
     public List<CandidacyCommentDto> getCandidacyComments(Long jobId, String pan) {
 
         Candidacy candidacy = findIfExist(jobId, pan);
-        return candidacyCommentRepository
-                .findByCandidacy(candidacy)
-                .stream()
+        return candidacy.getComments().stream()
                 .map(candidacyCommentDtoMapper)
                 .toList();
     }

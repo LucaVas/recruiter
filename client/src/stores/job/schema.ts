@@ -27,7 +27,7 @@ export type Job = JobI & {
   updatedAt: Date;
 };
 export type NewJob = JobI;
-export type JobWithSkillsAndQuestionnaire = JobI & {
+export type FullJob = JobI & {
   id: number;
   numberOfCandidates: number | null;
   skills: Skill[];

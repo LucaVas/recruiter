@@ -24,11 +24,11 @@ public class CandidacyComment {
     @Column(nullable = false, name = "text")
     private String text;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Candidacy candidacy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    // unidirectional
+    @ManyToOne(
+            fetch = FetchType.LAZY // EAGER is by default
+    )
+    @JoinColumn(name = "user_id", nullable = false)
     private User author;
 
     @CreationTimestamp

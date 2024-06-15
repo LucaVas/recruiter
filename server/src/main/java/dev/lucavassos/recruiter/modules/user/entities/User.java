@@ -16,9 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -104,13 +102,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "recruiter")
     @Getter
     @Setter
-    private Set<Candidacy> candidacies = new HashSet<>();
+    private List<Candidacy> candidacies;
 
-    @OneToMany(
-            mappedBy = "recruiter",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    private Set<Job> jobs = new HashSet<>();
+    @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
+    @Getter
+    @Setter
+    private List<Job> jobs;
 
     @Getter
     @CreationTimestamp

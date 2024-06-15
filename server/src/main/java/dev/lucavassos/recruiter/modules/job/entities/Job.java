@@ -16,7 +16,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -25,7 +24,6 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@ToString
 @Table(name = "jobs")
 public class Job {
 
@@ -89,20 +87,23 @@ public class Job {
 
     private Integer numberOfCandidates;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "jobs_skills",
-            joinColumns = @JoinColumn(name = "job_id"),
-            inverseJoinColumns = @JoinColumn(name = "skill_id"))
-    private List<Skill> skills = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "recruiter_id")
     private User recruiter;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne
+    @JoinColumn(name = "client_id")
     private Client client;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(
+            name = "job_skill",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    private List<Skill> skills;
+
+    @ManyToOne
     @JoinColumn(name = "questionnaire_id")
     private Questionnaire questionnaire;
 

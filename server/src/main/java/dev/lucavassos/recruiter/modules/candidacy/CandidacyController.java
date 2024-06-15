@@ -34,22 +34,20 @@ public class CandidacyController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/candidacies/job={jobId}&candidate={pan}")
+    @PutMapping("/candidacies/{id}")
     public ResponseEntity<CandidacyDto> updateCandidacy(
-            @PathVariable Long jobId,
-            @PathVariable String pan,
+            @PathVariable Long id,
             @Valid @RequestBody UpdateCandidacyRequest request) {
         log.info("Received request to update candidacy: {}", request);
-        return ResponseEntity.ok(service.updateCandidacy(jobId, pan, request));
+        return ResponseEntity.ok(service.updateCandidacy(id, request));
     }
 
-    @GetMapping("/candidacies/job={jobId}&candidate={pan}")
+    @GetMapping("/candidacies/{id}")
     public ResponseEntity<CandidacyDto> getCandidacy(
-            @PathVariable Long jobId,
-            @PathVariable String pan
+            @PathVariable Long id
     ) {
-        log.info("Received request to get candidacy with job ID {} and candidate pan {}", jobId, pan);
-        return ResponseEntity.ok(service.getCandidacy(jobId, pan));
+        log.info("Received request to get candidacy with ID {}", id);
+        return ResponseEntity.ok(service.getCandidacy(id));
     }
 
     @GetMapping("/candidacies")
@@ -58,44 +56,40 @@ public class CandidacyController {
         return ResponseEntity.ok(service.getAllCandidacies());
     }
 
-    @GetMapping("/candidacies/job={jobId}&candidate={pan}/comments")
+    @GetMapping("/candidacies/{id}/comments")
     public ResponseEntity<List<CandidacyCommentDto>> getCandidacyComments(
-            @PathVariable Long jobId,
-            @PathVariable String pan
+            @PathVariable Long id
     ) {
-        log.info("Received request to get comments for candidacy with job ID {} and candidate pan {}", jobId, pan);
-        return ResponseEntity.ok(service.getCandidacyComments(jobId, pan));
+        log.info("Received request to get comments for candidacy with ID {}", id);
+        return ResponseEntity.ok(service.getCandidacyComments(id));
     }
 
-    @PostMapping("/candidacies/job={jobId}&candidate={pan}/comments")
+    @PostMapping("/candidacies/{id}/comments")
     public ResponseEntity<?> addCandidacyComment(
-            @PathVariable Long jobId,
-            @PathVariable String pan,
+            @PathVariable Long id,
             @Valid @RequestBody NewCandidacyCommentRequest comment
     ) {
-        log.info("Received request to add comment to candidacy with job ID {} and candidate pan {}", jobId, pan);
-        service.addCandidacyComment(jobId, pan, comment);
+        log.info("Received request to add comment to candidacy with ID {}", id);
+        service.addCandidacyComment(id, comment);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/candidacies/job={jobId}&candidate={pan}")
+    @DeleteMapping("/candidacies/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCandidacy(
-            @PathVariable Long jobId,
-            @PathVariable String pan
+            @PathVariable Long id
     ) {
-        log.info("Received request to delete candidacy with job ID {} and candidate pan {}", jobId, pan);
-        service.deleteCandidacy(jobId, pan);
+        log.info("Received request to delete candidacy with ID {}", id);
+        service.deleteCandidacy(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/candidacies/job={jobId}&candidate={pan}/files")
+    @GetMapping("/candidacies/{id}/files")
     public ResponseEntity<List<CandidacyFileDto>> getCandidacyFiles(
-            @PathVariable Long jobId,
-            @PathVariable String pan
+            @PathVariable Long id
     ) {
-        log.info("Received request to get files for candidacy with job ID {} and candidate pan {}", jobId, pan);
-        return ResponseEntity.ok(service.getCandidacyFiles(jobId, pan));
+        log.info("Received request to get files for candidacy with ID {}", id);
+        return ResponseEntity.ok(service.getCandidacyFiles(id));
     }
 
     @DeleteMapping("/candidacies/files/{fileId}")
@@ -119,16 +113,15 @@ public class CandidacyController {
         return new ResponseEntity<>(file, headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/candidacies/job={jobId}&candidate={pan}/files",
+    @RequestMapping(value = "/candidacies/{id}/files",
             method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFiles(
-            @PathVariable Long jobId,
-            @PathVariable String pan,
+            @PathVariable Long id,
             @RequestParam("files") List<MultipartFile> files
     ) {
 
-        log.info("Received request to add {} files to candidacy with job ID {} and candidate pan {}", files.size(), jobId, pan);
-        service.addFilesToCandidacy(jobId, pan, files);
+        log.info("Received request to add {} files to candidacy with ID {}", files.size(), id);
+        service.addFilesToCandidacy(id, files);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

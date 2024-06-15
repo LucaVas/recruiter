@@ -1,6 +1,5 @@
 package dev.lucavassos.recruiter.modules.candidate.entities;
 
-import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
@@ -11,8 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -51,9 +48,6 @@ public class Candidate {
     @Column(name = "candidate_status")
     @Enumerated(EnumType.STRING)
     private CandidateStatus status;
-
-    @OneToMany(mappedBy = "candidate")
-    private Set<Candidacy> candidacies = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recuiter_id")

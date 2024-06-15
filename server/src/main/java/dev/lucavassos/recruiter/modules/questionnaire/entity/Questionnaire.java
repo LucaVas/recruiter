@@ -1,7 +1,6 @@
 package dev.lucavassos.recruiter.modules.questionnaire.entity;
 
 import dev.lucavassos.recruiter.modules.client.entities.Client;
-import dev.lucavassos.recruiter.modules.job.entities.Job;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -9,8 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +16,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Builder
+@ToString
 @Table(name = "questionnaires")
 public class Questionnaire {
 
@@ -29,23 +28,12 @@ public class Questionnaire {
     @Size(min = 1, message = "Question title must be at least 1 character long")
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "questionnaire", cascade = CascadeType.ALL)
+    private List<Question> questions;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
     private Client client;
-
-    @OneToMany(
-            mappedBy = "questionnaire",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY
-    )
-    private Set<Question> questions = new HashSet<>();
-
-    @OneToMany(
-            mappedBy = "questionnaire",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private Set<Job> jobs = new HashSet<>();
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
