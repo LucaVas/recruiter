@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -99,7 +100,7 @@ public class QuestionnaireService {
             throw new DuplicateResourceException("Questionnaire with this title already exists for this client");
         }
 
-        Set<Question> questions = updateQuestions(request);
+        Set<Question> questions = updateQuestions(request, title);
 
         questionnaire.setTitle(newTitle);
         questionnaire.setQuestions(questions);
@@ -147,32 +148,40 @@ public class QuestionnaireService {
                 .build();
     }
 
-    private Set<Question> updateQuestions(UpdateQuestionnaireRequest request) {
+    private Set<Question> updateQuestions(UpdateQuestionnaireRequest request, String title) {
         Set<Question> questions = new HashSet<>();
         for (QuestionDto questionDto : request.getQuestions()) {
-            Question question;
-            if (questionDto.id() == null) {
-                question = Question.builder()
+
+            // check if question exists for this questionnaire
+            Optional<Question> exist = questionRepository.findByTextAndQuestionnaireName(questionDto.text(), title);
+            if (!exist.isPresent()) {
+                Question newQuestion = Question.builder()
                         .text(questionDto.text())
                         .answer(questionDto.answer())
                         .questionType(questionDto.questionType())
                         .build();
-            } else {
-                question = questionRepository
-                        .findById(questionDto.id()).orElseThrow(() -> new ResourceNotFoundException("Question not found"));
-                if (!question.getText().equals(questionDto.text())) {
-                    question.setText(questionDto.text());
-                }
-                if (!question.getQuestionType().equals(QuestionType.OPEN_QUESTION) && !question.getAnswer().equals(questionDto.answer())) {
-                    question.setAnswer(questionDto.answer());
-                }
-                if (!question.getQuestionType().equals(questionDto.questionType())) {
-                    question.setQuestionType(questionDto.questionType());
-                }
+                questions.add(newQuestion);
             }
+
+            Question question = updateQuestion(questionDto, exist);
             questions.add(question);
         }
         return questions;
+    }
+
+
+    private Question updateQuestion(QuestionDto questionDto, Optional<Question> exist) {
+        Question question = exist.get();
+        if (!question.equals(questionDto.text())) {
+            question.setText(questionDto.text());
+        }
+        if (!question.getQuestionType().equals(QuestionType.OPEN_QUESTION) && !question.getAnswer().equals(questionDto.answer())) {
+            question.setAnswer(questionDto.answer());
+        }
+        if (!question.getQuestionType().equals(questionDto.questionType())) {
+            question.setQuestionType(questionDto.questionType());
+        }
+        return question;
     }
 
 }
