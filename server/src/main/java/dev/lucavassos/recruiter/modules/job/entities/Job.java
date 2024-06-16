@@ -120,12 +120,8 @@ public class Job {
     @ManyToOne
     private Questionnaire questionnaire;
 
-    @ManyToMany
-    @JoinTable(
-            name = "job_skill",
-            joinColumns = @JoinColumn(name = "job_id"),
-            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    @ManyToMany(
+            cascade = CascadeType.ALL
     )
-    @JsonManagedReference
     private Set<Skill> skills;
 }
