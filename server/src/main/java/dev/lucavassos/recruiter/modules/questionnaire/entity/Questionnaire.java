@@ -39,6 +39,10 @@ public class Questionnaire {
     private LocalDateTime updatedAt;
 
     // Relationships
+
+    @ManyToOne
+    private Client client;
+
     @OneToMany(
             mappedBy = "questionnaire",
             cascade = CascadeType.ALL,
@@ -47,6 +51,10 @@ public class Questionnaire {
     @JsonManagedReference
     private Set<Question> questions = new HashSet<>();
 
-    @ManyToOne
-    private Client client;
+    public void setQuestions(Set<Question> questions) {
+        this.questions.clear();
+        if (questions != null) {
+            this.questions.addAll(questions);
+        }
+    }
 }
