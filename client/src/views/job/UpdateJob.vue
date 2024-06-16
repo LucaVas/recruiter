@@ -142,7 +142,7 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
     <body class="flex flex-col gap-6">
       <JobStatusComponent
         :status="job.status"
-        :createdAt="new Date(job.createdDTime)"
+        :createdAt="new Date(job.createdAt)"
         @delete="delJob(job.id, router, toast)"
         @changeStatus="(status: JobStatus) => changeStatus(job!.id, status, toast)"
       />
@@ -438,7 +438,7 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
           </span>
           <Divider layout="vertical" />
           <div class="space-x-2">
-            <span>{{ job.questionnaire.clientName }}</span>
+            <span>{{ job.questionnaire.client.name }}</span>
             <span>{{ job.questionnaire.title }}</span>
           </div>
         </div>

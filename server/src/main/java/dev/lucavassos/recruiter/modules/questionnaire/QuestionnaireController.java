@@ -58,7 +58,7 @@ public class QuestionnaireController {
         return new ResponseEntity<>(service.saveQuestionnaire(request), HttpStatus.CREATED);
     }
 
-    @PostMapping("/{title}")
+    @PutMapping("/{title}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateQuestionnaire(
             @PathVariable("title") String title,

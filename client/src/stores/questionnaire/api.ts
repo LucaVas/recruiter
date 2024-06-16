@@ -6,9 +6,10 @@ import type { NewQuestionnaire } from '../questionnaire/schema';
 const api = axiosApi();
 const baseApi = '/questionnaires';
 
-// functions  
+// functions
 export const getQuestionnairesById = async (
-  clientName: string, title: string
+  clientName: string,
+  title: string
 ): Promise<Questionnaire> => {
   const { data } = await api.get(`${baseApi}/${clientName}/${title}`);
   return data;
@@ -37,6 +38,6 @@ export const updateQuestionnaire = async (
   title: string,
   questionnaire: UpdatedQuestionnaire
 ): Promise<Questionnaire> => {
-  const { data } = await api.post(`${baseApi}/${title}`, questionnaire);
+  const { data } = await api.put(`${baseApi}/${title}`, questionnaire);
   return data;
 };

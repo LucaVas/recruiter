@@ -23,7 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -92,13 +92,19 @@ public class QuestionnaireService {
     public QuestionnaireDto updateQuestionnaire(String title, UpdateQuestionnaireRequest request) {
 
         Questionnaire questionnaire = repository.findByTitle(title).orElseThrow(() -> new ResourceNotFoundException("Questionnaire does not exist"));
-        if (repository.existsByClientNameAndTitle(questionnaire.getClient().getName(), request.getTitle())) {
-            throw new DuplicateResourceException("Questionnaire with title %s and client %s already exists".formatted(title, questionnaire.getClient().getName()));
+
+        String newTitle = request.getTitle();
+
+        if (!title.equals(newTitle) && repository.existsByClientNameAndTitle(questionnaire.getClient().getName(), newTitle)) {
+            throw new DuplicateResourceException("Questionnaire with this title already exists for this client");
         }
 
-        List<Question> questions = updateQuestions(request);
-        questionnaire.setTitle(request.getTitle());
-        questionnaire.getQuestions().addAll(questions);
+        Set<Question> questions = updateQuestions(request);
+
+        questionnaire.setTitle(newTitle);
+        questionnaire.setQuestions(questions);
+
+        questions.forEach(question -> question.setQuestionnaire(questionnaire));
 
         Questionnaire saved = saveQuestionnaire(questionnaire);
 
@@ -141,8 +147,8 @@ public class QuestionnaireService {
                 .build();
     }
 
-    private List<Question> updateQuestions(UpdateQuestionnaireRequest request) {
-        List<Question> questions = new ArrayList<>();
+    private Set<Question> updateQuestions(UpdateQuestionnaireRequest request) {
+        Set<Question> questions = new HashSet<>();
         for (QuestionDto questionDto : request.getQuestions()) {
             Question question;
             if (questionDto.id() == null) {
