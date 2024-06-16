@@ -12,12 +12,12 @@ import JobHiringDetailsModal from '@/components/job/job-page/JobHiringDetailsMod
 import DeleteJobModal from '@/components/job/DeleteJobModal.vue';
 import { handleError } from '@/utils/errorUtils';
 import { ref } from 'vue';
-import { getFullJob } from '@/stores/job/index';
-import type { FullJob } from '@/stores/job/schema';
+import { getJob } from '@/stores/job/index';
+import type { Job } from '@/stores/job/schema';
 import JobQuestionnairePanel from '@/components/job/job-page/JobQuestionnairePanel.vue';
 
 const loading = ref(false);
-const job = ref<FullJob>();
+const job = ref<Job>();
 
 // modal
 const modalOpen = ref(false);
@@ -25,7 +25,7 @@ const modalOpen = ref(false);
 const getJobDetails = async (id: number) => {
   loading.value = true;
   try {
-    job.value = await getFullJob(id);
+    job.value = await getJob(id);
   } catch (err) {
     handleError(toast, err);
     setTimeout(() => {

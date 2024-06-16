@@ -1,5 +1,5 @@
 import axiosApi from '../api';
-import { type Job, type JobResponse, type JobStatus, type FullJob, type NewJob } from './schema';
+import { type Job, type JobResponse, type JobStatus, type NewJob } from './schema';
 
 const api = axiosApi();
 
@@ -21,8 +21,7 @@ export async function changeJobStatus(jobId: number, newStatus: JobStatus): Prom
 export async function deleteJob(id: number): Promise<void> {
   await api.delete(`/jobs/${id}`);
 }
-export async function getFullJob(id: number): Promise<FullJob> {
+export async function getJob(id: number): Promise<Job> {
   const { data } = await api.get(`/jobs/${id}`);
-  console.log(data)
   return data;
 }
