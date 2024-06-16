@@ -11,8 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -23,22 +23,9 @@ import java.util.List;
 @Table(name = "candidacies")
 public class Candidacy {
 
-    @EmbeddedId
-    CandidacyId id;
-
-    @MapsId("jobId")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id")
-    private Job job;
-
-    @MapsId("candidatePan")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "candidate_pan")
-    private Candidate candidate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recruiter_id")
-    private User recruiter;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, name = "relevant_experience")
     @Min(0)
@@ -59,25 +46,36 @@ public class Candidacy {
     @Column(name = "reason_for_quick_join")
     private String reasonForQuickJoin;
 
-    @OneToMany(mappedBy = "candidacy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<CandidacyHistory> candidacyHistories;
+    @Column(nullable = false, name = "status")
+    @Enumerated(EnumType.STRING)
+    private CandidacyStatus status;
+
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    // relationships
 
     @OneToMany(
             mappedBy = "candidacy",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<CandidacyComment> comments = new ArrayList<>();
+    private Set<CandidacyComment> comments = new HashSet<>();
 
-    @Column(nullable = false, name = "status")
-    @Enumerated(EnumType.STRING)
-    private CandidacyStatus status;
+    @ManyToOne
+    @ToString.Exclude
+    private Job job;
 
-    @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
-    private LocalDateTime createdDTime;
+    @ManyToOne
+    @ToString.Exclude
+    private Candidate candidate;
 
-    @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    private LocalDateTime modifiedDTime;
+    @ManyToOne
+    @ToString.Exclude
+    private User recruiter;
 }

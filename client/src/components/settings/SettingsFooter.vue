@@ -1,3 +1,17 @@
+<script setup lang="ts">
+import type { User } from '@/stores/user/schema';
+import { formatDate } from '@/utils/dateUtils';
+import Button from 'primevue/button';
+
+const { user } = defineProps<{
+  user: User;
+}>();
+
+defineEmits<{
+  (e: 'edit'): void;
+}>();
+</script>
+
 <template>
   <div class="flex w-full items-center justify-between">
     <div>
@@ -12,25 +26,11 @@
     </div>
     <div>
       <p class="text-md font-semibold">
-        Approved on <span class="font-normal">{{ formatDate(user.approvedDTime) }}</span>
+        Approved on <span class="font-normal">{{ formatDate(user.approvedAt) }}</span>
       </p>
       <p class="text-md font-semibold">
-        Created on <span class="font-normal">{{ formatDate(user.createdDTime) }}</span>
+        Created on <span class="font-normal">{{ formatDate(user.createdAt) }}</span>
       </p>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import type { User } from '@/stores/user/schema';
-import { formatDate } from '@/utils/dateUtils';
-import Button from 'primevue/button';
-
-const { user } = defineProps<{
-  user: User;
-}>();
-
-defineEmits<{
-  (e: 'edit'): void;
-}>();
-</script>

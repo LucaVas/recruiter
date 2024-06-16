@@ -10,12 +10,12 @@ export type Candidate = {
   education: string;
   currentCtc: number;
   status: CandidateStatus;
-  createdDTime: Date;
-  modifiedDTime: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 //request
-export type NewCandidateRequest = Omit<Candidate, 'status' | 'createdDTime' | 'modifiedDTime'>;
+export type NewCandidateRequest = Omit<Candidate, 'status' | 'createdAt' | 'updatedAt'>;
 export type UpdateCandidateRequest = NewCandidateRequest;
 
 // response

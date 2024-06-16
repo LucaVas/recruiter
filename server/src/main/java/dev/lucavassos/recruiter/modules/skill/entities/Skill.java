@@ -1,19 +1,23 @@
 package dev.lucavassos.recruiter.modules.skill.entities;
 
+import dev.lucavassos.recruiter.modules.job.entities.Job;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
-@ToString
 @Table(name = "skills")
 public class Skill {
 
@@ -25,11 +29,14 @@ public class Skill {
     @Size(min = 1, message = "Skill name must be at least 1 character long")
     private String name;
 
+    @ManyToMany(mappedBy = "skills")
+    private Set<Job> jobs;
+
     @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
-    private LocalDateTime createdDTime;
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    private LocalDateTime modifiedDTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

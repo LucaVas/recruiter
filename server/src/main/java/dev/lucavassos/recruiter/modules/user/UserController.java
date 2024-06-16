@@ -19,12 +19,12 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1")
+@RequestMapping(value = "api/v1/users")
 public class UserController {
 
     private final UserService service;
 
-    @PostMapping("/users/approvals")
+    @PostMapping("/approvals")
     public ResponseEntity<?> approveUser(
             @Valid @RequestBody UserApprovalRequest request) {
         log.info("Received request to approve users: {}", request);
@@ -32,7 +32,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
         log.info("Received request for users.");
         return ResponseEntity.ok(service.getAllUsers());
@@ -53,13 +53,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/users/profile")
+    @GetMapping("/profile")
     public ResponseEntity<UserDto> getAuthUserProfile() {
         log.info("Received request for auth user profile.");
         return ResponseEntity.ok(service.getAuthUserProfile());
     }
 
-    @PutMapping("/users/profile/update")
+    @PutMapping("/profile/update")
     public ResponseEntity<?> updateAuthUserProfile(
             @Valid @RequestBody UpdateProfileRequest request
     ) {

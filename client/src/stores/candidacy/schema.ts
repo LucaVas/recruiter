@@ -15,16 +15,16 @@ export type Candidacy = {
   reasonForQuickJoin: string;
   recruiterComment: string;
   status?: CandidacyStatus;
-  modifiedDTime: Date;
-  createdDTime: Date;
+  updatedAt: Date;
+  createdAt: Date;
 };
 
 export type CandidacyComment = {
   id: number;
   text: string;
   author: User;
-  createdDTime: Date;
-  modifiedDTime: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type CandidacyFile = {
@@ -32,14 +32,14 @@ export type CandidacyFile = {
   type: number;
   name: string;
   uniqueId: string;
-  createdDTime: Date;
-  modifiedDTime: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 // request
 export type UpdateCandidacyRequest = Omit<
   Candidacy,
-  'id' | 'createdDTime' | 'modifiedDTime' | 'recruiter' | 'job' | 'candidate'
+  'id' | 'createdAt' | 'updatedAt' | 'recruiter' | 'job' | 'candidate'
 >;
 export type NewCandidacyRequest = UpdateCandidacyRequest & { jobId: number; candidatePan: string };
 export type NewCandidacyCommentRequest = Pick<CandidacyComment, 'text'>;
@@ -50,5 +50,5 @@ export type UploadCandidacyFilesRequest = {
 // frontend types
 export type RawCandidacy = Omit<
   Candidacy,
-  'job' | 'recruiter' | 'candidate' | 'createdDTime' | 'modifiedDTime'
+  'job' | 'recruiter' | 'candidate' | 'createdAt' | 'updatedAt'
 >;

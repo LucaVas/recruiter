@@ -1,5 +1,8 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
@@ -16,8 +19,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,10 +35,6 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "client_id")
-    private Client client;
-
     @Column(nullable = false, name = "name")
     @Size(min = 1, message = "Job name must be at least 1 character long")
     private String name;
@@ -47,13 +46,6 @@ public class Job {
     @Column(nullable = false, name = "wanted_cvs")
     @Min(value = 0, message = "Wanted CVs cannot be negative")
     private Integer wantedCvs;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "jobs_skills",
-            joinColumns = @JoinColumn(name = "job_id"),
-            inverseJoinColumns = @JoinColumn(name = "skill_id"))
-    private List<Skill> skills = new ArrayList<>();
 
     @Column(nullable = false, name = "contract_type")
     @Enumerated(EnumType.STRING)
@@ -99,15 +91,6 @@ public class Job {
 
     private Integer numberOfCandidates;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recruiter_id")
-    private User recruiter;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "questionnaire_title")
-    @JoinColumn(name = "questionnaire_clientName")
-    private Questionnaire questionnaire;
-
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
@@ -115,4 +98,34 @@ public class Job {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // relationships
+
+    @OneToMany(
+            mappedBy = "job",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
+    private Set<Candidacy> candidacies = new HashSet<>();
+
+    @ManyToOne
+    @ToString.Exclude
+    @JsonBackReference
+    private User recruiter;
+
+    @ManyToOne
+    private Client client;
+
+    @ManyToOne
+    private Questionnaire questionnaire;
+
+    @ManyToMany
+    @JoinTable(
+            name = "job_skill",
+            joinColumns = @JoinColumn(name = "job_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    @JsonManagedReference
+    private Set<Skill> skills;
 }

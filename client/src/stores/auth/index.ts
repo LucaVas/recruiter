@@ -17,6 +17,8 @@ import { computed, ref } from 'vue';
 
 // vars
 const api = axiosApi();
+const baseApi = '/auth';
+
 const authToken = ref(getStoredAccessToken(localStorage));
 export const authUserId = computed(() =>
   authToken.value ? getAuthUserIdFromToken(authToken.value) : null
@@ -32,11 +34,11 @@ export const isAdmin = computed(() =>
 
 // functions
 export async function signup(request: SignupRequest): Promise<SignupResponse> {
-  const res = (await api.post(`/auth/signup`, request)).data as SignupResponse;
+  const res = (await api.post(`${baseApi}/signup`, request)).data as SignupResponse;
   return res;
 }
 export async function login(request: LoginRequest): Promise<void> {
-  const res = (await api.post(`/auth/login`, request)).data as LoginResponse;
+  const res = (await api.post(`${baseApi}/login`, request)).data as LoginResponse;
   authToken.value = res.token;
   storeAccessToken(localStorage, res.token);
 }

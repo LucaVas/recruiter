@@ -24,7 +24,16 @@ const modalOpen = ref(false);
 
 const getJobDetails = async (id: number) => {
   loading.value = true;
-  return await getJob(id);
+  try {
+    job.value = await getJob(id);
+  } catch (err) {
+    handleError(toast, err);
+    setTimeout(() => {
+      router.push({ name: 'Dashboard' });
+    }, 3000);
+  } finally {
+    loading.value = false;
+  }
 };
 
 // route
@@ -38,18 +47,12 @@ const toast = useToast();
 // functions
 
 onMounted(async () => {
-  try {
-    job.value = await getJobDetails(id);
-  } catch (err) {
-    handleError(toast, err);
-    setTimeout(() => {
-      router.push({ name: 'Dashboard' });
-    }, 3000);
-  }
+  await getJobDetails(id);
 });
 </script>
 
 <template>
+  {{ job }}
   <div v-if="job" class="flex w-full flex-col items-start gap-4">
     <JobTitle :title="job.name" />
     <JobMetadata :job="job" />

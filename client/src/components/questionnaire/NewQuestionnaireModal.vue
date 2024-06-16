@@ -4,7 +4,7 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import QuestionCard from './QuestionCard.vue';
 import { type NewQuestionnaire, type Questionnaire } from '@/stores/questionnaire/schema';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { handleError } from '@/utils/errorUtils';
 import { useToast } from 'primevue/usetoast';
 import type { NewQuestion } from '@/stores/question/schema';
@@ -14,7 +14,7 @@ import type { Client } from '@/stores/client/schema';
 
 const { visible, questionnaire, client } = defineProps<{
   visible: boolean;
-  questionnaire?: Questionnaire;
+  questionnaire: Questionnaire;
   client: Client;
 }>();
 const emits = defineEmits<{
@@ -22,9 +22,8 @@ const emits = defineEmits<{
   (e: 'select', questionnaire: Questionnaire): void;
 }>();
 
-const tmpQuestionnaire = questionnaire
-  ? ref(questionnaire)
-  : ref({ title: '', clientName: '', questions: [] });
+const oldTitle = ref(questionnaire.title);
+const tmpQuestionnaire = ref(questionnaire);
 const creatingOrUpdating = ref(false);
 const toast = useToast();
 const questions = ref<{ localId: string; question: NewQuestion }[]>(
@@ -50,7 +49,7 @@ const removeQuestion = (localId: string) => {
 const init = () => {
   tmpQuestionnaire.value = {
     title: '',
-    clientName: '',
+    client: {} as Client,
     questions: [],
   };
   questions.value = [];
@@ -60,12 +59,11 @@ const create = async (questionnaire: NewQuestionnaire) => {
   creatingOrUpdating.value = true;
   try {
     questionnaire.questions = questions.value.map((q) => q.question);
-    questionnaire.clientName = client.name;
+    questionnaire.client = client;
     const newQuestionnaire = await saveNewQuestionnaire(questionnaire);
     console.log(newQuestionnaire);
     init();
     emits('select', newQuestionnaire);
-    // await createJob(job);
   } catch (err) {
     handleError(toast, err);
   } finally {
@@ -76,16 +74,22 @@ const update = async (questionnaire: Questionnaire) => {
   creatingOrUpdating.value = true;
   try {
     questionnaire.questions = questions.value.map((q) => q.question);
-    const updatedQuestionnaire = await updateQuestionnaire(questionnaire.title, questionnaire);
+    const updatedQuestionnaire = await updateQuestionnaire(oldTitle.value, questionnaire);
     init();
     emits('select', updatedQuestionnaire);
-    // await createJob(job);
   } catch (err) {
     handleError(toast, err);
   } finally {
     creatingOrUpdating.value = false;
   }
 };
+
+watch(
+  () => questionnaire,
+  (previous, after) => {
+    console.log(previous, after);
+  }
+);
 </script>
 
 <template>
@@ -122,7 +126,6 @@ const update = async (questionnaire: Questionnaire) => {
             @click="createQuestion()"
           />
         </div>
-
         <div class="mt-3 space-y-3">
           <QuestionCard
             :question="item.question"

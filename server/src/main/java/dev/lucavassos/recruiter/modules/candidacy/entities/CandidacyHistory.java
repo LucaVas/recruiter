@@ -42,11 +42,11 @@ public class CandidacyHistory {
     @Column(name = "reason_for_quick_join")
     private String reasonForQuickJoin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "job_id", referencedColumnName = "job_id"),
-            @JoinColumn(name = "candidate_pan", referencedColumnName = "candidate_pan")
-    })
+    // unidirectional
+    @ManyToOne(
+            fetch = FetchType.LAZY // EAGER is by default
+    )
+    @JoinColumn(name = "candidacy_id", nullable = false)
     private Candidacy candidacy;
 
     @Column(nullable = false, name = "status")
@@ -59,10 +59,10 @@ public class CandidacyHistory {
     private User modifiedBy;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
-    private LocalDateTime createdDTime;
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    private LocalDateTime modifiedDTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

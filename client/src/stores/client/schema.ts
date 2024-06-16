@@ -22,7 +22,10 @@ export const industries: { name: string; value: Industry }[] = [
 ];
 
 export type Client = {
-  id: number
   name: string;
   industry: Industry;
+  createdAt: string;
+  updatedAt: string | null;
 }
+
+export type NewClient = Pick<Client, 'name' | 'industry'>;

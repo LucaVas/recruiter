@@ -38,4 +38,10 @@ public class Question {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // Relationships
+
+    @ManyToOne
+    @ToString.Exclude
+    private Questionnaire questionnaire;
 }

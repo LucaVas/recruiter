@@ -45,10 +45,10 @@ public class JobHistory {
     private User modifiedBy;
 
     @CreationTimestamp
-    @Column(nullable = false, name = "created_dtime")
-    private LocalDateTime createdDTime;
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false, name = "modified_dtime")
-    private LocalDateTime modifiedDTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

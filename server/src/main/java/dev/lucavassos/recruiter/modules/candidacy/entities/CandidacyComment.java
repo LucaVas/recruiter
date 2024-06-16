@@ -24,18 +24,21 @@ public class CandidacyComment {
     @Column(nullable = false, name = "text")
     private String text;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Candidacy candidacy;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User author;
-
     @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
-    private LocalDateTime createdDTime;
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    private LocalDateTime modifiedDTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    // relationships
+
+    @ManyToOne
+    @ToString.Exclude
+    private Candidacy candidacy;
+
+    @ManyToOne
+    @ToString.Exclude
+    private User author;
 }

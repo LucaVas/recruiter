@@ -30,7 +30,8 @@ import java.util.List;
 public class CandidateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CandidateService.class);
-
+    @Autowired
+    MonitoringProcessor monitoringProcessor;
     @Autowired
     private CandidateRepository candidateRepository;
     @Autowired
@@ -39,8 +40,6 @@ public class CandidateService {
     private UserRepository userRepository;
     @Autowired
     private CandidateDtoMapper dtoMapper;
-    @Autowired
-    MonitoringProcessor monitoringProcessor;
 
     public CandidateResponse addCandidate(NewCandidateRequest request) throws Exception {
         LOG.info("Adding a new candidate");

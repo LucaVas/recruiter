@@ -14,19 +14,19 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1")
+@RequestMapping(value = "api/v1/skills")
 public class SkillController {
 
     private final SkillService service;
 
 
-    @GetMapping("/skills")
+    @GetMapping
     public ResponseEntity<List<SkillDto>> getAllSkills() {
         log.debug("Received request for all skills.");
         return ResponseEntity.ok(service.getAllSkills(0, 2000));
     }
 
-    @PostMapping("/skills")
+    @PostMapping
     public ResponseEntity<SkillDto> createSkill(
             @Valid @RequestBody NewSkillRequest request) {
         log.debug("Received new request to create skill: {}", request);

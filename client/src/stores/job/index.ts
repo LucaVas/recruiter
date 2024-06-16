@@ -1,5 +1,5 @@
 import axiosApi from '../api';
-import { type Job, type JobResponse, type JobStatus, type NewJobRequest } from './schema';
+import { type Job, type JobResponse, type JobStatus, type NewJob } from './schema';
 
 const api = axiosApi();
 
@@ -7,7 +7,7 @@ export async function getAllJobs(): Promise<Job[]> {
   const { data } = await api.get(`/jobs`);
   return data;
 }
-export async function createJob(newJob: NewJobRequest): Promise<JobResponse> {
+export async function createJob(newJob: NewJob): Promise<JobResponse> {
   const { data } = await api.post(`/jobs`, newJob);
   return data;
 }

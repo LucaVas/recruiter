@@ -15,8 +15,8 @@ public record UserDto(
         Boolean approved,
         ApproverDto approver,
         String comment,
-        LocalDateTime approvedDTime,
-        LocalDateTime createdDTime,
-        LocalDateTime modifiedDTime
+        LocalDateTime approvedAt,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {
 }

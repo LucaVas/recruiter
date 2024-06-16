@@ -1,6 +1,9 @@
 package dev.lucavassos.recruiter.modules.user.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
+import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
+import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -23,6 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Builder
+@ToString
 @Table(name = "users")
 public class User implements UserDetails {
 
@@ -73,6 +77,35 @@ public class User implements UserDetails {
     @Setter
     private String comment;
 
+    @Column(nullable = false)
+    @Getter
+    @Setter
+    private boolean approved = false;
+
+    @Column(name = "approved_dtime")
+    @Getter
+    @Setter
+    private LocalDateTime approvedAt;
+
+    @Getter
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Getter
+    @Setter
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    // relationships
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approver_id")
+    @Getter
+    @Setter
+    private User approver;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     @Getter
@@ -84,38 +117,23 @@ public class User implements UserDetails {
     @Setter
     private PasswordResetToken passwordResetToken;
 
-    @Column(nullable = false)
-    @Getter
-    @Setter
-    private boolean approved = false;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approver_id")
-    @Getter
-    @Setter
-    private User approver;
-
-    @Column(name = "approved_dtime")
-    @Getter
-    @Setter
-    private LocalDateTime approvedDTime;
+    @OneToMany(
+            mappedBy = "author",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<CandidacyComment> comments = new HashSet<>();
 
     @OneToMany(mappedBy = "recruiter")
     @Getter
     @Setter
     private Set<Candidacy> candidacies = new HashSet<>();
 
-    @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
+    @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Getter
     @Setter
-    private LocalDateTime createdDTime;
-
-    @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    @Getter
-    @Setter
-    private LocalDateTime modifiedDTime;
+    @JsonManagedReference
+    private Set<Job> jobs = new HashSet<>();
 
     public RoleName getRoleName() {
         return this.role.getName();

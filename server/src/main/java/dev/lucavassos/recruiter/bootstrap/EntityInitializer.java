@@ -14,7 +14,6 @@ import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
-import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
@@ -64,7 +63,7 @@ public class EntityInitializer {
                 .description("Tester role")
                 .build();
 
-        roleRepository.saveAll(List.of(recruiter, admin, tester));
+        roleRepository.saveAllAndFlush(List.of(recruiter, admin, tester));
     }
 
     @Transactional
@@ -73,12 +72,12 @@ public class EntityInitializer {
         Client ibm = Client.builder().name("IBM").industry(Industry.IT).build();
         Client infosys = Client.builder().name("Infosys").industry(Industry.IT).build();
 
-        clientRepository.saveAll(List.of(accenture, ibm, infosys));
+        clientRepository.saveAllAndFlush(List.of(accenture, ibm, infosys));
     }
 
     @Transactional
     public void saveSkills() {
-        skillRepository.saveAll(List.of(
+        skillRepository.saveAllAndFlush(List.of(
                 Skill.builder().name("Java").build(),
                 Skill.builder().name("Python").build(),
                 Skill.builder().name("Tableau").build(),
@@ -91,37 +90,44 @@ public class EntityInitializer {
         ));
     }
 
+
+    @Transactional
+    public void saveQuestionnaires() {
+        Client ibm = clientRepository.findByName("IBM").orElseThrow(RuntimeException::new);
+
+        Question q1 = Question.builder()
+                .text("How many years of experience does the candidate have in SPRING MVC?")
+                .questionType(QuestionType.OPEN_QUESTION)
+                .build();
+        Question q2 = Question.builder()
+                .text("How many years of experience does the candidate have in PLSQL?")
+                .questionType(QuestionType.OPEN_QUESTION)
+                .build();
+        Question q3 = Question.builder()
+                .text("How many years of experience does the candidate have as an Architect?")
+                .questionType(QuestionType.OPEN_QUESTION)
+                .build();
+
+        Questionnaire questionnaire = Questionnaire.builder()
+                .title("Java Developer")
+                .questions(Set.of(q1, q2, q3))
+                .client(ibm)
+                .build();
+
+        q1.setQuestionnaire(questionnaire);
+        q2.setQuestionnaire(questionnaire);
+        q3.setQuestionnaire(questionnaire);
+
+        questionnaireRepository.save(questionnaire);
+    }
+
     @Transactional
     public void saveJobs() {
         Set<Client> clients = new HashSet<>(clientRepository.findAll());
         Set<Skill> skills = new HashSet<>(skillRepository.findAll());
+        Questionnaire questionnaire = questionnaireRepository.findByTitleAndClientName("Java Developer", "IBM").orElseThrow(RuntimeException::new);
         User recruiter = userRepository.findOneByName("recruiter").orElseThrow(RuntimeException::new);
         User recruiter2 = userRepository.findOneByName("recruiter2").orElseThrow(RuntimeException::new);
-
-        QuestionnaireId id = QuestionnaireId.builder()
-                .title("Java Developer")
-                .clientName("IBM")
-                .build();
-        Questionnaire questionnaire = Questionnaire.builder()
-                .id(id)
-                .questions(
-                        Set.of(
-                                Question.builder()
-                                        .text("How many years of experience does the candidate have in SPRING MVC?")
-                                        .questionType(QuestionType.OPEN_QUESTION)
-                                        .build(),
-                                Question.builder()
-                                        .text("How many years of experience does the candidate have in PLSQL?")
-                                        .questionType(QuestionType.OPEN_QUESTION)
-                                        .build(),
-                                Question.builder()
-                                        .text("How many years of experience does the candidate have as an Architect?")
-                                        .questionType(QuestionType.OPEN_QUESTION)
-                                        .build()
-                        )
-                )
-                .client(clients.stream().filter(client -> client.getName().equals("IBM")).findFirst().orElseThrow(RuntimeException::new))
-                .build();
 
         Job job1 = Job.builder()
                 .client(clients.stream().filter(client -> client.getName().equals("Accenture")).findFirst().orElseThrow(RuntimeException::new))
@@ -131,7 +137,7 @@ public class EntityInitializer {
                 .skills(
                         skills.stream().filter(
                                 skill -> skill.getName().equals("Java")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(1)
@@ -163,7 +169,7 @@ public class EntityInitializer {
                 .skills(
                         skills.stream().filter(
                                 skill -> skill.getName().equals("Python")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(3)
@@ -193,7 +199,7 @@ public class EntityInitializer {
                 .wantedCvs(9)
                 .skills(skills.stream().filter(
                                 skill -> skill.getName().equals("Big Data") || skill.getName().equals("Tableau")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.TEMPORARY)
                 .experienceRangeMin(2)
@@ -223,7 +229,7 @@ public class EntityInitializer {
                 .wantedCvs(9)
                 .skills(skills.stream().filter(
                                 skill -> skill.getName().equals("Critical Thinking") || skill.getName().equals("PL2")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.TEMPORARY)
                 .experienceRangeMin(5)
@@ -255,7 +261,7 @@ public class EntityInitializer {
                                 skill -> skill.getName().equals("Cloud Architecture")
                                         || skill.getName().equals("AWS")
                                         || skill.getName().equals("Google Cloud")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(10)
@@ -279,7 +285,7 @@ public class EntityInitializer {
                 .questionnaire(questionnaire)
                 .build();
 
-        jobRepository.saveAll(List.of(job1, job2, job3, job4, job5));
+        jobRepository.saveAllAndFlush(List.of(job1, job2, job3, job4, job5));
     }
 
     @Transactional
@@ -333,7 +339,7 @@ public class EntityInitializer {
                         .recruiter(recruiter2)
                         .build()));
 
-        candidateRepository.saveAll(candidates);
+        candidateRepository.saveAllAndFlush(candidates);
     }
 
     @Transactional
@@ -350,6 +356,7 @@ public class EntityInitializer {
                 .city("Test city")
                 .country("India")
                 .approved(true)
+                .approvedAt(LocalDateTime.now())
                 .role(recruiterRole)
                 .build();
 
@@ -370,10 +377,11 @@ public class EntityInitializer {
                 .phone("1234567891")
                 .city("Test city")
                 .country("India")
+                .approvedAt(LocalDateTime.now())
                 .approved(true)
                 .role(adminRole)
                 .build();
 
-        userRepository.saveAll(List.of(recruiter, recruiter2, admin));
+        userRepository.saveAllAndFlush(List.of(recruiter, recruiter2, admin));
     }
 }

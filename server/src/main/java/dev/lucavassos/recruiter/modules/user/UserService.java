@@ -34,15 +34,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Value("${password.reset.token.expirationInSeconds}")
-    private Integer expirationInSeconds;
-
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenGenerator resetTokenGenerator;
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
     private final EmailService emailService;
+    @Value("${password.reset.token.expirationInSeconds}")
+    private Integer expirationInSeconds;
 
     public void approveUser(UserApprovalRequest request) {
 
@@ -68,11 +67,11 @@ public class UserService {
 
 
         user.setApproved(request.approved());
-        user.setApprovedDTime(DateTimeUtils.getCurrentDTime());
+        user.setApprovedAt(DateTimeUtils.getCurrentDTime());
         user.setApprover(approver);
         user.setComment(request.comment());
 
-        log.info("User to approve: {} on {}", user.getComment(), user.getApprovedDTime());
+        log.info("User to approve: {} on {}", user.getComment(), user.getApprovedAt());
 
         User approvedUser = userRepository.save(user);
 
@@ -159,7 +158,7 @@ public class UserService {
                         );
 
         LocalDateTime now = LocalDateTime.now();
-        if (ChronoUnit.SECONDS.between(token.getCreatedDTime(), now) > expirationInSeconds) {
+        if (ChronoUnit.SECONDS.between(token.getCreatedAt(), now) > expirationInSeconds) {
             log.error("Token expired.");
             throw new BadRequestException("Invalid token. Please request a new one.");
         }

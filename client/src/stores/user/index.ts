@@ -8,26 +8,27 @@ import type {
 
 // vars
 const api = axiosApi();
+const baseApi = '/users'
 
 // functions
 export async function approveUser(approvalRequest: UserApprovalRequest): Promise<void> {
-  await api.post(`/users/approvals`, approvalRequest);
+  await api.post(`${baseApi}/approvals`, approvalRequest);
 }
 
 export async function getAllUsers(): Promise<User[]> {
-  const { data } = await api.get('/users');
+  const { data } = await api.get(`${baseApi}`);
   return data;
 }
 
 export const getProfileInformation = async (): Promise<User> => {
-  const { data } = await api.get('/users/profile');
+  const { data } = await api.get(`${baseApi}/profile`);
   return data;
 };
 
 export const updateProfileInformation = async (
   profileInformation: UserInfoUpdateRequest
 ): Promise<void> => {
-  const { data } = await api.put('/users/profile/update', profileInformation);
+  const { data } = await api.put(`${baseApi}/profile/update`, profileInformation);
   return data;
 };
 

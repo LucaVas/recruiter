@@ -19,8 +19,8 @@ public class CandidacyCommentDtoMapper implements Function<CandidacyComment, Can
                 comment.getId(),
                 comment.getText(),
                 userDtoMapper.apply(comment.getAuthor()),
-                comment.getCreatedDTime(),
-                comment.getModifiedDTime()
+                comment.getCreatedAt(),
+                comment.getUpdatedAt()
         );
     }
 }

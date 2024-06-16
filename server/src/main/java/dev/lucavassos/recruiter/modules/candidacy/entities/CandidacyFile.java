@@ -30,18 +30,18 @@ public class CandidacyFile {
     @Column(nullable = false, name = "unique_id")
     private UUID uniqueId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "job_id", referencedColumnName = "job_id"),
-            @JoinColumn(name = "candidate_pan", referencedColumnName = "candidate_pan")
-    })
+    // unidirectional
+    @ManyToOne(
+            fetch = FetchType.LAZY // EAGER is by default
+    )
+    @JoinColumn(name = "candidacy_id", nullable = false)
     private Candidacy candidacy;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_dtime")
-    private LocalDateTime createdDTime;
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "modified_dtime")
-    private LocalDateTime modifiedDTime;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

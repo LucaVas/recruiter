@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.questionnaire;
 
 import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionnaireRequest;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.UpdateQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class QuestionnaireController {
                 .body(questionnaires);
     }
 
-    @GetMapping("/")
+    @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnaires() {
         log.debug("Received new request to get all questionnaires");
@@ -49,11 +50,20 @@ public class QuestionnaireController {
                 .body(questionnaires);
     }
 
-    @PostMapping("/")
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<QuestionnaireDto> saveQuestionnaire(
             @Valid @RequestBody NewQuestionnaireRequest request) {
         log.debug("Received request to save new questionnaire: {}", request);
         return new ResponseEntity<>(service.saveQuestionnaire(request), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{title}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateQuestionnaire(
+            @PathVariable("title") String title,
+            @Valid @RequestBody UpdateQuestionnaireRequest request) {
+        log.debug("Received request to update questionnaire {}: {}", title, request);
+        return new ResponseEntity<>(service.updateQuestionnaire(title, request), HttpStatus.OK);
     }
 }

@@ -1,13 +1,12 @@
 import type { Client } from '../client/schema';
-import type { NewQuestionnaire } from '../question/schema';
-import type { Skill } from '../skill/schema';
+import type { NewQuestionnaire, Questionnaire } from '../questionnaire/schema';
+import type { NewSkill, Skill } from '../skill/schema';
 
 export interface JobI {
   client: Client;
   name: string;
   status: JobStatus;
   wantedCvs: number;
-  skills: Skill[];
   contractType: ContractType;
   experienceRangeMin: number;
   experienceRangeMax: number;
@@ -19,16 +18,17 @@ export interface JobI {
   closureBonus: string;
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
-  questionnaire: NewQuestionnaire;
 }
 
 export type Job = JobI & {
   id: number;
-  createdDTime: Date;
-  modifiedDTime: Date;
   numberOfCandidates: number | null;
+  skills: Skill[];
+  questionnaire: Questionnaire;
+  createdAt: Date;
+  updatedAt: Date;
 };
-export type NewJob = JobI;
+export type NewJob = JobI & { skills: NewSkill[]; questionnaire: NewQuestionnaire };
 
 export type ContractType = 'PERMANENT' | 'TEMPORARY';
 export type Currency = 'INR';

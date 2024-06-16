@@ -1,15 +1,16 @@
 package dev.lucavassos.recruiter.modules.questionnaire;
 
 import dev.lucavassos.recruiter.exception.DatabaseException;
+import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
-import dev.lucavassos.recruiter.modules.job.entities.Job;
-import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestion;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionDto;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionnaireRequest;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
+import dev.lucavassos.recruiter.modules.questionnaire.domain.UpdateQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
-import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireId;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionDto;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,7 +42,7 @@ public class QuestionnaireService {
 
     @Transactional
     public QuestionnaireDto getQuestionnaire(String clientName, String title) {
-        Questionnaire questionnaire = repository.findByIdTitleAndIdClientName(title, clientName)
+        Questionnaire questionnaire = repository.findByTitleAndClientName(title, clientName)
                 .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
         return questionnaireDtoMapper.apply(questionnaire);
     }
@@ -51,7 +53,7 @@ public class QuestionnaireService {
         Pageable limit = PageRequest.of(pageNumber, pageSize);
         log.debug("Retrieving {} questionnaires", pageSize);
 
-        List<Questionnaire> questionnaires = repository.findByIdTitleOrIdClientName(clientOrTitle, clientOrTitle, limit);
+        List<Questionnaire> questionnaires = repository.findByTitleOrClientName(clientOrTitle, clientOrTitle, limit);
 
         log.debug("Questionnaires retrieved: {}", questionnaires);
         return questionnaires.stream().map(questionnaireDtoMapper).collect(Collectors.toList());
@@ -74,8 +76,8 @@ public class QuestionnaireService {
 
         Questionnaire questionnaire = buildQuestionnaire(request);
 
-        if (repository.existsByIdClientNameAndIdTitle(questionnaire.getId().getClientName(), questionnaire.getId().getTitle())) {
-            throw new DatabaseException("Questionnaire already exists");
+        if (repository.existsByClientNameAndTitle(questionnaire.getClient().getName(), questionnaire.getTitle())) {
+            throw new DatabaseException("Questionnaire with this title already exists for this client");
         }
 
         try {
@@ -87,67 +89,97 @@ public class QuestionnaireService {
         }
     }
 
+    @Transactional
+    public QuestionnaireDto updateQuestionnaire(String title, UpdateQuestionnaireRequest request) {
+
+        Questionnaire questionnaire = repository.findByTitle(title).orElseThrow(() -> new ResourceNotFoundException("Questionnaire does not exist"));
+
+        String newTitle = request.getTitle();
+
+        if (!title.equals(newTitle) && repository.existsByClientNameAndTitle(questionnaire.getClient().getName(), newTitle)) {
+            throw new DuplicateResourceException("Questionnaire with this title already exists for this client");
+        }
+
+        Set<Question> questions = updateQuestions(request, title);
+
+        questionnaire.setTitle(newTitle);
+        questionnaire.setQuestions(questions);
+
+        questions.forEach(question -> question.setQuestionnaire(questionnaire));
+
+        Questionnaire saved = saveQuestionnaire(questionnaire);
+
+        return questionnaireDtoMapper.apply(saved);
+    }
+
+    @Transactional
+    Questionnaire saveQuestionnaire(Questionnaire questionnaire) {
+        try {
+            return repository.saveAndFlush(questionnaire);
+        } catch (Exception e) {
+            log.error("Error while updating questionnaire: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
     private Questionnaire buildQuestionnaire(NewQuestionnaireRequest request) {
-        Client client = clientRepository.findByName(request.clientName())
+        Client client = clientRepository.findByName(request.getClient().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
-        Set<Question> questions = request.questions().stream()
+        Set<Question> questions = request.getQuestions().stream()
                 .map(this::buildQuestion)
                 .collect(Collectors.toSet());
 
-        QuestionnaireId id = new QuestionnaireId(request.title(), client.getName());
-        return Questionnaire.builder()
-                .id(id)
+        Questionnaire questionnaire = Questionnaire.builder()
+                .title(request.getTitle())
                 .questions(questions)
                 .client(client)
                 .build();
-    }
-
-    private Question buildQuestion(NewQuestion newQuestion) {
-        return Question.builder()
-                .text(newQuestion.text())
-                .answer(newQuestion.answer())
-                .questionType(newQuestion.questionType())
-                .build();
-    }
-
-    private Questionnaire updateQuestionnaire(Job job, QuestionnaireDto questionnaireDto) {
-        Questionnaire questionnaire = repository
-                .findByIdTitleAndIdClientName(job.getQuestionnaire().getId().getTitle(), job.getQuestionnaire().getId().getClientName())
-                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
-
-        Set<Question> questions = updateQuestions(questionnaireDto);
-        questionnaire.setQuestions(questions);
-
+        questions.forEach(question -> question.setQuestionnaire(questionnaire));
         return questionnaire;
     }
 
-    private Set<Question> updateQuestions(QuestionnaireDto questionnaireDto) {
+    private Question buildQuestion(NewQuestionDto newQuestionDto) {
+        return Question.builder()
+                .text(newQuestionDto.text())
+                .answer(newQuestionDto.answer())
+                .questionType(newQuestionDto.questionType())
+                .build();
+    }
+
+    private Set<Question> updateQuestions(UpdateQuestionnaireRequest request, String title) {
         Set<Question> questions = new HashSet<>();
-        for (QuestionDto questionDto : questionnaireDto.questions()) {
-            if (questionDto.id() == null) {
-                Question question = Question.builder()
+        for (QuestionDto questionDto : request.getQuestions()) {
+
+            // check if question exists for this questionnaire
+            Optional<Question> exist = questionRepository.findByTextAndQuestionnaireTitle(questionDto.text(), title);
+            if (exist.isEmpty()) {
+                Question newQuestion = Question.builder()
                         .text(questionDto.text())
                         .answer(questionDto.answer())
                         .questionType(questionDto.questionType())
                         .build();
-                questions.add(question);
+                questions.add(newQuestion);
             } else {
-                Question question = questionRepository
-                        .findById(questionDto.id()).orElseThrow(() -> new ResourceNotFoundException("Question not found"));
-                if (!question.getText().equals(questionDto.text())) {
-                    question.setText(questionDto.text());
-                }
-                if (!question.getAnswer().equals(questionDto.answer())) {
-                    question.setAnswer(questionDto.answer());
-                }
-                if (!question.getQuestionType().equals(questionDto.questionType())) {
-                    question.setQuestionType(questionDto.questionType());
-                }
+                Question question = updateQuestion(questionDto, exist.get());
                 questions.add(question);
             }
         }
         return questions;
+    }
+
+
+    private Question updateQuestion(QuestionDto questionDto, Question question) {
+        if (!question.getText().equals(questionDto.text())) {
+            question.setText(questionDto.text());
+        }
+        if (!question.getQuestionType().equals(QuestionType.OPEN_QUESTION) && !question.getAnswer().equals(questionDto.answer())) {
+            question.setAnswer(questionDto.answer());
+        }
+        if (!question.getQuestionType().equals(questionDto.questionType())) {
+            question.setQuestionType(questionDto.questionType());
+        }
+        return question;
     }
 
 }

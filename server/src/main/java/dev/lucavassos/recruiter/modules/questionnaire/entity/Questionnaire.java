@@ -1,16 +1,15 @@
 package dev.lucavassos.recruiter.modules.questionnaire.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
-import dev.lucavassos.recruiter.modules.job.entities.Job;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -19,24 +18,17 @@ import java.util.Set;
 @Setter
 @Entity
 @Builder
+@ToString
 @Table(name = "questionnaires")
 public class Questionnaire {
 
-    @EmbeddedId
-    private QuestionnaireId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("clientName")
-    private Client client;
-
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
-    )
-    private Set<Question> questions = new HashSet<>();
-
-    @OneToMany(mappedBy = "questionnaire")
-    private Set<Job> jobs;
+    @Column(nullable = false, name = "title")
+    @Size(min = 1, message = "Question title must be at least 1 character long")
+    private String title;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -45,4 +37,24 @@ public class Questionnaire {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // Relationships
+
+    @ManyToOne
+    private Client client;
+
+    @OneToMany(
+            mappedBy = "questionnaire",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
+    private Set<Question> questions = new HashSet<>();
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions.clear();
+        if (questions != null) {
+            this.questions.addAll(questions);
+        }
+    }
 }

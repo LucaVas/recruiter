@@ -3,7 +3,7 @@ package dev.lucavassos.recruiter.modules.job;
 import dev.lucavassos.recruiter.modules.job.domain.ChangeJobStatusRequest;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,53 +17,54 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1")
+@RequestMapping(value = "api/v1/jobs")
 public class JobController {
 
     private final JobService service;
 
-    @PostMapping("/jobs")
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<JobDto> addJob(
+    public ResponseEntity<JobDTO> addJob(
             @Valid @RequestBody NewJobRequest request) {
         log.debug("Received request to add new job: {}", request);
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }
 
-    @PutMapping("/jobs/{jobId}")
-    public ResponseEntity<JobDto> updateJob(
+    @PutMapping("/{id}")
+    public ResponseEntity<JobDTO> updateJob(
             @Valid @RequestBody UpdateJobRequest request) {
         log.debug("Received request to update job");
         return new ResponseEntity<>(service.updateJob(request), HttpStatus.CREATED);
     }
 
-    @PostMapping("/jobs/status/{jobId}")
+    @PostMapping("/status/{id}")
     public ResponseEntity<?> changeJobStatus(
-            @PathVariable("jobId") Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody ChangeJobStatusRequest request) {
         log.debug("Received request to change job status: {}", request);
         service.changeJobStatus(id, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping("/jobs/{jobId}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> deleteJob(@PathVariable("jobId") Long id) {
+    public ResponseEntity<?> deleteJob(@PathVariable("id") Long id) {
         log.debug("Received request to delete job: {}", id);
         service.deleteJob(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/jobs")
-    public ResponseEntity<List<JobDto>> getAllJobs() {
+    @GetMapping
+    public ResponseEntity<List<JobDTO>> getAllJobs() {
         log.debug("Received request for all jobs.");
         return new ResponseEntity<>(service.getAllJobs(0, 1000), HttpStatus.OK);
     }
 
-    @GetMapping("/jobs/{jobId}")
-    public ResponseEntity<JobDto> getJob(@PathVariable("jobId") Long id) {
-        log.debug("Received request to get details for job: {}", id);
-        JobDto job = service.getJobById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<JobDTO> getJob(@PathVariable("id") Long id) {
+        log.info("Received request to get details for job with ID {}", id);
+        JobDTO job = service.getJobById(id);
+        log.info("Job retrieved: [{}]", job);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(job);
