@@ -52,8 +52,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  {{ job }}
-  <!-- <div v-if="job" class="flex w-full flex-col items-start gap-4">
+  <div v-if="job" class="flex w-full flex-col items-start gap-4">
     <JobTitle :title="job.name" />
     <JobMetadata :job="job" />
     <JobHiringDetailsModal :visible="modalOpen" @close="modalOpen = false" :job="job" />
@@ -74,5 +73,5 @@ onMounted(async () => {
     <JobSkills :isNewJob="false" :skills="job.skills" />
     <JobQuestionnairePanel :questionnaire="job.questionnaire" />
   </div>
-  <ProgressSpinner v-else /> -->
+  <ProgressSpinner v-else />
 </template>
