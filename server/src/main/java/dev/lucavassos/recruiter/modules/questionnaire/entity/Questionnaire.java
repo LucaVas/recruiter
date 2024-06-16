@@ -1,7 +1,7 @@
 package dev.lucavassos.recruiter.modules.questionnaire.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
-import dev.lucavassos.recruiter.modules.job.entities.Job;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -39,22 +39,14 @@ public class Questionnaire {
     private LocalDateTime updatedAt;
 
     // Relationships
-
     @OneToMany(
             mappedBy = "questionnaire",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private Set<Job> jobs = new HashSet<>();
-
-    @OneToMany(
-            mappedBy = "questionnaire",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @JsonManagedReference
     private Set<Question> questions = new HashSet<>();
 
     @ManyToOne
-    @ToString.Exclude
     private Client client;
 }

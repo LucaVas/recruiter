@@ -94,31 +94,31 @@ public class EntityInitializer {
     @Transactional
     public void saveQuestionnaires() {
         Client ibm = clientRepository.findByName("IBM").orElseThrow(RuntimeException::new);
+
+        Question q1 = Question.builder()
+                .text("How many years of experience does the candidate have in SPRING MVC?")
+                .questionType(QuestionType.OPEN_QUESTION)
+                .build();
+        Question q2 = Question.builder()
+                .text("How many years of experience does the candidate have in PLSQL?")
+                .questionType(QuestionType.OPEN_QUESTION)
+                .build();
+        Question q3 = Question.builder()
+                .text("How many years of experience does the candidate have as an Architect?")
+                .questionType(QuestionType.OPEN_QUESTION)
+                .build();
+
         Questionnaire questionnaire = Questionnaire.builder()
                 .title("Java Developer")
-                .questions(
-                        Set.of(
-                                Question.builder()
-                                        .text("How many years of experience does the candidate have in SPRING MVC?")
-                                        .questionType(QuestionType.OPEN_QUESTION)
-                                        .build(),
-                                Question.builder()
-                                        .text("How many years of experience does the candidate have in PLSQL?")
-                                        .questionType(QuestionType.OPEN_QUESTION)
-                                        .build(),
-                                Question.builder()
-                                        .text("How many years of experience does the candidate have as an Architect?")
-                                        .questionType(QuestionType.OPEN_QUESTION)
-                                        .build()
-                        )
-                )
+                .questions(Set.of(q1, q2, q3))
                 .client(ibm)
                 .build();
-        ibm.getQuestionnaires().add(questionnaire);
-        // We need to save the questionnaire first, so we can save the client with the questionnaire
-        questionnaireRepository.save(questionnaire);
-        clientRepository.save(ibm);
 
+        q1.setQuestionnaire(questionnaire);
+        q2.setQuestionnaire(questionnaire);
+        q3.setQuestionnaire(questionnaire);
+
+        questionnaireRepository.save(questionnaire);
     }
 
     @Transactional

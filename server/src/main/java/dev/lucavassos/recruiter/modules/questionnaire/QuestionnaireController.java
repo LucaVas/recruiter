@@ -40,7 +40,7 @@ public class QuestionnaireController {
                 .body(questionnaires);
     }
 
-    @GetMapping("/")
+    @GetMapping()
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<QuestionnaireDto>> getAllQuestionnaires() {
         log.debug("Received new request to get all questionnaires");
@@ -50,7 +50,7 @@ public class QuestionnaireController {
                 .body(questionnaires);
     }
 
-    @PostMapping("/")
+    @PostMapping()
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<QuestionnaireDto> saveQuestionnaire(
             @Valid @RequestBody NewQuestionnaireRequest request) {

@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -88,17 +89,6 @@ public class QuestionnaireService {
     }
 
     @Transactional
-    Questionnaire updateQuestionnaire(Questionnaire questionnaire) {
-        try {
-            Questionnaire saved = repository.saveAndFlush(questionnaire);
-            return saved;
-        } catch (Exception e) {
-            log.error("Error while updating questionnaire: {}", e.getMessage());
-            throw new DatabaseException(e.getMessage());
-        }
-    }
-
-    @Transactional
     public QuestionnaireDto updateQuestionnaire(String title, UpdateQuestionnaireRequest request) {
 
         Questionnaire questionnaire = repository.findByTitle(title).orElseThrow(() -> new ResourceNotFoundException("Questionnaire does not exist"));
@@ -110,24 +100,37 @@ public class QuestionnaireService {
         questionnaire.setTitle(request.getTitle());
         questionnaire.getQuestions().addAll(questions);
 
-        Questionnaire saved = updateQuestionnaire(questionnaire);
+        Questionnaire saved = saveQuestionnaire(questionnaire);
 
         return questionnaireDtoMapper.apply(saved);
+    }
+
+    @Transactional
+    Questionnaire saveQuestionnaire(Questionnaire questionnaire) {
+        try {
+            Questionnaire saved = repository.saveAndFlush(questionnaire);
+            return saved;
+        } catch (Exception e) {
+            log.error("Error while updating questionnaire: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     private Questionnaire buildQuestionnaire(NewQuestionnaireRequest request) {
         Client client = clientRepository.findByName(request.getClient().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
-        List<Question> questions = request.getQuestions().stream()
+        Set<Question> questions = request.getQuestions().stream()
                 .map(this::buildQuestion)
-                .toList();
+                .collect(Collectors.toSet());
 
-        return Questionnaire.builder()
+        Questionnaire questionnaire = Questionnaire.builder()
                 .title(request.getTitle())
                 .questions(questions)
                 .client(client)
                 .build();
+        questions.forEach(question -> question.setQuestionnaire(questionnaire));
+        return questionnaire;
     }
 
     private Question buildQuestion(NewQuestionDto newQuestionDto) {
@@ -137,7 +140,6 @@ public class QuestionnaireService {
                 .questionType(newQuestionDto.questionType())
                 .build();
     }
-
 
     private List<Question> updateQuestions(UpdateQuestionnaireRequest request) {
         List<Question> questions = new ArrayList<>();

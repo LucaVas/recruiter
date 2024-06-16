@@ -1,5 +1,7 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.domain.ContractType;
@@ -105,18 +107,18 @@ public class Job {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonManagedReference
     private Set<Candidacy> candidacies = new HashSet<>();
 
     @ManyToOne
     @ToString.Exclude
+    @JsonBackReference
     private User recruiter;
 
     @ManyToOne
-    @ToString.Exclude
     private Client client;
 
     @ManyToOne
-    @ToString.Exclude
     private Questionnaire questionnaire;
 
     @ManyToMany
@@ -125,5 +127,6 @@ public class Job {
             joinColumns = @JoinColumn(name = "job_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
+    @JsonManagedReference
     private List<Skill> skills;
 }

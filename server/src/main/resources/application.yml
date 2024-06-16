@@ -21,7 +21,7 @@ client:
 
 logging:
     level:
-      root: info
+        root: info
         org:
             hibernate: error
             springframework:

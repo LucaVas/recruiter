@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.user.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
@@ -128,9 +129,10 @@ public class User implements UserDetails {
     @Setter
     private Set<Candidacy> candidacies = new HashSet<>();
 
-    @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Getter
     @Setter
+    @JsonManagedReference
     private Set<Job> jobs = new HashSet<>();
 
     public RoleName getRoleName() {
