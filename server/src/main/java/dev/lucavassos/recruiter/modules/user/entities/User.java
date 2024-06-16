@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.user.entities;
 
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
+import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import jakarta.persistence.*;
@@ -16,12 +17,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
+@ToString
 @Table(name = "users")
 public class User implements UserDetails {
 
@@ -72,42 +76,15 @@ public class User implements UserDetails {
     @Setter
     private String comment;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    @Getter
-    @Setter
-    private Role role;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-    @Getter
-    @Setter
-    private PasswordResetToken passwordResetToken;
-
     @Column(nullable = false)
     @Getter
     @Setter
     private boolean approved = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approver_id")
-    @Getter
-    @Setter
-    private User approver;
-
     @Column(name = "approved_dtime")
     @Getter
     @Setter
     private LocalDateTime approvedAt;
-
-    @OneToMany(mappedBy = "recruiter")
-    @Getter
-    @Setter
-    private List<Candidacy> candidacies;
-
-    @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
-    @Getter
-    @Setter
-    private List<Job> jobs;
 
     @Getter
     @CreationTimestamp
@@ -119,6 +96,42 @@ public class User implements UserDetails {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // relationships
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approver_id")
+    @Getter
+    @Setter
+    private User approver;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    @Getter
+    @Setter
+    private Role role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @Getter
+    @Setter
+    private PasswordResetToken passwordResetToken;
+
+    @OneToMany(
+            mappedBy = "author",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<CandidacyComment> comments = new HashSet<>();
+
+    @OneToMany(mappedBy = "recruiter")
+    @Getter
+    @Setter
+    private Set<Candidacy> candidacies = new HashSet<>();
+
+    @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL)
+    @Getter
+    @Setter
+    private Set<Job> jobs = new HashSet<>();
 
     public RoleName getRoleName() {
         return this.role.getName();

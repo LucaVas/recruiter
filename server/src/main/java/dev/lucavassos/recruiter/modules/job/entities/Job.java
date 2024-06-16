@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.job.entities;
 
+import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.job.domain.ContractType;
 import dev.lucavassos.recruiter.modules.job.domain.Currency;
@@ -16,7 +17,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -87,13 +90,34 @@ public class Job {
 
     private Integer numberOfCandidates;
 
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    // relationships
+
+    @OneToMany(
+            mappedBy = "job",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Candidacy> candidacies = new HashSet<>();
+
     @ManyToOne
-    @JoinColumn(name = "recruiter_id")
+    @ToString.Exclude
     private User recruiter;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @ToString.Exclude
     private Client client;
+
+    @ManyToOne
+    @ToString.Exclude
+    private Questionnaire questionnaire;
 
     @ManyToMany
     @JoinTable(
@@ -102,16 +126,4 @@ public class Job {
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     private List<Skill> skills;
-
-    @ManyToOne
-    @JoinColumn(name = "questionnaire_id")
-    private Questionnaire questionnaire;
-
-    @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }

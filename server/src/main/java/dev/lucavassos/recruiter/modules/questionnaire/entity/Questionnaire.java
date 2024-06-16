@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.questionnaire.entity;
 
 import dev.lucavassos.recruiter.modules.client.entities.Client;
+import dev.lucavassos.recruiter.modules.job.entities.Job;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -8,7 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,13 +30,6 @@ public class Questionnaire {
     @Size(min = 1, message = "Question title must be at least 1 character long")
     private String title;
 
-    @OneToMany(mappedBy = "questionnaire", cascade = CascadeType.ALL)
-    private List<Question> questions;
-
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
-
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
@@ -42,4 +37,24 @@ public class Questionnaire {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // Relationships
+
+    @OneToMany(
+            mappedBy = "questionnaire",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Job> jobs = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "questionnaire",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Question> questions = new HashSet<>();
+
+    @ManyToOne
+    @ToString.Exclude
+    private Client client;
 }
