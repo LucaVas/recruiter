@@ -49,10 +49,6 @@ public class Candidate {
     @Enumerated(EnumType.STRING)
     private CandidateStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recuiter_id")
-    private User recruiter;
-
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
@@ -61,4 +57,9 @@ public class Candidate {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // Relationships
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recuiter_id")
+    private User recruiter;
 }

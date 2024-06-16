@@ -13,6 +13,6 @@ public record CandidateDto(
         String education,
         Double currentCtc,
         CandidateStatus status,
-        LocalDateTime createdDTime,
-        LocalDateTime modifiedDTime
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {}
