@@ -93,11 +93,11 @@ public class EntityInitializer {
 
     @Transactional
     public void saveQuestionnaires() {
-        Set<Client> clients = new HashSet<>(clientRepository.findAll());
+        Client ibm = clientRepository.findByName("IBM").orElseThrow(RuntimeException::new);
         Questionnaire questionnaire = Questionnaire.builder()
                 .title("Java Developer")
                 .questions(
-                        List.of(
+                        Set.of(
                                 Question.builder()
                                         .text("How many years of experience does the candidate have in SPRING MVC?")
                                         .questionType(QuestionType.OPEN_QUESTION)
@@ -112,9 +112,13 @@ public class EntityInitializer {
                                         .build()
                         )
                 )
-                .client(clients.stream().filter(client -> client.getName().equals("IBM")).findFirst().orElseThrow(RuntimeException::new))
+                .client(ibm)
                 .build();
-        questionnaireRepository.saveAndFlush(questionnaire);
+        ibm.getQuestionnaires().add(questionnaire);
+        // We need to save the questionnaire first, so we can save the client with the questionnaire
+        questionnaireRepository.save(questionnaire);
+        clientRepository.save(ibm);
+
     }
 
     @Transactional

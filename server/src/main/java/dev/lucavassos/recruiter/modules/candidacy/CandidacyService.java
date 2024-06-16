@@ -127,9 +127,7 @@ public class CandidacyService {
 
     @Transactional
     public CandidacyDto getCandidacy(Long id) {
-        Candidacy candidacy = candidacyRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidacy not found"));
+        Candidacy candidacy = findCandidacy(id);
         return candidacyDtoMapper.apply(candidacy);
     }
 
@@ -150,9 +148,7 @@ public class CandidacyService {
         boolean changes = false;
         log.debug("Updating candidacy with id {}", id);
 
-        Candidacy candidacy = candidacyRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidacy not found"));
+        Candidacy candidacy = findCandidacy(id);
 
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy))
@@ -200,9 +196,9 @@ public class CandidacyService {
     }
 
     @Transactional
-    public void addCandidacyComment(Long jobId, String pan, NewCandidacyCommentRequest comment) {
+    public void addCandidacyComment(Long id, NewCandidacyCommentRequest comment) {
 
-        Candidacy candidacy = findIfExist(jobId, pan);
+        Candidacy candidacy = findCandidacy(id);
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to add comments to this candidacy");
@@ -210,24 +206,27 @@ public class CandidacyService {
         CandidacyComment newComment = CandidacyComment.builder()
                 .text(comment.text())
                 .author(user)
+                .candidacy(candidacy)
                 .build();
         candidacy.getComments().add(newComment);
+
+        candidacyCommentRepository.save(newComment);
         candidacyRepository.save(candidacy);
     }
 
     @Transactional
-    public List<CandidacyCommentDto> getCandidacyComments(Long jobId, String pan) {
+    public List<CandidacyCommentDto> getCandidacyComments(Long id) {
 
-        Candidacy candidacy = findIfExist(jobId, pan);
+        Candidacy candidacy = findCandidacy(id);
         return candidacy.getComments().stream()
                 .map(candidacyCommentDtoMapper)
                 .toList();
     }
 
     @Transactional
-    public List<CandidacyFileDto> getCandidacyFiles(Long jobId, String pan) {
+    public List<CandidacyFileDto> getCandidacyFiles(Long id) {
 
-        Candidacy candidacy = findIfExist(jobId, pan);
+        Candidacy candidacy = findCandidacy(id);
         return candidacyFileRepository
                 .findByCandidacy(candidacy)
                 .stream()
@@ -277,9 +276,9 @@ public class CandidacyService {
     }
 
     @Transactional
-    public void deleteCandidacy(Long jobId, String pan) {
+    public void deleteCandidacy(Long id) {
 
-        Candidacy candidacy = findIfExist(jobId, pan);
+        Candidacy candidacy = findCandidacy(id);
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to delete this candidacy");
@@ -292,9 +291,9 @@ public class CandidacyService {
     }
 
     @Transactional
-    public void addFilesToCandidacy(Long jobId, String pan, List<MultipartFile> files) {
+    public void addFilesToCandidacy(Long id, List<MultipartFile> files) {
 
-        Candidacy candidacy = findIfExist(jobId, pan);
+        Candidacy candidacy = findCandidacy(id);
         User user = getAuthUser();
         if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to upload files to this candidacy");
@@ -326,17 +325,6 @@ public class CandidacyService {
 
     }
 
-
-    @Transactional
-    private void saveCandidacyComment(CandidacyComment comment) {
-        try {
-            candidacyCommentRepository.save(comment);
-        } catch (Exception e) {
-            log.error("Database error while adding comment to candidacy: {}", e.getMessage());
-            throw new DatabaseException(e.getMessage());
-        }
-    }
-
     @Transactional
     private Candidacy saveCandidacy(Candidacy candidacy) {
         try {
@@ -347,6 +335,7 @@ public class CandidacyService {
         }
     }
 
+    @Transactional
     private User getAuthUser() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
@@ -360,17 +349,13 @@ public class CandidacyService {
     }
 
     @Transactional
-    private Candidacy findIfExist(Long jobId, String pan) {
-        Job job = jobRepository
-                .findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(jobId, JobStatus.DELETED)
-                .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
-        Candidate candidate = candidateRepository
-                .findOneByPan(pan)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidate not found"));
-
-        return candidacyRepository
-                .findByJobAndCandidate(job, candidate)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidacy not found"));
+    private Candidacy findCandidacy(Long id) {
+        try {
+            return candidacyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Candidacy not found"));
+        } catch (Exception e) {
+            log.error("Database error while finding candidacy: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     private boolean isUserAuthorized(User recruiter, Candidacy candidacy) {
