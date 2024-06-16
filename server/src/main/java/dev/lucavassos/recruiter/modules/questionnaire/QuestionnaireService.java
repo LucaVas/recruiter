@@ -115,8 +115,7 @@ public class QuestionnaireService {
     @Transactional
     Questionnaire saveQuestionnaire(Questionnaire questionnaire) {
         try {
-            Questionnaire saved = repository.saveAndFlush(questionnaire);
-            return saved;
+            return repository.saveAndFlush(questionnaire);
         } catch (Exception e) {
             log.error("Error while updating questionnaire: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
@@ -153,26 +152,25 @@ public class QuestionnaireService {
         for (QuestionDto questionDto : request.getQuestions()) {
 
             // check if question exists for this questionnaire
-            Optional<Question> exist = questionRepository.findByTextAndQuestionnaireName(questionDto.text(), title);
-            if (!exist.isPresent()) {
+            Optional<Question> exist = questionRepository.findByTextAndQuestionnaireTitle(questionDto.text(), title);
+            if (exist.isEmpty()) {
                 Question newQuestion = Question.builder()
                         .text(questionDto.text())
                         .answer(questionDto.answer())
                         .questionType(questionDto.questionType())
                         .build();
                 questions.add(newQuestion);
+            } else {
+                Question question = updateQuestion(questionDto, exist.get());
+                questions.add(question);
             }
-
-            Question question = updateQuestion(questionDto, exist);
-            questions.add(question);
         }
         return questions;
     }
 
 
-    private Question updateQuestion(QuestionDto questionDto, Optional<Question> exist) {
-        Question question = exist.get();
-        if (!question.equals(questionDto.text())) {
+    private Question updateQuestion(QuestionDto questionDto, Question question) {
+        if (!question.getText().equals(questionDto.text())) {
             question.setText(questionDto.text());
         }
         if (!question.getQuestionType().equals(QuestionType.OPEN_QUESTION) && !question.getAnswer().equals(questionDto.answer())) {
