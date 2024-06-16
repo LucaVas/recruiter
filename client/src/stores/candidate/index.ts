@@ -7,7 +7,7 @@ const baseApi = '/candidates';
 export async function createCandidate(
   newCandidate: NewCandidateRequest
 ): Promise<CandidateResponse> {
-  const { data } = await api.post(baseApi, newCandidate);
+  const { data } = await api.post(`${baseApi}`, newCandidate);
   return data;
 }
 
@@ -17,11 +17,11 @@ export async function findCandidate(identifier: string): Promise<CandidateRespon
 }
 
 export async function updateCandidate(candidate: NewCandidateRequest) {
-  const { data } = await api.put(baseApi, candidate);
+  const { data } = await api.put(`${baseApi}`, candidate);
   return data;
 }
 
 export async function getAllCandidates(): Promise<Candidate[]> {
-  const { data } = await api.get(baseApi);
+  const { data } = await api.get(`${baseApi}`);
   return data;
 }

@@ -16,7 +16,7 @@ export async function approveUser(approvalRequest: UserApprovalRequest): Promise
 }
 
 export async function getAllUsers(): Promise<User[]> {
-  const { data } = await api.get(baseApi);
+  const { data } = await api.get(`${baseApi}`);
   return data;
 }
 

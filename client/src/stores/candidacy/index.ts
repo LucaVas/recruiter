@@ -27,7 +27,7 @@ export async function submitCandidacy(
   if (candidacy.status) formData.append('status', candidacy.status.toString());
   if (file !== undefined) formData.append('resume', file);
 
-  await api.post(baseApi, formData, {
+  await api.post(`${baseApi}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -66,7 +66,7 @@ export async function getCandidacy(jobId: number, pan: string): Promise<Candidac
 }
 
 export async function getAllCandidacies(): Promise<Candidacy[]> {
-  const { data } = await api.get(baseApi);
+  const { data } = await api.get(`${baseApi}`);
   return data;
 }
 

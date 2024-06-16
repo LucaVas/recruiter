@@ -6,7 +6,7 @@ import type { NewQuestionnaire } from '../questionnaire/schema';
 const api = axiosApi();
 const baseApi = '/questionnaires';
 
-// functions
+// functions  
 export const getQuestionnairesById = async (
   clientName: string, title: string
 ): Promise<Questionnaire> => {
@@ -22,14 +22,14 @@ export const getQuestionnairesByClient = async (
 };
 
 export const getAllQuestionnaires = async (): Promise<Questionnaire[]> => {
-  const { data } = await api.get(baseApi);
+  const { data } = await api.get(`${baseApi}`);
   return data;
 };
 
 export const saveNewQuestionnaire = async (
   questionnaire: NewQuestionnaire
 ): Promise<Questionnaire> => {
-  const { data } = await api.post(baseApi, questionnaire);
+  const { data } = await api.post(`${baseApi}`, questionnaire);
   return data;
 };
 

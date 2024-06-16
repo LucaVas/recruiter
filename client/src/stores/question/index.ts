@@ -12,6 +12,6 @@ export async function searchQuestions(titleOrClientOrSkill: string): Promise<Que
 }
 
 export const createQuestion = async (question: QuestionForm): Promise<Question> => {
-  const { data } = await api.post(baseApi, question);
+  const { data } = await api.post(`${baseApi}`, question);
   return data;
 };

@@ -10,11 +10,11 @@ export class JobApi {
     return data;
   }
   async getAllJobs(): Promise<Job[]> {
-    const { data } = await api.get(baseApi);
+    const { data } = await api.get(`${baseApi}`);
     return data;
   }
   async addJob(newJob: NewJob): Promise<Job> {
-    const { data } = await api.post(baseApi, newJob);
+    const { data } = await api.post(`${baseApi}`, newJob);
     return data;
   }
   async updateJob(id: number, job: Job): Promise<Job> {
