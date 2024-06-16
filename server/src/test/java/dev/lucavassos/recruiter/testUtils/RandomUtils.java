@@ -6,9 +6,9 @@ public class RandomUtils {
 
     public static final String ALPHABEET_LOWER_CASE = "abcdefghijklmnopqrstuvwxyz";
     public static final String ALPHABET_UPPER_CASE = ALPHABEET_LOWER_CASE.toUpperCase();
+    public static final String ALPHA_NUMERIC = ALPHABEET_LOWER_CASE + ALPHABET_UPPER_CASE + NUMERIC;
     public static final String NUMERIC = "0123456789";
     public static final String LOWER_CASE_ALPHA_NUMERIC = ALPHABEET_LOWER_CASE + NUMERIC;
-    public static final String ALPHA_NUMERIC = ALPHABEET_LOWER_CASE + ALPHABET_UPPER_CASE + NUMERIC;
     private static final Random RANDOM = new Random();
 
     public static String randomPhoneNumber() {
@@ -52,7 +52,7 @@ public class RandomUtils {
         return RANDOM.nextBoolean();
     }
 
-    public static Integer randomInteger(int min, int max) { return RANDOM.nextInt(min, max); }
+    public static Integer randomInteger(int min, int max) {return RANDOM.nextInt(min, max);}
 
     public static Double randomDouble(double min, double max) {
         return min + (max - min) * RANDOM.nextDouble();

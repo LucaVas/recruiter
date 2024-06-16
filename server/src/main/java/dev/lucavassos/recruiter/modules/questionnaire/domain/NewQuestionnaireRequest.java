@@ -12,13 +12,13 @@ import java.util.List;
 @Builder
 @Getter
 public class NewQuestionnaireRequest {
-        @NotBlank(message = "Questionnaire title is required")
-        protected String title;
+    @NotBlank(message = "Questionnaire title is required")
+    protected String title;
 
-        @NotBlank(message = "Client is required")
-        Client client;
+    @NotBlank(message = "Client is required")
+    Client client;
 
-        @Valid
-        @NotEmpty(message = "Questionnaire must have at least one question")
-        List<NewQuestionDto> questions;
+    @Valid
+    @NotEmpty(message = "Questionnaire must have at least one question")
+    List<NewQuestionDto> questions;
 }
