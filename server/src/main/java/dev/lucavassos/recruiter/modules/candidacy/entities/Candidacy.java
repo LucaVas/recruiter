@@ -11,8 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -26,26 +26,6 @@ public class Candidacy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(
-            fetch = FetchType.LAZY // EAGER is by default
-    )
-    @JoinColumn(name = "job_id", nullable = false)
-    private Job job;
-
-    // unidirectional
-    @ManyToOne(
-            fetch = FetchType.LAZY // EAGER is by default
-    )
-    @JoinColumn(name = "candidate_id", nullable = false)
-    private Candidate candidate;
-
-    // unidirectional
-    @ManyToOne(
-            fetch = FetchType.LAZY // EAGER is by default
-    )
-    @JoinColumn(name = "recruiter_id")
-    private User recruiter;
 
     @Column(nullable = false, name = "relevant_experience")
     @Min(0)
@@ -66,14 +46,6 @@ public class Candidacy {
     @Column(name = "reason_for_quick_join")
     private String reasonForQuickJoin;
 
-    // unidirectional
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @JoinColumn(name = "candidacy_id")
-    private List<CandidacyComment> comments = new ArrayList<>();
-
     @Column(nullable = false, name = "status")
     @Enumerated(EnumType.STRING)
     private CandidacyStatus status;
@@ -85,4 +57,25 @@ public class Candidacy {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // relationships
+
+    @OneToMany(
+            mappedBy = "candidacy",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<CandidacyComment> comments = new HashSet<>();
+
+    @ManyToOne
+    @ToString.Exclude
+    private Job job;
+
+    @ManyToOne
+    @ToString.Exclude
+    private Candidate candidate;
+
+    @ManyToOne
+    @ToString.Exclude
+    private User recruiter;
 }

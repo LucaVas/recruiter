@@ -24,13 +24,6 @@ public class CandidacyComment {
     @Column(nullable = false, name = "text")
     private String text;
 
-    // unidirectional
-    @ManyToOne(
-            fetch = FetchType.LAZY // EAGER is by default
-    )
-    @JoinColumn(name = "user_id", nullable = false)
-    private User author;
-
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
@@ -38,4 +31,14 @@ public class CandidacyComment {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // relationships
+
+    @ManyToOne
+    @ToString.Exclude
+    private Candidacy candidacy;
+
+    @ManyToOne
+    @ToString.Exclude
+    private User author;
 }
