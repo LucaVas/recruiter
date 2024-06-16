@@ -28,7 +28,7 @@ import type { Client } from '@/stores/client/schema';
 import { createJob } from '@/stores/job';
 import type { NewJob } from '@/stores/job/schema';
 import { getAllSkills } from '@/stores/skill';
-import type { Questionnaire } from '@/stores/question/schema';
+import type { Questionnaire } from '@/stores/questionnaire/schema';
 import { getAllQuestionnaires } from '@/stores/questionnaire/api';
 // utils
 import { handleError } from '@/utils/errorUtils';
@@ -37,7 +37,7 @@ import { contractTypes, jobStatuses } from '@/components/job/utils';
 
 const toast = useToast();
 const router = useRouter();
-const emptyQuestionnaire = { title: '', clientName: '', questions: [] } satisfies Questionnaire;
+const emptyQuestionnaire = { title: '', client: {} as Client, questions: [] } satisfies Questionnaire;
 
 const job = ref<NewJob>({
   name: '',
@@ -66,7 +66,7 @@ const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
 const questionnaires = ref<Questionnaire[]>([]);
 
-const editQuestionnaire = ref<Questionnaire>({ title: '', clientName: '', questions: [] });
+const editQuestionnaire = ref<Questionnaire>({ title: '', client: {} as Client, questions: [] });
 
 const removeSkill = (job: NewJob, skill: Skill): void => {
   if (!job.skills.includes(skill)) return;
@@ -339,7 +339,7 @@ onMounted(async () => {
           </span>
           <Divider layout="vertical" />
           <div class="space-x-2">
-            <span>{{ job.questionnaire.clientName }}</span>
+            <span>{{ job.questionnaire.client.name }}</span>
             <span>{{ job.questionnaire.title }}</span>
           </div>
         </div>

@@ -9,6 +9,7 @@ import {
 import axiosApi from '../api';
 
 const api = axiosApi();
+const baseApi = '/candidacies'
 
 export async function submitCandidacy(
   candidacy: NewCandidacyRequest,
@@ -26,7 +27,7 @@ export async function submitCandidacy(
   if (candidacy.status) formData.append('status', candidacy.status.toString());
   if (file !== undefined) formData.append('resume', file);
 
-  await api.post(`/candidacies`, formData, {
+  await api.post(baseApi, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -43,7 +44,7 @@ export const uploadFilesToCandidacy = async (
     formData.append('files', file);
   });
 
-  await api.post(`/candidacies/job=${jobId}&candidate=${pan}/files`, formData, {
+  await api.post(`${baseApi}/job=${jobId}&candidate=${pan}/files`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -55,17 +56,17 @@ export async function updateCandidacy(
   pan: string,
   candidacy: UpdateCandidacyRequest
 ): Promise<Candidacy> {
-  const { data } = await api.put(`/candidacies/job=${jobId}&candidate=${pan}`, candidacy);
+  const { data } = await api.put(`${baseApi}/job=${jobId}&candidate=${pan}`, candidacy);
   return data;
 }
 
 export async function getCandidacy(jobId: number, pan: string): Promise<Candidacy> {
-  const { data } = await api.get(`/candidacies/job=${jobId}&candidate=${pan}`);
+  const { data } = await api.get(`${baseApi}/job=${jobId}&candidate=${pan}`);
   return data;
 }
 
 export async function getAllCandidacies(): Promise<Candidacy[]> {
-  const { data } = await api.get(`/candidacies`);
+  const { data } = await api.get(baseApi);
   return data;
 }
 
@@ -73,7 +74,7 @@ export async function getCandidacyComments(
   jobId: number,
   pan: string
 ): Promise<CandidacyComment[]> {
-  const { data } = await api.get(`/candidacies/job=${jobId}&candidate=${pan}/comments`);
+  const { data } = await api.get(`${baseApi}/job=${jobId}&candidate=${pan}/comments`);
   return data;
 }
 
@@ -82,24 +83,24 @@ export async function addCandidacyComment(
   pan: string,
   comment: NewCandidacyCommentRequest
 ): Promise<void> {
-  await api.post(`/candidacies/job=${jobId}&candidate=${pan}/comments`, comment);
+  await api.post(`${baseApi}/job=${jobId}&candidate=${pan}/comments`, comment);
 }
 
 export const deleteCandidacy = async (jobId: number, pan: string): Promise<void> => {
-  await api.delete(`/candidacies/job=${jobId}&candidate=${pan}`);
+  await api.delete(`${baseApi}/job=${jobId}&candidate=${pan}`);
 };
 
 export const getCandidacyFiles = async (jobId: number, pan: string): Promise<CandidacyFile[]> => {
-  const { data } = await api.get(`/candidacies/job=${jobId}&candidate=${pan}/files`);
+  const { data } = await api.get(`${baseApi}/job=${jobId}&candidate=${pan}/files`);
   return data;
 };
 
 export const deleteFile = async (fileId: number): Promise<void> => {
-  await api.delete(`/candidacies/files/${fileId}`);
+  await api.delete(`${baseApi}/files/${fileId}`);
 };
 
 export const getFile = async (fileId: number): Promise<string> => {
-  const res = await api.get(`/candidacies/files/${fileId}`, {
+  const res = await api.get(`${baseApi}/files/${fileId}`, {
     responseType: 'arraybuffer',
   });
   // Get blob content as array buffer
