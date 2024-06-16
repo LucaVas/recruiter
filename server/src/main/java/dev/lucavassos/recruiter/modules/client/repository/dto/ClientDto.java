@@ -3,8 +3,24 @@ package dev.lucavassos.recruiter.modules.client.repository.dto;
 import dev.lucavassos.recruiter.modules.client.domain.Industry;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-public record ClientDto(
-        @NotBlank(message = "Client name is required") String name,
-        @NotNull(message = "Client industry is required") Industry industry
-) {}
+import java.time.LocalDateTime;
+
+@Builder
+@Getter
+@Setter
+public class ClientDto {
+
+    @NotBlank(message = "Client name is required")
+    private String name;
+
+    @NotNull(message = "Client industry is required")
+    private Industry industry;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+}

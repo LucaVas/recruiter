@@ -9,9 +9,11 @@ import java.util.function.Function;
 public class ClientDtoMapper implements Function<Client, ClientDto> {
     @Override
     public ClientDto apply(Client client) {
-        return new ClientDto(
-                client.getName(),
-                client.getIndustry()
-        );
+        return ClientDto.builder()
+                .name(client.getName())
+                .industry(client.getIndustry())
+                .createdAt(client.getCreatedAt())
+
+                .build();
     }
 }

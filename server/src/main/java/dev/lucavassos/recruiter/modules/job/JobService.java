@@ -62,7 +62,7 @@ public class JobService {
         log.debug("Skills found: {}", skills);
 
         Client client = clientRepository
-                .findByName(request.client().name())
+                .findByName(request.client().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
         log.debug("Client found: {}", client);
 
