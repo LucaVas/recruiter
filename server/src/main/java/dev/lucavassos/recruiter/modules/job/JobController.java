@@ -17,12 +17,12 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1")
+@RequestMapping(value = "api/v1/jobs")
 public class JobController {
 
     private final JobService service;
 
-    @PostMapping("/jobs")
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<JobDTO> addJob(
             @Valid @RequestBody NewJobRequest request) {
@@ -30,14 +30,14 @@ public class JobController {
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }
 
-    @PutMapping("/jobs/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<JobDTO> updateJob(
             @Valid @RequestBody UpdateJobRequest request) {
         log.debug("Received request to update job");
         return new ResponseEntity<>(service.updateJob(request), HttpStatus.CREATED);
     }
 
-    @PostMapping("/jobs/status/{id}")
+    @PostMapping("/status/{id}")
     public ResponseEntity<?> changeJobStatus(
             @PathVariable("id") Long id,
             @Valid @RequestBody ChangeJobStatusRequest request) {
@@ -46,7 +46,7 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping("/jobs/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteJob(@PathVariable("id") Long id) {
         log.debug("Received request to delete job: {}", id);
@@ -54,13 +54,13 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/jobs")
+    @GetMapping
     public ResponseEntity<List<JobDTO>> getAllJobs() {
         log.debug("Received request for all jobs.");
         return new ResponseEntity<>(service.getAllJobs(0, 1000), HttpStatus.OK);
     }
 
-    @GetMapping("/jobs/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<JobDTO> getJob(@PathVariable("id") Long id) {
         log.info("Received request to get details for job with ID {}", id);
         JobDTO job = service.getJobById(id);

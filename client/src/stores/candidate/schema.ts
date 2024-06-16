@@ -15,7 +15,7 @@ export type Candidate = {
 };
 
 //request
-export type NewCandidateRequest = Omit<Candidate, 'status' | 'createdAt' | 'modifiedDTime'>;
+export type NewCandidateRequest = Omit<Candidate, 'status' | 'createdAt' | 'updatedAt'>;
 export type UpdateCandidateRequest = NewCandidateRequest;
 
 // response

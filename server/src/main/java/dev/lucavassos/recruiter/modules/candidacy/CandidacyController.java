@@ -22,19 +22,19 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1")
+@RequestMapping(value = "api/v1/candidacies")
 public class CandidacyController {
 
     private final CandidacyService service;
 
-    @RequestMapping(value = "/candidacies", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addCandidacy(@Valid NewCandidacyRequest request) {
         log.info("Received request to add candidacy: {}", request);
         service.addCandidacy(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/candidacies/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<CandidacyDto> updateCandidacy(
             @PathVariable Long id,
             @Valid @RequestBody UpdateCandidacyRequest request) {
@@ -42,7 +42,7 @@ public class CandidacyController {
         return ResponseEntity.ok(service.updateCandidacy(id, request));
     }
 
-    @GetMapping("/candidacies/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CandidacyDto> getCandidacy(
             @PathVariable Long id
     ) {
@@ -50,13 +50,13 @@ public class CandidacyController {
         return ResponseEntity.ok(service.getCandidacy(id));
     }
 
-    @GetMapping("/candidacies")
+    @GetMapping
     public ResponseEntity<List<CandidacyDto>> getAllCandidacies() {
         log.info("Received request for candidacies.");
         return ResponseEntity.ok(service.getAllCandidacies());
     }
 
-    @GetMapping("/candidacies/{id}/comments")
+    @GetMapping("/{id}/comments")
     public ResponseEntity<List<CandidacyCommentDto>> getCandidacyComments(
             @PathVariable Long id
     ) {
@@ -64,7 +64,7 @@ public class CandidacyController {
         return ResponseEntity.ok(service.getCandidacyComments(id));
     }
 
-    @PostMapping("/candidacies/{id}/comments")
+    @PostMapping("/{id}/comments")
     public ResponseEntity<?> addCandidacyComment(
             @PathVariable Long id,
             @Valid @RequestBody NewCandidacyCommentRequest comment
@@ -74,7 +74,7 @@ public class CandidacyController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/candidacies/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCandidacy(
             @PathVariable Long id
@@ -84,7 +84,7 @@ public class CandidacyController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/candidacies/{id}/files")
+    @GetMapping("/{id}/files")
     public ResponseEntity<List<CandidacyFileDto>> getCandidacyFiles(
             @PathVariable Long id
     ) {
@@ -92,7 +92,7 @@ public class CandidacyController {
         return ResponseEntity.ok(service.getCandidacyFiles(id));
     }
 
-    @DeleteMapping("/candidacies/files/{fileId}")
+    @DeleteMapping("/files/{fileId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<?> deleteCandidacyFile(@PathVariable("fileId") Long fileId) {
         log.info("Received request to delete candidacy file with ID {}", fileId);
@@ -100,7 +100,7 @@ public class CandidacyController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/candidacies/files/{fileId}")
+    @GetMapping("/files/{fileId}")
     public ResponseEntity<byte[]> getCandidacyFile(@PathVariable("fileId") Long fileId) {
         log.info("Received request to get candidacy file with ID {}", fileId);
         byte[] file = service.getCandidacyFile(fileId);
@@ -113,7 +113,7 @@ public class CandidacyController {
         return new ResponseEntity<>(file, headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/candidacies/{id}/files",
+    @RequestMapping(value = "/{id}/files",
             method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFiles(
             @PathVariable Long id,

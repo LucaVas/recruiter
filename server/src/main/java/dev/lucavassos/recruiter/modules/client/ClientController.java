@@ -14,19 +14,19 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1")
+@RequestMapping(value = "api/v1/clients")
 public class ClientController {
 
     private final ClientService service;
 
 
-    @GetMapping("/clients")
+    @GetMapping
     public ResponseEntity<List<ClientDto>> getAllClients() {
         log.debug("Received request for all clients.");
         return new ResponseEntity<>(service.getAllClients(0, 2000), HttpStatus.OK);
     }
 
-    @PostMapping("/clients")
+    @PostMapping
     public ResponseEntity<ClientDto> addClient(
             @Valid @RequestBody NewClientRequest request) {
         log.debug("Received request to add client: {}", request);
