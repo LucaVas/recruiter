@@ -137,7 +137,7 @@ public class EntityInitializer {
                 .skills(
                         skills.stream().filter(
                                 skill -> skill.getName().equals("Java")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(1)
@@ -169,7 +169,7 @@ public class EntityInitializer {
                 .skills(
                         skills.stream().filter(
                                 skill -> skill.getName().equals("Python")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(3)
@@ -199,7 +199,7 @@ public class EntityInitializer {
                 .wantedCvs(9)
                 .skills(skills.stream().filter(
                                 skill -> skill.getName().equals("Big Data") || skill.getName().equals("Tableau")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.TEMPORARY)
                 .experienceRangeMin(2)
@@ -229,7 +229,7 @@ public class EntityInitializer {
                 .wantedCvs(9)
                 .skills(skills.stream().filter(
                                 skill -> skill.getName().equals("Critical Thinking") || skill.getName().equals("PL2")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.TEMPORARY)
                 .experienceRangeMin(5)
@@ -261,7 +261,7 @@ public class EntityInitializer {
                                 skill -> skill.getName().equals("Cloud Architecture")
                                         || skill.getName().equals("AWS")
                                         || skill.getName().equals("Google Cloud")
-                        ).collect(Collectors.toList())
+                        ).collect(Collectors.toSet())
                 )
                 .contractType(ContractType.PERMANENT)
                 .experienceRangeMin(10)

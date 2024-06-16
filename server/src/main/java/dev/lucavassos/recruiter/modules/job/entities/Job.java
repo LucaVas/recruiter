@@ -20,7 +20,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -128,5 +127,5 @@ public class Job {
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     @JsonManagedReference
-    private List<Skill> skills;
+    private Set<Skill> skills;
 }

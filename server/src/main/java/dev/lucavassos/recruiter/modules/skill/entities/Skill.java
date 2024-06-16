@@ -11,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -30,7 +30,7 @@ public class Skill {
     private String name;
 
     @ManyToMany(mappedBy = "skills")
-    private List<Job> jobs;
+    private Set<Job> jobs;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

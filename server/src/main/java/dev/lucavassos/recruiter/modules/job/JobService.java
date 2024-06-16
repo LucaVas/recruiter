@@ -35,7 +35,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -57,8 +59,8 @@ public class JobService {
     public JobDTO addJob(NewJobRequest request) {
         log.debug("Adding new job: {}", request);
 
-        List<Skill> skills = skillRepository
-                .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toList()));
+        Set<Skill> skills = new HashSet<>(skillRepository
+                .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toSet())));
         log.debug("Skills found: {}", skills);
 
         Client client = clientRepository
@@ -186,8 +188,8 @@ public class JobService {
             changes = true;
         }
         if (request.skills() != null) {
-            List<Skill> skills = skillRepository
-                    .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toList()));
+            Set<Skill> skills = new HashSet<>(skillRepository
+                    .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toSet())));
             if (!skills.equals(job.getSkills())) {
                 job.setSkills(skills);
                 changes = true;
