@@ -71,8 +71,6 @@ const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
 const questionnaires = ref<Questionnaire[]>([]);
 
-const editQuestionnaire = ref<Questionnaire>({ title: '', client: {} as Client, questions: [] });
-
 const removeSkill = (job: NewJob, skill: Skill): void => {
   if (!job.skills.includes(skill)) return;
   job.skills.splice(job.skills.indexOf(skill), 1);
@@ -291,7 +289,7 @@ onMounted(async () => {
 
       <div v-if="job.client.name" class="space-y-3">
         <NewQuestionnaireModal
-          :questionnaire="editQuestionnaire"
+          :questionnaire="job.questionnaire"
           :isUpdate="isQuestionnaireUpdate"
           :visible="newQuestionnaireModalOpen"
           :client="job.client"
@@ -348,7 +346,6 @@ onMounted(async () => {
               icon="pi pi-file-edit"
               @click="
                 {
-                  editQuestionnaire = job.questionnaire;
                   isQuestionnaireUpdate = true;
                   newQuestionnaireModalOpen = true;
                 }
