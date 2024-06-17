@@ -12,8 +12,9 @@ import { v4 } from 'uuid';
 import { saveNewQuestionnaire, updateQuestionnaire } from '../../stores/questionnaire/api';
 import type { Client } from '@/stores/client/schema';
 
-const { visible, questionnaire, client } = defineProps<{
+const { visible, isUpdate, questionnaire, client } = defineProps<{
   visible: boolean;
+  isUpdate: boolean;
   questionnaire: Questionnaire;
   client: Client;
 }>();
@@ -151,8 +152,8 @@ watch(
             :disabled="creatingOrUpdating"
           />
           <Button
-            :label="questionnaire ? 'Save' : 'Create'"
-            @click="questionnaire ? update(tmpQuestionnaire) : create(tmpQuestionnaire)"
+            :label="isUpdate ? 'Save' : 'Create'"
+            @click="isUpdate ? update(tmpQuestionnaire) : create(tmpQuestionnaire)"
             :loading="creatingOrUpdating"
             :disabled="creatingOrUpdating"
           />
