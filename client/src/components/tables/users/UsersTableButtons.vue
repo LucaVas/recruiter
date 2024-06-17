@@ -7,7 +7,7 @@
         class="md:hidden"
         size="small"
         outlined
-        @click="$emit('openModal')"
+        @click="$emit('openModal', true)"
       />
       <Button
         icon="pi pi-check"
@@ -17,7 +17,7 @@
         size="small"
         rounded
         outlined
-        @click="$emit('openModal')"
+        @click="$emit('openModal', true)"
       />
     </div>
 
@@ -28,7 +28,7 @@
         size="small"
         outlined
         class="md:hidden"
-        @click="$emit('openModal')"
+        @click="$emit('openModal', false)"
       />
       <Button
         icon="pi pi-times"
@@ -38,7 +38,7 @@
         outlined
         class="hidden w-36 md:flex"
         size="small"
-        @click="$emit('openModal')"
+        @click="$emit('openModal', false)"
       />
     </div>
   </div>
@@ -52,6 +52,6 @@ const { user } = defineProps<{
 }>();
 
 defineEmits<{
-  (e: 'openModal'): void;
+  (e: 'openModal', isApproval: boolean): void;
 }>();
 </script>

@@ -52,7 +52,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  {{ job }}
   <div v-if="job" class="flex w-full flex-col items-start gap-4">
     <JobTitle :title="job.name" />
     <JobMetadata :job="job" />

@@ -20,7 +20,8 @@ const usersTableError = ref('');
 const loading = ref(false);
 const approvingUser = ref(false);
 const users = ref<User[]>();
-
+const isApproval = ref(false);
+const targetUser = ref<User>();
 const approveModalOpen = ref(false);
 
 const approve = async (request: UserApprovalRequest) => {
@@ -83,17 +84,29 @@ onMounted(async () => {
       <template #body="{ data }">
         <ApproveModal
           :visible="approveModalOpen"
+          :isApproval="isApproval"
           @close="approveModalOpen = false"
           @approve="
-            (comment) =>
-              approve({
-                userId: Number(data.id),
-                approved: !data.approved,
-                comment,
-              })
+            (comment) => {
+              if (targetUser)
+                approve({
+                  userId: Number(targetUser.id),
+                  approved: !targetUser.approved,
+                  comment,
+                });
+            }
           "
         />
-        <UsersTableButtons :user="data" @openModal="approveModalOpen = true" />
+        <UsersTableButtons
+          :user="data"
+          @openModal="
+            (approval: boolean) => {
+              isApproval = approval;
+              targetUser = data;
+              approveModalOpen = true;
+            }
+          "
+        />
       </template>
     </Column>
     <Column
@@ -109,6 +122,7 @@ onMounted(async () => {
           :class="{
             'pi-check-circle text-green-500 ': data.approved,
             'pi-times-circle text-red-500': !data.approved,
+            'text-2xl': true,
           }"
         ></i>
       </template>

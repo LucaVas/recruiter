@@ -1,10 +1,10 @@
 package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
+import dev.lucavassos.recruiter.exception.BadRequestException;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
-import dev.lucavassos.recruiter.exception.BadRequestException;
 import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
 import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
 import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
