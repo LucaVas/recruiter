@@ -22,7 +22,7 @@ import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 // stores
-import type { NewSkill, Skill } from '@/stores/skill/schema';
+import type { Skill } from '@/stores/skill/schema';
 import { getAllClients } from '@/stores/client';
 import type { Client } from '@/stores/client/schema';
 import { createJob } from '@/stores/job';
@@ -37,7 +37,11 @@ import { contractTypes, jobStatuses } from '@/components/job/utils';
 
 const toast = useToast();
 const router = useRouter();
-const emptyQuestionnaire = { title: '', client: {} as Client, questions: [] } satisfies Questionnaire;
+const emptyQuestionnaire = {
+  title: '',
+  client: {} as Client,
+  questions: [],
+} satisfies Questionnaire;
 
 const job = ref<NewJob>({
   name: '',
@@ -75,7 +79,7 @@ const removeSkill = (job: NewJob, skill: Skill): void => {
 
 const addSkill = (job: NewJob, skill: Skill | undefined): void => {
   if (!job || !skill) return;
-  if (job.skills.some((s: Skill) => s.name === skill.name)) return;
+  if (job.skills.some((s) => s.name === skill.name)) return;
   job.skills.unshift(skill);
 };
 
@@ -253,9 +257,10 @@ onMounted(async () => {
           :creatingSkill="creatingSkill"
           @close="skillModalOpen = false"
           @save="
-            async (newSkill: NewSkill) => {
+            async (newSkill) => {
               const skill = await createNewSkill(newSkill, toast);
               addSkill(job, skill);
+              await loadSkills(toast);
             }
           "
         />

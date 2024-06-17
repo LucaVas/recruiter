@@ -14,7 +14,7 @@ defineEmits<{ (e: 'remove', skill: Skill): void }>();
   <div class="flex w-full flex-wrap gap-2">
     <Chip
       v-for="skill in skills"
-      :key="skill.id"
+      :key="skill.name"
       @remove="$emit('remove', skill)"
       :removable="isNewJob"
       :label="skill.name"

@@ -5,7 +5,6 @@ import Button from 'primevue/button';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref } from 'vue';
-import { type NewSkill } from '@/stores/skill/schema';
 
 const { visible, creatingSkill } = defineProps<{
   visible: boolean;
@@ -14,10 +13,10 @@ const { visible, creatingSkill } = defineProps<{
 
 const emits = defineEmits<{
   (e: 'close'): void;
-  (e: 'save', skill: NewSkill): void;
+  (e: 'save', skill: { name: string }): void;
 }>();
 
-const form = ref<NewSkill>({ name: '' });
+const form = ref({ name: '' });
 </script>
 
 <template>
