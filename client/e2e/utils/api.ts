@@ -1,6 +1,6 @@
 import { fakeRecruiter } from './fakeData';
 import type { Page } from '@playwright/test';
-import userStore from '../../src/stores/user/index';
+import userStore from '@/src/stores/user';
 
 export async function signupNewUser(userSignup = fakeRecruiter()) {
   try {

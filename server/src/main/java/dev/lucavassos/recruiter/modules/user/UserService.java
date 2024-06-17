@@ -4,6 +4,7 @@ import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
+import dev.lucavassos.recruiter.exception.BadRequestException;
 import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
 import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
 import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
@@ -18,7 +19,6 @@ import dev.lucavassos.recruiter.utils.DateTimeUtils;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,6 +40,7 @@ public class UserService {
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
     private final EmailService emailService;
+
     @Value("${password.reset.token.expirationInSeconds}")
     private Integer expirationInSeconds;
 
@@ -187,7 +188,7 @@ public class UserService {
         if (request.email().equals(user.getUsername())
                 && request.phone().equals(user.getPhone())
                 && request.city().equals(user.getCity())) {
-            return;
+            throw new BadRequestException("No changes were made.");
         }
 
         if (!request.email().equals(user.getUsername())) {

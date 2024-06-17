@@ -1,3 +1,32 @@
+<script setup lang="ts">
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import InputGroup from 'primevue/inputgroup';
+import InputText from 'primevue/inputtext';
+import InputMask from 'primevue/inputmask';
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import { type User } from '@/stores/user/schema';
+import { ref, computed } from 'vue';
+import { type UserInfoUpdateRequest } from '@/stores/auth/schema';
+
+const { user, visible } = defineProps<{
+  user: User | undefined;
+  visible: boolean;
+}>();
+
+defineEmits<{
+  (e: 'save', userForm: UserInfoUpdateRequest, loginRequired: boolean): void;
+  (e: 'close'): void;
+}>();
+
+const userForm = ref({
+  email: user ? user.email : '',
+  phone: user ? user.phone : '',
+  city: user ? user.city : '',
+});
+const loginRequired = computed(() => (user && user.email !== userForm.value.email) ?? false);
+</script>
+
 <template>
   <Dialog
     v-if="userForm"
@@ -50,35 +79,8 @@
 
     <div class="flex justify-end gap-2">
       <Button label="Cancel" severity="secondary" @click="$emit('close')" />
-      <Button label="Save" @click="$emit('save', userForm)" />
+      <Button label="Save" @click="$emit('save', userForm, loginRequired)" />
     </div>
   </Dialog>
 </template>
 
-<script setup lang="ts">
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import InputGroup from 'primevue/inputgroup';
-import InputText from 'primevue/inputtext';
-import InputMask from 'primevue/inputmask';
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import { type User } from '@/stores/user/schema';
-import { ref } from 'vue';
-import { type UserInfoUpdateRequest } from '@/stores/auth/schema';
-
-const { user, visible } = defineProps<{
-  user: User | undefined;
-  visible: boolean;
-}>();
-
-defineEmits<{
-  (e: 'save', userForm: UserInfoUpdateRequest): void;
-  (e: 'close'): void;
-}>();
-
-const userForm = ref({
-  email: user ? user.email : '',
-  phone: user ? user.phone : '',
-  city: user ? user.city : '',
-});
-</script>
