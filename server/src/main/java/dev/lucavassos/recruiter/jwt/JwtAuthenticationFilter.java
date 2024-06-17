@@ -1,5 +1,7 @@
 package dev.lucavassos.recruiter.jwt;
 
+import dev.lucavassos.recruiter.exception.UserNotApprovedException;
+import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -51,6 +53,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (userEmail != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+                User user = (User) userDetails;
+                if (!user.isApproved()) {
+                    handlerExceptionResolver.resolveException(request, response, null, new UserNotApprovedException("Access denied. Please, contact your administrator."));
+                    return;
+                }
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

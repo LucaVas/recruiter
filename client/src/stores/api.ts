@@ -48,16 +48,17 @@ export default () => {
       return response;
     },
     (error) => {
-      console.log(error)
+      console.log(error);
       if (axios.isAxiosError(error)) {
         const title = error.response?.data.title;
         const message = error.response?.data.detail;
         const statusCode = error.response?.status;
 
-        if (message.includes("JWT")) {
+        if (message.includes('JWT') || message.includes('Access denied')) {
+          console.log(error.response);
           logout();
           window.location.reload();
-          return
+          return;
         }
 
         throw new ApiError(message, statusCode, title);
