@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class JobDTOMapper implements Function<Job, JobDTO> {
+public class JobDtoMapper implements Function<Job, JobDto> {
 
     @Autowired
     private QuestionnaireDtoMapper questionnaireDtoMapper;
@@ -20,12 +20,8 @@ public class JobDTOMapper implements Function<Job, JobDTO> {
     private ClientDtoMapper clientDtoMapper;
 
     @Override
-    public JobDTO apply(Job job) {
-        job.getClient();
-        job.getSkills().size();
-        job.getQuestionnaire();
-
-        return JobDTO.builder()
+    public JobDto apply(Job job) {
+        return JobDto.builder()
                 .id(job.getId())
                 .client(clientDtoMapper.apply(job.getClient()))
                 .name(job.getName())

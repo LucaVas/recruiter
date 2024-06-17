@@ -1,6 +1,13 @@
 package dev.lucavassos.recruiter.modules.user.repository.dto;
 
-public record ApproverDto(
-        Long id,
-        String username
-) {}
+import lombok.*;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@ToString
+public final class ApproverDto {
+    private final Long id;
+    private final String username;
+}

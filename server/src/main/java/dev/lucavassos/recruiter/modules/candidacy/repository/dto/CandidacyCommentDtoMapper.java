@@ -15,12 +15,12 @@ public class CandidacyCommentDtoMapper implements Function<CandidacyComment, Can
 
     @Override
     public CandidacyCommentDto apply(CandidacyComment comment) {
-        return new CandidacyCommentDto(
-                comment.getId(),
-                comment.getText(),
-                userDtoMapper.apply(comment.getAuthor()),
-                comment.getCreatedAt(),
-                comment.getUpdatedAt()
-        );
+        return CandidacyCommentDto.builder()
+                .id(comment.getId())
+                .text(comment.getText())
+                .author(userDtoMapper.apply(comment.getAuthor()))
+                .createdAt(comment.getCreatedAt())
+                .updatedAt(comment.getUpdatedAt())
+                .build();
     }
 }

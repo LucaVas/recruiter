@@ -152,12 +152,12 @@ public class QuestionnaireService {
         for (QuestionDto questionDto : request.getQuestions()) {
 
             // check if question exists for this questionnaire
-            Optional<Question> exist = questionRepository.findByTextAndQuestionnaireTitle(questionDto.text(), title);
+            Optional<Question> exist = questionRepository.findByTextAndQuestionnaireTitle(questionDto.getText(), title);
             if (exist.isEmpty()) {
                 Question newQuestion = Question.builder()
-                        .text(questionDto.text())
-                        .answer(questionDto.answer())
-                        .questionType(questionDto.questionType())
+                        .text(questionDto.getText())
+                        .answer(questionDto.getAnswer())
+                        .questionType(questionDto.getQuestionType())
                         .build();
                 questions.add(newQuestion);
             } else {
@@ -170,14 +170,14 @@ public class QuestionnaireService {
 
 
     private Question updateQuestion(QuestionDto questionDto, Question question) {
-        if (!question.getText().equals(questionDto.text())) {
-            question.setText(questionDto.text());
+        if (!question.getText().equals(questionDto.getText())) {
+            question.setText(questionDto.getText());
         }
-        if (!question.getQuestionType().equals(QuestionType.OPEN_QUESTION) && !question.getAnswer().equals(questionDto.answer())) {
-            question.setAnswer(questionDto.answer());
+        if (!question.getQuestionType().equals(QuestionType.OPEN_QUESTION) && !question.getAnswer().equals(questionDto.getAnswer())) {
+            question.setAnswer(questionDto.getAnswer());
         }
-        if (!question.getQuestionType().equals(questionDto.questionType())) {
-            question.setQuestionType(questionDto.questionType());
+        if (!question.getQuestionType().equals(questionDto.getQuestionType())) {
+            question.setQuestionType(questionDto.getQuestionType());
         }
         return question;
     }

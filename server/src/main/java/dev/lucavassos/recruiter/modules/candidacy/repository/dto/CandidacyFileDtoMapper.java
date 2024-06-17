@@ -10,13 +10,13 @@ public class CandidacyFileDtoMapper implements Function<CandidacyFile, Candidacy
 
     @Override
     public CandidacyFileDto apply(CandidacyFile file) {
-        return new CandidacyFileDto(
-                file.getId(),
-                file.getType(),
-                file.getName(),
-                file.getUniqueId(),
-                file.getCreatedAt(),
-                file.getUpdatedAt()
-        );
+        return CandidacyFileDto.builder()
+                .id(file.getId())
+                .type(file.getType())
+                .name(file.getName())
+                .uniqueId(file.getUniqueId())
+                .createdDTime(file.getCreatedAt())
+                .modifiedDTime(file.getUpdatedAt())
+                .build();
     }
 }

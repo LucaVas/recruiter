@@ -9,17 +9,17 @@ import java.util.function.Function;
 public class CandidateDtoMapper implements Function<Candidate, CandidateDto> {
     @Override
     public CandidateDto apply(Candidate candidate) {
-        return new CandidateDto(
-                candidate.getPan(),
-                candidate.getName(),
-                candidate.getPhone(),
-                candidate.getEmail(),
-                candidate.getTotalExperience(),
-                candidate.getEducation(),
-                candidate.getCurrentCtc(),
-                candidate.getStatus(),
-                candidate.getCreatedAt(),
-                candidate.getUpdatedAt()
-        );
+        return CandidateDto.builder()
+                .pan(candidate.getPan())
+                .name(candidate.getName())
+                .phone(candidate.getPhone())
+                .email(candidate.getEmail())
+                .totalExperience(candidate.getTotalExperience())
+                .education(candidate.getEducation())
+                .currentCtc(candidate.getCurrentCtc())
+                .status(candidate.getStatus())
+                .createdAt(candidate.getCreatedAt())
+                .updatedAt(candidate.getUpdatedAt())
+                .build();
     }
 }

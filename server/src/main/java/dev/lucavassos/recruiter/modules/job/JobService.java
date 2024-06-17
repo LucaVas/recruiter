@@ -14,8 +14,8 @@ import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
 import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
 import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTO;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTOMapper;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
@@ -50,17 +50,17 @@ public class JobService {
     private final CandidacyRepository candidacyRepository;
     private final SkillRepository skillRepository;
     private final UserRepository userRepository;
-    private final JobDTOMapper jobDtoMapper;
+    private final JobDtoMapper jobDtoMapper;
     private final MonitoringProcessor monitoringProcessor;
     private final ClientRepository clientRepository;
     private final QuestionnaireRepository questionnaireRepository;
 
     @Transactional
-    public JobDTO addJob(NewJobRequest request) {
+    public JobDto addJob(NewJobRequest request) {
         log.debug("Adding new job: {}", request);
 
         Set<Skill> skills = new HashSet<>(skillRepository
-                .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toSet())));
+                .findAllById(request.skills().stream().map(SkillDto::getId).collect(Collectors.toSet())));
         log.debug("Skills found: {}", skills);
 
         Client client = clientRepository
@@ -104,7 +104,7 @@ public class JobService {
     }
 
     @Transactional
-    public JobDTO updateJob(UpdateJobRequest request) {
+    public JobDto updateJob(UpdateJobRequest request) {
 
         boolean changes = false;
         Long id = request.id();
@@ -189,7 +189,7 @@ public class JobService {
         }
         if (request.skills() != null) {
             Set<Skill> skills = new HashSet<>(skillRepository
-                    .findAllById(request.skills().stream().map(SkillDto::id).collect(Collectors.toSet())));
+                    .findAllById(request.skills().stream().map(SkillDto::getId).collect(Collectors.toSet())));
             if (!skills.equals(job.getSkills())) {
                 job.setSkills(skills);
                 changes = true;
@@ -208,7 +208,7 @@ public class JobService {
     }
 
     @Transactional
-    public JobDTO getJobById(Long id) {
+    public JobDto getJobById(Long id) {
         Job job = repository
                 .findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(id, JobStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
@@ -218,7 +218,7 @@ public class JobService {
             throw new AccessDeniedException("Job is not accessible");
         }
 
-        JobDTO jobDto = jobDtoMapper.apply(job);
+        JobDto jobDto = jobDtoMapper.apply(job);
 
         log.info("Job retrieved: {}", jobDto);
 
@@ -239,21 +239,21 @@ public class JobService {
     }
 
     @Transactional
-    public List<JobDTO> getAllJobs(Integer pageNumber, Integer pageSize) {
+    public List<JobDto> getAllJobs(Integer pageNumber, Integer pageSize) {
         Pageable limit = PageRequest.of(pageNumber, pageSize);
         log.debug("Retrieving {} jobs", 1000);
 
         List<Job> jobs = repository.findByStatusNot(JobStatus.DELETED, limit);
 
         User user = getAuthUser();
-        List<JobDTO> jobDTOs = jobs.stream()
+        List<JobDto> jobDtos = jobs.stream()
                 .filter(job -> user.getRoleName() == RoleName.ADMIN || job.getStatus() != JobStatus.ARCHIVED)
                 .peek(job -> job.setNumberOfCandidates(candidacyRepository.findByJob(job).size()))
                 .map(jobDtoMapper)
                 .toList();
 
-        jobDTOs.forEach(job -> log.debug("Job retrieved: {}", job));
-        return jobDTOs;
+        jobDtos.forEach(job -> log.debug("Job retrieved: {}", job));
+        return jobDtos;
     }
 
     @Transactional

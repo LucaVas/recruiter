@@ -2,7 +2,7 @@ package dev.lucavassos.recruiter.modules.candidacy.repository.dto;
 
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDtoMapper;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTOMapper;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
 import dev.lucavassos.recruiter.modules.user.repository.dto.RecruiterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,28 +13,28 @@ import java.util.function.Function;
 public class CandidacyDtoMapper implements Function<Candidacy, CandidacyDto> {
 
     @Autowired
-    private JobDTOMapper jobDtoMapper;
+    private JobDtoMapper jobDtoMapper;
 
     @Autowired
     private CandidateDtoMapper candidateDtoMapper;
 
     @Override
     public CandidacyDto apply(Candidacy candidacy) {
-        return new CandidacyDto(
-                jobDtoMapper.apply(candidacy.getJob()),
-                new RecruiterDto(
+        return CandidacyDto.builder()
+                .job(jobDtoMapper.apply(candidacy.getJob()))
+                .recruiter(new RecruiterDto(
                         candidacy.getRecruiter().getId(),
                         candidacy.getRecruiter().getName()
-                ),
-                candidateDtoMapper.apply(candidacy.getCandidate()),
-                candidacy.getRelevantExperience(),
-                candidacy.getExpectedCtc(),
-                candidacy.getOfficialNoticePeriod(),
-                candidacy.getActualNoticePeriod(),
-                candidacy.getReasonForQuickJoin(),
-                candidacy.getStatus(),
-                candidacy.getCreatedAt(),
-                candidacy.getUpdatedAt()
-        );
+                ))
+                .candidate(candidateDtoMapper.apply(candidacy.getCandidate()))
+                .relevantExperience(candidacy.getRelevantExperience())
+                .expectedCtc(candidacy.getExpectedCtc())
+                .officialNoticePeriod(candidacy.getOfficialNoticePeriod())
+                .actualNoticePeriod(candidacy.getActualNoticePeriod())
+                .reasonForQuickJoin(candidacy.getReasonForQuickJoin())
+                .status(candidacy.getStatus())
+                .createdAt(candidacy.getCreatedAt())
+                .updatedAt(candidacy.getUpdatedAt())
+                .build();
     }
 }

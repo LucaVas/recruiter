@@ -3,15 +3,17 @@ package dev.lucavassos.recruiter.modules.client.repository.dto;
 import dev.lucavassos.recruiter.modules.client.domain.Industry;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Builder
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class ClientDto {
 
     @NotBlank(message = "Client name is required")
@@ -21,6 +23,5 @@ public class ClientDto {
     private Industry industry;
 
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
 }
