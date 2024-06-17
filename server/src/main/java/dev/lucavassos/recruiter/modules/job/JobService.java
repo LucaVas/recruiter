@@ -198,7 +198,7 @@ public class JobService {
         job.setQuestionnaire(questionnaire);
 
         if (!changes) {
-            throw new RequestValidationException("No updates were made to data.");
+            throw new RequestValidationException("No changes made to the job.");
         }
         saveJob(job);
         saveJobInHistoryTable(job, recruiter);

@@ -13,16 +13,26 @@ import { getProfileInformation, updateProfileInformation } from '@/stores/user';
 import type { UserInfoUpdateRequest } from '@/stores/auth/schema';
 import { updatingUser, openUserProfileModal, loading, user } from './index';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
+import { logout } from '@/stores/auth';
 
 const toast = useToast();
 
-const update = async (userForm: UserInfoUpdateRequest) => {
+const update = async (userForm: UserInfoUpdateRequest, loginRequired: boolean) => {
   updatingUser.value = true;
   try {
     await updateProfileInformation(userForm);
     openUserProfileModal.value = false;
-    showSuccess(toast, 'Profile information updated successfully!');
-    await initUserInformation();
+    if (loginRequired) {
+      logout();
+      showSuccess(toast, 'Profile information updated successfully! You will be redirected to the login page shortly');
+      setTimeout(() => {
+        window.location.reload();
+        return;
+      }, 2000);
+    } else {
+      showSuccess(toast, 'Profile information updated successfully!');
+      await initUserInformation();
+    }
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -65,7 +75,7 @@ onMounted(async () => {
       <UserProfileModal
         :user="user"
         :visible="openUserProfileModal"
-        @save="(userForm) => update(userForm)"
+        @save="(userForm, loginRequired) => update(userForm, loginRequired)"
         @close="openUserProfileModal = false"
       />
       <SettingsHeader :user="user" />
