@@ -51,9 +51,10 @@ public class AuthService {
                 )
         );
 
-        return userRepository
-                .findOneByEmail(request.email())
-                .orElseThrow(() -> new AccessDeniedException("Invalid credentials."));
+        User user = userRepository.findOneByEmail(request.email()).orElseThrow(() -> new AccessDeniedException("Invalid credentials."));
+        if (!user.isApproved())
+            throw new AccessDeniedException("User access is not yet approved. Please, contact your administrator");
+        return user;
     }
 
     @Transactional

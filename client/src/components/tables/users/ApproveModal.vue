@@ -4,8 +4,9 @@ import Button from 'primevue/button';
 import Divider from 'primevue/divider';
 import { ref } from 'vue';
 
-const { visible } = defineProps<{
+const { visible, isApproval } = defineProps<{
   visible: boolean;
+  isApproval: boolean
 }>();
 const comment = ref('');
 
@@ -17,7 +18,7 @@ defineEmits<{
 
 <template>
   <div class="card flex justify-center">
-    <Dialog :visible="visible" modal header="Confirm approval">
+    <Dialog :visible="visible" modal :header="`Confirm ${isApproval ? 'approval' : 'rejection'}`">
       <Textarea
         v-model="comment"
         rows="5"

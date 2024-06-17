@@ -32,7 +32,7 @@ const dataFilters = ref(filters);
       <InputText
         v-model="dataFilters['global'].value"
         size="small"
-        placeholder="Keyword Search"
+        placeholder="Search by email or username"
         class="w-full sm:w-80"
       />
     </IconField>
