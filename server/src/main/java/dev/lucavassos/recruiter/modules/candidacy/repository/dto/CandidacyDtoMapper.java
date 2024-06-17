@@ -2,7 +2,7 @@ package dev.lucavassos.recruiter.modules.candidacy.repository.dto;
 
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDtoMapper;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTOMapper;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDtoMapper;
 import dev.lucavassos.recruiter.modules.user.repository.dto.RecruiterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.function.Function;
 public class CandidacyDtoMapper implements Function<Candidacy, CandidacyDto> {
 
     @Autowired
-    private JobDTOMapper jobDtoMapper;
+    private JobDtoMapper jobDtoMapper;
 
     @Autowired
     private CandidateDtoMapper candidateDtoMapper;

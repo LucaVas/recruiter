@@ -13,7 +13,6 @@ public class ClientDtoMapper implements Function<Client, ClientDto> {
                 .name(client.getName())
                 .industry(client.getIndustry())
                 .createdAt(client.getCreatedAt())
-
                 .build();
     }
 }

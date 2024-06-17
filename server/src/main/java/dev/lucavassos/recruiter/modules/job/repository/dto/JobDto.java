@@ -19,8 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class JobDTO {
+public final class JobDto {
 
+    @Valid
     List<SkillDto> skills;
     @NotNull
     private Long id;
@@ -67,7 +68,6 @@ public class JobDTO {
     private Integer numberOfCandidates;
     @Valid
     private QuestionnaireDto questionnaire;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

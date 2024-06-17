@@ -2,7 +2,7 @@ package dev.lucavassos.recruiter.modules.candidacy.repository.dto;
 
 import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTO;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.RecruiterDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public final class CandidacyDto {
-    private final JobDTO job;
+    private final JobDto job;
     private final RecruiterDto recruiter;
     private final CandidateDto candidate;
     private final Double relevantExperience;

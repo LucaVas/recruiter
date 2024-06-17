@@ -9,11 +9,11 @@ import java.util.function.Function;
 public class QuestionDtoMapper implements Function<Question, QuestionDto> {
     @Override
     public QuestionDto apply(Question question) {
-        return new QuestionDto(
-                question.getId(),
-                question.getText(),
-                question.getAnswer(),
-                question.getQuestionType()
-        );
+        return QuestionDto.builder()
+                .id(question.getId())
+                .text(question.getText())
+                .answer(question.getAnswer())
+                .questionType(question.getQuestionType())
+                .build();
     }
 }

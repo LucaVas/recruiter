@@ -10,24 +10,23 @@ public class UserDtoMapper implements Function<User, UserDto> {
     @Override
     public UserDto apply(User user) {
 
-        return new UserDto(
-                user.getId(),
-                user.getName(),
-                user.getUsername(),
-                user.getPhone(),
-                user.getCity(),
-                user.getCountry(),
-                user.getRole(),
-                user.isApproved(),
-                new ApproverDto(
-                        user.getId(),
-                        user.getName()
-                ),
-                user.getComment(),
-                user.getApprovedAt(),
-                user.getCreatedAt(),
-                user.getUpdatedAt()
-
-        );
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getUsername())
+                .phone(user.getPhone())
+                .city(user.getCity())
+                .country(user.getCountry())
+                .role(user.getRole())
+                .approved(user.isApproved())
+                .approver(ApproverDto.builder()
+                        .id(user.getId())
+                        .username(user.getName())
+                        .build())
+                .comment(user.getComment())
+                .approvedAt(user.getApprovedAt())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .build();
     }
 }

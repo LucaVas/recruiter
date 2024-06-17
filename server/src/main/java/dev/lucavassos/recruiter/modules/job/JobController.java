@@ -3,7 +3,7 @@ package dev.lucavassos.recruiter.modules.job;
 import dev.lucavassos.recruiter.modules.job.domain.ChangeJobStatusRequest;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDTO;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,14 +24,14 @@ public class JobController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<JobDTO> addJob(
+    public ResponseEntity<JobDto> addJob(
             @Valid @RequestBody NewJobRequest request) {
         log.debug("Received request to add new job: {}", request);
         return new ResponseEntity<>(service.addJob(request), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<JobDTO> updateJob(
+    public ResponseEntity<JobDto> updateJob(
             @Valid @RequestBody UpdateJobRequest request) {
         log.debug("Received request to update job");
         return new ResponseEntity<>(service.updateJob(request), HttpStatus.CREATED);
@@ -55,15 +55,15 @@ public class JobController {
     }
 
     @GetMapping
-    public ResponseEntity<List<JobDTO>> getAllJobs() {
+    public ResponseEntity<List<JobDto>> getAllJobs() {
         log.debug("Received request for all jobs.");
         return new ResponseEntity<>(service.getAllJobs(0, 1000), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JobDTO> getJob(@PathVariable("id") Long id) {
+    public ResponseEntity<JobDto> getJob(@PathVariable("id") Long id) {
         log.info("Received request to get details for job with ID {}", id);
-        JobDTO job = service.getJobById(id);
+        JobDto job = service.getJobById(id);
         log.info("Job retrieved: [{}]", job);
         return ResponseEntity
                 .status(HttpStatus.OK)
