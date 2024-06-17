@@ -2,7 +2,7 @@ import { apiBase } from '@/config';
 import { getStoredAccessToken } from '@/utils/auth';
 import { ApiError } from '@/utils/types';
 import axios, { type RawAxiosRequestHeaders } from 'axios';
-import { logout } from './auth';
+import { isLoggedIn, logout } from './auth';
 
 export default () => {
   let headers: RawAxiosRequestHeaders = {
@@ -48,16 +48,18 @@ export default () => {
       return response;
     },
     (error) => {
-      console.log(error);
       if (axios.isAxiosError(error)) {
         const title = error.response?.data.title;
         const message = error.response?.data.detail;
         const statusCode = error.response?.status;
 
+        if (error.code === 'ERR_NETWORK') {
+          logoutProcess();
+          return;
+        }
+
         if (message.includes('JWT') || message.includes('Access denied')) {
-          console.log(error.response);
-          logout();
-          window.location.reload();
+          logoutProcess();
           return;
         }
 
@@ -71,4 +73,9 @@ export default () => {
   );
 
   return instance;
+};
+
+const logoutProcess = () => {
+  logout();
+  window.location.reload();
 };

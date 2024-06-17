@@ -33,15 +33,15 @@ export const isAdmin = computed(() =>
 );
 
 // functions
-export const signup = async(request: SignupRequest): Promise<SignupResponse> => {
+export const signup = async (request: SignupRequest): Promise<SignupResponse> => {
   const res = (await api.post(`${baseApi}/signup`, request)).data as SignupResponse;
   return res;
-}
-export const login = async(request: LoginRequest): Promise<void> => {
+};
+export const login = async (request: LoginRequest): Promise<void> => {
   const res = (await api.post(`${baseApi}/login`, request)).data as LoginResponse;
   authToken.value = res.token;
   storeAccessToken(localStorage, res.token);
-}
+};
 export const logout = () => {
   clearStoredAccessToken(localStorage);
-}
+};
