@@ -20,21 +20,21 @@ public class CandidacyDtoMapper implements Function<Candidacy, CandidacyDto> {
 
     @Override
     public CandidacyDto apply(Candidacy candidacy) {
-        return new CandidacyDto(
-                jobDtoMapper.apply(candidacy.getJob()),
-                new RecruiterDto(
+        return CandidacyDto.builder()
+                .job(jobDtoMapper.apply(candidacy.getJob()))
+                .recruiter(new RecruiterDto(
                         candidacy.getRecruiter().getId(),
                         candidacy.getRecruiter().getName()
-                ),
-                candidateDtoMapper.apply(candidacy.getCandidate()),
-                candidacy.getRelevantExperience(),
-                candidacy.getExpectedCtc(),
-                candidacy.getOfficialNoticePeriod(),
-                candidacy.getActualNoticePeriod(),
-                candidacy.getReasonForQuickJoin(),
-                candidacy.getStatus(),
-                candidacy.getCreatedAt(),
-                candidacy.getUpdatedAt()
-        );
+                ))
+                .candidate(candidateDtoMapper.apply(candidacy.getCandidate()))
+                .relevantExperience(candidacy.getRelevantExperience())
+                .expectedCtc(candidacy.getExpectedCtc())
+                .officialNoticePeriod(candidacy.getOfficialNoticePeriod())
+                .actualNoticePeriod(candidacy.getActualNoticePeriod())
+                .reasonForQuickJoin(candidacy.getReasonForQuickJoin())
+                .status(candidacy.getStatus())
+                .createdAt(candidacy.getCreatedAt())
+                .updatedAt(candidacy.getUpdatedAt())
+                .build();
     }
 }
