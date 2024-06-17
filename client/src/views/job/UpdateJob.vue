@@ -9,11 +9,11 @@ import { useToast } from 'primevue/usetoast';
 import NewSkillModal from '@/components/skill/NewSkillModal.vue';
 import SkillsDropdown from '@/components/job/SkillsDropdown.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
-import type { NewSkill, Skill } from '@/stores/skill/schema';
+import type { Skill } from '@/stores/skill/schema';
 import type { Client } from '@/stores/client/schema';
 import { contractTypes } from '@/components/job/utils';
 import JobClientSection from '@/components/job/JobClientSection.vue';
-import NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue'
+import NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputGroup from 'primevue/inputgroup';
 import InputText from 'primevue/inputtext';
@@ -35,13 +35,18 @@ const job = ref<Job>();
 const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
 const questionnaires = ref<Questionnaire[]>([]);
-const emptyQuestionnaire = { title: '', client: {} as Client, questions: [] } satisfies Questionnaire;
+const emptyQuestionnaire = {
+  title: '',
+  client: {} as Client,
+  questions: [],
+} satisfies Questionnaire;
 
 const initializingJob = ref(false);
 const updatingJob = ref(false);
 const jobUpdated = ref(false);
 const changingStatus = ref(false);
 const newQuestionnaireModalOpen = ref(false);
+const isQuestionnaireUpdate = ref(false);
 
 const loadQuestionnaires = async (toast: ToastServiceMethods) => {
   try {
@@ -361,7 +366,7 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
           :creatingSkill="creatingSkill"
           @close="skillModalOpen = false"
           @save="
-            async (newSkill: NewSkill) => {
+            async (newSkill) => {
               const skill = await createNewSkill(newSkill, toast);
               addSkill(job, skill);
             }
@@ -394,6 +399,7 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
       <div v-if="job.client.name" class="space-y-3">
         <NewQuestionnaireModal
           :visible="newQuestionnaireModalOpen"
+          :isUpdate="isQuestionnaireUpdate"
           :client="job.client"
           :questionnaire="job.questionnaire"
           @close="newQuestionnaireModalOpen = false"
@@ -417,13 +423,23 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
             :disabled="!job.client.name"
             label="New"
             icon="pi pi-plus"
-            @click="newQuestionnaireModalOpen = true"
+            @click="
+              {
+                isQuestionnaireUpdate = false;
+                newQuestionnaireModalOpen = true;
+              }
+            "
             class="hidden min-w-fit md:flex"
           />
           <Button
             :disabled="!job.client.name"
             icon="pi pi-plus"
-            @click="newQuestionnaireModalOpen = true"
+            @click="
+              {
+                isQuestionnaireUpdate = false;
+                newQuestionnaireModalOpen = true;
+              }
+            "
             class="min-w-fit md:hidden"
           />
         </div>
@@ -434,7 +450,16 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
         >
           <span class="flex min-w-fit gap-4">
             <Button unstyled icon="pi pi-trash" @click="job.questionnaire = emptyQuestionnaire" />
-            <Button unstyled icon="pi pi-file-edit" @click="newQuestionnaireModalOpen = true" />
+            <Button
+              unstyled
+              icon="pi pi-file-edit"
+              @click="
+                {
+                  isQuestionnaireUpdate = true;
+                  newQuestionnaireModalOpen = true;
+                }
+              "
+            />
           </span>
           <Divider layout="vertical" />
           <div class="space-x-2">

@@ -65,6 +65,7 @@ const job = ref<NewJob>({
 const jobCreated = ref(false);
 const creatingJob = ref(false);
 const newQuestionnaireModalOpen = ref(false);
+const isQuestionnaireUpdate = ref(false);
 
 const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
@@ -291,6 +292,7 @@ onMounted(async () => {
       <div v-if="job.client.name" class="space-y-3">
         <NewQuestionnaireModal
           :questionnaire="editQuestionnaire"
+          :isUpdate="isQuestionnaireUpdate"
           :visible="newQuestionnaireModalOpen"
           :client="job.client"
           @close="newQuestionnaireModalOpen = false"
@@ -314,13 +316,23 @@ onMounted(async () => {
             :disabled="!job.client.name"
             label="New"
             icon="pi pi-plus"
-            @click="newQuestionnaireModalOpen = true"
+            @click="
+              {
+                isQuestionnaireUpdate = false;
+                newQuestionnaireModalOpen = true;
+              }
+            "
             class="hidden min-w-fit md:flex"
           />
           <Button
             :disabled="!job.client.name"
             icon="pi pi-plus"
-            @click="newQuestionnaireModalOpen = true"
+            @click="
+              {
+                isQuestionnaireUpdate = false;
+                newQuestionnaireModalOpen = true;
+              }
+            "
             class="min-w-fit md:hidden"
           />
         </div>
@@ -337,6 +349,7 @@ onMounted(async () => {
               @click="
                 {
                   editQuestionnaire = job.questionnaire;
+                  isQuestionnaireUpdate = true;
                   newQuestionnaireModalOpen = true;
                 }
               "
