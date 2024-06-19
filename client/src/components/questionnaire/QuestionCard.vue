@@ -1,47 +1,51 @@
 <script setup lang="ts">
-import TextInput from '@/components/shared/TextInput.vue';
 import Textarea from 'primevue/textarea';
 import Dropdown from 'primevue/dropdown';
 import RadioButton from 'primevue/radiobutton';
 import Button from 'primevue/button';
-import { ref } from 'vue';
 import { questionTypes } from './questionTypes';
 import type { Question, QuestionType } from '@/stores/question/schema';
+import { ref } from 'vue';
 
-const { question } = defineProps<{
+const props = defineProps<{
   question: Question;
 }>();
 
-const questionText = ref(question.text);
-const type = ref<QuestionType>(question.questionType ?? 'OPEN_QUESTION');
-const shortAnswer = ref(question.answer);
-const longAnswer = ref(question.answer);
-const radioButton = ref(question.answer);
+const text = ref(props.question.text);
+const questionType = ref<QuestionType>(props.question.questionType);
+const answer = ref<string | null>(props.question.answer);
 
-defineEmits<{
+const updateQuestion = () => {
+  emits('updateQuestion', {
+    id: props.question.id,
+    text: text.value,
+    questionType: questionType.value,
+    answer: answer.value,
+  });
+};
+
+const emits = defineEmits<{
   (e: 'remove'): void;
-  (e: 'updateAnswer', answer: string | null): void;
-  (e: 'updateQuestion', question: string): void;
-  (e: 'updateType', type: QuestionType): void;
+  (e: 'updateQuestion', question: Question): void;
 }>();
 </script>
 
 <template>
   <div class="space-y-4 border bg-slate-100 p-4">
     <div class="flex flex-col items-center gap-4 sm:flex-row">
-      <TextInput
+      <InputText
         class="w-full"
-        :model="questionText"
-        @input="(q) => $emit('updateQuestion', q)"
         placeholder="Write your question here"
+        v-model="text"
+        @update:model-value="updateQuestion()"
       />
       <div class="flex w-full justify-between gap-3 sm:w-1/3">
         <Dropdown
           class="w-full md:min-w-fit"
           placeholder="Select a type"
-          v-model="type"
+          v-model="questionType"
           :options="questionTypes"
-          @change="$emit('updateType', type)"
+          @update:model-value="updateQuestion()"
           option-label="label"
           option-value="value"
         />
@@ -53,45 +57,47 @@ defineEmits<{
         />
       </div>
     </div>
-    <Textarea
-      v-if="type === 'SHORT'"
-      placeholder="Short-answer text"
-      v-model="shortAnswer"
-      style="resize: none"
-      rows="1"
-      cols="30"
-      class="w-full"
-      @input="$emit('updateAnswer', shortAnswer)"
-    />
-    <Textarea
-      v-if="type === 'PARAGRAPH'"
-      placeholder="Long-answer text"
-      v-model="longAnswer"
-      rows="5"
-      cols="30"
-      class="w-full"
-      @input="$emit('updateAnswer', longAnswer)"
-    />
-    <div v-if="type === 'YES_NO'" class="flex gap-3">
-      <div class="align-center flex">
-        <RadioButton
-          v-model="radioButton"
-          inputId="yes"
-          name="yes"
-          value="Yes"
-          @change="$emit('updateAnswer', radioButton)"
-        />
-        <label for="yes" class="ml-2">Yes</label>
-      </div>
-      <div class="align-center flex">
-        <RadioButton
-          v-model="radioButton"
-          inputId="no"
-          name="no"
-          value="No"
-          @change="$emit('updateAnswer', radioButton)"
-        />
-        <label for="no" class="ml-2">No</label>
+    <div v-if="questionType !== 'OPEN_QUESTION'">
+      <Textarea
+        v-if="questionType === 'SHORT'"
+        placeholder="Short-answer text"
+        style="resize: none"
+        rows="1"
+        cols="30"
+        class="w-full"
+        v-model="answer"
+        @update:model-value="updateQuestion()"
+      />
+      <Textarea
+        v-if="questionType === 'PARAGRAPH'"
+        placeholder="Long-answer text"
+        rows="5"
+        cols="30"
+        class="w-full"
+        v-model="answer"
+        @update:model-value="updateQuestion()"
+      />
+      <div v-if="questionType === 'YES_NO'" class="flex gap-3">
+        <div class="align-center flex">
+          <RadioButton
+            v-model="answer"
+            inputId="yes"
+            name="yes"
+            value="Yes"
+            @change="updateQuestion()"
+          />
+          <label for="yes" class="ml-2">Yes</label>
+        </div>
+        <div class="align-center flex">
+          <RadioButton
+            v-model="answer"
+            inputId="no"
+            name="no"
+            value="No"
+            @change="updateQuestion()"
+          />
+          <label for="no" class="ml-2">No</label>
+        </div>
       </div>
     </div>
   </div>

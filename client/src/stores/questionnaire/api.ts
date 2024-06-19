@@ -1,6 +1,6 @@
 import { type Questionnaire, type UpdatedQuestionnaire } from './schema';
 import axiosApi from '../api';
-import type { NewQuestionnaire } from '../questionnaire/schema';
+import type { NewQuestionnaire, QuestionnaireDto } from '../questionnaire/schema';
 
 // vars
 const api = axiosApi();
@@ -35,9 +35,9 @@ export const saveNewQuestionnaire = async (
 };
 
 export const updateQuestionnaire = async (
-  title: string,
+  id: number,
   questionnaire: UpdatedQuestionnaire
 ): Promise<Questionnaire> => {
-  const { data } = await api.put(`${baseApi}/${title}`, questionnaire);
+  const { data } = await api.put(`${baseApi}/${id}`, questionnaire);
   return data;
 };

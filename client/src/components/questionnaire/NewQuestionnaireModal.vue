@@ -3,19 +3,19 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import QuestionCard from './QuestionCard.vue';
-import { type NewQuestionnaire, type Questionnaire } from '@/stores/questionnaire/schema';
-import { ref, watch } from 'vue';
+import { type Questionnaire, type QuestionnaireDto } from '@/stores/questionnaire/schema';
+import { ref } from 'vue';
 import { handleError } from '@/utils/errorUtils';
 import { useToast } from 'primevue/usetoast';
-import type { NewQuestion } from '@/stores/question/schema';
-import { v4 } from 'uuid';
 import { saveNewQuestionnaire, updateQuestionnaire } from '../../stores/questionnaire/api';
 import type { Client } from '@/stores/client/schema';
+import { v4 } from 'uuid';
+import type { NewQuestion, Question } from '@/stores/question/schema';
 
-const { visible, isUpdate, questionnaire, client } = defineProps<{
+const props = defineProps<{
   visible: boolean;
   isUpdate: boolean;
-  questionnaire: Questionnaire;
+  questionnaire: Questionnaire | QuestionnaireDto;
   client: Client;
 }>();
 const emits = defineEmits<{
@@ -23,47 +23,49 @@ const emits = defineEmits<{
   (e: 'select', questionnaire: Questionnaire): void;
 }>();
 
-const oldTitle = ref(questionnaire.title);
-const tmpQuestionnaire = ref(questionnaire);
 const creatingOrUpdating = ref(false);
 const toast = useToast();
-const questions = ref<{ localId: string; question: NewQuestion }[]>(
-  tmpQuestionnaire.value.questions
-    ? tmpQuestionnaire.value.questions.map((q) => ({ localId: v4(), question: q }))
-    : []
-);
+
+const emptyQuestionnaire = ref<Questionnaire>({
+  title: '',
+  questions: [],
+  client: props.client,
+});
+const tmpQuestionnaire = ref(emptyQuestionnaire.value);
 
 const createQuestion = () => {
-  questions.value.push({
-    localId: v4(),
-    question: {
-      text: '',
-      answer: '',
-      questionType: 'OPEN_QUESTION',
-    },
+  tmpQuestionnaire.value.questions.push({
+    id: v4(),
+    text: '',
+    answer: '',
+    questionType: 'OPEN_QUESTION',
   });
 };
-const removeQuestion = (localId: string) => {
-  questions.value = questions.value.filter((q) => q.localId !== localId);
+const removeQuestion = (question: Question) => {
+  tmpQuestionnaire.value.questions = tmpQuestionnaire.value.questions.filter(
+    (q) => q.id !== question.id
+  );
 };
 
-const init = () => {
-  tmpQuestionnaire.value = {
-    title: '',
-    client: {} as Client,
-    questions: [],
-  };
-  questions.value = [];
+const updateQuestion = (q: Question) => {
+  tmpQuestionnaire.value.questions = tmpQuestionnaire.value.questions.map((question) =>
+    question.id === q.id ? q : question
+  );
 };
 
-const create = async (questionnaire: NewQuestionnaire) => {
+const create = async (questionnaire: Questionnaire) => {
   creatingOrUpdating.value = true;
   try {
-    questionnaire.questions = questions.value.map((q) => q.question);
-    questionnaire.client = client;
-    const newQuestionnaire = await saveNewQuestionnaire(questionnaire);
+    // remove the id from questions
+    const questions: NewQuestion[] = questionnaire.questions.map((q) => {
+      const { id, ...rest } = q;
+      return rest;
+    });
+    const newQuestionnaire = await saveNewQuestionnaire({
+      ...questionnaire,
+      questions,
+    });
     console.log(newQuestionnaire);
-    init();
     emits('select', newQuestionnaire);
   } catch (err) {
     handleError(toast, err);
@@ -74,9 +76,10 @@ const create = async (questionnaire: NewQuestionnaire) => {
 const update = async (questionnaire: Questionnaire) => {
   creatingOrUpdating.value = true;
   try {
-    questionnaire.questions = questions.value.map((q) => q.question);
-    const updatedQuestionnaire = await updateQuestionnaire(oldTitle.value, questionnaire);
-    init();
+    const updatedQuestionnaire = await updateQuestionnaire(
+      (props.questionnaire as QuestionnaireDto).id,
+      questionnaire
+    );
     emits('select', updatedQuestionnaire);
   } catch (err) {
     handleError(toast, err);
@@ -84,19 +87,20 @@ const update = async (questionnaire: Questionnaire) => {
     creatingOrUpdating.value = false;
   }
 };
-
-watch(
-  () => questionnaire,
-  (previous, after) => {
-    console.log(previous, after);
-  }
-);
 </script>
 
 <template>
   <div class="flex justify-center">
     <Dialog
       :visible="visible"
+      @show="
+        props.isUpdate
+          ? (tmpQuestionnaire = props.questionnaire)
+          : (tmpQuestionnaire = {
+              ...emptyQuestionnaire,
+              client: client,
+            })
+      "
       @update:visible="$emit('close')"
       closeOnEscape
       modal
@@ -110,7 +114,7 @@ watch(
           <InputText
             class="w-full"
             placeholder="Questionnaire Title"
-            :modelValue="tmpQuestionnaire.title"
+            :model-value="props.questionnaire.title"
             @update:modelValue="(t) => (tmpQuestionnaire.title = t ?? '')"
           />
           <Button
@@ -129,13 +133,11 @@ watch(
         </div>
         <div class="mt-3 space-y-3">
           <QuestionCard
-            :question="item.question"
-            @remove="removeQuestion(item.localId)"
-            v-for="item in questions"
-            :key="item.localId"
-            @updateQuestion="(q) => (item.question.text = q)"
-            @updateAnswer="(a) => (item.question.answer = a)"
-            @updateType="(t) => (item.question.questionType = t)"
+            v-for="question in tmpQuestionnaire.questions"
+            :key="question.id"
+            :question="question"
+            @removeQuestion="removeQuestion(question)"
+            @updateQuestion="(q) => updateQuestion(q)"
           />
         </div>
       </div>
@@ -152,8 +154,8 @@ watch(
             :disabled="creatingOrUpdating"
           />
           <Button
-            :label="isUpdate ? 'Save' : 'Create'"
-            @click="isUpdate ? update(tmpQuestionnaire) : create(tmpQuestionnaire)"
+            :label="props.isUpdate ? 'Save' : 'Create'"
+            @click="props.isUpdate ? update(tmpQuestionnaire) : create(tmpQuestionnaire)"
             :loading="creatingOrUpdating"
             :disabled="creatingOrUpdating"
           />

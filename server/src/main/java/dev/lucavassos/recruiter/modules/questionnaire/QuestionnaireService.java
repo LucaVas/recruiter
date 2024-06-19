@@ -90,17 +90,17 @@ public class QuestionnaireService {
     }
 
     @Transactional
-    public QuestionnaireDto updateQuestionnaire(String title, UpdateQuestionnaireRequest request) {
+    public QuestionnaireDto updateQuestionnaire(Long id, UpdateQuestionnaireRequest request) {
 
-        Questionnaire questionnaire = repository.findByTitle(title).orElseThrow(() -> new ResourceNotFoundException("Questionnaire does not exist"));
+        Questionnaire questionnaire = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Questionnaire does not exist"));
 
         String newTitle = request.getTitle();
 
-        if (!title.equals(newTitle) && repository.existsByClientNameAndTitle(questionnaire.getClient().getName(), newTitle)) {
+        if (!questionnaire.getTitle().equals(newTitle) && repository.existsByClientNameAndTitle(questionnaire.getClient().getName(), newTitle)) {
             throw new DuplicateResourceException("Questionnaire with this title already exists for this client");
         }
 
-        Set<Question> questions = updateQuestions(request, title);
+        Set<Question> questions = updateQuestions(request, questionnaire.getTitle());
 
         questionnaire.setTitle(newTitle);
         questionnaire.setQuestions(questions);
