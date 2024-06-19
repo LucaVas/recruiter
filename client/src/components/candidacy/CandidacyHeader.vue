@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSeverity, getStatusIcon, formatStatus } from '@/components/job/shared/utils';
+import { getSeverity, getStatusIcon, formatStatus } from '@/components/job/utils';
 import type { JobStatus } from '@/stores/job/schema';
 
 const { status, name, client } = defineProps<{
@@ -36,4 +36,3 @@ defineEmits<{
   </div>
   <Divider />
 </template>
-@/components/job/utils

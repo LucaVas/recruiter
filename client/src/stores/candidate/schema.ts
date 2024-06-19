@@ -1,7 +1,6 @@
 export type CandidateStatus = 'ACTIVE' | 'ARCHIVED';
 
-// backend dtos
-export type Candidate = {
+export interface Candidate {
   pan: string;
   name: string;
   phone: string;
@@ -9,14 +8,15 @@ export type Candidate = {
   totalExperience: number;
   education: string;
   currentCtc: number;
+}
+
+//request
+export type NewCandidate = Candidate;
+export type CandidateDto = Candidate & {
   status: CandidateStatus;
   createdAt: Date;
   updatedAt: Date;
 };
 
-//request
-export type NewCandidateRequest = Omit<Candidate, 'status' | 'createdAt' | 'updatedAt'>;
-export type UpdateCandidateRequest = NewCandidateRequest;
-
 // response
-export type CandidateResponse = { pan: string; candidate: Candidate };
+export type CandidateResponse = { pan: string; candidate: CandidateDto };

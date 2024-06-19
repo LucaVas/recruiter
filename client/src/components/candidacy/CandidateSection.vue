@@ -4,11 +4,11 @@ import CandidateTable from './candidate/CandidateTable.vue';
 import { ref } from 'vue';
 import CandidateModal from './candidate/shared/CandidateModal.vue';
 import type { Candidate } from '@/stores/candidate/schema';
-import type { NewCandidateRequest } from '@/stores/candidate/schema';
+import type { NewCandidate } from '@/stores/candidate/schema';
 
 // props
 const { candidate, searchedCandidate, searching } = defineProps<{
-  candidate: Candidate | NewCandidateRequest;
+  candidate: Candidate | NewCandidate;
   searchedCandidate: Candidate | undefined;
   searching: boolean;
 }>();
@@ -16,8 +16,8 @@ const { candidate, searchedCandidate, searching } = defineProps<{
 // emits
 const emits = defineEmits<{
   (e: 'passError', content: string): void;
-  (e: 'selectCandidate', candidate: NewCandidateRequest | null): void;
-  (e: 'update', content: NewCandidateRequest): void;
+  (e: 'selectCandidate', candidate: NewCandidate | null): void;
+  (e: 'update', content: NewCandidate): void;
   (e: 'searchCandidate', identifier: string): void;
 }>();
 
