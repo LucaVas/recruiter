@@ -1,21 +1,19 @@
 package dev.lucavassos.recruiter.modules.candidacy.domain;
 
-import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDto;
-import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import jakarta.annotation.Nullable;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
 public record NewCandidacyRequest(
 
-        @Valid @NotNull
-        JobDto job,
+        @NotNull
+        Long jobId,
 
-        @Valid @NotNull
-        CandidateDto candidate,
+        @NotBlank(message = "Candidate is required")
+        String candidatePan,
 
         @NotNull(message = "Candidate relevant experience is required")
         @Min(value = 0, message = "Candidate relevant experience must be a positive number")

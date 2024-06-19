@@ -68,10 +68,10 @@ public class CandidacyService {
                 .findOneById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Recruiter not found"));
         Job job = jobRepository
-                .findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(candidacy.job().getId(), JobStatus.DELETED)
+                .findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(candidacy.jobId(), JobStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
         Candidate candidate = candidateRepository
-                .findOneByPan(candidacy.candidate().getPan())
+                .findOneByPan(candidacy.candidatePan())
                 .orElseThrow(() -> new ResourceNotFoundException("Candidate not found"));
 
         if (candidacyRepository.existsByJobAndCandidate(job, candidate))

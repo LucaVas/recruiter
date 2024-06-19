@@ -14,12 +14,11 @@ import { ApiError } from '@/utils/types';
 import FilesUploader from '@/components/uploader/FilesUploader.vue';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
-import type { Candidate, NewCandidate } from '@/stores/candidate/schema';
+import type { Candidate } from '@/stores/candidate/schema';
 import Success from '@/components/Success.vue';
 import SearchCandidate from '@/components/candidacy/candidate/SearchCandidate.vue';
 import CandidateTable from '@/components/candidacy/candidate/CandidateTable.vue';
 import CandidateModal from '@/components/candidacy/candidate/shared/CandidateModal.vue';
-import { candidacySubmitted, searchedCandidate, selectedCandidate } from './index';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import type { NewCandidacy } from '@/stores/candidacy/schema';
@@ -30,10 +29,14 @@ const toast = useToast();
 const router = useRouter();
 const loading = ref(false);
 
-const headerModalOpen = ref(false);
-const searching = ref(false);
-const submittingNewCandidacy = ref(false);
 const newCandidateModalOpen = ref(false);
+const headerModalOpen = ref(false);
+
+const searching = ref(false);
+const searchedCandidate = ref<Candidate>();
+
+const submittingNewCandidacy = ref(false);
+const candidacySubmitted = ref(false);
 
 const resume = ref<File>();
 const job = ref<Job>();
@@ -48,18 +51,12 @@ const candidacy = ref<NewCandidacy>({
   recruiterComment: '',
 });
 
-async function submit(selectedCandidate: Candidate | null | undefined) {
-  if (!selectedCandidate || !jobId.value) return;
+async function submit(candidacy: NewCandidacy) {
   submittingNewCandidacy.value = true;
+  if (!job.value) return;
   try {
-    await submitCandidacy(
-      {
-        ...candidacy.value,
-        job: job.value,
-        candidate: selectedCandidate,
-      },
-      resume.value
-    );
+    candidacy.job = job.value;
+    await submitCandidacy(candidacy, resume.value);
     candidacySubmitted.value = true;
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
@@ -130,7 +127,7 @@ onMounted(async () => {
           @close="newCandidateModalOpen = false"
           @save="
             (candidate: Candidate) => {
-              candidacy.candidate = candidate
+              candidacy.candidate = candidate;
               newCandidateModalOpen = false;
             }
           "
@@ -145,7 +142,7 @@ onMounted(async () => {
         <CandidateTable
           v-if="searchedCandidate"
           :candidateToDisplay="searchedCandidate"
-          @selectCandidate="(candidate) => candidacy.candidate = candidate"
+          @selectCandidate="(candidate) => (candidacy.candidate = candidate)"
         />
       </div>
 
@@ -272,7 +269,7 @@ onMounted(async () => {
       :candidacySubmitted="candidacySubmitted"
       :submittingCandidacy="submittingNewCandidacy"
       :isUpdate="false"
-      @submit="submit(selectedCandidate)"
+      @submit="submit(candidacy)"
       @back="candidacySubmitted = false"
     />
   </div>
