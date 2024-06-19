@@ -1,114 +1,3 @@
-<template>
-  <DataTable
-    v-model:filters="filters"
-    filterDisplay="menu"
-    size="small"
-    :globalFilterFields="columns"
-    :value="candidates"
-    stripedRows
-    paginator
-    :rows="10"
-    :loading="loadingTable"
-    dataKey="id"
-    :rowsPerPageOptions="[5, 10, 20, 50]"
-    class="w-full"
-    tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
-  >
-    <template #header>
-      <CandidaciesTableHeader :filters="filters" @clearFilter="clearFilter()" />
-    </template>
-    <template #empty> No candidacies found. </template>
-    <template #loading> Loading candidacies, please wait... </template>
-
-    <Column field="action" header="" class="min-w-fit">
-      <template #body="{ data }">
-        <CommentsModal
-          :loadingComments="loadingComments"
-          :sendingComment="sendingComment"
-          :comments="comments"
-          :visible="openCommentsHistoryModal"
-          @send="(comment) => send(data.job.id, data.candidate.pan, comment)"
-          @close="openCommentsHistoryModal = false"
-        />
-        <DeleteModal
-          :visible="deleteCandidacyModal"
-          :deleting="deletingCandidacy"
-          :message="'Are you sure you want to delete this candidacy?'"
-          @close="deleteCandidacyModal = false"
-          @delete="delCandidacy(data.job.id, data.candidate.pan)"
-        />
-        <DeleteModal
-          :visible="deleteFileModal"
-          :deleting="deletingFile"
-          :message="'Are you sure you want to delete this file?'"
-          @close="
-            {
-              deleteFileModal = false;
-              fileIdToDelete = undefined;
-            }
-          "
-          @delete="delFile(fileIdToDelete)"
-        />
-        <UploadFilesModal
-          :visible="uploadFilesModalOpen"
-          :uploading="uploadingFiles"
-          @upload="(files) => uploadFiles(data.job.id, data.candidate.pan, files)"
-          @close="uploadFilesModalOpen = false"
-        />
-        <CandidacyFilesModal
-          :files="candidacyFiles"
-          :visible="candidacyFilesModalOpen"
-          :loading="loadingFiles"
-          :downloading="downloadingFile"
-          @upload="uploadFilesModalOpen = true"
-          @close="
-            {
-              candidacyFilesModalOpen = false;
-              currentCandidacyFilesModalOpen = undefined;
-            }
-          "
-          @download="(file: CandidacyFile) => downloadFile(file)"
-          @delete="
-            (fileId: number) => {
-              deleteFileModal = true;
-              fileIdToDelete = fileId;
-            }
-          "
-        />
-        <CandidaciesTableActionButtonsColumn
-          :data="data"
-          @seeComments="
-            {
-              openCommentsHistoryModal = true;
-              getComments(data.job.id, data.candidate.pan);
-            }
-          "
-          @delete="deleteCandidacyModal = true"
-          @seeFiles="getFiles(data.job.id, data.candidate.pan)"
-        />
-      </template>
-    </Column>
-    <Column header="Candidate" class="min-w-52">
-      <template #body="{ data }">
-        <CandidacyCandidateCard :candidate="data.candidate" />
-      </template>
-    </Column>
-    <Column header="Job" class="min-w-52">
-      <template #body="{ data }">
-        <CandidacyJobCard :candidacy="data" />
-      </template>
-    </Column>
-    <Column header="Status" class="min-w-52">
-      <template #body="{ data }">
-        <Tag
-          :severity="getCandidacyStatusSeverity(data.status)"
-          :value="getCandidacyStatus(data.status)"
-        ></Tag>
-      </template>
-    </Column>
-  </DataTable>
-</template>
-
 <script setup lang="ts">
 import {
   addCandidacyComment,
@@ -116,7 +5,7 @@ import {
   getCandidacyComments,
   deleteCandidacy,
 } from '@/stores/candidacy';
-import type { Candidacy, CandidacyFile } from '@/stores/candidacy/schema';
+import type { Candidacy, CandidacyDto, CandidacyFile } from '@/stores/candidacy/schema';
 import { ApiError } from '@/utils/types';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
@@ -165,16 +54,16 @@ const uploadingFiles = ref(false);
 const uploadFilesModalOpen = ref(false);
 
 const loadingTable = ref(false);
-const candidates = ref<Candidacy[]>();
+const candidacies = ref<CandidacyDto[]>();
 const comments = ref<CandidacyComment[]>([]);
 const candidacyFiles = ref<CandidacyFile[]>([]);
-const currentCandidacyFilesModalOpen = ref<{ jobId: number; pan: string } | undefined>();
+const currentCandidacyFilesModalOpen = ref<number | undefined>();
 
-const send = async (jobId: number, pan: string, comment: string) => {
+const send = async (id: number, comment: string) => {
   sendingComment.value = true;
   try {
-    await addCandidacyComment(jobId, pan, { text: comment });
-    await getComments(jobId, pan);
+    await addCandidacyComment(id, { text: comment });
+    await getComments(id);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -184,10 +73,10 @@ const send = async (jobId: number, pan: string, comment: string) => {
   }
 };
 
-const getComments = async (jobId: number, pan: string) => {
+const getComments = async (id: number) => {
   loadingComments.value = true;
   try {
-    comments.value = await getCandidacyComments(jobId, pan);
+    comments.value = await getCandidacyComments(id);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -197,10 +86,10 @@ const getComments = async (jobId: number, pan: string) => {
   }
 };
 
-const delCandidacy = async (jobId: number, pan: string) => {
+const delCandidacy = async (id: number) => {
   deletingCandidacy.value = true;
   try {
-    await deleteCandidacy(jobId, pan);
+    await deleteCandidacy(id);
     deletingCandidacy.value = false;
     showSuccess(toast, 'Candidacy deleted successfully');
     await initTable();
@@ -213,12 +102,12 @@ const delCandidacy = async (jobId: number, pan: string) => {
   }
 };
 
-const getFiles = async (jobId: number, pan: string) => {
+const getFiles = async (id: number) => {
   loadingFiles.value = true;
-  currentCandidacyFilesModalOpen.value = { jobId, pan };
+  currentCandidacyFilesModalOpen.value = id;
   try {
     candidacyFilesModalOpen.value = true;
-    candidacyFiles.value = await getCandidacyFiles(jobId, pan);
+    candidacyFiles.value = await getCandidacyFiles(id);
     loadingFiles.value = false;
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
@@ -237,10 +126,7 @@ const delFile = async (fileId: number | undefined) => {
     deletingFile.value = false;
     deleteFileModal.value = false;
     showSuccess(toast, 'File deleted successfully');
-    await getFiles(
-      currentCandidacyFilesModalOpen.value.jobId,
-      currentCandidacyFilesModalOpen.value.pan
-    );
+    await getFiles(currentCandidacyFilesModalOpen.value);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -271,14 +157,14 @@ const downloadFile = async (file: CandidacyFile) => {
   }
 };
 
-const uploadFiles = async (jobId: number, pan: string, files: File[]) => {
+const uploadFiles = async (id: number, files: File[]) => {
   uploadFilesModalOpen.value = true;
   uploadingFiles.value = true;
   try {
-    await uploadFilesToCandidacy(jobId, pan, files);
+    await uploadFilesToCandidacy(id, files);
     showSuccess(toast, 'Files uploaded successfully');
     uploadFilesModalOpen.value = false;
-    await getFiles(jobId, pan);
+    await getFiles(id);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -291,7 +177,7 @@ const uploadFiles = async (jobId: number, pan: string, files: File[]) => {
 async function initTable() {
   loadingTable.value = true;
   try {
-    candidates.value = await getAllCandidacies();
+    candidacies.value = await getAllCandidacies();
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -305,3 +191,115 @@ onMounted(async () => {
   await initTable();
 });
 </script>
+
+<template>
+  <DataTable
+    v-model:filters="filters"
+    filterDisplay="menu"
+    size="small"
+    :globalFilterFields="columns"
+    :value="candidacies"
+    stripedRows
+    paginator
+    :rows="10"
+    :loading="loadingTable"
+    dataKey="id"
+    :rowsPerPageOptions="[5, 10, 20, 50]"
+    class="w-full"
+    tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
+  >
+    <template #header>
+      <CandidaciesTableHeader :filters="filters" @clearFilter="clearFilter()" />
+    </template>
+    <template #empty> No candidacies found. </template>
+    <template #loading> Loading candidacies, please wait... </template>
+
+    <Column field="action" header="" class="min-w-fit">
+      <template #body="{ data }">
+        <CommentsModal
+          :loadingComments="loadingComments"
+          :sendingComment="sendingComment"
+          :comments="comments"
+          :visible="openCommentsHistoryModal"
+          @send="(comment) => send(data.id, comment)"
+          @close="openCommentsHistoryModal = false"
+        />
+        <DeleteModal
+          :visible="deleteCandidacyModal"
+          :deleting="deletingCandidacy"
+          :message="'Are you sure you want to delete this candidacy?'"
+          @close="deleteCandidacyModal = false"
+          @delete="delCandidacy(data.id)"
+        />
+        <DeleteModal
+          :visible="deleteFileModal"
+          :deleting="deletingFile"
+          :message="'Are you sure you want to delete this file?'"
+          @close="
+            {
+              deleteFileModal = false;
+              fileIdToDelete = undefined;
+            }
+          "
+          @delete="delFile(fileIdToDelete)"
+        />
+        <UploadFilesModal
+          :visible="uploadFilesModalOpen"
+          :uploading="uploadingFiles"
+          @upload="(files) => uploadFiles(data.id, files)"
+          @close="uploadFilesModalOpen = false"
+        />
+        <CandidacyFilesModal
+          :files="candidacyFiles"
+          :visible="candidacyFilesModalOpen"
+          :loading="loadingFiles"
+          :downloading="downloadingFile"
+          @upload="uploadFilesModalOpen = true"
+          @close="
+            {
+              candidacyFilesModalOpen = false;
+              currentCandidacyFilesModalOpen = undefined;
+            }
+          "
+          @download="(file: CandidacyFile) => downloadFile(file)"
+          @delete="
+            (fileId: number) => {
+              deleteFileModal = true;
+              fileIdToDelete = fileId;
+            }
+          "
+        />
+        <CandidaciesTableActionButtonsColumn
+          :data="data"
+          @seeComments="
+            {
+              openCommentsHistoryModal = true;
+              console.log(data.id)
+              getComments(data.id);
+            }
+          "
+          @delete="deleteCandidacyModal = true"
+          @seeFiles="getFiles(data.id)"
+        />
+      </template>
+    </Column>
+    <Column header="Candidate" class="min-w-52">
+      <template #body="{ data }">
+        <CandidacyCandidateCard :candidate="data.candidate" />
+      </template>
+    </Column>
+    <Column header="Job" class="min-w-52">
+      <template #body="{ data }">
+        <CandidacyJobCard :candidacy="data" />
+      </template>
+    </Column>
+    <Column header="Status" class="min-w-52">
+      <template #body="{ data }">
+        <Tag
+          :severity="getCandidacyStatusSeverity(data.status)"
+          :value="getCandidacyStatus(data.status)"
+        ></Tag>
+      </template>
+    </Column>
+  </DataTable>
+</template>

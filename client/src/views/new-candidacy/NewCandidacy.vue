@@ -38,7 +38,7 @@ const searchedCandidate = ref<Candidate>();
 const submittingNewCandidacy = ref(false);
 const candidacySubmitted = ref(false);
 
-const resume = ref<File>();
+const candidacyFiles = ref<File[]>([]);
 const job = ref<Job>();
 const candidacy = ref<NewCandidacy>({
   candidate: {} as Candidate,
@@ -56,7 +56,7 @@ async function submit(candidacy: NewCandidacy) {
   if (!job.value) return;
   try {
     candidacy.job = job.value;
-    await submitCandidacy(candidacy, resume.value);
+    await submitCandidacy(candidacy, candidacyFiles.value);
     candidacySubmitted.value = true;
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
@@ -247,8 +247,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-
-      <FilesUploader @addFile="(files: File[]) => (resume = files[0])" />
+      <FilesUploader @addFiles="(files: File[]) => { candidacyFiles = files}" />
     </div>
 
     <Success
@@ -273,5 +272,4 @@ onMounted(async () => {
       @back="candidacySubmitted = false"
     />
   </div>
-  {{ candidacy }}
 </template>

@@ -5,17 +5,16 @@ import {
   type NewCandidacyCommentRequest,
   type NewCandidacy,
   type UpdateCandidacy,
+  type CandidacyDto,
 } from './schema';
 import axiosApi from '../api';
 
 const api = axiosApi();
 const baseApi = '/candidacies';
 
-export async function submitCandidacy(
-  candidacy: NewCandidacy,
-  file: File | undefined
-): Promise<void> {
-  if (candidacy.candidate === null || !candidacy.candidate.pan) throw new Error('Candidate is required');
+export async function submitCandidacy(candidacy: NewCandidacy, files: File[] | []): Promise<void> {
+  if (candidacy.candidate === null || !candidacy.candidate.pan)
+    throw new Error('Candidate is required');
   const formData = new FormData();
   formData.append('jobId', candidacy.job.id.toString());
   formData.append('candidatePan', candidacy.candidate.pan);
@@ -25,7 +24,9 @@ export async function submitCandidacy(
   formData.append('actualNoticePeriod', candidacy.actualNoticePeriod.toString());
   formData.append('reasonForQuickJoin', candidacy.reasonForQuickJoin);
   formData.append('recruiterComment', candidacy.recruiterComment);
-  if (file !== undefined) formData.append('resume', file);
+  files.forEach((file) => {
+    formData.append('files', file);
+  });
 
   await api.post(`${baseApi}`, formData, {
     headers: {
@@ -34,64 +35,52 @@ export async function submitCandidacy(
   });
 }
 
-export const uploadFilesToCandidacy = async (
-  jobId: number,
-  pan: string,
-  files: File[]
-): Promise<void> => {
+export const uploadFilesToCandidacy = async (id: number, files: File[]): Promise<void> => {
   const formData = new FormData();
   files.forEach((file) => {
     formData.append('files', file);
   });
 
-  await api.post(`${baseApi}/job=${jobId}&candidate=${pan}/files`, formData, {
+  await api.post(`${baseApi}/${id}/files`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
 };
 
-export async function updateCandidacy(
-  jobId: number,
-  pan: string,
-  candidacy: UpdateCandidacy
-): Promise<Candidacy> {
-  const { data } = await api.put(`${baseApi}/job=${jobId}&candidate=${pan}`, candidacy);
+export async function updateCandidacy(id: number, candidacy: UpdateCandidacy): Promise<Candidacy> {
+  const { data } = await api.put(`${baseApi}/${id}`, candidacy);
   return data;
 }
 
-export async function getCandidacy(jobId: number, pan: string): Promise<Candidacy> {
-  const { data } = await api.get(`${baseApi}/job=${jobId}&candidate=${pan}`);
+export async function getCandidacy(id: number): Promise<Candidacy> {
+  const { data } = await api.get(`${baseApi}/${id}`);
   return data;
 }
 
-export async function getAllCandidacies(): Promise<Candidacy[]> {
+export async function getAllCandidacies(): Promise<CandidacyDto[]> {
   const { data } = await api.get(`${baseApi}`);
   return data;
 }
 
-export async function getCandidacyComments(
-  jobId: number,
-  pan: string
-): Promise<CandidacyComment[]> {
-  const { data } = await api.get(`${baseApi}/job=${jobId}&candidate=${pan}/comments`);
+export async function getCandidacyComments(id: number): Promise<CandidacyComment[]> {
+  const { data } = await api.get(`${baseApi}/${id}/comments`);
   return data;
 }
 
 export async function addCandidacyComment(
-  jobId: number,
-  pan: string,
+  id: number,
   comment: NewCandidacyCommentRequest
 ): Promise<void> {
-  await api.post(`${baseApi}/job=${jobId}&candidate=${pan}/comments`, comment);
+  await api.post(`${baseApi}/${id}/comments`, comment);
 }
 
-export const deleteCandidacy = async (jobId: number, pan: string): Promise<void> => {
-  await api.delete(`${baseApi}/job=${jobId}&candidate=${pan}`);
+export const deleteCandidacy = async (id: number): Promise<void> => {
+  await api.delete(`${baseApi}/${id}`);
 };
 
-export const getCandidacyFiles = async (jobId: number, pan: string): Promise<CandidacyFile[]> => {
-  const { data } = await api.get(`${baseApi}/job=${jobId}&candidate=${pan}/files`);
+export const getCandidacyFiles = async (id: number): Promise<CandidacyFile[]> => {
+  const { data } = await api.get(`${baseApi}/${id}/files`);
   return data;
 };
 

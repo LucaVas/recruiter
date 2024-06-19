@@ -2,7 +2,7 @@ import { apiBase } from '@/config';
 import { getStoredAccessToken } from '@/utils/auth';
 import { ApiError } from '@/utils/types';
 import axios, { type RawAxiosRequestHeaders } from 'axios';
-import { isLoggedIn, logout } from './auth';
+import { logout } from './auth';
 
 export default () => {
   let headers: RawAxiosRequestHeaders = {
@@ -58,7 +58,7 @@ export default () => {
           return;
         }
 
-        if (message.includes('JWT') || message.includes('Access denied')) {
+        if ((message && message.includes('JWT')) || message.includes('Access denied')) {
           logoutProcess();
           return;
         }

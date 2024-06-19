@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public final class CandidacyDto {
+    private final Long id;
     private final JobDto job;
     private final RecruiterDto recruiter;
     private final CandidateDto candidate;
