@@ -1,64 +1,3 @@
-<template>
-  <div class="flex w-full flex-col gap-8 pb-6">
-    <div class="flex h-full w-full flex-col gap-6">
-      <div v-if="job">
-        <CandidacyHeader
-          :status="job.status"
-          :client="job.client.name"
-          :name="job.name"
-          @openModal="headerModalOpen = true"
-        />
-        <CandidacyHiringDetailsModal
-          :visible="headerModalOpen"
-          @close="headerModalOpen = false"
-          :job="job"
-        />
-      </div>
-
-      <CandidateSection
-        :searching="searchingForCandidate"
-        :candidate="candidate"
-        :searchedCandidate="searchedCandidate"
-        :candidateCreated="candidateCreated"
-        @update="(candidateForm) => createNewCandidate(candidateForm)"
-        @searchCandidate="(identifier) => searchCandidate(identifier)"
-        @selectCandidate="(candidate) => selectCandidate(candidate, searchedCandidate)"
-      />
-
-      <HiringDetails
-        :candidacy="candidacy"
-        @input="(details) => (candidacy = details)"
-        :is-archived="false"
-      />
-
-      <RemarksAndComments
-        :candidacy="candidacy"
-        @input="(details) => (candidacy = details)"
-        :is-archived="false"
-      />
-
-      <FilesUploader @addFile="(files: File[]) => (resume = files[0])" />
-    </div>
-
-    <Success
-      :visible="candidacySubmitted"
-      title="Candidacy submitted"
-      message="Candidacy submitted successfully!"
-      @close="{candidacySubmitted = false; router.push({ name: 'CandidaciesPage' })}"
-    />
-
-    <CandidacyFooter
-      v-if="job"
-      :disabled="job.status === 'ARCHIVED'"
-      :candidacySubmitted="candidacySubmitted"
-      :submittingCandidacy="submittingNewCandidacy"
-      :isUpdate="false"
-      @submit="submit(selectedCandidate)"
-      @back="candidacySubmitted = false"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
 import CandidateSection from '@/components/candidacy/CandidateSection.vue';
 import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
@@ -74,15 +13,12 @@ import RemarksAndComments from '@/components/candidacy/RemarksAndComments.vue';
 import FilesUploader from '@/components/uploader/FilesUploader.vue';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
-import { createCandidate } from '@/stores/candidate/';
-import type { Candidate } from '@/stores/candidate/schema';
+import type { Candidate, NewCandidate } from '@/stores/candidate/schema';
 import Success from '@/components/Success.vue';
-import type { NewCandidateRequest } from '@/stores/candidate/schema';
 import {
   submittingNewCandidacy,
   candidacy,
   candidacySubmitted,
-  creatingCandidate,
   searchedCandidate,
   candidateCreated,
   searchingForCandidate,
@@ -121,21 +57,6 @@ async function submit(selectedCandidate: Candidate | null | undefined) {
   }
 }
 
-async function createNewCandidate(candidate: NewCandidateRequest) {
-  creatingCandidate.value = true;
-  try {
-    const res = await createCandidate(candidate);
-    searchedCandidate.value = res.candidate;
-    candidateCreated.value = true;
-  } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message, err.title);
-    else if (err instanceof Error) showError(toast, err.message);
-    else showError(toast, DEFAULT_SERVER_ERROR);
-  } finally {
-    creatingCandidate.value = false;
-  }
-}
-
 async function searchCandidate(identifier: string) {
   searchingForCandidate.value = true;
   try {
@@ -151,7 +72,7 @@ async function searchCandidate(identifier: string) {
 }
 
 function selectCandidate(
-  candidate: Candidate | NewCandidateRequest | null,
+  candidate: Candidate | NewCandidate | null,
   searchedCandidate: Candidate | undefined
 ): void {
   if (!candidate || !searchedCandidate) return;
@@ -164,3 +85,64 @@ onMounted(async () => {
   job.value = await getJob(jobId.value);
 });
 </script>
+
+
+<template>
+  <div class="flex w-full flex-col gap-8 pb-6">
+    <div class="flex h-full w-full flex-col gap-6">
+      <div v-if="job">
+        <CandidacyHeader
+          :status="job.status"
+          :client="job.client.name"
+          :name="job.name"
+          @openModal="headerModalOpen = true"
+        />
+        <CandidacyHiringDetailsModal
+          :visible="headerModalOpen"
+          @close="headerModalOpen = false"
+          :job="job"
+        />
+      </div>
+
+      <CandidateSection
+        :searching="searchingForCandidate"
+        :candidate="candidate"
+        :searchedCandidate="searchedCandidate"
+        :candidateCreated="candidateCreated"
+        @searchCandidate="(identifier) => searchCandidate(identifier)"
+        @selectCandidate="(candidate) => selectCandidate(candidate, searchedCandidate)"
+      />
+
+      <HiringDetails
+        :candidacy="candidacy"
+        @input="(details) => (candidacy = details)"
+        :is-archived="false"
+      />
+
+      <RemarksAndComments
+        :candidacy="candidacy"
+        @input="(details) => (candidacy = details)"
+        :is-archived="false"
+      />
+
+      <FilesUploader @addFile="(files: File[]) => (resume = files[0])" />
+    </div>
+
+    <Success
+      :visible="candidacySubmitted"
+      title="Candidacy submitted"
+      message="Candidacy submitted successfully!"
+      @close="{candidacySubmitted = false; router.push({ name: 'CandidaciesPage' })}"
+    />
+
+    <CandidacyFooter
+      v-if="job"
+      :disabled="job.status === 'ARCHIVED'"
+      :candidacySubmitted="candidacySubmitted"
+      :submittingCandidacy="submittingNewCandidacy"
+      :isUpdate="false"
+      @submit="submit(selectedCandidate)"
+      @back="candidacySubmitted = false"
+    />
+  </div>
+</template>

@@ -1,12 +1,10 @@
-import { type Candidate, type CandidateResponse, type NewCandidateRequest } from './schema';
+import { type Candidate, type CandidateResponse, type NewCandidate } from './schema';
 import axiosApi from '../api';
 
 const api = axiosApi();
 const baseApi = '/candidates';
 
-export async function createCandidate(
-  newCandidate: NewCandidateRequest
-): Promise<CandidateResponse> {
+export async function createCandidate(newCandidate: NewCandidate): Promise<CandidateResponse> {
   const { data } = await api.post(`${baseApi}`, newCandidate);
   return data;
 }
@@ -16,7 +14,7 @@ export async function findCandidate(identifier: string): Promise<CandidateRespon
   return data;
 }
 
-export async function updateCandidate(candidate: NewCandidateRequest) {
+export async function updateCandidate(candidate: NewCandidate) {
   const { data } = await api.put(`${baseApi}`, candidate);
   return data;
 }
