@@ -27,7 +27,12 @@ const oldTitle = ref(props.questionnaire.title);
 const creatingOrUpdating = ref(false);
 const toast = useToast();
 
-const tmpQuestionnaire = ref(props.questionnaire);
+const emptyQuestionnaire = ref<Questionnaire>({
+  title: '',
+  questions: [],
+  client: props.client,
+});
+const tmpQuestionnaire = ref(emptyQuestionnaire.value);
 
 const createQuestion = () => {
   tmpQuestionnaire.value.questions.push({
@@ -87,13 +92,12 @@ const update = async (questionnaire: Questionnaire) => {
     <Dialog
       :visible="visible"
       @show="
-        questionnaire.title !== ''
-          ? (tmpQuestionnaire = questionnaire)
+        props.isUpdate
+          ? (tmpQuestionnaire = props.questionnaire)
           : (tmpQuestionnaire = {
-              ...tmpQuestionnaire,
+              ...emptyQuestionnaire,
               client: client,
             });
-        console.log(tmpQuestionnaire);
       "
       @update:visible="$emit('close')"
       closeOnEscape
