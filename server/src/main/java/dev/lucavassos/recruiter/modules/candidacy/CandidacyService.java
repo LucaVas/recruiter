@@ -24,7 +24,7 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
-import dev.lucavassos.recruiter.service.storage.ResumeHandler;
+import dev.lucavassos.recruiter.service.storage.CandidacyFilesHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -55,7 +55,7 @@ public class CandidacyService {
     private final CandidacyCommentRepository candidacyCommentRepository;
     private final CandidacyCommentDtoMapper candidacyCommentDtoMapper;
     private final MonitoringProcessor monitoringProcessor;
-    private final ResumeHandler resumeHandler;
+    private final CandidacyFilesHandler candidacyFilesHandler;
 
     @Transactional
     public void addCandidacy(NewCandidacyRequest candidacy) {
@@ -77,7 +77,8 @@ public class CandidacyService {
         if (candidacyRepository.existsByJobAndCandidate(job, candidate))
             throw new RequestValidationException("Candidacy already exists");
 
-        if (candidacy.resume() != null) validateFile(candidacy.resume());
+        if (candidacy.files() != null && !candidacy.files().isEmpty())
+            candidacy.files().forEach(this::validateFile);
 
         Candidacy newCandidacy = Candidacy.builder()
                 .job(job)
@@ -102,25 +103,27 @@ public class CandidacyService {
         Candidacy saved = saveCandidacy(newCandidacy);
         monitoringProcessor.incrementCandidaciesCounter();
 
-        if (candidacy.resume() != null) {
+        if (candidacy.files() != null && !candidacy.files().isEmpty()) {
+            candidacy.files().forEach(file -> {
             UUID uniqueId = UUID.randomUUID();
             try {
-                resumeHandler.uploadResume(candidacy.resume().getInputStream(),
+                candidacyFilesHandler.upload(file.getInputStream(),
                         candidate.getPan(),
                         job.getId(),
-                        candidacy.resume().getOriginalFilename());
-                CandidacyFile file = CandidacyFile.builder()
-                        .type(candidacy.resume().getContentType())
-                        .name(candidacy.resume().getOriginalFilename())
+                        file.getOriginalFilename());
+                CandidacyFile newFile = CandidacyFile.builder()
+                        .type(file.getContentType())
+                        .name(file.getOriginalFilename())
                         .uniqueId(uniqueId)
                         .candidacy(newCandidacy)
                         .build();
-                candidacyFileRepository.save(file);
+                candidacyFileRepository.save(newFile);
             } catch (IOException ioe) {
-                throw new ServerException("Error while uploading resume");
+                throw new ServerException("Error while uploading candidacy file");
             } catch (Exception e) {
                 throw new DatabaseException("Error while saving candidacy file");
             }
+            });
         }
 
     }
@@ -248,9 +251,9 @@ public class CandidacyService {
             throw new AccessDeniedException("Recruiter is unauthorized to delete this file");
 
         try {
-            resumeHandler.deleteResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
+            candidacyFilesHandler.delete(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
         } catch (Exception e) {
-            throw new ServerException("Error while deleting resume");
+            throw new ServerException("Error while deleting candidacy file");
         }
 
         try {
@@ -272,7 +275,7 @@ public class CandidacyService {
         if (!isUserAuthorized(user, candidacy))
             throw new AccessDeniedException("Recruiter is unauthorized to get this file");
 
-        return resumeHandler.getResume(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
+        return candidacyFilesHandler.get(candidacy.getCandidate().getPan(), candidacy.getJob().getId(), file.getName());
     }
 
     @Transactional
@@ -305,7 +308,7 @@ public class CandidacyService {
             validateFile(file);
             UUID uniqueId = UUID.randomUUID();
             try {
-                resumeHandler.uploadResume(file.getInputStream(),
+                candidacyFilesHandler.upload(file.getInputStream(),
                         candidacy.getCandidate().getPan(),
                         candidacy.getJob().getId(),
                         file.getOriginalFilename());
@@ -317,7 +320,7 @@ public class CandidacyService {
                         .build();
                 candidacyFileRepository.save(newFile);
             } catch (IOException ioe) {
-                throw new ServerException("Error while uploading resume");
+                throw new ServerException("Error while uploading candidacy file");
             } catch (Exception e) {
                 throw new DatabaseException("Error while saving candidacy file");
             }

@@ -9,27 +9,27 @@ import java.io.InputStream;
 
 @Slf4j
 @Service
-public class ResumeHandler {
+public class CandidacyFilesHandler {
 
     @Autowired
     private StorageService storageService;
 
-    public void uploadResume(InputStream fileStream, String candidatePan, Long jobId, String fileName) {
+    public void upload(InputStream fileStream, String candidatePan, Long jobId, String fileName) {
         String filePath = getFilePath(candidatePan, jobId, fileName);
         storageService.upload(filePath, fileStream);
-        log.info("Resume uploaded successfully to {}", filePath);
+        log.info("File uploaded successfully to {}", filePath);
     }
 
-    public void deleteResume(String candidatePan, Long jobId, String fileName) {
+    public void delete(String candidatePan, Long jobId, String fileName) {
         String filePath = getFilePath(candidatePan, jobId, fileName);
         boolean deleted = storageService.delete(filePath);
         if (!deleted) {
-            log.error("Error while deleting resume at {}", filePath);
-            throw new ServerException("Error while deleting resume. Please try again later.");
-        } else log.info("Resume deleted successfully at {}", filePath);
+            log.error("Error while deleting file at {}", filePath);
+            throw new ServerException("Error while deleting file. Please try again later.");
+        } else log.info("File deleted successfully at {}", filePath);
     }
 
-    public byte[] getResume(String candidatePan, Long jobId, String fileName) {
+    public byte[] get(String candidatePan, Long jobId, String fileName) {
         return storageService.getFile(getFilePath(candidatePan, jobId, fileName));
     }
 

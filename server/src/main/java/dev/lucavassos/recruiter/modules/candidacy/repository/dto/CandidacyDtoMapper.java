@@ -21,6 +21,7 @@ public class CandidacyDtoMapper implements Function<Candidacy, CandidacyDto> {
     @Override
     public CandidacyDto apply(Candidacy candidacy) {
         return CandidacyDto.builder()
+                .id(candidacy.getId())
                 .job(jobDtoMapper.apply(candidacy.getJob()))
                 .recruiter(new RecruiterDto(
                         candidacy.getRecruiter().getId(),
