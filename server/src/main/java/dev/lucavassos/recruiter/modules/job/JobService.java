@@ -126,65 +126,79 @@ public class JobService {
             throw new AccessDeniedException("Recruiter is unauthorized to modify this job");
         }
 
-
-        if (!request.client().equals(job.getClient())) {
+        if (!request.client().getName().equals(job.getClient().getName())) {
             job.setClient(client);
+            log.info("Client updated: {}", client);
             changes = true;
         }
         if (request.name() != null && !request.name().equals(job.getName())) {
             job.setName(request.name());
+            log.info("Name updated: {}", request.name());
             changes = true;
         }
         if (request.status() != null && !request.status().equals(job.getStatus())) {
             job.setStatus(request.status());
+            log.info("Status updated: {}", request.status());
             changes = true;
         }
         if (request.contractType() != null && !request.contractType().equals(job.getContractType())) {
             job.setContractType(request.contractType());
+            log.info("Contract type updated: {}", request.contractType());
             changes = true;
         }
         if (request.wantedCvs() != null && !request.wantedCvs().equals(job.getWantedCvs())) {
             job.setWantedCvs(request.wantedCvs());
+            log.info("Wanted CVs updated: {}", request.wantedCvs());
             changes = true;
         }
         if (request.experienceRangeMin() != null && !request.experienceRangeMin().equals(job.getExperienceRangeMin())) {
             job.setExperienceRangeMin(request.experienceRangeMin());
+            log.info("Experience range min updated: {}", request.experienceRangeMin());
             changes = true;
         }
         if (request.experienceRangeMax() != null && !request.experienceRangeMax().equals(job.getExperienceRangeMax())) {
             job.setExperienceRangeMax(request.experienceRangeMax());
+            log.info("Experience range max updated: {}", request.experienceRangeMax());
             changes = true;
         }
         if (request.noticePeriodInDays() != null && !request.noticePeriodInDays().equals(job.getNoticePeriodInDays())) {
             job.setNoticePeriodInDays(request.noticePeriodInDays());
+            log.info("Notice period in days updated: {}", request.noticePeriodInDays());
             changes = true;
         }
         if (request.salaryBudget() != null && !request.salaryBudget().equals(job.getSalaryBudget())) {
             job.setSalaryBudget(request.salaryBudget());
+            log.info("Salary budget updated: {}", request.salaryBudget());
             changes = true;
         }
         if (request.currency() != null && !request.currency().equals(job.getCurrency())) {
             job.setCurrency(request.currency());
+            log.info("Currency updated: {}", request.currency());
             changes = true;
         }
         if (request.description() != null && !request.description().equals(job.getDescription())) {
             job.setDescription(request.description());
+            log.info("Description updated: {}", request.description());
             changes = true;
         }
         if (request.bonusPayPerCv() != null && !request.bonusPayPerCv().equals(job.getBonusPayPerCv())) {
             job.setBonusPayPerCv(request.bonusPayPerCv());
+            log.info("Bonus pay per CV updated: {}", request.bonusPayPerCv());
             changes = true;
         }
         if (request.closureBonus() != null && !request.closureBonus().equals(job.getClosureBonus())) {
             job.setClosureBonus(request.closureBonus());
+            log.info("Closure bonus updated: {}", request.closureBonus());
             changes = true;
         }
         if (request.closureBonusPaymentDate() != null && !request.closureBonusPaymentDate().equals(job.getClosureBonusPaymentDate())) {
             job.setClosureBonusPaymentDate(request.closureBonusPaymentDate());
+            log.info("Closure bonus payment date updated: {}", request.closureBonusPaymentDate());
             changes = true;
         }
         if (request.cvRatePaymentDate() != null && !request.cvRatePaymentDate().equals(job.getCvRatePaymentDate())) {
             job.setCvRatePaymentDate(request.cvRatePaymentDate());
+            log.info("CV rate payment date updated: {}", request.cvRatePaymentDate());
             changes = true;
         }
         if (request.skills() != null) {
@@ -192,14 +206,18 @@ public class JobService {
                     .findAllById(request.skills().stream().map(SkillDto::getId).collect(Collectors.toSet())));
             if (!skills.equals(job.getSkills())) {
                 job.setSkills(skills);
+                log.info("Skills updated: {}", skills);
                 changes = true;
             }
         }
+
         job.setQuestionnaire(questionnaire);
+
 
         if (!changes) {
             throw new RequestValidationException("No changes made to the job.");
         }
+
         saveJob(job);
         saveJobInHistoryTable(job, recruiter);
 

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 public record UpdateJobRequest(
         @NotNull Long id,
@@ -43,7 +43,9 @@ public record UpdateJobRequest(
         @Min(value = 0, message = "Job notice period in days must be a positive number")
         Integer noticePeriodInDays,
 
-        List<SkillDto> skills,
+        @Valid
+        @NotEmpty(message = "Job must have at least one skill")
+        Set<SkillDto> skills,
 
         @NotNull(message = "Job salary budget is required")
         @Min(value = 1, message = "Job salary budget must be a greater than 0")
