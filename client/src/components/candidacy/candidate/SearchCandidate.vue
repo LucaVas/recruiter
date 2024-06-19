@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
+import { ref } from 'vue';
+
+const emits = defineEmits<{
+  (e: 'search', identifier: string): void;
+  (e: 'openNewCandidateModal'): void;
+}>();
+
+const { searching } = defineProps<{
+  searching: boolean;
+}>();
+
+const identifier = ref('');
+</script>
+
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex flex-col gap-2 sm:flex-row">
@@ -34,22 +53,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
-import { ref } from 'vue';
-
-const emits = defineEmits<{
-  (e: 'search', identifier: string): void;
-  (e: 'openNewCandidateModal'): void;
-}>();
-
-const { searching } = defineProps<{
-  searching: boolean;
-}>();
-
-const identifier = ref('');
-</script>
