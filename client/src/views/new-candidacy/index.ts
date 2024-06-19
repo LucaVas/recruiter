@@ -1,5 +1,5 @@
-import type { NewCandidacyRequest, RawCandidacy } from '@/stores/candidacy/schema';
-import type { Candidate, NewCandidateRequest } from '@/stores/candidate/schema';
+import type { NewCandidacy } from '@/stores/candidacy/schema';
+import type { Candidate } from '@/stores/candidate/schema';
 import type { Job } from '@/stores/job/schema';
 import { ref } from 'vue';
 
@@ -16,30 +16,10 @@ export const searchedCandidate = ref<Candidate>();
 export const creatingCandidate = ref(false);
 export const candidateCreated = ref(false);
 
-export const resume = ref<File>();
-export const candidacy = ref<RawCandidacy>({
-  relevantExperience: 0,
-  expectedCtc: 0,
-  officialNoticePeriod: 0,
-  actualNoticePeriod: 0,
-  reasonForQuickJoin: '',
-  recruiterComment: '',
-});
-
-export const candidate = ref<NewCandidateRequest>({
-  name: '',
-  phone: '',
-  email: '',
-  pan: '',
-  totalExperience: 0,
-  education: '',
-  currentCtc: 0,
-});
-
 export function formToNewCandidacy(
   candidacyDetails: any,
   candidateSelectedId: number
-): NewCandidacyRequest {
+): NewCandidacy {
   return {
     ...candidacyDetails,
     jobId: Number(candidacyDetails.jobId),

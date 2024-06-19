@@ -13,7 +13,7 @@ import { DEFAULT_SERVER_ERROR } from '@/consts';
 import { useToast } from 'primevue/usetoast';
 
 const props = defineProps<{
-  candidate: Candidate;
+  candidate: Candidate | null;
   visible: boolean;
   isUpdate: boolean;
 }>();
@@ -37,7 +37,6 @@ async function create(candidate: NewCandidate) {
 }
 
 const emits = defineEmits<{
-  (e: 'update', content: NewCandidate): void;
   (e: 'close'): void;
   (e: 'save', candidate: Candidate): void;
 }>();
@@ -49,7 +48,7 @@ const emptyCandidate = ref<NewCandidate>({
   email: '',
   totalExperience: 0,
   education: '',
-  currentCtc: 0
+  currentCtc: 0,
 });
 const tmpCandidate = ref(emptyCandidate.value);
 </script>
@@ -60,10 +59,10 @@ const tmpCandidate = ref(emptyCandidate.value);
       v-if="tmpCandidate"
       :visible="props.visible"
       @show="
-        props.isUpdate
+        props.isUpdate && props.candidate
           ? (tmpCandidate = props.candidate)
           : (tmpCandidate = {
-              ...emptyCandidate
+              ...emptyCandidate,
             })
       "
       @update:visible="$emit('close')"
@@ -77,12 +76,7 @@ const tmpCandidate = ref(emptyCandidate.value);
           <InputGroupAddon>
             <i class="pi pi-user"></i>
           </InputGroupAddon>
-          <InputText
-            placeholder="Name"
-            autocomplete="off"
-            v-model="tmpCandidate.name"
-            @input="emits('update', tmpCandidate)"
-          />
+          <InputText placeholder="Name" autocomplete="off" v-model="tmpCandidate.name" />
         </InputGroup>
 
         <InputGroup>
@@ -95,7 +89,6 @@ const tmpCandidate = ref(emptyCandidate.value);
             mask="(999) 999-9999"
             placeholder="Phone"
             :unmask="true"
-            @input="emits('update', tmpCandidate)"
           />
         </InputGroup>
 
@@ -108,7 +101,6 @@ const tmpCandidate = ref(emptyCandidate.value);
             autocomplete="off"
             type="email"
             v-model="tmpCandidate.email"
-            @input="emits('update', tmpCandidate)"
           />
         </InputGroup>
 
@@ -120,7 +112,6 @@ const tmpCandidate = ref(emptyCandidate.value);
             placeholder="Pan"
             autocomplete="off"
             v-model="tmpCandidate.pan"
-            @input="isUpdate ? null : emits('update', tmpCandidate)"
             :disabled="isUpdate"
           />
         </InputGroup>
@@ -129,12 +120,7 @@ const tmpCandidate = ref(emptyCandidate.value);
           <InputGroupAddon>
             <i class="pi pi-book"></i>
           </InputGroupAddon>
-          <InputText
-            placeholder="Education"
-            autocomplete="off"
-            v-model="tmpCandidate.education"
-            @input="emits('update', tmpCandidate)"
-          />
+          <InputText placeholder="Education" autocomplete="off" v-model="tmpCandidate.education" />
         </InputGroup>
 
         <div class="flex flex-col gap-2">
@@ -151,7 +137,6 @@ const tmpCandidate = ref(emptyCandidate.value);
                 :min="0"
                 :max="50"
                 v-model="tmpCandidate.totalExperience"
-                @input="emits('update', tmpCandidate)"
               />
               <InputGroupAddon>Years</InputGroupAddon>
             </InputGroup>
@@ -165,7 +150,6 @@ const tmpCandidate = ref(emptyCandidate.value);
                 autocomplete="off"
                 :min="0"
                 v-model="tmpCandidate.currentCtc"
-                @input="emits('update', tmpCandidate)"
               />
               <InputGroupAddon>INR</InputGroupAddon>
             </InputGroup>

@@ -5,15 +5,14 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
 public record NewCandidacyRequest(
 
-        @NotNull Long jobId,
+        @NotNull
+        Long jobId,
 
-        @NotBlank(message = "Candidate pan is required")
-        @Length(min = 10, max = 10, message = "Candidate pan must have 10 characters")
+        @NotBlank(message = "Candidate is required")
         String candidatePan,
 
         @NotNull(message = "Candidate relevant experience is required")

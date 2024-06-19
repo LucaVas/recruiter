@@ -3,28 +3,28 @@ import {
   type CandidacyComment,
   type CandidacyFile,
   type NewCandidacyCommentRequest,
-  type NewCandidacyRequest,
-  type UpdateCandidacyRequest,
+  type NewCandidacy,
+  type UpdateCandidacy,
 } from './schema';
 import axiosApi from '../api';
 
 const api = axiosApi();
-const baseApi = '/candidacies'
+const baseApi = '/candidacies';
 
 export async function submitCandidacy(
-  candidacy: NewCandidacyRequest,
+  candidacy: NewCandidacy,
   file: File | undefined
 ): Promise<void> {
+  if (candidacy.candidate === null || !candidacy.candidate.pan) throw new Error('Candidate is required');
   const formData = new FormData();
-  formData.append('jobId', candidacy.jobId.toString());
-  formData.append('candidatePan', candidacy.candidatePan);
+  formData.append('jobId', candidacy.job.id.toString());
+  formData.append('candidatePan', candidacy.candidate.pan);
   formData.append('relevantExperience', candidacy.relevantExperience.toString());
   formData.append('expectedCtc', candidacy.expectedCtc.toString());
   formData.append('officialNoticePeriod', candidacy.officialNoticePeriod.toString());
   formData.append('actualNoticePeriod', candidacy.actualNoticePeriod.toString());
   formData.append('reasonForQuickJoin', candidacy.reasonForQuickJoin);
   formData.append('recruiterComment', candidacy.recruiterComment);
-  if (candidacy.status) formData.append('status', candidacy.status.toString());
   if (file !== undefined) formData.append('resume', file);
 
   await api.post(`${baseApi}`, formData, {
@@ -54,7 +54,7 @@ export const uploadFilesToCandidacy = async (
 export async function updateCandidacy(
   jobId: number,
   pan: string,
-  candidacy: UpdateCandidacyRequest
+  candidacy: UpdateCandidacy
 ): Promise<Candidacy> {
   const { data } = await api.put(`${baseApi}/job=${jobId}&candidate=${pan}`, candidacy);
   return data;

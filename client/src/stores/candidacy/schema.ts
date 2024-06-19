@@ -1,23 +1,19 @@
 import type { Candidate } from '../candidate/schema';
 import type { Job } from '../job/schema';
-import type { Recruiter, User } from '../user/schema';
+import type { User } from '../user/schema';
 
 export type CandidacyStatus = 'SENT_TO_CLIENT' | 'REJECTED' | 'ACCEPTED';
 
-export type Candidacy = {
-  job: Job;
-  recruiter: Recruiter;
+export interface Candidacy {
   candidate: Candidate;
+  job: Job;
   relevantExperience: number;
   expectedCtc: number;
   officialNoticePeriod: number;
   actualNoticePeriod: number;
   reasonForQuickJoin: string;
   recruiterComment: string;
-  status?: CandidacyStatus;
-  updatedAt: Date;
-  createdAt: Date;
-};
+}
 
 export type CandidacyComment = {
   id: number;
@@ -37,11 +33,16 @@ export type CandidacyFile = {
 };
 
 // request
-export type UpdateCandidacyRequest = Omit<
-  Candidacy,
-  'id' | 'createdAt' | 'updatedAt' | 'recruiter' | 'job' | 'candidate'
->;
-export type NewCandidacyRequest = UpdateCandidacyRequest & { jobId: number; candidatePan: string };
+export type UpdateCandidacy = Candidacy & { id: number };
+export type NewCandidacy = Omit<Candidacy, 'candidate'> & { candidate: Candidate | null };
+export type CandidacyDto = Candidacy & {
+  id: number;
+  recruiter: User;
+  status?: CandidacyStatus;
+  updatedAt: Date;
+  createdAt: Date;
+};
+
 export type NewCandidacyCommentRequest = Pick<CandidacyComment, 'text'>;
 export type UploadCandidacyFilesRequest = {
   files: File[];
