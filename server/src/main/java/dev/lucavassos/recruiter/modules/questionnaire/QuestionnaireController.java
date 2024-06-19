@@ -58,12 +58,12 @@ public class QuestionnaireController {
         return new ResponseEntity<>(service.saveQuestionnaire(request), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{title}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateQuestionnaire(
-            @PathVariable("title") String title,
+            @PathVariable("id") Long id,
             @Valid @RequestBody UpdateQuestionnaireRequest request) {
-        log.debug("Received request to update questionnaire {}: {}", title, request);
-        return new ResponseEntity<>(service.updateQuestionnaire(title, request), HttpStatus.OK);
+        log.debug("Received request to update questionnaire with ID {}: {}", id, request);
+        return new ResponseEntity<>(service.updateQuestionnaire(id, request), HttpStatus.OK);
     }
 }

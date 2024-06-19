@@ -3,7 +3,7 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import QuestionCard from './QuestionCard.vue';
-import { type Questionnaire } from '@/stores/questionnaire/schema';
+import { type Questionnaire, type QuestionnaireDto } from '@/stores/questionnaire/schema';
 import { ref } from 'vue';
 import { handleError } from '@/utils/errorUtils';
 import { useToast } from 'primevue/usetoast';
@@ -15,7 +15,7 @@ import type { NewQuestion, Question } from '@/stores/question/schema';
 const props = defineProps<{
   visible: boolean;
   isUpdate: boolean;
-  questionnaire: Questionnaire;
+  questionnaire: Questionnaire | QuestionnaireDto;
   client: Client;
 }>();
 const emits = defineEmits<{
@@ -23,7 +23,6 @@ const emits = defineEmits<{
   (e: 'select', questionnaire: Questionnaire): void;
 }>();
 
-const oldTitle = ref(props.questionnaire.title);
 const creatingOrUpdating = ref(false);
 const toast = useToast();
 
@@ -77,7 +76,10 @@ const create = async (questionnaire: Questionnaire) => {
 const update = async (questionnaire: Questionnaire) => {
   creatingOrUpdating.value = true;
   try {
-    const updatedQuestionnaire = await updateQuestionnaire(oldTitle.value, questionnaire);
+    const updatedQuestionnaire = await updateQuestionnaire(
+      (props.questionnaire as QuestionnaireDto).id,
+      questionnaire
+    );
     emits('select', updatedQuestionnaire);
   } catch (err) {
     handleError(toast, err);
@@ -97,7 +99,7 @@ const update = async (questionnaire: Questionnaire) => {
           : (tmpQuestionnaire = {
               ...emptyQuestionnaire,
               client: client,
-            });
+            })
       "
       @update:visible="$emit('close')"
       closeOnEscape
@@ -112,7 +114,7 @@ const update = async (questionnaire: Questionnaire) => {
           <InputText
             class="w-full"
             placeholder="Questionnaire Title"
-            :model-value="questionnaire.title"
+            :model-value="props.questionnaire.title"
             @update:modelValue="(t) => (tmpQuestionnaire.title = t ?? '')"
           />
           <Button
@@ -152,8 +154,8 @@ const update = async (questionnaire: Questionnaire) => {
             :disabled="creatingOrUpdating"
           />
           <Button
-            :label="isUpdate ? 'Save' : 'Create'"
-            @click="isUpdate ? update(tmpQuestionnaire) : create(tmpQuestionnaire)"
+            :label="props.isUpdate ? 'Save' : 'Create'"
+            @click="props.isUpdate ? update(tmpQuestionnaire) : create(tmpQuestionnaire)"
             :loading="creatingOrUpdating"
             :disabled="creatingOrUpdating"
           />
