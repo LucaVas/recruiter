@@ -81,7 +81,6 @@ const tmpCandidate = ref(emptyCandidate.value);
             placeholder="Name"
             autocomplete="off"
             v-model="tmpCandidate.name"
-            :invalid="tmpCandidate.name === ''"
             @input="emits('update', tmpCandidate)"
           />
         </InputGroup>
@@ -96,7 +95,6 @@ const tmpCandidate = ref(emptyCandidate.value);
             mask="(999) 999-9999"
             placeholder="Phone"
             :unmask="true"
-            :invalid="tmpCandidate.phone === ''"
             @input="emits('update', tmpCandidate)"
           />
         </InputGroup>
@@ -110,7 +108,6 @@ const tmpCandidate = ref(emptyCandidate.value);
             autocomplete="off"
             type="email"
             v-model="tmpCandidate.email"
-            :invalid="tmpCandidate.email === ''"
             @input="emits('update', tmpCandidate)"
           />
         </InputGroup>
@@ -123,7 +120,6 @@ const tmpCandidate = ref(emptyCandidate.value);
             placeholder="Pan"
             autocomplete="off"
             v-model="tmpCandidate.pan"
-            :invalid="tmpCandidate.pan === '' || tmpCandidate.pan.length !== 10"
             @input="isUpdate ? null : emits('update', tmpCandidate)"
             :disabled="isUpdate"
           />
@@ -137,7 +133,6 @@ const tmpCandidate = ref(emptyCandidate.value);
             placeholder="Education"
             autocomplete="off"
             v-model="tmpCandidate.education"
-            :invalid="tmpCandidate.education === ''"
             @input="emits('update', tmpCandidate)"
           />
         </InputGroup>
