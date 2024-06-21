@@ -32,6 +32,7 @@ import {
   uploadFilesToCandidacy,
 } from '@/stores/candidacy/index';
 import UploadFilesModal from '@/components/candidacy/files/UploadFilesModal.vue';
+import { withdrawCandidacy } from '../../../stores/candidacy/index';
 
 const toast = useToast();
 
@@ -42,6 +43,9 @@ const loadingComments = ref(false);
 const deleteCandidacyModal = ref(false);
 const deletingCandidacy = ref(false);
 const deleteFileModal = ref(false);
+
+const withdrawingCandidacy = ref(false);
+const withdrawCandidacyModal = ref(false);
 
 const downloadingFile = ref(false);
 
@@ -90,7 +94,6 @@ const delCandidacy = async (id: number) => {
   deletingCandidacy.value = true;
   try {
     await deleteCandidacy(id);
-    deletingCandidacy.value = false;
     showSuccess(toast, 'Candidacy deleted successfully');
     await initTable();
   } catch (err) {
@@ -99,6 +102,22 @@ const delCandidacy = async (id: number) => {
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     deletingCandidacy.value = false;
+  }
+};
+
+const withdraw = async (id: number) => {
+  withdrawingCandidacy.value = true;
+  try {
+    await withdrawCandidacy(id);
+    withdrawCandidacyModal.value = false;
+    showSuccess(toast, 'Candidacy withdrawn successfully');
+    await initTable();
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    withdrawingCandidacy.value = false;
   }
 };
 
@@ -225,6 +244,13 @@ onMounted(async () => {
           @close="openCommentsHistoryModal = false"
         />
         <DeleteModal
+          :visible="withdrawCandidacyModal"
+          :deleting="withdrawingCandidacy"
+          :message="'Are you sure you want to withdraw this candidacy?'"
+          @close="withdrawCandidacyModal = false"
+          @delete="withdraw(data.id)"
+        />
+        <DeleteModal
           :visible="deleteCandidacyModal"
           :deleting="deletingCandidacy"
           :message="'Are you sure you want to delete this candidacy?'"
@@ -280,6 +306,7 @@ onMounted(async () => {
           "
           @delete="deleteCandidacyModal = true"
           @seeFiles="getFiles(data.id)"
+          @withdraw="withdrawCandidacyModal = true"
         />
       </template>
     </Column>

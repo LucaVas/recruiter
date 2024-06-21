@@ -4,5 +4,6 @@ public enum CandidacyStatus {
     SENT_TO_CLIENT,
     REJECTED,
     ACCEPTED,
-    ARCHIVED
+    ARCHIVED,
+    WITHDRAWN
 }

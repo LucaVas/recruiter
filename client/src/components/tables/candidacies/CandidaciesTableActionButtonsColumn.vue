@@ -25,6 +25,7 @@ const emits = defineEmits<{
   (e: 'seeComments'): void;
   (e: 'delete'): void;
   (e: 'seeFiles'): void;
+  (e: 'withdraw'): void;
 }>();
 
 const menu = ref();
@@ -69,6 +70,13 @@ const recruiterItems = ref([
     icon: 'pi pi-folder-open',
     command: () => {
       emits('seeFiles');
+    },
+  },
+  {
+    label: 'Withdraw',
+    icon: 'pi pi-times',
+    command: () => {
+      emits('withdraw');
     },
   },
 ]);
