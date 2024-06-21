@@ -11,7 +11,7 @@ import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
 import Success from '@/components/Success.vue';
 import { ApiError } from '@/utils/types';
-import type { UpdateCandidacyRequest } from '@/stores/candidacy/schema';
+import type { UpdateCandidacy } from '@/stores/candidacy/schema';
 import {
   jobId,
   pan,
@@ -28,7 +28,7 @@ import { DEFAULT_SERVER_ERROR } from '@/consts';
 const toast = useToast();
 const router = useRouter();
 
-async function update(candidacy: UpdateCandidacyRequest | undefined) {
+async function update(candidacy: UpdateCandidacy | undefined) {
   if (!candidacy || !jobId.value || pan.value === undefined) return;
   updatingCandidacy.value = true;
   try {

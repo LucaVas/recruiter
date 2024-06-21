@@ -32,7 +32,7 @@ import {
   uploadFilesToCandidacy,
 } from '@/stores/candidacy/index';
 import UploadFilesModal from '@/components/candidacy/files/UploadFilesModal.vue';
-import { withdrawCandidacy } from '../../../stores/candidacy/index';
+import { withdrawCandidacy, rejectCandidacy, acceptCandidacy } from '../../../stores/candidacy/index';
 
 const toast = useToast();
 
@@ -45,6 +45,8 @@ const deletingCandidacy = ref(false);
 const deleteFileModal = ref(false);
 
 const withdrawingCandidacy = ref(false);
+const rejectingCandidacy = ref(false);
+const acceptingCandidacy = ref(false);
 const withdrawCandidacyModal = ref(false);
 
 const downloadingFile = ref(false);
@@ -118,6 +120,36 @@ const withdraw = async (id: number) => {
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     withdrawingCandidacy.value = false;
+  }
+};
+
+const reject = async (id: number) => {
+  rejectingCandidacy.value = true;
+  try {
+    await rejectCandidacy(id);
+    showSuccess(toast, 'Candidacy rejected successfully');
+    await initTable();
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    rejectingCandidacy.value = false;
+  }
+};
+
+const accept = async (id: number) => {
+  acceptingCandidacy.value = true;
+  try {
+    await acceptCandidacy(id);
+    showSuccess(toast, 'Candidacy accepted successfully');
+    await initTable();
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    acceptingCandidacy.value = false;
   }
 };
 
@@ -307,6 +339,8 @@ onMounted(async () => {
           @delete="deleteCandidacyModal = true"
           @seeFiles="getFiles(data.id)"
           @withdraw="withdrawCandidacyModal = true"
+          @reject="reject(data.id)"
+          @accept="accept(data.id)"
         />
       </template>
     </Column>

@@ -4,10 +4,7 @@ import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
-import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
-import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
-import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
+import dev.lucavassos.recruiter.modules.candidacy.domain.*;
 import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
 import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyFile;
@@ -300,6 +297,17 @@ public class CandidacyService {
         } catch (Exception e) {
             throw new DatabaseException(e.getMessage());
         }
+    }
+
+    @Transactional
+    public void changeCandidacyStatus(Long id, ChangeCandidacyStatusRequest request) {
+        Candidacy candidacy = findCandidacy(id);
+
+        User user = getAuthUser();
+        if (!candidacy.getStatus().equals(request.status())) {
+            candidacy.setStatus(request.status());
+        }
+        saveCandidacy(candidacy);
     }
 
     @Transactional

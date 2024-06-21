@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy;
 
+import dev.lucavassos.recruiter.modules.candidacy.domain.ChangeCandidacyStatusRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyCommentRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.NewCandidacyRequest;
 import dev.lucavassos.recruiter.modules.candidacy.domain.UpdateCandidacyRequest;
@@ -82,6 +83,15 @@ public class CandidacyController {
         log.info("Received request to delete candidacy with ID {}", id);
         service.deleteCandidacy(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/status/{id}")
+    public ResponseEntity<?> changeCandidacyStatus(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody ChangeCandidacyStatusRequest request) {
+        log.debug("Received request to change candidacy status: {}", request);
+        service.changeCandidacyStatus(id, request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/{id}/files")
