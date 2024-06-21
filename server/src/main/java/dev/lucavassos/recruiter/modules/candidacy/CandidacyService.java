@@ -92,15 +92,21 @@ public class CandidacyService {
                 .status(candidacy.status() != null ? candidacy.status() : CandidacyStatus.SENT_TO_CLIENT)
                 .build();
 
+
+        Candidacy savedCandidacy = saveCandidacy(newCandidacy);
+
         if (!StringUtils.isBlank(candidacy.recruiterComment())) {
             CandidacyComment comment = CandidacyComment.builder()
                     .text(candidacy.recruiterComment())
                     .author(recruiter)
+                    .candidacy(savedCandidacy)
                     .build();
-            newCandidacy.getComments().add(comment);
+
+            candidacyCommentRepository.save(comment);
+            savedCandidacy.addComment(comment);
         }
 
-        Candidacy saved = saveCandidacy(newCandidacy);
+        log.info("saved {}", savedCandidacy);
         monitoringProcessor.incrementCandidaciesCounter();
 
         if (candidacy.files() != null && !candidacy.files().isEmpty()) {
@@ -211,7 +217,7 @@ public class CandidacyService {
                 .author(user)
                 .candidacy(candidacy)
                 .build();
-        candidacy.getComments().add(newComment);
+        candidacy.addComment(newComment);
 
         candidacyCommentRepository.save(newComment);
         candidacyRepository.save(candidacy);
@@ -220,7 +226,10 @@ public class CandidacyService {
     @Transactional
     public List<CandidacyCommentDto> getCandidacyComments(Long id) {
 
-        Candidacy candidacy = findCandidacy(id);
+        Candidacy candidacy = candidacyRepository
+                .findByIdWithComments(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Candidacy not found"));
+        log.info("candidacy {}", candidacy);
         return candidacy.getComments().stream()
                 .map(candidacyCommentDtoMapper)
                 .toList();
@@ -333,7 +342,7 @@ public class CandidacyService {
         try {
             return candidacyRepository.save(candidacy);
         } catch (Exception e) {
-            log.error("Database error while updating candidacy: {}", e.getMessage());
+            log.error("Database error while saving candidacy: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
     }

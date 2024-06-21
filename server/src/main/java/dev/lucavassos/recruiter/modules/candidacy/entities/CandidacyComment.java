@@ -8,12 +8,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
 @ToString
+@Setter
+@Getter
+@EqualsAndHashCode
 @Table(name = "candidacy_comments")
 public class CandidacyComment {
 
@@ -34,11 +36,13 @@ public class CandidacyComment {
 
     // relationships
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "candidacy_id")
     @ToString.Exclude
     private Candidacy candidacy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
     @ToString.Exclude
     private User author;
 }

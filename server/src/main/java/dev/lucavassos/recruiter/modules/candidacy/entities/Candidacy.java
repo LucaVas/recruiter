@@ -14,11 +14,12 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
+@Setter
+@Getter
 @ToString
 @Table(name = "candidacies")
 public class Candidacy {
@@ -62,10 +63,23 @@ public class Candidacy {
 
     @OneToMany(
             mappedBy = "candidacy",
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             orphanRemoval = true
     )
+    @ToString.Exclude
     private Set<CandidacyComment> comments = new HashSet<>();
+
+    public void addComment(CandidacyComment comment) {
+        if (comments == null)
+            comments = new HashSet<>();
+        comments.add(comment);
+        comment.setCandidacy(this);
+    }
+
+    public void removeComment(CandidacyComment comment) {
+        comments.remove(comment);
+        comment.setCandidacy(null);
+    }
 
     @ManyToOne
     @ToString.Exclude

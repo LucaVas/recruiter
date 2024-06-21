@@ -37,8 +37,10 @@ public record NewCandidacyRequest(
         @Nullable
         CandidacyStatus status,
 
+        @Nullable
         String reasonForQuickJoin,
 
+        @Nullable
         String recruiterComment,
 
         @Nullable List<MultipartFile> files
