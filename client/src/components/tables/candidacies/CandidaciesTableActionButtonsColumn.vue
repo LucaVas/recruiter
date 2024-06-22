@@ -102,7 +102,7 @@ const recruiterItems = ref([
     command: () => {
       router.push({
         name: 'UpdateCandidacy',
-        params: { jobId: props.data.job.id, pan: props.data.candidate.pan },
+        params: { id: props.data.id },
       });
     },
   },
