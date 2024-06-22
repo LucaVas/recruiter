@@ -1,6 +1,6 @@
 <template>
   <div id="newCommentContainer" class="w-full">
-    <TextArea v-model="comment" rows="4" cols="30" class="w-full" />
+    <TextArea v-model="comment" rows="2" cols="30" class="w-full" />
   </div>
   <div class="flex justify-end gap-2">
     <Button

@@ -23,7 +23,7 @@ public class CandidacyComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "text")
+    @Column(nullable = false, name = "text", length = 500)
     private String text;
 
     @CreationTimestamp
