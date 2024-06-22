@@ -44,10 +44,7 @@ onMounted(async () => {
   <div v-else class="flex w-full flex-col gap-8 pb-6">
     <div class="flex h-full w-full flex-col gap-6">
       <div v-if="candidacy.job">
-        <CandidacyHeader
-          :candidacy="candidacy"
-          @openModal="headerModalOpen = true"
-        />
+        <CandidacyHeader :candidacy="candidacy" @openModal="headerModalOpen = true" />
         <CandidacyHiringDetailsModal
           :visible="headerModalOpen"
           @close="headerModalOpen = false"
@@ -143,8 +140,10 @@ onMounted(async () => {
 
     <div class="flex w-full justify-between">
       <Button
+        class="hidden md:flex"
         label="Back to candidacies"
         size="small"
+        outlined
         @click="
           {
             $emit('back');
@@ -152,7 +151,19 @@ onMounted(async () => {
           }
         "
       />
-      <div>
+      <Button
+        class="md:hidden"
+        size="small"
+        outlined
+        icon="pi pi-arrow-left"
+        @click="
+          {
+            $emit('back');
+            router.push({ name: 'Candidacies' });
+          }
+        "
+      />
+      <div class="flex gap-2">
         <Button
           v-if="
             candidacy.status !== 'WITHDRAWN' &&
@@ -161,6 +172,8 @@ onMounted(async () => {
           "
           label="Accept"
           size="small"
+          outlined
+          severity="success"
           @click="console.log('approved')"
         />
         <Button
@@ -171,12 +184,16 @@ onMounted(async () => {
           "
           label="Reject"
           size="small"
+          outlined
+          severity="danger"
           @click="console.log('rejected')"
         />
         <Button
           v-if="candidacy.status !== 'ARCHIVED'"
           label="Archive"
           size="small"
+          outlined
+          severity="secondary"
           @click="console.log('archived')"
         />
       </div>
