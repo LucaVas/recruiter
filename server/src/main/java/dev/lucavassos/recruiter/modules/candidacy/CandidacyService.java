@@ -192,7 +192,7 @@ public class CandidacyService {
         }
 
         if (!changes) {
-            throw new RequestValidationException("No updates were made to data.");
+            throw new RequestValidationException("No changes were made to the candidacy.");
         }
 
         Candidacy updatedCandidacy = saveCandidacy(candidacy);

@@ -27,7 +27,7 @@
               <Button icon="pi pi-trash" unstyled @click="$emit('delete', file.id)" />
               <i
                 class="pi pi-info-circle mr-2"
-                v-tooltip.left="'Uploaded on ' + formatDateTime(file.createdDTime)"
+                v-tooltip.left="'Uploaded on ' + formatDateTime(file.createdAt)"
               />
             </div>
           </div>

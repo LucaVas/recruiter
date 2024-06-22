@@ -65,7 +65,7 @@ export async function updateCandidacy(id: number, candidacy: UpdateCandidacy): P
   return data;
 }
 
-export async function getCandidacy(id: number): Promise<Candidacy> {
+export async function getCandidacy(id: number): Promise<CandidacyDto> {
   const { data } = await api.get(`${baseApi}/${id}`);
   return data;
 }
