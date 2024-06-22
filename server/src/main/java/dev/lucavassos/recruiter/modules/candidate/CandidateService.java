@@ -94,10 +94,9 @@ public class CandidateService {
         );
     }
 
-    public CandidateResponse updateCandidate(UpdateCandidateRequest request) throws Exception {
+    public CandidateResponse updateCandidate(String pan, UpdateCandidateRequest request) throws Exception {
 
         boolean changes = false;
-        String pan = request.pan();
         LOG.info("Updating candidate with pan {}", pan);
 
         Candidate candidate = this.candidateRepository.findOneByPan(pan).orElseThrow(
@@ -151,7 +150,6 @@ public class CandidateService {
 
         try {
             this.candidateRepository.save(candidate);
-            saveCandidateInHistoryTable(candidate, user);
         } catch (Exception e) {
             throw new Exception(e.getCause());
         }

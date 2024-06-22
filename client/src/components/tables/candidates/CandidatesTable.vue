@@ -8,7 +8,7 @@ import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
 import { ApiError } from '@/utils/types';
 import { formatDate } from '@/utils/dateUtils';
-import { getAllCandidates, updateCandidate } from '@/stores/candidate';
+import { getAllCandidates } from '@/stores/candidate';
 import { useToast } from 'primevue/usetoast';
 import type { Candidate, NewCandidate } from '@/stores/candidate/schema';
 import { columns } from '.';
@@ -22,24 +22,7 @@ const loadingTable = ref(false);
 const candidates = ref<Candidate[]>();
 const editCandidateModal = ref(false);
 const candidateToEdit = ref<NewCandidate>();
-const updatingCandidate = ref(false);
 const showAllColumns = ref(false);
-
-async function update(candidateForm: NewCandidate) {
-  updatingCandidate.value = true;
-  try {
-    await updateCandidate(candidateForm);
-    editCandidateModal.value = false;
-    await initTable();
-  } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message, err.title);
-    else if (err instanceof Error) showError(toast, err.message);
-    else showError(toast, DEFAULT_SERVER_ERROR);
-  } finally {
-    initFilters();
-    updatingCandidate.value = false;
-  }
-}
 
 async function initTable() {
   loadingTable.value = true;
@@ -218,6 +201,10 @@ onMounted(async () => {
       candidateToEdit = undefined;
     "
     :isUpdate="true"
-    @save="update(candidateToEdit)"
+    @save="
+      editCandidateModal = false;
+      candidateToEdit = undefined;
+      initTable();
+    "
   />
 </template>
