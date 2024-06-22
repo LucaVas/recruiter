@@ -2,7 +2,7 @@ import type { Candidate } from '../candidate/schema';
 import type { Job } from '../job/schema';
 import type { User } from '../user/schema';
 
-export type CandidacyStatus = 'SENT_TO_CLIENT' | 'REJECTED' | 'ACCEPTED';
+export type CandidacyStatus = 'SENT_TO_CLIENT' | 'REJECTED' | 'ACCEPTED' | 'WITHDRAWN' | 'ARCHIVED';
 
 export interface Candidacy {
   candidate: Candidate;

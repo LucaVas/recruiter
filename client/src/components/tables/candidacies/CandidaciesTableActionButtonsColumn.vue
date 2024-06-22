@@ -7,7 +7,16 @@
       size="small"
       rounded
     />
-    <Menu ref="menu" id="config_menu" :model="isAdmin ? adminItems : recruiterItems" popup />
+    <Menu
+      ref="menu"
+      id="config_menu"
+      :model="
+        isAdmin
+          ? adminItems.filter((item) => item.visible)
+          : recruiterItems.filter((item) => item.visible)
+      "
+      popup
+    />
   </div>
 </template>
 
@@ -18,13 +27,16 @@ import { isAdmin } from '@/stores/auth';
 import { ref } from 'vue';
 
 const router = useRouter();
-const { data } = defineProps<{
+const props = defineProps<{
   data: any;
 }>();
 const emits = defineEmits<{
   (e: 'seeComments'): void;
   (e: 'delete'): void;
   (e: 'seeFiles'): void;
+  (e: 'withdraw'): void;
+  (e: 'accept'): void;
+  (e: 'reject'): void;
 }>();
 
 const menu = ref();
@@ -37,10 +49,11 @@ const adminItems = ref([
   {
     label: 'Edit',
     icon: 'pi pi-pencil',
+    visible: true,
     command: () => {
       router.push({
         name: 'UpdateCandidacy',
-        params: { jobId: data.job.id, pan: data.candidate.pan },
+        params: { jobId: props.data.job.id, pan: props.data.candidate.pan },
       });
     },
   },
@@ -48,8 +61,25 @@ const adminItems = ref([
     separator: true,
   },
   {
+    label: 'Accept',
+    icon: 'pi pi-check-square',
+    visible: props.data.status === 'SENT_TO_CLIENT',
+    command: () => {
+      emits('accept');
+    },
+  },
+  {
+    label: 'Reject',
+    icon: 'pi pi-ban',
+    visible: props.data.status === 'ACCEPTED' || props.data.status === 'SENT_TO_CLIENT',
+    command: () => {
+      emits('reject');
+    },
+  },
+  {
     label: 'Delete',
     icon: 'pi pi-times',
+    visible: true,
     command: () => {
       emits('delete');
     },
@@ -60,6 +90,7 @@ const recruiterItems = ref([
   {
     label: 'Comments',
     icon: 'pi pi-envelope',
+    visible: true,
     command: () => {
       emits('seeComments');
     },
@@ -67,8 +98,17 @@ const recruiterItems = ref([
   {
     label: 'Files',
     icon: 'pi pi-folder-open',
+    visible: true,
     command: () => {
       emits('seeFiles');
+    },
+  },
+  {
+    label: 'Withdraw',
+    icon: 'pi pi-times',
+    visible: props.data.status !== 'WITHDRAWN',
+    command: () => {
+      emits('withdraw');
     },
   },
 ]);

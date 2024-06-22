@@ -44,7 +44,7 @@ defineEmits<{
           size="small"
           icon="pi pi-check"
           severity="success"
-          label="Delete"
+          label="Confirm"
           :loading="deleting"
           :disabled="deleting"
           @click="$emit('delete')"

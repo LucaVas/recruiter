@@ -48,6 +48,18 @@ export const uploadFilesToCandidacy = async (id: number, files: File[]): Promise
   });
 };
 
+export const withdrawCandidacy = async (id: number): Promise<void> => {
+  await api.put(`${baseApi}/status/${id}`, { status: 'WITHDRAWN' });
+};
+
+export const rejectCandidacy = async (id: number): Promise<void> => {
+  await api.put(`${baseApi}/status/${id}`, { status: 'REJECTED' });
+};
+
+export const acceptCandidacy = async (id: number): Promise<void> => {
+  await api.put(`${baseApi}/status/${id}`, { status: 'ACCEPTED' });
+};
+
 export async function updateCandidacy(id: number, candidacy: UpdateCandidacy): Promise<Candidacy> {
   const { data } = await api.put(`${baseApi}/${id}`, candidacy);
   return data;
