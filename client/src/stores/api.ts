@@ -1,7 +1,7 @@
 import { apiBase } from '@/config';
 import { getStoredAccessToken } from '@/utils/auth';
 import { ApiError } from '@/utils/types';
-import axios, { type RawAxiosRequestHeaders } from 'axios';
+import axios, { type AxiosResponse, type RawAxiosRequestHeaders } from 'axios';
 import { logout } from './auth';
 
 export default () => {
@@ -49,9 +49,21 @@ export default () => {
     },
     (error) => {
       if (axios.isAxiosError(error)) {
-        const title = error.response?.data.title;
-        const message = error.response?.data.detail;
-        const statusCode = error.response?.status;
+        let responseData;
+
+        if (error.response?.config.responseType === 'arraybuffer') {
+          const stringData = String.fromCharCode.apply(
+            null,
+            new Uint8Array(error.response?.data) as any
+          );
+          responseData = JSON.parse(stringData);
+        } else {
+          responseData = error.response?.data;
+        }
+
+        const title = responseData.title;
+        const message = responseData.detail;
+        const statusCode = Number(responseData.status);
 
         if (error.code === 'ERR_NETWORK') {
           logoutProcess();

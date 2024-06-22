@@ -4,15 +4,15 @@
       <h2 class="font-semibold">{{ candidacy.job.name }}</h2>
       <h4 class="italic">{{ candidacy.job.client.name }}</h4>
     </div>
-    <footer class="text-slate-400">{{ formatDate(candidacy.createdDTime) }}</footer>
+    <footer class="text-slate-400">{{ formatDate(candidacy.createdAt) }}</footer>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Candidacy } from '@/stores/candidacy/schema';
+import type { CandidacyDto } from '@/stores/candidacy/schema';
 import { formatDate } from '@/utils/dateUtils';
 
 const { candidacy } = defineProps<{
-  candidacy: Candidacy;
+  candidacy: CandidacyDto;
 }>();
 </script>
