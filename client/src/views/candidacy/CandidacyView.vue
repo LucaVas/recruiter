@@ -3,7 +3,7 @@ import CandidateTable from '@/components/candidacy/candidate/CandidateTable.vue'
 import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
-import { getCandidacy } from '@/stores/candidacy/index';
+import { acceptCandidacy, getCandidacy, rejectCandidacy, archiveCandidacy, reopenCandidacy } from '@/stores/candidacy/index';
 import { useRoute, useRouter } from 'vue-router';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import { ApiError } from '@/utils/types';
@@ -13,19 +13,84 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputNumber from 'primevue/inputnumber';
 import Textarea from 'primevue/textarea';
-import { showError } from '@/utils/errorUtils';
+import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
 const router = useRouter();
 const headerModalOpen = ref(false);
+const rejecting = ref(false);
+const accepting = ref(false);
+const archiving = ref(false);
+const reopening = ref(false);
 
 // candidacy details
 const candidacy = ref<CandidacyDto>();
+const candidacyId = ref<number>();
 
-onMounted(async () => {
-  const route = useRoute();
-  const id = Number(route.params.id);
+const reject = async (id: number) => {
+  rejecting.value = true;
+  try {
+    await rejectCandidacy(id);
+    showSuccess(toast, 'Candidacy rejected successfully');
+    await init(candidacyId.value);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    rejecting.value = false;
+  }
+};
+
+const accept = async (id: number) => {
+  accepting.value = true;
+  try {
+    await acceptCandidacy(id);
+    showSuccess(toast, 'Candidacy accepted successfully');
+    await init(candidacyId.value);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    accepting.value = false;
+  }
+};
+
+const archive = async (id: number) => {
+  archiving.value = true;
+  try {
+    await archiveCandidacy(id);
+    showSuccess(toast, 'Candidacy archived successfully');
+    await init(candidacyId.value);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    archiving.value = false;
+  }
+};
+
+const reopen = async (id: number) => {
+  reopening.value = true;
+  try {
+    await reopenCandidacy(id);
+    showSuccess(toast, 'Candidacy reopened successfully');
+    await init(candidacyId.value);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    reopening.value = false;
+  }
+};
+
+const init = async (id: number | undefined) => {
+  if (!id) return;
+
   try {
     const res = await getCandidacy(id);
     candidacy.value = res;
@@ -34,6 +99,12 @@ onMounted(async () => {
     else if (err instanceof Error) showError(toast, err.message);
     else showError(toast, DEFAULT_SERVER_ERROR);
   }
+};
+
+onMounted(async () => {
+  const route = useRoute();
+  candidacyId.value = Number(route.params.id);
+  await init(candidacyId.value);
 });
 </script>
 <template>
@@ -174,7 +245,7 @@ onMounted(async () => {
           size="small"
           outlined
           severity="success"
-          @click="console.log('approved')"
+          @click="accept(candidacy.id)"
         />
         <Button
           v-if="
@@ -186,7 +257,7 @@ onMounted(async () => {
           size="small"
           outlined
           severity="danger"
-          @click="console.log('rejected')"
+          @click="reject(candidacy.id)"
         />
         <Button
           v-if="candidacy.status !== 'ARCHIVED'"
@@ -194,7 +265,15 @@ onMounted(async () => {
           size="small"
           outlined
           severity="secondary"
-          @click="console.log('archived')"
+          @click="archive(candidacy.id)"
+        />
+        <Button
+          v-if="candidacy.status === 'ARCHIVED'"
+          label="Reopen"
+          size="small"
+          outlined
+          severity="secondary"
+          @click="reopen(candidacy.id)"
         />
       </div>
     </div>

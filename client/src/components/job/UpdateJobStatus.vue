@@ -6,7 +6,7 @@ import type { JobStatus } from '@/stores/job/schema';
 import { formatDate } from '@/utils/dateUtils';
 import { ref } from 'vue';
 import DeleteJobModal from './DeleteJobModal.vue';
-import { getSeverity, getStatusIcon, formatStatus } from './utils';
+import { getJobSeverity, getJobStatusIcon, formatJobStatus } from './utils';
 
 // props
 const { status, createdAt } = defineProps<{
@@ -69,13 +69,13 @@ const splitButtonChoices = ref([
 </script>
 
 <template>
-  <div class="flex flex-col items-start justify-between md:flex-row md:items-center gap-3">
+  <div class="flex flex-col items-start justify-between gap-3 md:flex-row md:items-center">
     <div class="flex w-full flex-row items-center justify-between gap-2 md:justify-normal">
       <Tag
-        :icon="getStatusIcon(status)"
-        :severity="getSeverity(status)"
+        :icon="getJobStatusIcon(status)"
+        :severity="getJobSeverity(status)"
         class="h-10 min-w-fit px-4"
-        :value="formatStatus(status)"
+        :value="formatJobStatus(status)"
       />
       <div class="card flex justify-center">
         <DeleteJobModal

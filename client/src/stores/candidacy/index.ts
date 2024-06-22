@@ -6,6 +6,7 @@ import {
   type NewCandidacy,
   type UpdateCandidacy,
   type CandidacyDto,
+  type CandidacyStatus,
 } from './schema';
 import axiosApi from '../api';
 
@@ -49,15 +50,28 @@ export const uploadFilesToCandidacy = async (id: number, files: File[]): Promise
 };
 
 export const withdrawCandidacy = async (id: number): Promise<void> => {
-  await api.put(`${baseApi}/status/${id}`, { status: 'WITHDRAWN' });
+  const payload: { status: CandidacyStatus } = { status: 'WITHDRAWN' };
+  await api.put(`${baseApi}/status/${id}`, payload);
 };
 
 export const rejectCandidacy = async (id: number): Promise<void> => {
-  await api.put(`${baseApi}/status/${id}`, { status: 'REJECTED' });
+  const payload: { status: CandidacyStatus } = { status: 'REJECTED' };
+  await api.put(`${baseApi}/status/${id}`, payload);
 };
 
 export const acceptCandidacy = async (id: number): Promise<void> => {
-  await api.put(`${baseApi}/status/${id}`, { status: 'ACCEPTED' });
+  const payload: { status: CandidacyStatus } = { status: 'ACCEPTED' };
+  await api.put(`${baseApi}/status/${id}`, payload);
+};
+
+export const archiveCandidacy = async (id: number): Promise<void> => {
+  const payload: { status: CandidacyStatus } = { status: 'ARCHIVED' };
+  await api.put(`${baseApi}/status/${id}`, payload);
+};
+
+export const reopenCandidacy = async (id: number): Promise<void> => {
+  const payload: { status: CandidacyStatus } = { status: 'SENT_TO_CLIENT' };
+  await api.put(`${baseApi}/status/${id}`, payload);
 };
 
 export async function updateCandidacy(id: number, candidacy: UpdateCandidacy): Promise<Candidacy> {

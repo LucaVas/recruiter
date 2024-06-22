@@ -13,7 +13,7 @@ import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DashboardJobCard from '@/components/job/jobs-table/DashboardJobCard.vue';
 import DashboardJobInfoCard from '@/components/job/jobs-table/DashboardJobInfoCard.vue';
-import { formatStatus, getSeverity } from '@/components/job/utils';
+import { formatJobStatus, getJobSeverity } from '@/components/job/utils';
 
 const loading = ref(false);
 const jobs = ref<Job[]>();
@@ -82,7 +82,7 @@ onMounted(async () => {
 
     <Column header="Status" class="min-w-fit">
       <template #body="{ data }">
-        <Tag :value="formatStatus(data.status)" :severity="getSeverity(data.status)" />
+        <Tag :value="formatJobStatus(data.status)" :severity="getJobSeverity(data.status)" />
       </template>
     </Column>
 
