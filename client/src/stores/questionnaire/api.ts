@@ -1,6 +1,6 @@
 import { type Questionnaire, type UpdatedQuestionnaire } from './schema';
 import axiosApi from '../api';
-import type { NewQuestionnaire, QuestionnaireDto } from '../questionnaire/schema';
+import type { NewQuestionnaire } from '../questionnaire/schema';
 
 // vars
 const api = axiosApi();

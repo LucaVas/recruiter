@@ -28,7 +28,7 @@ export type Job = JobI & {
   createdAt: Date;
   updatedAt: Date;
 };
-export type NewJob = JobI
+export type NewJob = JobI;
 
 export type ContractType = 'PERMANENT' | 'TEMPORARY';
 export type Currency = 'INR';

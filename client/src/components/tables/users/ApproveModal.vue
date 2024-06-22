@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 const { visible, isApproval } = defineProps<{
   visible: boolean;
-  isApproval: boolean
+  isApproval: boolean;
 }>();
 const comment = ref('');
 

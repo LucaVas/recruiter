@@ -21,7 +21,11 @@ const text = ref(model);
     <label v-if="label" class="text-sm">{{ label }}</label>
     <InputGroup>
       <InputGroupAddon v-if="icon"><i :class="`pi ${icon}`" /></InputGroupAddon>
-      <InputText :placeholder="placeholder ?? ''" v-model="text" @update:modelValue="emit('input', text)" />
+      <InputText
+        :placeholder="placeholder ?? ''"
+        v-model="text"
+        @update:modelValue="emit('input', text)"
+      />
     </InputGroup>
   </div>
 </template>

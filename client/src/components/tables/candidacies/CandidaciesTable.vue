@@ -32,7 +32,11 @@ import {
   uploadFilesToCandidacy,
 } from '@/stores/candidacy/index';
 import UploadFilesModal from '@/components/candidacy/files/UploadFilesModal.vue';
-import { withdrawCandidacy, rejectCandidacy, acceptCandidacy } from '../../../stores/candidacy/index';
+import {
+  withdrawCandidacy,
+  rejectCandidacy,
+  acceptCandidacy,
+} from '../../../stores/candidacy/index';
 
 const toast = useToast();
 
@@ -333,7 +337,7 @@ onMounted(async () => {
           @seeComments="
             {
               openCommentsHistoryModal = true;
-              console.log(data.id)
+              console.log(data.id);
               getComments(data.id);
             }
           "

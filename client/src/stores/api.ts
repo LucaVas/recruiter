@@ -1,7 +1,7 @@
 import { apiBase } from '@/config';
 import { getStoredAccessToken } from '@/utils/auth';
 import { ApiError } from '@/utils/types';
-import axios, { type AxiosResponse, type RawAxiosRequestHeaders } from 'axios';
+import axios, { type RawAxiosRequestHeaders } from 'axios';
 import { logout } from './auth';
 
 export default () => {

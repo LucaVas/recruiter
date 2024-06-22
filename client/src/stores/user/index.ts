@@ -8,7 +8,7 @@ import type {
 
 // vars
 const api = axiosApi();
-const baseApi = '/users'
+const baseApi = '/users';
 
 // functions
 export async function approveUser(approvalRequest: UserApprovalRequest): Promise<void> {

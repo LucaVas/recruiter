@@ -2,7 +2,7 @@ import type { Client, NewClient } from './schema';
 import axiosApi from '../api';
 
 const api = axiosApi();
-const baseApi = '/clients'
+const baseApi = '/clients';
 
 export async function getAllClients(): Promise<Client[]> {
   const { data } = await api.get(`${baseApi}`);
