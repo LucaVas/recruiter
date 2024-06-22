@@ -26,6 +26,6 @@ export type Client = {
   industry: Industry;
   createdAt: string;
   updatedAt: string | null;
-}
+};
 
 export type NewClient = Pick<Client, 'name' | 'industry'>;

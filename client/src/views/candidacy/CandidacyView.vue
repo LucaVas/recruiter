@@ -3,7 +3,13 @@ import CandidateTable from '@/components/candidacy/candidate/CandidateTable.vue'
 import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
-import { acceptCandidacy, getCandidacy, rejectCandidacy, archiveCandidacy, reopenCandidacy } from '@/stores/candidacy/index';
+import {
+  acceptCandidacy,
+  getCandidacy,
+  rejectCandidacy,
+  archiveCandidacy,
+  reopenCandidacy,
+} from '@/stores/candidacy/index';
 import { useRoute, useRouter } from 'vue-router';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import { ApiError } from '@/utils/types';

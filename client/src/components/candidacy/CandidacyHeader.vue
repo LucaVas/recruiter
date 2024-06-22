@@ -2,7 +2,11 @@
 import { getJobSeverity, getJobStatusIcon, formatJobStatus } from '@/components/job/utils';
 import type { CandidacyDto, NewCandidacy } from '@/stores/candidacy/schema';
 import type { Job } from '@/stores/job/schema';
-import { getCandidacyStatus, getCandidacyStatusSeverity, getCandidacyStatusIcon } from '../tables/candidacies/utils';
+import {
+  getCandidacyStatus,
+  getCandidacyStatusSeverity,
+  getCandidacyStatusIcon,
+} from '../tables/candidacies/utils';
 
 const props = defineProps<{
   candidacy: CandidacyDto | NewCandidacy;

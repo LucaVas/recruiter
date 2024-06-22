@@ -10,7 +10,7 @@ import { ApiError } from '@/utils/types';
 import { formatDate } from '@/utils/dateUtils';
 import { getAllCandidates, updateCandidate } from '@/stores/candidate';
 import { useToast } from 'primevue/usetoast';
-import type { Candidate, NewCandidateRequest } from '@/stores/candidate/schema';
+import type { Candidate, NewCandidate } from '@/stores/candidate/schema';
 import { columns } from '.';
 import CandidateModal from '@/components/candidacy/candidate/shared/CandidateModal.vue';
 import { showError } from '@/utils/errorUtils';
@@ -21,11 +21,11 @@ const toast = useToast();
 const loadingTable = ref(false);
 const candidates = ref<Candidate[]>();
 const editCandidateModal = ref(false);
-const candidateToEdit = ref<NewCandidateRequest>();
+const candidateToEdit = ref<NewCandidate>();
 const updatingCandidate = ref(false);
 const showAllColumns = ref(false);
 
-async function update(candidateForm: NewCandidateRequest) {
+async function update(candidateForm: NewCandidate) {
   updatingCandidate.value = true;
   try {
     await updateCandidate(candidateForm);
@@ -218,7 +218,6 @@ onMounted(async () => {
       candidateToEdit = undefined;
     "
     :isUpdate="true"
-    @update="(candidateForm) => (candidateToEdit = candidateForm)"
     @save="update(candidateToEdit)"
   />
 </template>

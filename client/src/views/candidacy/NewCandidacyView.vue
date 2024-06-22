@@ -105,11 +105,7 @@ onMounted(async () => {
   <div class="flex w-full flex-col gap-8 pb-6">
     <div class="flex h-full w-full flex-col gap-6">
       <div v-if="job">
-        <CandidacyHeader
-          :candidacy="candidacy"
-          :job="job"
-          @openModal="headerModalOpen = true"
-        />
+        <CandidacyHeader :candidacy="candidacy" :job="job" @openModal="headerModalOpen = true" />
         <CandidacyHiringDetailsModal
           :visible="headerModalOpen"
           @close="headerModalOpen = false"
@@ -246,7 +242,13 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <FilesUploader @addFiles="(files: File[]) => { candidacyFiles = files}" />
+      <FilesUploader
+        @addFiles="
+          (files: File[]) => {
+            candidacyFiles = files;
+          }
+        "
+      />
     </div>
 
     <Success

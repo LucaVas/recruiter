@@ -1,5 +1,5 @@
 export interface ApiErrorI {
-  title: string
+  title: string;
   message: string;
   statusCode: number;
 }
@@ -21,11 +21,7 @@ export class ValidationError {
   message: string;
   fields: Record<string, string>;
 
-  constructor(
-    message: string,
-    fields: Record<string, string>,
-    title: string = 'Validation Error'
-  ) {
+  constructor(message: string, fields: Record<string, string>, title: string = 'Validation Error') {
     this.title = title;
     this.message = message;
     this.fields = fields;

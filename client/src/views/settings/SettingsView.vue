@@ -24,7 +24,10 @@ const update = async (userForm: UserInfoUpdateRequest, loginRequired: boolean) =
     openUserProfileModal.value = false;
     if (loginRequired) {
       logout();
-      showSuccess(toast, 'Profile information updated successfully! You will be redirected to the login page shortly');
+      showSuccess(
+        toast,
+        'Profile information updated successfully! You will be redirected to the login page shortly'
+      );
       setTimeout(() => {
         window.location.reload();
         return;
