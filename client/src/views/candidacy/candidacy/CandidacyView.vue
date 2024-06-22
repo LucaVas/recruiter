@@ -3,20 +3,18 @@ import CandidateTable from '@/components/candidacy/candidate/CandidateTable.vue'
 import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
-import { getCandidacy, updateCandidacy } from '@/stores/candidacy/index';
+import { getCandidacy } from '@/stores/candidacy/index';
 import { useRoute, useRouter } from 'vue-router';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
-import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
-import Success from '@/components/Success.vue';
 import { ApiError } from '@/utils/types';
-import type { CandidacyDto, UpdateCandidacy } from '@/stores/candidacy/schema';
-import { showError } from '@/utils/errorUtils';
-import { DEFAULT_SERVER_ERROR } from '@/consts';
+import type { CandidacyDto } from '@/stores/candidacy/schema';
 import ProgressSpinner from 'primevue/progressspinner';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputNumber from 'primevue/inputnumber';
 import Textarea from 'primevue/textarea';
+import { showError } from '@/utils/errorUtils';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 
 const toast = useToast();
 const router = useRouter();
@@ -24,25 +22,6 @@ const headerModalOpen = ref(false);
 
 // candidacy details
 const candidacy = ref<CandidacyDto>();
-
-// candidacy submission
-const candidacyUpdated = ref(false);
-const updatingCandidacy = ref(false);
-
-async function update(candidacy: UpdateCandidacy | undefined) {
-  if (!candidacy) return;
-  updatingCandidacy.value = true;
-  try {
-    await updateCandidacy(candidacy.id, candidacy);
-    candidacyUpdated.value = true;
-  } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message, err.title);
-    else if (err instanceof Error) showError(toast, err.message);
-    else showError(toast, DEFAULT_SERVER_ERROR);
-  } finally {
-    updatingCandidacy.value = false;
-  }
-}
 
 onMounted(async () => {
   const route = useRoute();
@@ -58,18 +37,6 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <Success
-    :visible="candidacyUpdated"
-    title="Candidacy Updated"
-    message="Candidacy updated successfully!"
-    @close="
-      {
-        candidacyUpdated = false;
-        router.push({ name: 'CandidaciesPage' });
-      }
-    "
-  />
-
   <div v-if="!candidacy" class="flex w-full items-center justify-center">
     <ProgressSpinner />
   </div>
@@ -103,9 +70,7 @@ onMounted(async () => {
               <InputNumber
                 id="relevantExperience"
                 v-model="candidacy.relevantExperience"
-                required
-                :min="0"
-                :max="45"
+                disabled
               />
               <InputGroupAddon> years </InputGroupAddon>
             </InputGroup>
@@ -121,8 +86,7 @@ onMounted(async () => {
                 id="expectedCtc"
                 v-model="candidacy.expectedCtc"
                 placeholder="Expected CTC"
-                :min="0"
-                required
+                disabled
               />
               <InputGroupAddon> INR </InputGroupAddon>
             </InputGroup>
@@ -139,8 +103,7 @@ onMounted(async () => {
               <InputNumber
                 id="officialNoticePeriod"
                 v-model="candidacy.officialNoticePeriod"
-                required
-                :min="0"
+                disabled
               />
               <InputGroupAddon> days </InputGroupAddon>
             </InputGroup>
@@ -157,7 +120,7 @@ onMounted(async () => {
               <InputNumber
                 id="actualNoticePeriod"
                 v-model="candidacy.actualNoticePeriod"
-                :min="0"
+                disabled
               />
               <InputGroupAddon> days </InputGroupAddon>
             </InputGroup>
@@ -173,19 +136,52 @@ onMounted(async () => {
               rows="4"
               cols="30"
               placeholder="Reason for quick join"
-              :disabled="candidacy.actualNoticePeriod >= candidacy.officialNoticePeriod"
+              disabled
             />
           </div>
         </div>
       </div>
     </div>
 
-    <CandidacyFooter
-      :disabled="candidacy.job.status === 'DELETED'"
-      :candidacySubmitted="candidacyUpdated"
-      :submittingCandidacy="updatingCandidacy"
-      :isUpdate="true"
-      @update="update(candidacy)"
-    />
+    <div class="flex w-full justify-between">
+      <Button
+        label="Back to candidacies"
+        size="small"
+        @click="
+          {
+            $emit('back');
+            router.push({ name: 'Candidacies' });
+          }
+        "
+      />
+      <div>
+        <Button
+          v-if="
+            candidacy.status !== 'WITHDRAWN' &&
+            candidacy.status !== 'ARCHIVED' &&
+            (candidacy.status === 'SENT_TO_CLIENT' || candidacy.status === 'REJECTED')
+          "
+          label="Accept"
+          size="small"
+          @click="console.log('approved')"
+        />
+        <Button
+          v-if="
+            candidacy.status !== 'WITHDRAWN' &&
+            candidacy.status !== 'ARCHIVED' &&
+            (candidacy.status === 'SENT_TO_CLIENT' || candidacy.status === 'ACCEPTED')
+          "
+          label="Reject"
+          size="small"
+          @click="console.log('rejected')"
+        />
+        <Button
+          v-if="candidacy.status !== 'ARCHIVED'"
+          label="Archive"
+          size="small"
+          @click="console.log('rejected')"
+        />
+      </div>
+    </div>
   </div>
 </template>
