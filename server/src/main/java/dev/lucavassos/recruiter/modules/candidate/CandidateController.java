@@ -36,11 +36,12 @@ public class CandidateController {
         return new ResponseEntity<>(service.getAllCandidates(), HttpStatus.OK);
     }
 
-    @PutMapping
+    @PutMapping("/{pan}")
     public ResponseEntity<CandidateResponse> updateCandidate(
+            @PathVariable("pan") String pan,
             @Valid @RequestBody UpdateCandidateRequest request) throws Exception {
-        log.info("Received request to update candidate with pan: {}", request.pan());
-        CandidateResponse response = service.updateCandidate(request);
+        log.info("Received request to update candidate with pan: {}", pan);
+        CandidateResponse response = service.updateCandidate(pan, request);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
     }

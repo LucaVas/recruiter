@@ -6,7 +6,7 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { ref } from 'vue';
 import type { Candidate, NewCandidate } from '@/stores/candidate/schema';
-import { createCandidate } from '@/stores/candidate';
+import { createCandidate, updateCandidate } from '@/stores/candidate';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { ApiError } from '@/utils/types';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
@@ -20,6 +20,7 @@ const props = defineProps<{
 
 const toast = useToast();
 const creatingCandidate = ref(false);
+const updatingCandidate = ref(false);
 
 async function create(candidate: NewCandidate) {
   creatingCandidate.value = true;
@@ -33,6 +34,21 @@ async function create(candidate: NewCandidate) {
     else showError(toast, DEFAULT_SERVER_ERROR);
   } finally {
     creatingCandidate.value = false;
+  }
+}
+
+async function update(candidateForm: NewCandidate) {
+  updatingCandidate.value = true;
+  try {
+    const res = await updateCandidate(candidateForm);
+    showSuccess(toast, 'Candidate updated successfully');
+    emits('save', res.candidate);
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    updatingCandidate.value = false;
   }
 }
 
@@ -159,7 +175,10 @@ const tmpCandidate = ref(emptyCandidate.value);
 
       <div class="flex justify-end gap-2">
         <Button label="Cancel" severity="secondary" @click="$emit('close')" />
-        <Button label="Save" @click="create(tmpCandidate)" />
+        <Button
+          label="Save"
+          @click="candidate?.pan ? update(tmpCandidate) : create(tmpCandidate)"
+        />
       </div>
     </Dialog>
   </div>
