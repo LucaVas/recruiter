@@ -78,9 +78,7 @@ onMounted(async () => {
     <div class="flex h-full w-full flex-col gap-6">
       <div v-if="candidacy.job">
         <CandidacyHeader
-          :status="candidacy.job.status"
-          :client="candidacy.job.client.name"
-          :name="candidacy.job.name"
+          :candidacy="candidacy"
           @openModal="headerModalOpen = true"
         />
         <CandidacyHiringDetailsModal

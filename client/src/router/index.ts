@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { authenticate, hideForAdmin, hideForAuth, showForAdmin } from './guards';
+import { authenticate, hideForAdmin, showForAdmin } from './guards';
 import DashboardLayout from '@/layouts/dashboard/DashboardLayout.vue';
 
 const router = createRouter({
@@ -25,19 +25,19 @@ const router = createRouter({
           path: '/candidacies/:id',
           name: 'Candidacy',
           beforeEnter: [showForAdmin],
-          component: () => import('@/views/candidacy/candidacy/CandidacyView.vue'),
+          component: () => import('@/views/candidacy/CandidacyView.vue'),
         },
         {
           path: '/candidacies/job=:id',
           name: 'NewCandidacy',
           beforeEnter: [hideForAdmin],
-          component: () => import('@/views/new-candidacy/NewCandidacy.vue'),
+          component: () => import('@/views/candidacy/NewCandidacyView.vue'),
         },
         {
           path: '/candidacies/:id/edit',
           beforeEnter: [hideForAdmin],
           name: 'UpdateCandidacy',
-          component: () => import('@/views/update-candidacy/UpdateCandidacy.vue'),
+          component: () => import('@/views/candidacy/UpdateCandidacyView.vue'),
         },
         {
           path: '/candidates',
@@ -47,7 +47,7 @@ const router = createRouter({
         {
           path: '/candidacies',
           name: 'CandidaciesPage',
-          component: () => import('@/views/candidacies-page/CandidaciesPage.vue'),
+          component: () => import('@/views/candidacy/CandidaciesPageView.vue'),
         },
         {
           path: '/users',

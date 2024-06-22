@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { getSeverity, getStatusIcon, formatStatus } from '@/components/job/utils';
-import type { JobStatus } from '@/stores/job/schema';
+import type { Candidacy, NewCandidacy } from '@/stores/candidacy/schema';
+import type { Job } from '@/stores/job/schema';
 
-const { status, name, client } = defineProps<{
-  status: JobStatus;
-  name: string;
-  client: string;
+const props = defineProps<{
+  candidacy: Candidacy | NewCandidacy;
+  job?: Job;
 }>();
 
 defineEmits<{
@@ -16,12 +16,16 @@ defineEmits<{
 <template>
   <div class="flex w-full items-center justify-between">
     <div class="flex flex-col items-start gap-4">
-      <p class="text-xl font-semibold">{{ name }} ({{ client }})</p>
+      <p class="text-xl font-semibold">
+        {{ props.job ? props.job.name : props.candidacy.job.name }} ({{
+          props.job ? props.job.client.name : props.candidacy.job.client.name
+        }})
+      </p>
       <Tag
-        :icon="getStatusIcon(status)"
-        :severity="getSeverity(status)"
+        :icon="getStatusIcon(props.job ? props.job.status : props.candidacy.job.status)"
+        :severity="getSeverity(props.job ? props.job.status : props.candidacy.job.status)"
         class="h-10 min-w-fit px-4"
-        :value="formatStatus(status)"
+        :value="formatStatus(props.job ? props.job.status : props.candidacy.job.status)"
       />
     </div>
     <Button

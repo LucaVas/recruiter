@@ -45,9 +45,7 @@ onMounted(async () => {
     <div class="flex h-full w-full flex-col gap-6">
       <div v-if="candidacy.job">
         <CandidacyHeader
-          :status="candidacy.job.status"
-          :client="candidacy.job.client.name"
-          :name="candidacy.job.name"
+          :candidacy="candidacy"
           @openModal="headerModalOpen = true"
         />
         <CandidacyHiringDetailsModal
@@ -179,7 +177,7 @@ onMounted(async () => {
           v-if="candidacy.status !== 'ARCHIVED'"
           label="Archive"
           size="small"
-          @click="console.log('rejected')"
+          @click="console.log('archived')"
         />
       </div>
     </div>
