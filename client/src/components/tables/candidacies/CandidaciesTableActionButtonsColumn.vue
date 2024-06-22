@@ -47,20 +47,6 @@ const toggle = (event: Event) => {
 
 const adminItems = ref([
   {
-    label: 'Edit',
-    icon: 'pi pi-pencil',
-    visible: true,
-    command: () => {
-      router.push({
-        name: 'UpdateCandidacy',
-        params: { jobId: props.data.job.id, pan: props.data.candidate.pan },
-      });
-    },
-  },
-  {
-    separator: true,
-  },
-  {
     label: 'Accept',
     icon: 'pi pi-check-square',
     visible: props.data.status === 'SENT_TO_CLIENT',
@@ -77,16 +63,8 @@ const adminItems = ref([
     },
   },
   {
-    label: 'Delete',
-    icon: 'pi pi-times',
-    visible: true,
-    command: () => {
-      emits('delete');
-    },
+    separator: true,
   },
-]);
-
-const recruiterItems = ref([
   {
     label: 'Comments',
     icon: 'pi pi-envelope',
@@ -102,6 +80,53 @@ const recruiterItems = ref([
     command: () => {
       emits('seeFiles');
     },
+  },
+  {
+    separator: true,
+  },
+  {
+    label: 'Delete',
+    icon: 'pi pi-times',
+    visible: true,
+    command: () => {
+      emits('delete');
+    },
+  },
+]);
+
+const recruiterItems = ref([
+  {
+    label: 'Edit',
+    icon: 'pi pi-pencil',
+    visible: true,
+    command: () => {
+      router.push({
+        name: 'UpdateCandidacy',
+        params: { jobId: props.data.job.id, pan: props.data.candidate.pan },
+      });
+    },
+  },
+  {
+    separator: true,
+  },
+  {
+    label: 'Comments',
+    icon: 'pi pi-envelope',
+    visible: true,
+    command: () => {
+      emits('seeComments');
+    },
+  },
+  {
+    label: 'Files',
+    icon: 'pi pi-folder-open',
+    visible: true,
+    command: () => {
+      emits('seeFiles');
+    },
+  },
+  {
+    separator: true,
   },
   {
     label: 'Withdraw',
