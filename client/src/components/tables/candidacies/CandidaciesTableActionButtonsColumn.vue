@@ -47,6 +47,20 @@ const toggle = (event: Event) => {
 
 const adminItems = ref([
   {
+    label: 'View',
+    icon: 'pi pi-eye',
+    visible: true,
+    command: () => {
+      router.push({
+        name: 'Candidacy',
+        params: { id: props.data.id },
+      });
+    },
+  },
+  {
+    separator: true,
+  },
+  {
     label: 'Accept',
     icon: 'pi pi-check-square',
     visible: props.data.status === 'SENT_TO_CLIENT',
