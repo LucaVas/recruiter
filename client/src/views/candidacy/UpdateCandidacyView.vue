@@ -47,8 +47,14 @@ async function update(candidacy: UpdateCandidacy | undefined) {
 onMounted(async () => {
   const route = useRoute();
   const id = Number(route.params.id);
-  const res = await getCandidacy(id);
-  candidacy.value = res;
+  try {
+    const res = await getCandidacy(id);
+    candidacy.value = res;
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  }
 });
 </script>
 <template>
@@ -72,9 +78,7 @@ onMounted(async () => {
     <div class="flex h-full w-full flex-col gap-6">
       <div v-if="candidacy.job">
         <CandidacyHeader
-          :status="candidacy.job.status"
-          :client="candidacy.job.client.name"
-          :name="candidacy.job.name"
+          :candidacy="candidacy"
           @openModal="headerModalOpen = true"
         />
         <CandidacyHiringDetailsModal

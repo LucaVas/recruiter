@@ -3,7 +3,7 @@ import type { Job } from '@/stores/job/schema';
 import JobMetadataEntry from '../metadata/JobMetadataEntry.vue';
 import { capitalize } from '@/utils/stringUtils';
 import { formatDate } from '@/utils/dateUtils';
-import { formatStatus } from '../utils';
+import { formatJobStatus } from '../utils';
 
 const { job } = defineProps<{
   job: Job;
@@ -19,8 +19,8 @@ const { job } = defineProps<{
     />
     <JobMetadataEntry :icon="'pi-file'" :content="`${job.wantedCvs} CVs wanted`" />
     <JobMetadataEntry :icon="'pi-users'" :content="`${job.numberOfCandidates ?? 0} candidates`" />
-    <JobMetadataEntry :icon="'pi-calendar'" :content="formatDate(job.createdDTime)" />
-    <JobMetadataEntry :icon="'pi-info-circle'" :content="formatStatus(job.status) ?? ''" />
+    <JobMetadataEntry :icon="'pi-calendar'" :content="formatDate(job.createdAt)" />
+    <JobMetadataEntry :icon="'pi-info-circle'" :content="formatJobStatus(job.status) ?? ''" />
   </div>
 </template>
 ../utils

@@ -11,7 +11,7 @@ export const contractTypes = ref<{ name: string; value: ContractType }[]>([
   { name: 'Temporary', value: 'TEMPORARY' },
 ]);
 
-export const formatStatus = (status: JobStatus) => {
+export const formatJobStatus = (status: JobStatus) => {
   switch (status) {
     case 'OPEN':
       return 'Open';
@@ -24,7 +24,7 @@ export const formatStatus = (status: JobStatus) => {
   }
 };
 
-export const getSeverity = (status: JobStatus) => {
+export const getJobSeverity = (status: JobStatus) => {
   switch (status) {
     case 'OPEN':
       return 'success';
@@ -37,7 +37,7 @@ export const getSeverity = (status: JobStatus) => {
   }
 };
 
-export const getStatusIcon = (status: JobStatus) => {
+export const getJobStatusIcon = (status: JobStatus) => {
   switch (status) {
     case 'OPEN':
       return 'pi pi-lock-open';

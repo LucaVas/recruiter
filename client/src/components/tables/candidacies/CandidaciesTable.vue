@@ -5,7 +5,7 @@ import {
   getCandidacyComments,
   deleteCandidacy,
 } from '@/stores/candidacy';
-import type { Candidacy, CandidacyDto, CandidacyFile } from '@/stores/candidacy/schema';
+import type { CandidacyDto, CandidacyFile } from '@/stores/candidacy/schema';
 import { ApiError } from '@/utils/types';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
@@ -20,7 +20,7 @@ import CandidacyJobCard from './CandidacyJobCard.vue';
 import CommentsModal from './CommentsModal.vue';
 import CandidacyFilesModal from '@/components/candidacy/files/CandidacyFilesModal.vue';
 import { clearFilter, filters, initFilters } from './filters';
-import { getCandidacyStatus, getCandidacyStatusSeverity } from './utils';
+import { getCandidacyStatus, getCandidacyStatusIcon, getCandidacyStatusSeverity } from './utils';
 import { type CandidacyComment } from '@/stores/candidacy/schema';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
@@ -97,6 +97,7 @@ const delCandidacy = async (id: number) => {
   try {
     await deleteCandidacy(id);
     showSuccess(toast, 'Candidacy deleted successfully');
+    deleteCandidacyModal.value = false;
     await initTable();
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
@@ -359,6 +360,7 @@ onMounted(async () => {
         <Tag
           :severity="getCandidacyStatusSeverity(data.status)"
           :value="getCandidacyStatus(data.status)"
+          :icon="getCandidacyStatusIcon(data.status)"
         ></Tag>
       </template>
     </Column>
