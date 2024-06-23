@@ -1,16 +1,16 @@
 package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
-import dev.lucavassos.recruiter.exception.BadRequestException;
-import dev.lucavassos.recruiter.exception.DuplicateResourceException;
-import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
-import dev.lucavassos.recruiter.exception.ServerException;
+import dev.lucavassos.recruiter.exception.*;
+import dev.lucavassos.recruiter.modules.HistoryEventType;
 import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
 import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
 import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
 import dev.lucavassos.recruiter.modules.user.entities.PasswordResetToken;
 import dev.lucavassos.recruiter.modules.user.entities.User;
+import dev.lucavassos.recruiter.modules.user.entities.UserHistory;
 import dev.lucavassos.recruiter.modules.user.repository.PasswordResetTokenRepository;
+import dev.lucavassos.recruiter.modules.user.repository.UserHistoryRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
@@ -24,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -37,6 +38,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final PasswordResetTokenGenerator resetTokenGenerator;
     private final UserRepository userRepository;
+    private final UserHistoryRepository historyRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
     private final EmailService emailService;
@@ -44,6 +46,7 @@ public class UserService {
     @Value("${password.reset.token.expirationInSeconds}")
     private Integer expirationInSeconds;
 
+    @Transactional
     public void approveUser(UserApprovalRequest request) {
 
         Authentication authentication =
@@ -75,10 +78,12 @@ public class UserService {
         log.info("User to approve: {} on {}", user.getComment(), user.getApprovedAt());
 
         User approvedUser = userRepository.save(user);
+        saveUserHistoryEvent(approver, user, HistoryEventType.UPDATED);
 
         log.info("User approved: {}", approvedUser);
     }
 
+    @Transactional
     public List<UserDto> getAllUsers() {
         log.info("Request received for all users");
         List<User> users = userRepository.findAll();
@@ -92,6 +97,7 @@ public class UserService {
 
     }
 
+    @Transactional
     public void sendResetPasswordEmail(PasswordForgotRequest request) throws BadRequestException, MessagingException {
         User userByEmail = userRepository
                 .findOneByEmail(request.email())
@@ -139,6 +145,7 @@ public class UserService {
                 expirationInSeconds / 60);
     }
 
+    @Transactional
     public void deleteTokenForUser(User user) {
         PasswordResetToken token = user.getPasswordResetToken();
         if (token != null) {
@@ -148,6 +155,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void resetPassword(String tokenString, PasswordResetRequest request) throws BadRequestException {
         PasswordResetToken token =
                 tokenRepository
@@ -170,6 +178,7 @@ public class UserService {
         tokenRepository.delete(token);
     }
 
+    @Transactional
     public UserDto getAuthUserProfile() {
         User user = getAuthUser();
         return userRepository.findOneById(user.getId())
@@ -177,6 +186,7 @@ public class UserService {
                 .orElseThrow(() -> new ServerException("Auth user not found."));
     }
 
+    @Transactional
     public void updateAuthUserProfile(UpdateProfileRequest request) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
@@ -214,8 +224,30 @@ public class UserService {
 
         try {
             userRepository.save(user);
+            saveUserHistoryEvent(user, user, HistoryEventType.UPDATED);
         } catch (Exception e) {
             throw new ServerException("Error updating user profile.");
+        }
+    }
+
+    @Transactional
+    private void saveUserHistoryEvent(User modifiedBy, User user, HistoryEventType eventType) {
+        try {
+            UserHistory event = UserHistory.builder()
+                    .name(user.getName())
+                    .email(user.getUsername())
+                    .phone(user.getPhone())
+                    .city(user.getCity())
+                    .country(user.getCountry())
+                    .approved(user.isApproved())
+                    .eventType(eventType)
+                    .user(user)
+                    .modifiedBy(modifiedBy)
+                    .build();
+            historyRepository.save(event);
+        } catch (Exception e) {
+            log.error("Database error while saving question history event: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
         }
     }
 

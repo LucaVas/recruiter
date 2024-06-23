@@ -1,13 +1,8 @@
-package dev.lucavassos.recruiter.modules.candidacy.entities;
+package dev.lucavassos.recruiter.modules.user.entities;
 
 import dev.lucavassos.recruiter.modules.HistoryEventType;
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
-import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -20,31 +15,31 @@ import java.util.UUID;
 @Entity
 @Builder
 @ToString
-@Table(name = "candidacy_history")
-public class CandidacyHistory {
+@Table(name = "users_history")
+public class UserHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID eventId;
 
     @Column(nullable = false)
-    private double relevantExperience;
+    private String name;
 
     @Column(nullable = false)
-    private double expectedCtc;
+    @Setter
+    private String email;
 
     @Column(nullable = false)
-    private double officialNoticePeriod;
+    private String phone;
 
     @Column(nullable = false)
-    private double actualNoticePeriod;
+    private String city;
 
-    @Column
-    private String reasonForQuickJoin;
+    @Column(nullable = false)
+    private String country;
 
-    @Column(nullable = false, name = "candidacy_status")
-    @Enumerated(EnumType.STRING)
-    private CandidacyStatus status;
+    @Column(nullable = false)
+    private boolean approved;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -52,7 +47,7 @@ public class CandidacyHistory {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Candidacy candidacy;
+    private User user;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)

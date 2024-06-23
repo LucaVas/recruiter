@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.candidate;
 
 import dev.lucavassos.recruiter.exception.*;
+import dev.lucavassos.recruiter.modules.HistoryEventType;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateResponse;
 import dev.lucavassos.recruiter.modules.candidate.domain.CandidateStatus;
 import dev.lucavassos.recruiter.modules.candidate.domain.NewCandidateRequest;
@@ -15,9 +16,10 @@ import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,21 +29,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class CandidateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CandidateService.class);
-    @Autowired
-    MonitoringProcessor monitoringProcessor;
-    @Autowired
-    private CandidateRepository candidateRepository;
-    @Autowired
-    private CandidateHistoryRepository historyRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CandidateDtoMapper dtoMapper;
+    private final MonitoringProcessor monitoringProcessor;
+    private final CandidateRepository candidateRepository;
+    private final CandidateHistoryRepository historyRepository;
+    private final UserRepository userRepository;
+    private final CandidateDtoMapper dtoMapper;
 
-    public CandidateResponse addCandidate(NewCandidateRequest request) throws Exception {
+    @Transactional
+    public CandidateResponse addCandidate(NewCandidateRequest request) {
         LOG.info("Adding a new candidate");
 
         String pan = request.pan();
@@ -88,12 +88,14 @@ public class CandidateService {
         LOG.info("New candidate created: [{}]", newCandidate);
         monitoringProcessor.incrementCandidatesCounter();
 
+        saveCandidateHistoryEvent(recruiter, newCandidate, HistoryEventType.CREATED);
         return new CandidateResponse(
                 newCandidate.getPan(),
                 dtoMapper.apply(newCandidate)
         );
     }
 
+    @Transactional
     public CandidateResponse updateCandidate(String pan, UpdateCandidateRequest request) throws Exception {
 
         boolean changes = false;
@@ -155,6 +157,7 @@ public class CandidateService {
         }
 
         LOG.info("Candidate updated: [{}]", candidate);
+        saveCandidateHistoryEvent(user, candidate, HistoryEventType.UPDATED);
 
         return new CandidateResponse(
                 candidate.getPan(),
@@ -180,6 +183,7 @@ public class CandidateService {
         );
     }
 
+    @Transactional
     public void changeCandidateStatus(String pan) {
         Candidate candidate = this.candidateRepository.findOneByPan(pan).orElseThrow(
                 () -> {
@@ -187,15 +191,18 @@ public class CandidateService {
                     return new ResourceNotFoundException("Candidate not found");
                 }
         );
+        User user = getAuthUser();
 
         switch (candidate.getStatus()) {
             case ACTIVE -> candidate.setStatus(CandidateStatus.ARCHIVED);
             case ARCHIVED -> candidate.setStatus(CandidateStatus.ACTIVE);
         }
 
-        this.candidateRepository.save(candidate);
+        candidateRepository.save(candidate);
+        saveCandidateHistoryEvent(user, candidate, HistoryEventType.UPDATED);
     }
 
+    @Transactional
     public List<CandidateDto> getAllCandidates() {
 
         User user = getAuthUser();
@@ -205,7 +212,7 @@ public class CandidateService {
         return candidates
                 .stream()
                 .filter(candidate -> user.isAdmin() || candidate.getRecruiter().getId().equals(user.getId()))
-                .map(candidate -> dtoMapper.apply(candidate))
+                .map(dtoMapper)
                 .toList();
     }
 
@@ -226,24 +233,25 @@ public class CandidateService {
                 || candidate.getRecruiter().getId().equals(recruiter.getId());
     }
 
-    private void saveCandidateInHistoryTable(Candidate candidate, User user) {
+    @Transactional
+    private void saveCandidateHistoryEvent(User user, Candidate candidate, HistoryEventType eventType) {
         try {
-            // Create new entry in history table
-            historyRepository.save(
-                    CandidateHistory.builder()
-                            .name(candidate.getName())
-                            .phone(candidate.getPhone())
-                            .email(candidate.getEmail())
-                            .totalExperience(candidate.getTotalExperience())
-                            .education(candidate.getEducation())
-                            .currentCtc(candidate.getCurrentCtc())
-                            .status(candidate.getStatus())
-                            .candidate(candidate)
-                            .modifiedBy(user)
-                            .build()
-            );
+            CandidateHistory event = CandidateHistory.builder()
+                    .pan(candidate.getPan())
+                    .name(candidate.getName())
+                    .phone(candidate.getPhone())
+                    .email(candidate.getEmail())
+                    .totalExperience(candidate.getTotalExperience())
+                    .education(candidate.getEducation())
+                    .currentCtc(candidate.getCurrentCtc())
+                    .status(candidate.getStatus())
+                    .eventType(eventType)
+                    .candidate(candidate)
+                    .modifiedBy(user)
+                    .build();
+            historyRepository.save(event);
         } catch (Exception e) {
-            LOG.error("Error while saving candidate in history table: {}", e.getMessage());
+            log.error("Database error while saving candidate history event: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
     }

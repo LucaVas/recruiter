@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.questionnaire;
 import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.modules.HistoryEventType;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionDto;
@@ -10,16 +11,24 @@ import dev.lucavassos.recruiter.modules.questionnaire.domain.NewQuestionnaireReq
 import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.UpdateQuestionnaireRequest;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionHistory;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
+import dev.lucavassos.recruiter.modules.questionnaire.entity.QuestionnaireHistory;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionHistoryRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
+import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireHistoryRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionDto;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDtoMapper;
+import dev.lucavassos.recruiter.modules.user.entities.User;
+import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +45,11 @@ public class QuestionnaireService {
 
     private final ClientRepository clientRepository;
     private final QuestionnaireRepository repository;
+    private final QuestionnaireHistoryRepository historyRepository;
     private final QuestionnaireDtoMapper questionnaireDtoMapper;
     private final QuestionRepository questionRepository;
+    private final QuestionHistoryRepository questionHistoryRepository;
+    private final UserRepository userRepository;
 
 
     @Transactional
@@ -82,6 +94,7 @@ public class QuestionnaireService {
 
         try {
             Questionnaire createdQuestionnaire = repository.save(questionnaire);
+            saveQuestionnaireHistoryEvent(createdQuestionnaire, HistoryEventType.CREATED);
             return questionnaireDtoMapper.apply(createdQuestionnaire);
         } catch (Exception e) {
             log.error("Error while saving questionnaire: {}", e.getMessage());
@@ -105,9 +118,13 @@ public class QuestionnaireService {
         questionnaire.setTitle(newTitle);
         questionnaire.setQuestions(questions);
 
-        questions.forEach(question -> question.setQuestionnaire(questionnaire));
+        questions.forEach(question -> {
+            question.setQuestionnaire(questionnaire);
+            saveQuestionHistoryEvent(question, HistoryEventType.UPDATED);
+        });
 
         Questionnaire saved = saveQuestionnaire(questionnaire);
+        saveQuestionnaireHistoryEvent(saved, HistoryEventType.UPDATED);
 
         return questionnaireDtoMapper.apply(saved);
     }
@@ -135,7 +152,11 @@ public class QuestionnaireService {
                 .questions(questions)
                 .client(client)
                 .build();
-        questions.forEach(question -> question.setQuestionnaire(questionnaire));
+        questions
+                .forEach(question -> {
+                    question.setQuestionnaire(questionnaire);
+                    saveQuestionHistoryEvent(question, HistoryEventType.CREATED);
+                });
         return questionnaire;
     }
 
@@ -168,7 +189,6 @@ public class QuestionnaireService {
         return questions;
     }
 
-
     private Question updateQuestion(QuestionDto questionDto, Question question) {
         if (!question.getText().equals(questionDto.getText())) {
             question.setText(questionDto.getText());
@@ -180,6 +200,57 @@ public class QuestionnaireService {
             question.setQuestionType(questionDto.getQuestionType());
         }
         return question;
+    }
+
+    @Transactional
+    private void saveQuestionnaireHistoryEvent(Questionnaire questionnaire, HistoryEventType eventType) {
+
+        try {
+            User user = getAuthUser();
+            QuestionnaireHistory event = QuestionnaireHistory.builder()
+                    .title(questionnaire.getTitle())
+                    .eventType(eventType)
+                    .questionnaire(questionnaire)
+                    .modifiedBy(user)
+                    .build();
+            historyRepository.save(event);
+        } catch (Exception e) {
+            log.error("Database error while saving questionnaire history event: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    @Transactional
+    private void saveQuestionHistoryEvent(Question question, HistoryEventType eventType) {
+
+        try {
+            User user = getAuthUser();
+            QuestionHistory event = QuestionHistory.builder()
+                    .text(question.getText())
+                    .answer(question.getAnswer())
+                    .questionType(question.getQuestionType())
+                    .eventType(eventType)
+                    .question(question)
+                    .modifiedBy(user)
+                    .build();
+            questionHistoryRepository.save(event);
+        } catch (Exception e) {
+            log.error("Database error while saving question history event: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    @Transactional
+    private User getAuthUser() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        User userPrincipal = (User) authentication.getPrincipal();
+        return userRepository.findOneById(userPrincipal.getId()).orElseThrow(
+                () -> {
+                    log.error("User with id {} not found", userPrincipal.getId());
+                    return new ResourceNotFoundException("User not found");
+                }
+        );
     }
 
 }

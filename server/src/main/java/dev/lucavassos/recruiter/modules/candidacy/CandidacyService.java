@@ -4,13 +4,10 @@ import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
 import dev.lucavassos.recruiter.exception.ServerException;
+import dev.lucavassos.recruiter.modules.HistoryEventType;
 import dev.lucavassos.recruiter.modules.candidacy.domain.*;
-import dev.lucavassos.recruiter.modules.candidacy.entities.Candidacy;
-import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyComment;
-import dev.lucavassos.recruiter.modules.candidacy.entities.CandidacyFile;
-import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyCommentRepository;
-import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyFileRepository;
-import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
+import dev.lucavassos.recruiter.modules.candidacy.entities.*;
+import dev.lucavassos.recruiter.modules.candidacy.repository.*;
 import dev.lucavassos.recruiter.modules.candidacy.repository.dto.*;
 import dev.lucavassos.recruiter.modules.candidate.entities.Candidate;
 import dev.lucavassos.recruiter.modules.candidate.repository.CandidateRepository;
@@ -53,6 +50,8 @@ public class CandidacyService {
     private final CandidacyCommentDtoMapper candidacyCommentDtoMapper;
     private final MonitoringProcessor monitoringProcessor;
     private final CandidacyFilesHandler candidacyFilesHandler;
+    private final CandidacyHistoryRepository historyRepository;
+    private final CandidacyFileHistoryRepository fileHistoryRepository;
 
     @Transactional
     public void addCandidacy(NewCandidacyRequest candidacy) {
@@ -106,26 +105,29 @@ public class CandidacyService {
         log.info("saved {}", savedCandidacy);
         monitoringProcessor.incrementCandidaciesCounter();
 
+        saveCandidacyHistoryEvent(recruiter, savedCandidacy, HistoryEventType.CREATED);
+
         if (candidacy.files() != null && !candidacy.files().isEmpty()) {
             candidacy.files().forEach(file -> {
-            UUID uniqueId = UUID.randomUUID();
-            try {
-                candidacyFilesHandler.upload(file.getInputStream(),
-                        candidate.getPan(),
-                        job.getId(),
-                        file.getOriginalFilename());
-                CandidacyFile newFile = CandidacyFile.builder()
-                        .type(file.getContentType())
-                        .name(file.getOriginalFilename())
-                        .uniqueId(uniqueId)
-                        .candidacy(newCandidacy)
-                        .build();
-                candidacyFileRepository.save(newFile);
-            } catch (IOException ioe) {
-                throw new ServerException("Error while uploading candidacy file");
-            } catch (Exception e) {
-                throw new DatabaseException("Error while saving candidacy file");
-            }
+                UUID uniqueId = UUID.randomUUID();
+                try {
+                    candidacyFilesHandler.upload(file.getInputStream(),
+                            candidate.getPan(),
+                            job.getId(),
+                            file.getOriginalFilename());
+                    CandidacyFile newFile = CandidacyFile.builder()
+                            .type(file.getContentType())
+                            .name(file.getOriginalFilename())
+                            .uniqueId(uniqueId)
+                            .candidacy(newCandidacy)
+                            .build();
+                    candidacyFileRepository.save(newFile);
+                    saveCandidacyFileHistoryEvent(recruiter, newFile, HistoryEventType.CREATED);
+                } catch (IOException ioe) {
+                    throw new ServerException("Error while uploading candidacy file");
+                } catch (Exception e) {
+                    throw new DatabaseException("Error while saving candidacy file");
+                }
             });
         }
 
@@ -198,6 +200,7 @@ public class CandidacyService {
         Candidacy updatedCandidacy = saveCandidacy(candidacy);
         log.debug("Candidacy updated: [{}]", updatedCandidacy);
 
+        saveCandidacyHistoryEvent(user, updatedCandidacy, HistoryEventType.UPDATED);
         return candidacyDtoMapper.apply(updatedCandidacy);
     }
 
@@ -308,6 +311,7 @@ public class CandidacyService {
             candidacy.setStatus(request.status());
         }
         saveCandidacy(candidacy);
+        saveCandidacyHistoryEvent(user, candidacy, HistoryEventType.UPDATED);
     }
 
     @Transactional
@@ -336,6 +340,7 @@ public class CandidacyService {
                         .candidacy(candidacy)
                         .build();
                 candidacyFileRepository.save(newFile);
+                saveCandidacyFileHistoryEvent(user, newFile, HistoryEventType.CREATED);
             } catch (IOException ioe) {
                 throw new ServerException("Error while uploading candidacy file");
             } catch (Exception e) {
@@ -351,6 +356,45 @@ public class CandidacyService {
             return candidacyRepository.save(candidacy);
         } catch (Exception e) {
             log.error("Database error while saving candidacy: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    @Transactional
+    private void saveCandidacyHistoryEvent(User user, Candidacy candidacy, HistoryEventType eventType) {
+        try {
+            CandidacyHistory event = CandidacyHistory.builder()
+                    .relevantExperience(candidacy.getRelevantExperience())
+                    .expectedCtc(candidacy.getExpectedCtc())
+                    .officialNoticePeriod(candidacy.getOfficialNoticePeriod())
+                    .actualNoticePeriod(candidacy.getActualNoticePeriod())
+                    .reasonForQuickJoin(candidacy.getReasonForQuickJoin())
+                    .status(candidacy.getStatus())
+                    .eventType(eventType)
+                    .candidacy(candidacy)
+                    .modifiedBy(user)
+                    .build();
+            historyRepository.save(event);
+        } catch (Exception e) {
+            log.error("Database error while saving candidacy history event: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    @Transactional
+    private void saveCandidacyFileHistoryEvent(User user, CandidacyFile candidacyFile, HistoryEventType eventType) {
+        try {
+            CandidacyFileHistory event = CandidacyFileHistory.builder()
+                    .type(candidacyFile.getType())
+                    .name(candidacyFile.getName())
+                    .eventId(candidacyFile.getUniqueId())
+                    .eventType(eventType)
+                    .candidacyFile(candidacyFile)
+                    .modifiedBy(user)
+                    .build();
+            fileHistoryRepository.save(event);
+        } catch (Exception e) {
+            log.error("Database error while saving candidacy file history event: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
     }

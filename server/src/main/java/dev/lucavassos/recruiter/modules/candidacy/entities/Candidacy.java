@@ -47,7 +47,7 @@ public class Candidacy {
     @Column(name = "reason_for_quick_join")
     private String reasonForQuickJoin;
 
-    @Column(nullable = false, name = "status")
+    @Column(nullable = false, name = "candidacy_status")
     @Enumerated(EnumType.STRING)
     private CandidacyStatus status;
 
@@ -68,6 +68,15 @@ public class Candidacy {
     )
     @ToString.Exclude
     private Set<CandidacyComment> comments = new HashSet<>();
+    @ManyToOne
+    @ToString.Exclude
+    private Job job;
+    @ManyToOne
+    @ToString.Exclude
+    private Candidate candidate;
+    @ManyToOne
+    @ToString.Exclude
+    private User recruiter;
 
     public void addComment(CandidacyComment comment) {
         if (comments == null)
@@ -80,16 +89,4 @@ public class Candidacy {
         comments.remove(comment);
         comment.setCandidacy(null);
     }
-
-    @ManyToOne
-    @ToString.Exclude
-    private Job job;
-
-    @ManyToOne
-    @ToString.Exclude
-    private Candidate candidate;
-
-    @ManyToOne
-    @ToString.Exclude
-    private User recruiter;
 }

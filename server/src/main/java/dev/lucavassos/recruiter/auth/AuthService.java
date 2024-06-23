@@ -6,12 +6,14 @@ import dev.lucavassos.recruiter.auth.domain.SignupResponse;
 import dev.lucavassos.recruiter.exception.BadRequestException;
 import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.DuplicateResourceException;
+import dev.lucavassos.recruiter.modules.HistoryEventType;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.entities.User;
+import dev.lucavassos.recruiter.modules.user.entities.UserHistory;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
+import dev.lucavassos.recruiter.modules.user.repository.UserHistoryRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
 import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final UserHistoryRepository historyRepository;
     private final AuthenticationManager authenticationManager;
-    private final UserDtoMapper userDtoMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final MonitoringProcessor monitoringProcessor;
@@ -79,7 +81,9 @@ public class AuthService {
     @Transactional
     private User createUser(User user) {
         try {
-            return userRepository.save(user);
+            User savedUser = userRepository.save(user);
+            saveUserHistoryEvent(savedUser, savedUser, HistoryEventType.CREATED);
+            return savedUser;
         } catch (Exception e) {
             log.error("Error creating user: [{}]", user, e);
             throw new DatabaseException("Error while creating user.");
@@ -100,5 +104,26 @@ public class AuthService {
                 .country(request.country())
                 .role(userRole)
                 .build();
+    }
+
+    @Transactional
+    private void saveUserHistoryEvent(User modifiedBy, User user, HistoryEventType eventType) {
+        try {
+            UserHistory event = UserHistory.builder()
+                    .name(user.getName())
+                    .email(user.getUsername())
+                    .phone(user.getPhone())
+                    .city(user.getCity())
+                    .country(user.getCountry())
+                    .approved(user.isApproved())
+                    .eventType(eventType)
+                    .user(user)
+                    .modifiedBy(modifiedBy)
+                    .build();
+            historyRepository.save(event);
+        } catch (Exception e) {
+            log.error("Database error while saving question history event: {}", e.getMessage());
+            throw new DatabaseException(e.getMessage());
+        }
     }
 }

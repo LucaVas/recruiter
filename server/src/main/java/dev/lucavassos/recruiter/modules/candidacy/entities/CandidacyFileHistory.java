@@ -1,7 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy.entities;
 
 import dev.lucavassos.recruiter.modules.HistoryEventType;
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,33 +17,23 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Builder
 @ToString
-@Table(name = "candidacy_history")
-public class CandidacyHistory {
+@Builder
+@Table(name = "candidacy_files_history")
+public class CandidacyFileHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID eventId;
 
     @Column(nullable = false)
-    private double relevantExperience;
+    private String type;
 
     @Column(nullable = false)
-    private double expectedCtc;
+    private String name;
 
     @Column(nullable = false)
-    private double officialNoticePeriod;
-
-    @Column(nullable = false)
-    private double actualNoticePeriod;
-
-    @Column
-    private String reasonForQuickJoin;
-
-    @Column(nullable = false, name = "candidacy_status")
-    @Enumerated(EnumType.STRING)
-    private CandidacyStatus status;
+    private UUID uniqueId;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -52,7 +41,7 @@ public class CandidacyHistory {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Candidacy candidacy;
+    private CandidacyFile candidacyFile;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
