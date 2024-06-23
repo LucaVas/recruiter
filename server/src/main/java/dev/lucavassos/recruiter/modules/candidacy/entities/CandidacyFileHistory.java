@@ -1,7 +1,6 @@
 package dev.lucavassos.recruiter.modules.candidacy.entities;
 
 import dev.lucavassos.recruiter.modules.HistoryEventType;
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,33 +17,23 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Builder
 @ToString
-@Table(name = "candidacy_history")
-public class CandidacyHistory {
+@Builder
+@Table(name = "candidacy_files_history")
+public class CandidacyFileHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID eventId;
 
-    @Column(nullable = false)
-    private double relevantExperience;
+    @Column(nullable = false, name = "type")
+    private String type;
 
-    @Column(nullable = false)
-    private double expectedCtc;
+    @Column(nullable = false, name = "name")
+    private String name;
 
-    @Column(nullable = false)
-    private double officialNoticePeriod;
-
-    @Column(nullable = false)
-    private double actualNoticePeriod;
-
-    @Column
-    private String reasonForQuickJoin;
-
-    @Column(nullable = false, name = "candidacy_status")
-    @Enumerated(EnumType.STRING)
-    private CandidacyStatus status;
+    @Column(nullable = false, name = "unique_id")
+    private UUID uniqueId;
 
     @Column(nullable = false)
     private HistoryEventType eventType;

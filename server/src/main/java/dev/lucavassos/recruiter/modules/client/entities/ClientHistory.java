@@ -1,16 +1,20 @@
 package dev.lucavassos.recruiter.modules.client.entities;
 
+import dev.lucavassos.recruiter.modules.HistoryEventType;
 import dev.lucavassos.recruiter.modules.client.domain.Industry;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,32 +24,28 @@ import java.time.LocalDateTime;
 public class ClientHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID eventId;
 
-    @Column(nullable = false, name = "name")
-    @Size(min = 1, message = "Job name must be at least 1 character long")
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, name = "industry")
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Industry industry;
 
-    // relation to client
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "client_id")
+    @Column(nullable = false)
+    private HistoryEventType eventType;
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Client client;
 
-    // relation to user who modified the candidate
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User modifiedBy;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
+    @Column(updatable = false)
     private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }

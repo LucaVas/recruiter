@@ -1,7 +1,6 @@
-package dev.lucavassos.recruiter.modules.candidacy.entities;
+package dev.lucavassos.recruiter.modules.questionnaire.entity;
 
 import dev.lucavassos.recruiter.modules.HistoryEventType;
-import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,38 +19,18 @@ import java.util.UUID;
 @Entity
 @Builder
 @ToString
-@Table(name = "candidacy_history")
-public class CandidacyHistory {
+@Table(name = "questionnaires_history")
+public class QuestionnaireHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID eventId;
 
     @Column(nullable = false)
-    private double relevantExperience;
-
-    @Column(nullable = false)
-    private double expectedCtc;
-
-    @Column(nullable = false)
-    private double officialNoticePeriod;
-
-    @Column(nullable = false)
-    private double actualNoticePeriod;
-
-    @Column
-    private String reasonForQuickJoin;
-
-    @Column(nullable = false, name = "candidacy_status")
-    @Enumerated(EnumType.STRING)
-    private CandidacyStatus status;
+    private String title;
 
     @Column(nullable = false)
     private HistoryEventType eventType;
-
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Candidacy candidacy;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -60,4 +39,8 @@ public class CandidacyHistory {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Questionnaire questionnaire;
 }
