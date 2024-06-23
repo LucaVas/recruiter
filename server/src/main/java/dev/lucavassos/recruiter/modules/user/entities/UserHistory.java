@@ -1,5 +1,6 @@
 package dev.lucavassos.recruiter.modules.user.entities;
 
+import dev.lucavassos.recruiter.modules.HistoryEventType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,16 +40,18 @@ public class UserHistory {
     @Column(nullable = false)
     private boolean approved;
 
+    @Column(nullable = false)
+    private HistoryEventType eventType;
+
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User updatedBy;
+    private User modifiedBy;
 
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
-
 }

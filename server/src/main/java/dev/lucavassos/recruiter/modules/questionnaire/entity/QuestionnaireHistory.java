@@ -1,7 +1,6 @@
 package dev.lucavassos.recruiter.modules.questionnaire.entity;
 
 import dev.lucavassos.recruiter.modules.HistoryEventType;
-import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,22 +18,16 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @ToString
-@Table(name = "questions_history")
-public class QuestionHistory {
+@Table(name = "questionnaires_history")
+public class QuestionnaireHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
 
     @Column(nullable = false)
-    private String text;
+    private String title;
 
-    @Column(nullable = false, length = 500)
-    private String answer;
-
-    @Column(nullable = false, name = "type")
-    @Enumerated(EnumType.STRING)
-    private QuestionType questionType;
 
     @Column(nullable = false)
     private HistoryEventType eventType;
@@ -49,5 +42,5 @@ public class QuestionHistory {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Question question;
+    private Questionnaire questionnaire;
 }
