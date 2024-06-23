@@ -24,7 +24,7 @@ public class CandidacyFileHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    private UUID eventId;
 
     @Column(nullable = false, name = "type")
     private String type;
