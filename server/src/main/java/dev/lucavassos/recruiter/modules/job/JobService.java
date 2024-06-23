@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.job;
 import dev.lucavassos.recruiter.exception.DatabaseException;
 import dev.lucavassos.recruiter.exception.RequestValidationException;
 import dev.lucavassos.recruiter.exception.ResourceNotFoundException;
+import dev.lucavassos.recruiter.modules.HistoryEventType;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
@@ -95,7 +96,7 @@ public class JobService {
                 .client(client)
                 .build();
         Job createdJob = saveJob(job);
-        saveJobInHistoryTable(createdJob, recruiter);
+        saveJobHistoryEvent(recruiter, createdJob, HistoryEventType.CREATED);
 
         log.debug("New job created: [{}]", createdJob);
         monitoringProcessor.incrementJobsCounter();
@@ -219,7 +220,7 @@ public class JobService {
         }
 
         saveJob(job);
-        saveJobInHistoryTable(job, recruiter);
+        saveJobHistoryEvent(recruiter, job, HistoryEventType.UPDATED);
 
         log.debug("Job updated: [{}]", job);
         return jobDtoMapper.apply(job);
@@ -251,9 +252,9 @@ public class JobService {
         User user = getAuthUser();
         if (request.status() != null && job.getStatus() != request.status()) {
             job.setStatus(request.status());
-            saveJobInHistoryTable(job, user);
         }
         saveJob(job);
+        saveJobHistoryEvent(user, job, HistoryEventType.UPDATED);
     }
 
     @Transactional
@@ -285,7 +286,7 @@ public class JobService {
         job.setStatus(JobStatus.DELETED);
         Job jobDeleted = saveJob(job);
         log.debug("Job {} deleted successfully", jobDeleted.getId());
-        saveJobInHistoryTable(job, user);
+        saveJobHistoryEvent(user, job, HistoryEventType.DELETED);
     }
 
     private User getAuthUser() {
@@ -315,23 +316,33 @@ public class JobService {
 
     }
 
-    private void saveJobInHistoryTable(Job job, User user) {
+    @Transactional
+    private void saveJobHistoryEvent(User user, Job job, HistoryEventType eventType) {
         try {
-            // Create new entry in history table
-            historyRepository.save(
-                    JobHistory.builder()
-                            .status(job.getStatus())
-                            .bonusPayPerCv(job.getBonusPayPerCv())
-                            .closureBonus(job.getClosureBonus())
-                            .job(job)
-                            .modifiedBy(user)
-                            .build()
-            );
+            JobHistory event = JobHistory.builder()
+                    .name(job.getName())
+                    .status(job.getStatus())
+                    .wantedCvs(job.getWantedCvs())
+                    .contractType(job.getContractType())
+                    .experienceRangeMax(job.getExperienceRangeMax())
+                    .experienceRangeMin(job.getExperienceRangeMin())
+                    .noticePeriodInDays(job.getNoticePeriodInDays())
+                    .salaryBudget(job.getSalaryBudget())
+                    .description(job.getDescription())
+                    .bonusPayPerCv(job.getBonusPayPerCv())
+                    .closureBonus(job.getClosureBonus())
+                    .cvRatePaymentDate(job.getCvRatePaymentDate())
+                    .closureBonusPaymentDate(job.getClosureBonusPaymentDate())
+                    .numberOfCandidates(job.getNumberOfCandidates() == null ? 0 : job.getNumberOfCandidates())
+                    .eventType(eventType)
+                    .job(job)
+                    .modifiedBy(user)
+                    .build();
+            historyRepository.save(event);
         } catch (Exception e) {
-            log.error("Error while saving job in history table: {}", e.getMessage());
+            log.error("Database error while saving job history event: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
         }
-
     }
 }
 

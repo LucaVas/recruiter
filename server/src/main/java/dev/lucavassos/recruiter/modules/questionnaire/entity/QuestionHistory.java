@@ -38,6 +38,7 @@ public class QuestionHistory {
     private QuestionType questionType;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private HistoryEventType eventType;
 
     @ManyToOne
