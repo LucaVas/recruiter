@@ -40,7 +40,7 @@ public class CandidacyFileHistory {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Candidacy candidacy;
+    private CandidacyFile candidacyFile;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
