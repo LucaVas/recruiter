@@ -21,7 +21,7 @@ client:
 
 logging:
     level:
-        root: debug
+        root: ${DEBUG_LEVEL}
         org:
             hibernate: error
             springframework:
