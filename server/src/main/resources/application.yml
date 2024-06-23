@@ -38,7 +38,7 @@ management:
             show-details: always
         monitoring:
             enabled: true
-    \
+
 spring:
     servlet:
         multipart:
@@ -70,7 +70,7 @@ spring:
         show-sql: false
     datasource:
         platform: postgres
-        url: postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}?sslmode=${DB_SSL}
+        url: jdbc:postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}?sslmode=${DB_SSL}
         driverClassName: org.postgresql.Driver
 
 
