@@ -108,24 +108,24 @@ public class CandidacyService {
 
         if (candidacy.files() != null && !candidacy.files().isEmpty()) {
             candidacy.files().forEach(file -> {
-            UUID uniqueId = UUID.randomUUID();
-            try {
-                candidacyFilesHandler.upload(file.getInputStream(),
-                        candidate.getPan(),
-                        job.getId(),
-                        file.getOriginalFilename());
-                CandidacyFile newFile = CandidacyFile.builder()
-                        .type(file.getContentType())
-                        .name(file.getOriginalFilename())
-                        .uniqueId(uniqueId)
-                        .candidacy(newCandidacy)
-                        .build();
-                candidacyFileRepository.save(newFile);
-            } catch (IOException ioe) {
-                throw new ServerException("Error while uploading candidacy file");
-            } catch (Exception e) {
-                throw new DatabaseException("Error while saving candidacy file");
-            }
+                UUID uniqueId = UUID.randomUUID();
+                try {
+                    candidacyFilesHandler.upload(file.getInputStream(),
+                            candidate.getPan(),
+                            job.getId(),
+                            file.getOriginalFilename());
+                    CandidacyFile newFile = CandidacyFile.builder()
+                            .type(file.getContentType())
+                            .name(file.getOriginalFilename())
+                            .uniqueId(uniqueId)
+                            .candidacy(newCandidacy)
+                            .build();
+                    candidacyFileRepository.save(newFile);
+                } catch (IOException ioe) {
+                    throw new ServerException("Error while uploading candidacy file");
+                } catch (Exception e) {
+                    throw new DatabaseException("Error while saving candidacy file");
+                }
             });
         }
 

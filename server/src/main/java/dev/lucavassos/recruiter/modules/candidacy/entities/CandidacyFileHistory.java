@@ -1,7 +1,6 @@
-package dev.lucavassos.recruiter.modules.client.entities;
+package dev.lucavassos.recruiter.modules.candidacy.entities;
 
 import dev.lucavassos.recruiter.modules.HistoryEventType;
-import dev.lucavassos.recruiter.modules.client.domain.Industry;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,32 +12,35 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Builder
 @ToString
-@Table(name = "clients_history")
-public class ClientHistory {
+@Builder
+@Table(name = "candidacy_files_history")
+public class CandidacyFileHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "type")
+    private String type;
+
+    @Column(nullable = false, name = "name")
     private String name;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Industry industry;
+    @Column(nullable = false, name = "unique_id")
+    private UUID uniqueId;
 
     @Column(nullable = false)
     private HistoryEventType eventType;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Client client;
+    private Candidacy candidacy;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)

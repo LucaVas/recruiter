@@ -1,16 +1,19 @@
 package dev.lucavassos.recruiter.modules.candidacy.entities;
 
+import dev.lucavassos.recruiter.modules.HistoryEventType;
 import dev.lucavassos.recruiter.modules.candidacy.domain.CandidacyStatus;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,49 +23,40 @@ import java.time.LocalDateTime;
 public class CandidacyHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
 
-    @Column(nullable = false, name = "relevant_experience")
-    @Min(0)
+    @Column(nullable = false)
     private double relevantExperience;
 
-    @Column(nullable = false, name = "expected_ctc")
-    @Min(0)
+    @Column(nullable = false)
     private double expectedCtc;
 
-    @Column(nullable = false, name = "official_notice_period")
-    @Min(0)
+    @Column(nullable = false)
     private double officialNoticePeriod;
 
-    @Column(nullable = false, name = "actual_notice_period")
-    @Min(0)
+    @Column(nullable = false)
     private double actualNoticePeriod;
 
-    @Column(name = "reason_for_quick_join")
+    @Column
     private String reasonForQuickJoin;
 
-    // unidirectional
-    @ManyToOne(
-            fetch = FetchType.LAZY // EAGER is by default
-    )
-    @JoinColumn(name = "candidacy_id", nullable = false)
-    private Candidacy candidacy;
-
-    @Column(nullable = false, name = "status")
+    @Column(nullable = false, name = "candidacy_status")
     @Enumerated(EnumType.STRING)
     private CandidacyStatus status;
 
-    // relation to user who modified the candidacy
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @Column(nullable = false)
+    private HistoryEventType eventType;
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Candidacy candidacy;
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User modifiedBy;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
+    @Column(updatable = false)
     private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }
