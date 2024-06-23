@@ -35,6 +35,7 @@ public class ClientHistory {
     private Industry industry;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private HistoryEventType eventType;
 
     @ManyToOne

@@ -53,6 +53,7 @@ public class CandidateHistory {
     private CandidateStatus status;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private HistoryEventType eventType;
 
     @ManyToOne

@@ -30,6 +30,7 @@ public class QuestionnaireHistory {
     private String title;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private HistoryEventType eventType;
 
     @ManyToOne

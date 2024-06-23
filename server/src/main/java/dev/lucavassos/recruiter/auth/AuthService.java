@@ -110,7 +110,12 @@ public class AuthService {
     private void saveUserHistoryEvent(User modifiedBy, User user, HistoryEventType eventType) {
         try {
             UserHistory event = UserHistory.builder()
-
+                    .name(user.getName())
+                    .email(user.getUsername())
+                    .phone(user.getPhone())
+                    .city(user.getCity())
+                    .country(user.getCountry())
+                    .approved(user.isApproved())
                     .eventType(eventType)
                     .user(user)
                     .modifiedBy(modifiedBy)

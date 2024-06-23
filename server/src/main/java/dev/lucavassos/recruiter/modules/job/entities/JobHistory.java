@@ -73,6 +73,7 @@ public class JobHistory {
     private Integer numberOfCandidates;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private HistoryEventType eventType;
 
     @ManyToOne

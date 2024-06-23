@@ -26,16 +26,17 @@ public class CandidacyFileHistory {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID eventId;
 
-    @Column(nullable = false, name = "type")
+    @Column(nullable = false)
     private String type;
 
-    @Column(nullable = false, name = "name")
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, name = "unique_id")
+    @Column(nullable = false)
     private UUID uniqueId;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private HistoryEventType eventType;
 
     @ManyToOne

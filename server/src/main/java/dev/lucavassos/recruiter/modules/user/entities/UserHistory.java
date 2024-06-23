@@ -42,6 +42,7 @@ public class UserHistory {
     private boolean approved;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private HistoryEventType eventType;
 
     @ManyToOne
