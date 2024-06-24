@@ -24,7 +24,6 @@ import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,10 +65,9 @@ public class EntityInitializer {
 
         try {
             roleRepository.saveAllAndFlush(List.of(recruiter, admin, tester));
-        } catch (DataIntegrityViolationException e) {
-            log.info("Bootstrap roles already exist in the database");
         } catch (Exception e) {
-            log.info("Exception while persisting roles during bootstrap: [{}]", e.getMessage());
+            log.error("Exception while persisting roles during bootstrap: [{}]", e.getMessage());
+            throw e;
         }
     }
 
@@ -79,10 +77,9 @@ public class EntityInitializer {
 
         try {
             clientRepository.saveAndFlush(tcs);
-        } catch (DataIntegrityViolationException e) {
-            log.info("Bootstrap client already exist in the database");
         } catch (Exception e) {
-            log.info("Exception while persisting clients during bootstrap: [{}]", e.getMessage());
+            log.error("Exception while persisting clients during bootstrap: [{}]", e.getMessage());
+            throw e;
         }
     }
 
@@ -105,10 +102,9 @@ public class EntityInitializer {
 
         try {
             userRepository.saveAndFlush(admin);
-        } catch (DataIntegrityViolationException e) {
-            log.info("Bootstrap admin user already exist in the database");
         } catch (Exception e) {
-            log.info("Exception while persisting users during bootstrap: [{}]", e.getMessage());
+            log.error("Exception while persisting users during bootstrap: [{}]", e.getMessage());
+            throw e;
         }
     }
 
