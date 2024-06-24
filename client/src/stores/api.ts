@@ -50,6 +50,9 @@ export default () => {
     (error) => {
       if (axios.isAxiosError(error)) {
         console.log(error)
+
+        if (!error.response) throw new ApiError(error.message, Number(error.code), 'Error');
+
         let responseData;
 
         if (error.response?.config.responseType === 'arraybuffer') {

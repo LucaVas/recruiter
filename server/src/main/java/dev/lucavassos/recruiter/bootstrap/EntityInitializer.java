@@ -68,11 +68,9 @@ public class EntityInitializer {
 
     @Transactional
     public void createClients() {
-        Client accenture = Client.builder().name("Accenture").industry(Industry.IT).build();
-        Client ibm = Client.builder().name("IBM").industry(Industry.IT).build();
-        Client infosys = Client.builder().name("Infosys").industry(Industry.IT).build();
+        Client tcs = Client.builder().name("TCS").industry(Industry.CONSULTANCY).build();
 
-        clientRepository.saveAllAndFlush(List.of(accenture, ibm, infosys));
+        clientRepository.saveAndFlush(tcs);
     }
 
     @Transactional
@@ -345,30 +343,7 @@ public class EntityInitializer {
     @Transactional
     public void createUsers() {
 
-        Role recruiterRole = roleRepository.findByName(RoleName.RECRUITER).orElseThrow();
         Role adminRole = roleRepository.findByName(RoleName.ADMIN).orElseThrow();
-
-        User recruiter = User.builder()
-                .name("recruiter")
-                .email("recruiter@mail.com")
-                .password(encoder.encode("Password123!"))
-                .phone("1234567890")
-                .city("Test city")
-                .country("India")
-                .approved(true)
-                .approvedAt(LocalDateTime.now())
-                .role(recruiterRole)
-                .build();
-
-        User recruiter2 = User.builder()
-                .name("recruiter2")
-                .email("recruiter2@mail.com")
-                .password(encoder.encode("Password123!"))
-                .phone("1234567892")
-                .city("Test city 2")
-                .country("India")
-                .role(recruiterRole)
-                .build();
 
         User admin = User.builder()
                 .name("admin")
@@ -382,6 +357,6 @@ public class EntityInitializer {
                 .role(adminRole)
                 .build();
 
-        userRepository.saveAllAndFlush(List.of(recruiter, recruiter2, admin));
+        userRepository.saveAndFlush(admin);
     }
 }
