@@ -15,12 +15,8 @@ public class EntityInitializationRunner implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-//        entityInitializer.createRoles();
-//        entityInitializer.createUsers();
-//        entityInitializer.createClients();
-//        entityInitializer.saveSkills();
-//        entityInitializer.saveQuestionnaires();
-//        entityInitializer.saveJobs();
-//        entityInitializer.saveCandidates();
+        entityInitializer.createRoles();
+        entityInitializer.createUsers();
+        entityInitializer.createClients();
     }
 }

@@ -14,7 +14,6 @@ import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.domain.QuestionType;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Question;
 import dev.lucavassos.recruiter.modules.questionnaire.entity.Questionnaire;
-import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionRepository;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.QuestionnaireRepository;
 import dev.lucavassos.recruiter.modules.skill.entities.Skill;
 import dev.lucavassos.recruiter.modules.skill.repository.SkillRepository;
@@ -24,6 +23,8 @@ import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class EntityInitializer {
 
     private final JobRepository jobRepository;
@@ -45,7 +47,6 @@ public class EntityInitializer {
     private final CandidateRepository candidateRepository;
     private final PasswordEncoder encoder;
     private final ClientRepository clientRepository;
-    private final QuestionRepository questionRepository;
     private final QuestionnaireRepository questionnaireRepository;
 
     @Transactional
@@ -63,15 +64,55 @@ public class EntityInitializer {
                 .description("Tester role")
                 .build();
 
-        roleRepository.saveAllAndFlush(List.of(recruiter, admin, tester));
+        try {
+            roleRepository.saveAllAndFlush(List.of(recruiter, admin, tester));
+        } catch (DataIntegrityViolationException e) {
+            log.info("Bootstrap roles already exist in the database");
+        } catch (Exception e) {
+            log.info("Exception while persisting roles during bootstrap: [{}]", e.getMessage());
+        }
     }
 
     @Transactional
     public void createClients() {
         Client tcs = Client.builder().name("TCS").industry(Industry.CONSULTANCY).build();
 
-        clientRepository.saveAndFlush(tcs);
+        try {
+            clientRepository.saveAndFlush(tcs);
+        } catch (DataIntegrityViolationException e) {
+            log.info("Bootstrap client already exist in the database");
+        } catch (Exception e) {
+            log.info("Exception while persisting clients during bootstrap: [{}]", e.getMessage());
+        }
     }
+
+    @Transactional
+    public void createUsers() {
+
+        Role adminRole = roleRepository.findByName(RoleName.ADMIN).orElseThrow();
+
+        User admin = User.builder()
+                .name("admin")
+                .email("admin@mail.com")
+                .password(encoder.encode("Password123!"))
+                .phone("1234567891")
+                .city("Test city")
+                .country("India")
+                .approvedAt(LocalDateTime.now())
+                .approved(true)
+                .role(adminRole)
+                .build();
+
+        try {
+            userRepository.saveAndFlush(admin);
+        } catch (DataIntegrityViolationException e) {
+            log.info("Bootstrap admin user already exist in the database");
+        } catch (Exception e) {
+            log.info("Exception while persisting users during bootstrap: [{}]", e.getMessage());
+        }
+    }
+
+    // FOR DEVELOPMENT ONLY: The following methods are used to populate the database with dummy data
 
     @Transactional
     public void saveSkills() {
@@ -87,7 +128,6 @@ public class EntityInitializer {
                 Skill.builder().name("Google Cloud").build()
         ));
     }
-
 
     @Transactional
     public void saveQuestionnaires() {
@@ -338,25 +378,5 @@ public class EntityInitializer {
                         .build()));
 
         candidateRepository.saveAllAndFlush(candidates);
-    }
-
-    @Transactional
-    public void createUsers() {
-
-        Role adminRole = roleRepository.findByName(RoleName.ADMIN).orElseThrow();
-
-        User admin = User.builder()
-                .name("admin")
-                .email("admin@mail.com")
-                .password(encoder.encode("Password123!"))
-                .phone("1234567891")
-                .city("Test city")
-                .country("India")
-                .approvedAt(LocalDateTime.now())
-                .approved(true)
-                .role(adminRole)
-                .build();
-
-        userRepository.saveAndFlush(admin);
     }
 }
