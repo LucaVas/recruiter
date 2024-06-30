@@ -15,7 +15,6 @@ import dev.lucavassos.recruiter.modules.candidate.repository.dto.CandidateDtoMap
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -34,7 +33,6 @@ import java.util.List;
 public class CandidateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CandidateService.class);
-    private final MonitoringProcessor monitoringProcessor;
     private final CandidateRepository candidateRepository;
     private final CandidateHistoryRepository historyRepository;
     private final UserRepository userRepository;
@@ -86,7 +84,6 @@ public class CandidateService {
         }
 
         LOG.info("New candidate created: [{}]", newCandidate);
-        monitoringProcessor.incrementCandidatesCounter();
 
         saveCandidateHistoryEvent(recruiter, newCandidate, HistoryEventType.CREATED);
         return new CandidateResponse(

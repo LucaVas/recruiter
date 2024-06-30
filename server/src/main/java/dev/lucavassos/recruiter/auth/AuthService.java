@@ -14,7 +14,6 @@ import dev.lucavassos.recruiter.modules.user.entities.UserHistory;
 import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserHistoryRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,13 +33,11 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MonitoringProcessor monitoringProcessor;
 
     public SignupResponse register(SignupRequest request) {
         validateUserExistence(request);
         User createdUser = createUser(buildUser(request));
         log.info("New user created: [{}]", createdUser);
-        monitoringProcessor.incrementUsersCounter();
         return new SignupResponse(createdUser.getId());
     }
 

@@ -25,7 +25,6 @@ import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -52,7 +51,6 @@ public class JobService {
     private final SkillRepository skillRepository;
     private final UserRepository userRepository;
     private final JobDtoMapper jobDtoMapper;
-    private final MonitoringProcessor monitoringProcessor;
     private final ClientRepository clientRepository;
     private final QuestionnaireRepository questionnaireRepository;
 
@@ -99,7 +97,6 @@ public class JobService {
         saveJobHistoryEvent(recruiter, createdJob, HistoryEventType.CREATED);
 
         log.debug("New job created: [{}]", createdJob);
-        monitoringProcessor.incrementJobsCounter();
 
         return jobDtoMapper.apply(createdJob);
     }
