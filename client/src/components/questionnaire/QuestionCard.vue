@@ -16,7 +16,7 @@ const questionType = ref<QuestionType>(props.question.questionType);
 const answer = ref<string | null>(props.question.answer);
 
 const updateQuestion = () => {
-  emits('updateQuestion', {
+  emits('update', {
     id: props.question.id,
     text: text.value,
     questionType: questionType.value,
@@ -26,7 +26,7 @@ const updateQuestion = () => {
 
 const emits = defineEmits<{
   (e: 'remove'): void;
-  (e: 'updateQuestion', question: Question): void;
+  (e: 'update', question: Question): void;
 }>();
 </script>
 

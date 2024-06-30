@@ -36,8 +36,6 @@ management:
     endpoint:
         health:
             show-details: always
-        monitoring:
-            enabled: true
 
 spring:
     servlet:
