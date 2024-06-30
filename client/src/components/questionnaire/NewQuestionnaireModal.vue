@@ -26,12 +26,12 @@ const emits = defineEmits<{
 const creatingOrUpdating = ref(false);
 const toast = useToast();
 
-const emptyQuestionnaire = ref<Questionnaire>({
+const emptyQuestionnaire: Questionnaire = {
   title: '',
   questions: [],
   client: props.client,
-});
-const tmpQuestionnaire = ref(emptyQuestionnaire.value);
+};
+const tmpQuestionnaire = ref(emptyQuestionnaire);
 
 const createQuestion = () => {
   tmpQuestionnaire.value.questions.push({
@@ -42,6 +42,7 @@ const createQuestion = () => {
   });
 };
 const removeQuestion = (question: Question) => {
+  console.log(question)
   tmpQuestionnaire.value.questions = tmpQuestionnaire.value.questions.filter(
     (q) => q.id !== question.id
   );
@@ -136,8 +137,8 @@ const update = async (questionnaire: Questionnaire) => {
             v-for="question in tmpQuestionnaire.questions"
             :key="question.id"
             :question="question"
-            @removeQuestion="removeQuestion(question)"
-            @updateQuestion="(q) => updateQuestion(q)"
+            @remove="removeQuestion(question)"
+            @update="(q) => updateQuestion(q)"
           />
         </div>
       </div>
