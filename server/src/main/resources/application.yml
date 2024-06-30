@@ -36,8 +36,6 @@ management:
     endpoint:
         health:
             show-details: always
-        monitoring:
-            enabled: true
 
 spring:
     servlet:
@@ -56,8 +54,7 @@ spring:
                     auth: true
                     starttls:
                         enable: true
-    thymeleaf:
-        check-template-location: false
+
     jpa:
         hibernate:
             ddl-auto: none

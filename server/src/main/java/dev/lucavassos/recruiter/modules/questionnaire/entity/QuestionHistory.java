@@ -30,7 +30,7 @@ public class QuestionHistory {
     @Column(nullable = false)
     private String text;
 
-    @Column(nullable = false, length = 500)
+    @Column(length = 500)
     private String answer;
 
     @Column(nullable = false, name = "type")
