@@ -17,7 +17,6 @@ import dev.lucavassos.recruiter.modules.job.repository.JobRepository;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
-import dev.lucavassos.recruiter.monitoring.MonitoringProcessor;
 import dev.lucavassos.recruiter.service.storage.CandidacyFilesHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +47,6 @@ public class CandidacyService {
     private final CandidacyDtoMapper candidacyDtoMapper;
     private final CandidacyCommentRepository candidacyCommentRepository;
     private final CandidacyCommentDtoMapper candidacyCommentDtoMapper;
-    private final MonitoringProcessor monitoringProcessor;
     private final CandidacyFilesHandler candidacyFilesHandler;
     private final CandidacyHistoryRepository historyRepository;
     private final CandidacyFileHistoryRepository fileHistoryRepository;
@@ -103,7 +101,6 @@ public class CandidacyService {
         }
 
         log.info("saved {}", savedCandidacy);
-        monitoringProcessor.incrementCandidaciesCounter();
 
         saveCandidacyHistoryEvent(recruiter, savedCandidacy, HistoryEventType.CREATED);
 
