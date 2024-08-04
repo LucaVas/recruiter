@@ -88,14 +88,9 @@ public class QuestionnaireService {
 
         Questionnaire questionnaire = buildQuestionnaire(request);
 
-        if (repository.existsByClientNameAndTitle(questionnaire.getClient().getName(), questionnaire.getTitle())) {
-            throw new DatabaseException("Questionnaire with this title already exists for this client");
-        }
-
         try {
-            Questionnaire createdQuestionnaire = repository.save(questionnaire);
-            saveQuestionnaireHistoryEvent(createdQuestionnaire, HistoryEventType.CREATED);
-            return questionnaireDtoMapper.apply(createdQuestionnaire);
+            saveQuestionnaireHistoryEvent(questionnaire, HistoryEventType.CREATED);
+            return questionnaireDtoMapper.apply(questionnaire);
         } catch (Exception e) {
             log.error("Error while saving questionnaire: {}", e.getMessage());
             throw new DatabaseException(e.getMessage());
@@ -143,6 +138,10 @@ public class QuestionnaireService {
         Client client = clientRepository.findByName(request.getClient().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
+        if (repository.existsByClientNameAndTitle(client.getName(), request.getTitle())) {
+            throw new DatabaseException("Questionnaire with this title already exists for this client");
+        }
+
         Set<Question> questions = request.getQuestions().stream()
                 .map(this::buildQuestion)
                 .collect(Collectors.toSet());
@@ -152,12 +151,14 @@ public class QuestionnaireService {
                 .questions(questions)
                 .client(client)
                 .build();
+        Questionnaire createdQuestionnaire = repository.saveAndFlush(questionnaire);
         questions
                 .forEach(question -> {
-                    question.setQuestionnaire(questionnaire);
+                    question.setQuestionnaire(createdQuestionnaire);
+                    questionRepository.saveAndFlush(question);
                     saveQuestionHistoryEvent(question, HistoryEventType.CREATED);
                 });
-        return questionnaire;
+        return createdQuestionnaire;
     }
 
     private Question buildQuestion(NewQuestionDto newQuestionDto) {
