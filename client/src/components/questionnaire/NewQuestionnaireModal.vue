@@ -111,7 +111,7 @@ const update = async (questionnaire: Questionnaire) => {
       maximizable
     >
       <div>
-        <div class="mt-3 flex gap-4">
+        <div class="mt-3 flex gap-4 flex-col md:flex-row">
           <InputText
             class="w-full"
             placeholder="Questionnaire Title"
@@ -120,15 +120,9 @@ const update = async (questionnaire: Questionnaire) => {
           />
           <Button
             icon="pi pi-plus"
-            class="hidden min-w-fit md:flex"
+            class="flex min-w-fit"
             outlined
-            label="New"
-            @click="createQuestion()"
-          />
-          <Button
-            icon="pi pi-plus"
-            class="min-w-fit md:hidden"
-            outlined
+            label="Add question"
             @click="createQuestion()"
           />
         </div>
@@ -150,6 +144,7 @@ const update = async (questionnaire: Questionnaire) => {
           <Button
             label="Cancel"
             severity="secondary"
+            outlined
             @click="$emit('close')"
             :loading="creatingOrUpdating"
             :disabled="creatingOrUpdating"

@@ -32,14 +32,14 @@ const emits = defineEmits<{
 
 <template>
   <div class="space-y-4 border bg-slate-100 p-4">
-    <div class="flex flex-col items-center gap-4 sm:flex-row">
+    <div class="flex flex-col items-center gap-4 md:flex-row">
       <InputText
-        class="w-full"
+        class="md:w-2/3 w-full"
         placeholder="Write your question here"
         v-model="text"
         @update:model-value="updateQuestion()"
       />
-      <div class="flex w-full justify-between gap-3 sm:w-1/3">
+      <div class="flex w-full justify-between gap-3 md:w-1/3">
         <Dropdown
           class="w-full md:min-w-fit"
           placeholder="Select a type"
