@@ -11,6 +11,7 @@ const { filters } = defineProps<{
 
 defineEmits<{
   (e: 'clearFilter'): void;
+  (e: 'addNewUser'): void;
 }>();
 
 const dataFilters = ref(filters);
@@ -18,13 +19,32 @@ const dataFilters = ref(filters);
 
 <template>
   <div class="flex items-center justify-between gap-3">
-    <Button
-      type="button"
-      icon="pi pi-filter-slash"
-      size="small"
-      outlined
-      @click="$emit('clearFilter')"
-    />
+    <div class="flex gap-3">
+      <Button
+        type="button"
+        icon="pi pi-filter-slash"
+        size="small"
+        outlined
+        @click="$emit('clearFilter')"
+      />
+      <div>
+        <Button
+          icon="pi pi-plus"
+          size="small"
+          outlined
+          class="md:hidden"
+          @click="$emit('addNewUser')"
+        />
+        <Button
+          icon="pi pi-plus"
+          label="New"
+          outlined
+          class="hidden w-36 md:flex"
+          size="small"
+          @click="$emit('addNewUser')"
+        />
+      </div>
+    </div>
     <IconField iconPosition="left">
       <InputIcon>
         <i class="pi pi-search" />

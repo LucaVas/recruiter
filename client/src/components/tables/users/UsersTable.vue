@@ -75,7 +75,7 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <UsersHeader :filters="filters" @clearFilter="clearFilter()" />
+      <UsersHeader :filters="filters" @clearFilter="clearFilter()" @addNewUser="console.log('hi')" />
     </template>
     <template #empty> No users found. </template>
     <template #loading> Loading users, please wait... </template>
