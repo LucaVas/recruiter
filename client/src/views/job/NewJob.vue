@@ -37,12 +37,6 @@ import { contractTypes, jobStatuses } from '@/components/job/utils';
 
 const toast = useToast();
 const router = useRouter();
-const emptyQuestionnaire = {
-  title: '',
-  client: {} as Client,
-  questions: [],
-} satisfies Questionnaire;
-
 const job = ref<NewJob>({
   name: '',
   client: {} as Client,

@@ -68,10 +68,13 @@ public class JobService {
         log.debug("Client found: {}", client);
 
         // prepare the questionnaire with questions
-        Questionnaire questionnaire = questionnaireRepository
-                .findByTitleAndClientName(request.questionnaire().getTitle(), request.questionnaire().getClient().getName())
-                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
-        log.debug("Questionnaire found: {}", questionnaire);
+        Questionnaire questionnaire = null;
+        if (request.questionnaire() != null) {
+            questionnaire = questionnaireRepository
+                    .findByTitleAndClientName(request.questionnaire().getTitle(), request.questionnaire().getClient().getName())
+                    .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
+            log.debug("Questionnaire found: {}", questionnaire);
+        }
 
         User recruiter = getAuthUser();
         Job job = Job.builder()
@@ -114,9 +117,14 @@ public class JobService {
         Client client = clientRepository
                 .findByName(request.client().getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
-        Questionnaire questionnaire = questionnaireRepository
-                .findByTitleAndClientName(request.questionnaire().getTitle(), request.questionnaire().getClient().getName())
-                .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
+
+        Questionnaire questionnaire = null;
+        if (request.questionnaire() != null) {
+            questionnaire = questionnaireRepository
+                    .findByTitleAndClientName(request.questionnaire().getTitle(), request.questionnaire().getClient().getName())
+                    .orElseThrow(() -> new ResourceNotFoundException("Questionnaire not found"));
+        }
+
 
         User recruiter = getAuthUser();
         if (!isUserAuthorized(recruiter, job)) {
@@ -209,8 +217,14 @@ public class JobService {
             }
         }
 
-        job.setQuestionnaire(questionnaire);
-
+        if (
+                job.getQuestionnaire() == null && questionnaire != null
+                        || job.getQuestionnaire() != null && questionnaire == null
+                        || job.getQuestionnaire() != null && !job.getQuestionnaire().equals(questionnaire)
+        ) {
+            job.setQuestionnaire(questionnaire);
+            changes = true;
+        }
 
         if (!changes) {
             throw new RequestValidationException("No changes made to the job.");

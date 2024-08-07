@@ -3,6 +3,7 @@ package dev.lucavassos.recruiter.modules.job.domain;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.questionnaire.repository.dto.QuestionnaireDto;
 import dev.lucavassos.recruiter.modules.skill.repository.dto.SkillDto;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Length;
@@ -71,6 +72,7 @@ public record UpdateJobRequest(
         @Future(message = "Job payment date per CV upload must be in the future")
         LocalDateTime cvRatePaymentDate,
 
+        @Nullable
         @Valid
         QuestionnaireDto questionnaire
 ) {}
