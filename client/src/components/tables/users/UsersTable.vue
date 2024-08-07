@@ -9,6 +9,7 @@ import { ApiError } from '@/utils/types';
 import { getAllUsers, approveUser } from '@/stores/user';
 import { useToast } from 'primevue/usetoast';
 import { columns } from '../candidates';
+import NewUserModal from '@/components/users/NewUserModal.vue';
 import UserCard from '@/components/users/UserCard.vue';
 import UsersHeader from '@/components/users/UsersHeader.vue';
 import UsersTableButtons from './UsersTableButtons.vue';
@@ -23,6 +24,7 @@ const users = ref<User[]>();
 const isApproval = ref(false);
 const targetUser = ref<User>();
 const approveModalOpen = ref(false);
+const newUserModalOpen = ref(false);
 
 const approve = async (request: UserApprovalRequest) => {
   approvingUser.value = true;
@@ -59,6 +61,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <NewUserModal :visible="newUserModalOpen" @close="newUserModalOpen = false" />
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"
@@ -75,7 +78,11 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <UsersHeader :filters="filters" @clearFilter="clearFilter()" @addNewUser="console.log('hi')" />
+      <UsersHeader
+        :filters="filters"
+        @clearFilter="clearFilter()"
+        @addNewUser="newUserModalOpen = true"
+      />
     </template>
     <template #empty> No users found. </template>
     <template #loading> Loading users, please wait... </template>

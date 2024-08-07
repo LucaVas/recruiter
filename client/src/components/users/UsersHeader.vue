@@ -39,7 +39,7 @@ const dataFilters = ref(filters);
           icon="pi pi-plus"
           label="New"
           outlined
-          class="hidden w-36 md:flex"
+          class="hidden min-w-fit md:flex"
           size="small"
           @click="$emit('addNewUser')"
         />
