@@ -1,3 +1,28 @@
+<template>
+  <div v-if="job" class="flex w-full flex-col items-start gap-4">
+    <JobTitle :title="job.name" />
+    <JobMetadata :job="job" />
+    <JobHiringDetailsModal :visible="modalOpen" @close="modalOpen = false" :job="job" />
+    <DeleteJobModal
+      :deleting="deletingJob"
+      :visible="deleteJobModalOpen"
+      @closeModal="deleteJobModalOpen = false"
+      @deleteJob="delJob(id, router, toast)"
+    />
+    <JobButtons
+      @deleteJob="(id) => (deleteJobModalOpen = true)"
+      @openModal="modalOpen = true"
+      :id="job.id"
+      :status="job.status"
+    />
+    <JobDescription :description="job.description" />
+    <h3 class="text-lg font-medium">Skills</h3>
+    <JobSkills :isNewJob="false" :skills="job.skills" />
+    <JobQuestionnairePanel v-if="job.questionnaire" :questionnaire="job.questionnaire" />
+  </div>
+  <ProgressSpinner v-else />
+</template>
+
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { delJob, deletingJob, deleteJobModalOpen } from './jobCommons';
@@ -50,28 +75,3 @@ onMounted(async () => {
   await getJobDetails(id);
 });
 </script>
-
-<template>
-  <div v-if="job" class="flex w-full flex-col items-start gap-4">
-    <JobTitle :title="job.name" />
-    <JobMetadata :job="job" />
-    <JobHiringDetailsModal :visible="modalOpen" @close="modalOpen = false" :job="job" />
-    <DeleteJobModal
-      :deleting="deletingJob"
-      :visible="deleteJobModalOpen"
-      @closeModal="deleteJobModalOpen = false"
-      @deleteJob="delJob(id, router, toast)"
-    />
-    <JobButtons
-      @deleteJob="(id) => (deleteJobModalOpen = true)"
-      @openModal="modalOpen = true"
-      :id="job.id"
-      :status="job.status"
-    />
-    <JobDescription :description="job.description" />
-    <h3 class="text-lg font-medium">Skills</h3>
-    <JobSkills :isNewJob="false" :skills="job.skills" />
-    <JobQuestionnairePanel :questionnaire="job.questionnaire" />
-  </div>
-  <ProgressSpinner v-else />
-</template>
