@@ -11,7 +11,7 @@ export const showError = (
     severity: 'error',
     summary: summary,
     detail: message ?? DEFAULT_SERVER_ERROR,
-    life: 3000,
+    life: 60000,
   });
 };
 
@@ -20,7 +20,7 @@ export const showSuccess = (
   message: string,
   summary: string = 'Success'
 ) => {
-  toast.add({ severity: 'success', summary: summary, detail: message, life: 3000 });
+  toast.add({ severity: 'success', summary: summary, detail: message, life: 60000 });
 };
 
 export const handleError = (toast: ToastServiceMethods, err: any) => {
