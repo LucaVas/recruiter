@@ -60,7 +60,7 @@ const job = ref<NewJob>({
   closureBonus: 'Not Applicable',
   closureBonusPaymentDate: new Date(),
   skills: [],
-  questionnaire: emptyQuestionnaire,
+  questionnaire: null,
 });
 const jobCreated = ref(false);
 const creatingJob = ref(false);
@@ -125,9 +125,10 @@ onMounted(async () => {
 
 <template>
   <div class="flex w-full flex-col justify-evenly gap-3">
+    {{ job }}
     <PageHeaderBanner title="New Job" />
 
-    <div class="flex flex-col gap-6">
+    <body class="flex flex-col gap-6">
       <JobClientSection
         :client="job.client"
         :clients="clients"
@@ -311,6 +312,7 @@ onMounted(async () => {
             @selectQuestionnaire="(q: Questionnaire) => (job.questionnaire = q)"
           />
           <Button
+            v-if="job.questionnaire == null"
             :disabled="!job.client.name"
             label="New"
             icon="pi pi-plus"
@@ -323,6 +325,7 @@ onMounted(async () => {
             class="hidden min-w-fit md:flex"
           />
           <Button
+            v-if="job.questionnaire == null"
             :disabled="!job.client.name"
             icon="pi pi-plus"
             @click="
@@ -336,11 +339,11 @@ onMounted(async () => {
         </div>
 
         <div
-          v-if="job.questionnaire.title !== ''"
+          v-if="job.questionnaire && job.questionnaire.title !== ''"
           class="border-slate-150 mt-10 flex w-full items-center rounded-md border p-4"
         >
           <span class="flex min-w-fit gap-4">
-            <Button unstyled icon="pi pi-trash" @click="job.questionnaire = emptyQuestionnaire" />
+            <Button unstyled icon="pi pi-trash" @click="job.questionnaire = null" />
             <Button
               unstyled
               icon="pi pi-file-edit"
@@ -359,7 +362,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-    </div>
+    </body>
 
     <Divider />
     <div class="flex w-full justify-between">
