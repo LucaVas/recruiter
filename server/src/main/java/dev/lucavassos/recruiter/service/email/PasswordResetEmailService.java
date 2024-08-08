@@ -9,9 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class PasswordResetEmailService extends EmailService {
 
-    @Value("${client.base-url}")
-    private String clientBaseUrl;
-
     @Value("${client.reset-password-url}")
     private String resetPasswordUrl;
 
@@ -25,7 +22,7 @@ public class PasswordResetEmailService extends EmailService {
                 + "<p>Click the following link below to reset your password: %s%s%s </p><br/>"
                 + "<h4>The reset link is valid for %d minutes.</h4><br/><br/>"
                 + "With regards,<br/>Recruiter Platform";
-        htmlContent = String.format(htmlContent, name, this.clientBaseUrl, this.resetPasswordUrl, resetToken, expirationInSeconds / 60);
+        htmlContent = String.format(htmlContent, name, super.clientBaseUrl, this.resetPasswordUrl, resetToken, expirationInSeconds / 60);
         String subject = "Password reset for %s - The Recruiter Platform";
         subject = String.format(subject, name);
         super.send(to, subject, htmlContent);
