@@ -37,7 +37,7 @@ const dataFilters = ref(filters);
         />
         <Button
           icon="pi pi-plus"
-          label="New"
+          label="New User"
           outlined
           class="hidden min-w-fit md:flex"
           size="small"

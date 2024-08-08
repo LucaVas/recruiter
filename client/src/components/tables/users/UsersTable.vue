@@ -61,7 +61,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NewUserModal :visible="newUserModalOpen" @close="newUserModalOpen = false" />
+  <NewUserModal
+    :visible="newUserModalOpen"
+    @close="
+      {
+        newUserModalOpen = false;
+        initTable();
+      }
+    "
+  />
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"
