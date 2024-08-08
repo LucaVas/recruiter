@@ -1,6 +1,7 @@
 package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
+import dev.lucavassos.recruiter.modules.user.domain.NewUserRequest;
 import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
 import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
 import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +38,15 @@ public class UserController {
     public ResponseEntity<List<UserDto>> getAllUsers() {
         log.info("Received request for users.");
         return ResponseEntity.ok(service.getAllUsers());
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
+    public ResponseEntity<?> createUser(
+            @Valid @RequestBody NewUserRequest request) {
+        log.info("Received request to create user: {}", request);
+//        service.approveUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/resetPassword")
