@@ -14,7 +14,8 @@ import dev.lucavassos.recruiter.modules.user.repository.UserHistoryRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
-import dev.lucavassos.recruiter.service.email.EmailService;
+import dev.lucavassos.recruiter.service.email.NewUserPasswordEmailService;
+import dev.lucavassos.recruiter.service.email.PasswordResetEmailService;
 import dev.lucavassos.recruiter.utils.DateTimeUtils;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,8 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
-    private final EmailService emailService;
+    private final PasswordResetEmailService passwordResetEmailService;
+    private final NewUserPasswordEmailService newUserPasswordEmailService;
 
     @Value("${password.reset.token.expirationInSeconds}")
     private Integer expirationInSeconds;
@@ -142,10 +144,9 @@ public class UserService {
         tokenRepository.save(token);
 
         log.info("Sending email to [{}]", userByName.getUsername());
-        emailService.sendEmail(userByName.getUsername(),
+        passwordResetEmailService.sendPasswordResetEmail(userByName.getUsername(),
                 userByName.getName(),
-                token.getTokenString(),
-                expirationInSeconds / 60);
+                token.getTokenString());
     }
 
     @Transactional
@@ -234,11 +235,23 @@ public class UserService {
     }
 
     @Transactional
-    public void createUser(NewUserRequest request) {
+    public void createUser(NewUserRequest request) throws MessagingException {
         validateUserExistence(request);
-        User newUser = buildUser(request, getAuthUser());
+
+        User authUser = getAuthUser();
+        String randomPassword = generateRandomPassword();
+        log.info(randomPassword);
+
+        User newUser = buildUser(request, authUser, randomPassword);
         User created = createUser(newUser);
         log.info("New user created: [{}]", created);
+
+        newUserPasswordEmailService.sendEmailWithPassword(
+                created.getUsername(),
+                created.getName(),
+                getAuthUser().getUsername(),
+                randomPassword
+        );
     }
 
     private void validateUserExistence(NewUserRequest request) {
@@ -270,11 +283,10 @@ public class UserService {
         }
     }
 
-    private User buildUser(NewUserRequest request, User creator) {
+    private User buildUser(NewUserRequest request, User creator, String randomPassword) {
         Role userRole = roleRepository.findByName(RoleName.valueOf(request.roleName()))
                 .orElseThrow(() -> new BadRequestException("The user role provided is invalid."));
-        String randomPassword = generateRandomPassword();
-        log.info(randomPassword);
+
         User newUser = User.builder()
                 .name(request.name())
                 .email(request.email())

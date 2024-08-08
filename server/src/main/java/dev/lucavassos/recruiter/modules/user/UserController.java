@@ -10,7 +10,6 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,7 +42,7 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     public ResponseEntity<?> createUser(
-            @Valid @RequestBody NewUserRequest request) {
+            @Valid @RequestBody NewUserRequest request) throws MessagingException {
         log.info("Received request to create user: {}", request);
         service.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -51,7 +50,7 @@ public class UserController {
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> sendResetPasswordToken(
-            @RequestBody PasswordForgotRequest request) throws BadRequestException, MessagingException {
+            @RequestBody PasswordForgotRequest request) throws MessagingException {
         service.sendResetPasswordEmail(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -59,7 +58,7 @@ public class UserController {
     @PostMapping("/resetPassword/{token}")
     public ResponseEntity<?> verify(
             @PathVariable("token") String token,
-            @Valid @RequestBody PasswordResetRequest request) throws BadRequestException {
+            @Valid @RequestBody PasswordResetRequest request) {
         service.resetPassword(token, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

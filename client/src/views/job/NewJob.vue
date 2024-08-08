@@ -119,7 +119,6 @@ onMounted(async () => {
 
 <template>
   <div class="flex w-full flex-col justify-evenly gap-3">
-    {{ job }}
     <PageHeaderBanner title="New Job" />
 
     <body class="flex flex-col gap-6">
