@@ -1,3 +1,23 @@
+<template>
+  <div class="h-full w-full">
+    <div v-if="!loading && user" class="flex h-full flex-col justify-between">
+      <UserProfileModal
+        :user="user"
+        :visible="openUserProfileModal"
+        @save="(userForm, loginRequired) => update(userForm, loginRequired)"
+        @close="openUserProfileModal = false"
+      />
+      <SettingsHeader :user="user" />
+      <SettingsBody :user="user" />
+      <Divider />
+      <SettingsFooter :user="user" @edit="openUserProfileModal = true" />
+    </div>
+    <div v-else class="flex w-full flex-row justify-center">
+      <ProgressSpinner />
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import SettingsHeader from '@/components/settings/SettingsHeader.vue';
 import SettingsFooter from '@/components/settings/SettingsFooter.vue';
@@ -71,23 +91,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<template>
-  <div class="h-full w-full">
-    <div v-if="!loading && user" class="flex h-full flex-col justify-between">
-      <UserProfileModal
-        :user="user"
-        :visible="openUserProfileModal"
-        @save="(userForm, loginRequired) => update(userForm, loginRequired)"
-        @close="openUserProfileModal = false"
-      />
-      <SettingsHeader :user="user" />
-      <SettingsBody :user="user" />
-      <Divider />
-      <SettingsFooter :user="user" @edit="openUserProfileModal = true" />
-    </div>
-    <div v-else class="flex w-full flex-row justify-center">
-      <ProgressSpinner />
-    </div>
-  </div>
-</template>

@@ -27,22 +27,22 @@ const buttons = ref([
   },
   {
     icon: 'pi pi-users',
-    visible: isAdmin,
+    visible: isAdmin.value,
     command: () => router.push({ name: 'UsersView' }),
   },
   {
     icon: 'pi pi-plus',
-    visible: isAdmin,
+    visible: isAdmin.value,
     command: () => router.push({ name: 'NewJob' }),
   },
   {
     icon: 'pi pi-users',
-    visible: !isAdmin,
+    visible: !isAdmin.value,
     command: () => router.push({ name: 'CandidatesPage' }),
   },
   {
     icon: 'pi pi-file',
-    visible: !isAdmin,
+    visible: !isAdmin.value,
     command: () => router.push({ name: 'CandidaciesPage' }),
   },
   {
