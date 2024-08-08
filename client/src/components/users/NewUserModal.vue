@@ -1,4 +1,10 @@
 <template>
+  <Success
+    :visible="userCreated"
+    :title="'User created!'"
+    :message="'User is created successfully! They will receive their password via email soon.'"
+    @close="userCreated = false"
+  />
   <Dialog
     :visible="props.visible"
     :header="'New User'"
@@ -7,7 +13,7 @@
     modal
     class="w-[90%] sm:w-2/3 md:w-2/3 lg:w-1/3"
   >
-    <form class="space-y-4" aria-label="NewUserModal" @submit.prevent="handleSubmit">
+    <form class="space-y-4" aria-label="NewUserModal" @submit.prevent="create">
       <!-- name -->
       <InputText
         id="name"
@@ -93,13 +99,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { type NewUserRequest } from '@/stores/user/schema';
+import { createNewUser } from '@/stores/user/index';
+import { ApiError } from '@/utils/types';
+import { showError } from '@/utils/errorUtils';
+import { useToast } from 'primevue/usetoast';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
+import Success from '@/components/Success.vue';
 
 const props = defineProps<{
   visible: boolean;
 }>();
-defineEmits<{
+const emits = defineEmits<{
   (e: 'close'): void;
 }>();
+
+const toast = useToast();
 
 const form = ref<NewUserRequest>({
   name: '',
@@ -110,6 +124,7 @@ const form = ref<NewUserRequest>({
   roleName: 'RECRUITER',
 });
 const loading = ref(false);
+const userCreated = ref(false);
 
 const countries = ref([{ label: 'India', value: 'india' }]);
 const roles = ref([
@@ -117,12 +132,19 @@ const roles = ref([
   { label: 'Admin', value: 'ADMIN' },
 ]);
 
-const handleSubmit = () => {
+const create = async () => {
   loading.value = true;
-  // Assume a request is made here
-  setTimeout(() => {
+
+  try {
+    await createNewUser(form.value);
+    emits('close');
+    userCreated.value = true;
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
     loading.value = false;
-    // emit('close');
-  }, 2000); // Simulating async operation
+  }
 };
 </script>

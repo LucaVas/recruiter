@@ -1,4 +1,4 @@
-import { type User, type UserApprovalRequest } from './schema';
+import { type NewUserRequest, type User, type UserApprovalRequest } from './schema';
 import axiosApi from '../api';
 import type {
   NewPasswordRequest,
@@ -19,6 +19,11 @@ export async function getAllUsers(): Promise<User[]> {
   const { data } = await api.get(`${baseApi}`);
   return data;
 }
+
+export const createNewUser = async (form: NewUserRequest): Promise<void> => {
+  console.log(form);
+  await api.post(`${baseApi}`);
+};
 
 export const getProfileInformation = async (): Promise<User> => {
   const { data } = await api.get(`${baseApi}/profile`);
