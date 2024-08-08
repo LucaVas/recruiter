@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { type NewUserRequest } from '@/stores/user/schema';
 import { createNewUser } from '@/stores/user/index';
 import { ApiError } from '@/utils/types';
@@ -123,6 +123,16 @@ const form = ref<NewUserRequest>({
   country: '',
   roleName: 'RECRUITER',
 });
+const resetForm = () => {
+  form.value = {
+    name: '',
+    email: '',
+    phone: '',
+    city: '',
+    country: '',
+    roleName: 'RECRUITER',
+  };
+};
 const loading = ref(false);
 const userCreated = ref(false);
 
@@ -147,4 +157,13 @@ const create = async () => {
     loading.value = false;
   }
 };
+
+watch(
+  () => props.visible,
+  (open) => {
+    if (open) {
+      resetForm();
+    }
+  }
+);
 </script>
