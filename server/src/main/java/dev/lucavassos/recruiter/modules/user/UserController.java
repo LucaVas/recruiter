@@ -45,7 +45,7 @@ public class UserController {
     public ResponseEntity<?> createUser(
             @Valid @RequestBody NewUserRequest request) {
         log.info("Received request to create user: {}", request);
-//        service.approveUser(request);
+        service.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

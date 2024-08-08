@@ -3,13 +3,13 @@ package dev.lucavassos.recruiter.modules.user;
 import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
 import dev.lucavassos.recruiter.exception.*;
 import dev.lucavassos.recruiter.modules.HistoryEventType;
-import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
-import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
-import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
+import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.entities.PasswordResetToken;
+import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.entities.UserHistory;
 import dev.lucavassos.recruiter.modules.user.repository.PasswordResetTokenRepository;
+import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserHistoryRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
@@ -30,6 +30,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static dev.lucavassos.recruiter.utils.RandomUtils.generateRandomPassword;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -39,6 +41,7 @@ public class UserService {
     private final PasswordResetTokenGenerator resetTokenGenerator;
     private final UserRepository userRepository;
     private final UserHistoryRepository historyRepository;
+    private final RoleRepository roleRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
     private final EmailService emailService;
@@ -230,7 +233,59 @@ public class UserService {
         }
     }
 
+
     @Transactional
+    public void createUser(NewUserRequest request) {
+        validateUserExistence(request);
+        User createdUser = createUser(buildUser(request));
+        log.info("New user created: [{}]", createdUser);
+    }
+
+    private void validateUserExistence(NewUserRequest request) {
+        if (userRepository.existsUserByEmail(request.email())) {
+            throw new DuplicateResourceException(
+                    "User with email %s already exists.".formatted(request.email())
+            );
+        }
+        if (userRepository.existsUserByPhone(request.phone())) {
+            throw new DuplicateResourceException(
+                    "User with phone %s already exists.".formatted(request.phone())
+            );
+        }
+        if (userRepository.existsUserByName(request.name())) {
+            throw new DuplicateResourceException(
+                    "User with name %s already exists.".formatted(request.name())
+            );
+        }
+    }
+
+    private User createUser(User user) {
+        try {
+            User savedUser = userRepository.save(user);
+            saveUserHistoryEvent(savedUser, savedUser, HistoryEventType.CREATED);
+            return savedUser;
+        } catch (Exception e) {
+            log.error("Error creating user: [{}]", user, e);
+            throw new DatabaseException("Error while creating user.");
+        }
+    }
+
+    private User buildUser(NewUserRequest request) {
+        Role userRole = roleRepository.findByName(RoleName.valueOf(request.roleName()))
+                .orElseThrow(() -> new BadRequestException("The user role provided is invalid."));
+        String randomPassword = generateRandomPassword();
+        log.info(randomPassword);
+        return User.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(passwordEncoder.encode(randomPassword))
+                .phone(request.phone())
+                .city(request.city())
+                .country(request.country())
+                .role(userRole)
+                .build();
+    }
+
     private void saveUserHistoryEvent(User modifiedBy, User user, HistoryEventType eventType) {
         try {
             UserHistory event = UserHistory.builder()
@@ -263,3 +318,4 @@ public class UserService {
         );
     }
 }
+
