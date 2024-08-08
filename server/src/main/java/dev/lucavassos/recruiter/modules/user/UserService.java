@@ -233,12 +233,12 @@ public class UserService {
         }
     }
 
-
     @Transactional
     public void createUser(NewUserRequest request) {
         validateUserExistence(request);
-        User createdUser = createUser(buildUser(request));
-        log.info("New user created: [{}]", createdUser);
+        User newUser = buildUser(request, getAuthUser());
+        User created = createUser(newUser);
+        log.info("New user created: [{}]", created);
     }
 
     private void validateUserExistence(NewUserRequest request) {
@@ -270,12 +270,12 @@ public class UserService {
         }
     }
 
-    private User buildUser(NewUserRequest request) {
+    private User buildUser(NewUserRequest request, User creator) {
         Role userRole = roleRepository.findByName(RoleName.valueOf(request.roleName()))
                 .orElseThrow(() -> new BadRequestException("The user role provided is invalid."));
         String randomPassword = generateRandomPassword();
         log.info(randomPassword);
-        return User.builder()
+        User newUser = User.builder()
                 .name(request.name())
                 .email(request.email())
                 .password(passwordEncoder.encode(randomPassword))
@@ -284,6 +284,14 @@ public class UserService {
                 .country(request.country())
                 .role(userRole)
                 .build();
+
+        if (creator.isAdmin()) {
+            newUser.setApproved(true);
+            newUser.setApprovedAt(LocalDateTime.now());
+            newUser.setApprover(creator);
+        }
+
+        return newUser;
     }
 
     private void saveUserHistoryEvent(User modifiedBy, User user, HistoryEventType eventType) {

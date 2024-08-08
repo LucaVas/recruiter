@@ -16,7 +16,7 @@ public final class RandomUtils {
     private static final String SYMBOLS = "!@#$%^&*()-+=";
 
     public static String generateRandomPassword() {
-        return generateRandomString(64);
+        return generateRandomString(8);
     }
 
     private static String generateRandomString(int length) {
