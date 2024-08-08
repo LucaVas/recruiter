@@ -29,7 +29,7 @@ const dataFilters = ref(filters);
       />
       <div>
         <Button
-          icon="pi pi-plus"
+          icon="pi pi-user-plus"
           size="small"
           outlined
           class="md:hidden"

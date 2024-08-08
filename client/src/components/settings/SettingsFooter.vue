@@ -2,6 +2,8 @@
 import type { User } from '@/stores/user/schema';
 import { formatDate } from '@/utils/dateUtils';
 import Button from 'primevue/button';
+import NewUserModal from '@/components/users/NewUserModal.vue';
+import { ref } from 'vue';
 
 const { user } = defineProps<{
   user: User;
@@ -10,25 +12,52 @@ const { user } = defineProps<{
 defineEmits<{
   (e: 'edit'): void;
 }>();
+
+const newUserModalOpen = ref(false);
 </script>
 
 <template>
+  <NewUserModal :visible="newUserModalOpen" @close="newUserModalOpen = false" />
   <div class="flex w-full items-center justify-between">
-    <div>
-      <Button icon="pi pi-user-edit" @click="$emit('edit')" class="md:hidden" outlined />
+    <div class="flex items-center gap-3">
+      <Button
+        icon="pi pi-user-edit"
+        @click="$emit('edit')"
+        class="md:hidden"
+        outlined
+        size="small"
+      />
       <Button
         icon="pi pi-user-edit"
         label="Edit Profile Information"
         @click="$emit('edit')"
-        class="hidden md:block"
+        class="hidden min-w-fit md:flex"
+        size="small"
         outlined
       />
+      <div>
+        <Button
+          icon="pi pi-user-plus"
+          size="small"
+          outlined
+          class="md:hidden"
+          @click="newUserModalOpen = true"
+        />
+        <Button
+          icon="pi pi-plus"
+          label="Add User"
+          outlined
+          class="hidden min-w-fit md:flex"
+          size="small"
+          @click="newUserModalOpen = true"
+        />
+      </div>
     </div>
     <div>
-      <p class="text-md font-semibold">
+      <p class="text-sm font-semibold">
         Approved on <span class="font-normal">{{ formatDate(user.approvedAt) }}</span>
       </p>
-      <p class="text-md font-semibold">
+      <p class="text-sm font-semibold">
         Created on <span class="font-normal">{{ formatDate(user.createdAt) }}</span>
       </p>
     </div>

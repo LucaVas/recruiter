@@ -7,7 +7,7 @@
     modal
     class="w-[90%] sm:w-2/3 md:w-2/3 lg:w-1/3"
   >
-    <form class="space-y-4" aria-label="NewUserModal" @submit.prevent="console.log('hi')">
+    <form class="space-y-4" aria-label="NewUserModal" @submit.prevent="handleSubmit">
       <!-- name -->
       <InputText
         id="name"
@@ -92,8 +92,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useToast } from 'primevue/usetoast';
 import { type NewUserRequest } from '@/stores/user/schema';
 
 const props = defineProps<{
@@ -102,9 +100,6 @@ const props = defineProps<{
 defineEmits<{
   (e: 'close'): void;
 }>();
-
-const router = useRouter();
-const toast = useToast();
 
 const form = ref<NewUserRequest>({
   name: '',
@@ -122,26 +117,12 @@ const roles = ref([
   { label: 'Admin', value: 'ADMIN' },
 ]);
 
-// const submitSignup = async (userForm: SignupRequest) => {
-//   loading.value = true;
-//   try {
-//     await signup(userForm);
-//     hasSucceeded.value = true;
-//     setTimeout(
-//       () =>
-//         showSuccess(
-//           toast,
-//           'You have successfully signed up! An administrator will review your registration and confirm or reject it.'
-//         ),
-//       100
-//     );
-//     router.push({ name: 'Login' });
-//   } catch (err) {
-//     if (err instanceof ApiError) showError(toast, err.message, err.title);
-//     else if (err instanceof Error) showError(toast, err.message);
-//     else showError(toast, DEFAULT_SERVER_ERROR);
-//   } finally {
-//     loading.value = false;
-//   }
-// };
+const handleSubmit = () => {
+  loading.value = true;
+  // Assume a request is made here
+  setTimeout(() => {
+    loading.value = false;
+    // emit('close');
+  }, 2000); // Simulating async operation
+};
 </script>
