@@ -240,7 +240,6 @@ public class UserService {
 
         User authUser = getAuthUser();
         String randomPassword = generateRandomPassword();
-        log.info(randomPassword);
 
         User newUser = buildUser(request, authUser, randomPassword);
         User created = createUser(newUser);
@@ -252,6 +251,16 @@ public class UserService {
                 getAuthUser().getUsername(),
                 randomPassword
         );
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest request) {
+        User user = getAuthUser();
+        if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
+            throw new BadRequestException("Old password is incorrect.");
+        }
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
     }
 
     private void validateUserExistence(NewUserRequest request) {

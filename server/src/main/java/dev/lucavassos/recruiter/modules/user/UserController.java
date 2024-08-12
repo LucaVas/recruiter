@@ -1,10 +1,7 @@
 package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
-import dev.lucavassos.recruiter.modules.user.domain.NewUserRequest;
-import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
-import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
-import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
+import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -44,6 +41,14 @@ public class UserController {
         log.info("Received request to create user: {}", request);
         service.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<?> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request) {
+        log.info("Received request to change password.");
+        service.changePassword(request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("/resetPassword")

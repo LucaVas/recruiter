@@ -1,6 +1,7 @@
 import { type NewUserRequest, type User, type UserApprovalRequest } from './schema';
 import axiosApi from '../api';
 import type {
+  ChangePasswordRequest,
   NewPasswordRequest,
   PasswordForgotRequest,
   UserInfoUpdateRequest,
@@ -21,7 +22,6 @@ export async function getAllUsers(): Promise<User[]> {
 }
 
 export const createNewUser = async (form: NewUserRequest): Promise<void> => {
-  console.log(form);
   await api.post(`${baseApi}`, form);
 };
 
@@ -44,4 +44,8 @@ export const requestNewPassword = async (form: PasswordForgotRequest): Promise<v
 
 export const resetPassword = async (token: string, form: NewPasswordRequest): Promise<void> => {
   await api.post(`/resetPassword/${token}`, form);
+};
+
+export const changePassword = async (form: ChangePasswordRequest): Promise<void> => {
+  await api.post(`/users/password`, form);
 };

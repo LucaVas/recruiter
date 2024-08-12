@@ -2,7 +2,7 @@
 import type { User } from '@/stores/user/schema';
 import { formatDate } from '@/utils/dateUtils';
 import Button from 'primevue/button';
-import NewUserModal from '@/components/users/NewUserModal.vue';
+import ChangePasswordModal from '@/components/settings/ChangePasswordModal.vue';
 import { ref } from 'vue';
 
 const { user } = defineProps<{
@@ -13,10 +13,11 @@ defineEmits<{
   (e: 'edit'): void;
 }>();
 
-const newUserModalOpen = ref(false);
+const changePasswordModalOpen = ref(false);
 </script>
 
 <template>
+  <ChangePasswordModal :visible="changePasswordModalOpen" @close="changePasswordModalOpen = false" />
   <div class="flex w-full items-center justify-between">
     <div class="flex items-center gap-3">
       <Button
@@ -34,6 +35,23 @@ const newUserModalOpen = ref(false);
         size="small"
         outlined
       />
+      <div>
+        <Button
+          icon="pi pi-key"
+          size="small"
+          outlined
+          class="md:hidden"
+          @click="changePasswordModalOpen = true"
+        />
+        <Button
+          icon="pi pi-key"
+          label="Change Password"
+          outlined
+          class="hidden min-w-fit md:flex"
+          size="small"
+          @click="changePasswordModalOpen = true"
+        />
+      </div>
     </div>
     <div>
       <p class="text-sm font-semibold">

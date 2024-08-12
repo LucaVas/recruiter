@@ -94,6 +94,7 @@ const submitSignup = async (userForm: SignupRequest) => {
           maxlength="64"
           :feedback="false"
           required
+          toggleMask
         >
         </Password>
         <!-- Phone -->
