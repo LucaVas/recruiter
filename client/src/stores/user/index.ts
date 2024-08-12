@@ -1,6 +1,7 @@
 import { type NewUserRequest, type User, type UserApprovalRequest } from './schema';
 import axiosApi from '../api';
 import type {
+  ChangePasswordRequest,
   NewPasswordRequest,
   PasswordForgotRequest,
   UserInfoUpdateRequest,
@@ -44,4 +45,8 @@ export const requestNewPassword = async (form: PasswordForgotRequest): Promise<v
 
 export const resetPassword = async (token: string, form: NewPasswordRequest): Promise<void> => {
   await api.post(`/resetPassword/${token}`, form);
+};
+
+export const changePassword = async (form: ChangePasswordRequest): Promise<void> => {
+  console.log(form);
 };
