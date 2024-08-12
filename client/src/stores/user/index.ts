@@ -48,5 +48,5 @@ export const resetPassword = async (token: string, form: NewPasswordRequest): Pr
 };
 
 export const changePassword = async (form: ChangePasswordRequest): Promise<void> => {
-  console.log(form);
+  await api.post(`/users/password`, form);
 };

@@ -254,6 +254,16 @@ public class UserService {
         );
     }
 
+    @Transactional
+    public void changePassword(ChangePasswordRequest request) {
+        User user = getAuthUser();
+        if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
+            throw new BadRequestException("Old password is incorrect.");
+        }
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+    }
+
     private void validateUserExistence(NewUserRequest request) {
         if (userRepository.existsUserByEmail(request.email())) {
             throw new DuplicateResourceException(

@@ -39,8 +39,7 @@
       <div class="grid gap-2">
         <Button
           type="submit"
-          color="red"
-          label="Create User"
+          label="Change Password"
           :loading="loading"
           :disabled="loading"
         />
@@ -58,7 +57,7 @@ import { useToast } from 'primevue/usetoast';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import Success from '@/components/Success.vue';
 import { type ChangePasswordRequest } from '@/stores/auth/schema';
-import { changePassword } from '../../stores/user/index';
+import { changePassword } from '@/stores/user/index';
 
 const props = defineProps<{
   visible: boolean;
@@ -84,8 +83,8 @@ const passwordChanged = ref(false);
 
 const change = async () => {
   loading.value = true;
-  if (form.value.oldPassword != form.value.newPassword) {
-    showError(toast, 'The two passwords entered do not match.');
+  if (form.value.oldPassword === form.value.newPassword) {
+    showError(toast, 'The two passwords entered are identical.');
     loading.value = false;
     return;
   }
