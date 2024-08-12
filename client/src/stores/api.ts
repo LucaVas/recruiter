@@ -49,7 +49,6 @@ export default () => {
     },
     (error) => {
       if (axios.isAxiosError(error)) {
-        console.log(error)
         let responseData;
 
         if (error.response?.config.responseType === 'arraybuffer') {

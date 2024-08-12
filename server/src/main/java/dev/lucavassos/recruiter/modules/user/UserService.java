@@ -240,7 +240,6 @@ public class UserService {
 
         User authUser = getAuthUser();
         String randomPassword = generateRandomPassword();
-        log.info(randomPassword);
 
         User newUser = buildUser(request, authUser, randomPassword);
         User created = createUser(newUser);

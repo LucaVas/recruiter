@@ -22,7 +22,6 @@ export async function getAllUsers(): Promise<User[]> {
 }
 
 export const createNewUser = async (form: NewUserRequest): Promise<void> => {
-  console.log(form);
   await api.post(`${baseApi}`, form);
 };
 
