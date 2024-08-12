@@ -17,7 +17,6 @@ const newUserModalOpen = ref(false);
 </script>
 
 <template>
-  <NewUserModal :visible="newUserModalOpen" @close="newUserModalOpen = false" />
   <div class="flex w-full items-center justify-between">
     <div class="flex items-center gap-3">
       <Button
@@ -35,23 +34,6 @@ const newUserModalOpen = ref(false);
         size="small"
         outlined
       />
-      <div>
-        <Button
-          icon="pi pi-user-plus"
-          size="small"
-          outlined
-          class="md:hidden"
-          @click="newUserModalOpen = true"
-        />
-        <Button
-          icon="pi pi-plus"
-          label="Add User"
-          outlined
-          class="hidden min-w-fit md:flex"
-          size="small"
-          @click="newUserModalOpen = true"
-        />
-      </div>
     </div>
     <div>
       <p class="text-sm font-semibold">
