@@ -54,8 +54,7 @@ spring:
                     auth: true
                     starttls:
                         enable: true
-    thymeleaf:
-        check-template-location: false
+
     jpa:
         hibernate:
             ddl-auto: none
@@ -70,9 +69,6 @@ spring:
         platform: postgres
         url: jdbc:postgresql://${DB_HOST}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}&sslmode=${DB_SSL}
         driverClassName: org.postgresql.Driver
-    flyway:
-        enabled: false
-        locations: classpath:db/migration/v1
 
 
 cors:
