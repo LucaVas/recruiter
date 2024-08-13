@@ -10,34 +10,19 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class EmailService {
+public abstract class EmailService {
 
     @Value("${client.base-url}")
-    private String clientBaseUrl;
-
-    @Value("${client.reset-password-url}")
-    private String resetPasswordUrl;
+    protected String clientBaseUrl;
 
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendEmail(String to, String name, String resetToken, Integer expirationInMinutes) throws MessagingException {
-        String htmlContent = "Hi %s, <br/><br/> "
-                + "<p>You are receiving this email since you requested to reset your password. "
-                + "If it wasn't you, please ignore this email altogether.<br/><br/>"
-                + "<p>Click the following link below to reset your password: %s%s%s </p><br/>"
-                + "<h4>The reset link is valid for %d minutes.</h4><br/><br/>"
-                + "With regards,<br/>Recruiter Platform";
-        htmlContent = String.format(htmlContent, name, this.clientBaseUrl, this.resetPasswordUrl, resetToken, expirationInMinutes);
-
-        String subject = "Password reset for %s - The Recruiter Platform";
-        subject = String.format(subject, name);
-
-
+    public void send(String to, String subject, String content) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         message.setRecipients(MimeMessage.RecipientType.TO, to);
         message.setSubject(subject);
-        message.setContent(htmlContent, "text/html; charset=utf-8");
+        message.setContent(content, "text/html; charset=utf-8");
         mailSender.send(message);
 
         log.info("Sending mail...");

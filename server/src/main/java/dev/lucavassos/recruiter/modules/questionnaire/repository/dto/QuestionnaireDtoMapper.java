@@ -15,6 +15,7 @@ public class QuestionnaireDtoMapper implements Function<Questionnaire, Questionn
 
     @Override
     public QuestionnaireDto apply(Questionnaire questionnaire) {
+        if (questionnaire == null) return null;
         return QuestionnaireDto
                 .builder()
                 .id(questionnaire.getId())

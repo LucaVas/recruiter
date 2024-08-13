@@ -1,15 +1,12 @@
 package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
-import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
-import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
-import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
+import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +35,25 @@ public class UserController {
         return ResponseEntity.ok(service.getAllUsers());
     }
 
+    @PostMapping
+    public ResponseEntity<?> createUser(
+            @Valid @RequestBody NewUserRequest request) throws MessagingException {
+        log.info("Received request to create user: {}", request);
+        service.createUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<?> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request) {
+        log.info("Received request to change password.");
+        service.changePassword(request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @PostMapping("/resetPassword")
     public ResponseEntity<?> sendResetPasswordToken(
-            @RequestBody PasswordForgotRequest request) throws BadRequestException, MessagingException {
+            @RequestBody PasswordForgotRequest request) throws MessagingException {
         service.sendResetPasswordEmail(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -48,7 +61,7 @@ public class UserController {
     @PostMapping("/resetPassword/{token}")
     public ResponseEntity<?> verify(
             @PathVariable("token") String token,
-            @Valid @RequestBody PasswordResetRequest request) throws BadRequestException {
+            @Valid @RequestBody PasswordResetRequest request) {
         service.resetPassword(token, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

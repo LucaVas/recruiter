@@ -19,7 +19,7 @@ export interface JobI {
   closureBonusPaymentDate: Date;
   cvRatePaymentDate: Date;
   skills: Skill[];
-  questionnaire: Questionnaire;
+  questionnaire: Questionnaire | null;
 }
 
 export type Job = JobI & {

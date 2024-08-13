@@ -39,3 +39,7 @@ export type PasswordResetRequest = {
   newPassword: string;
 };
 export type PasswordResetTokenRequest = { email: string; name: string };
+
+export type NewUserRequest = Pick<User, 'name' | 'email' | 'phone' | 'city' | 'country'> & {
+  roleName: RoleName;
+};

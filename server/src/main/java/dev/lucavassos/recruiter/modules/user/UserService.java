@@ -3,18 +3,19 @@ package dev.lucavassos.recruiter.modules.user;
 import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
 import dev.lucavassos.recruiter.exception.*;
 import dev.lucavassos.recruiter.modules.HistoryEventType;
-import dev.lucavassos.recruiter.modules.user.domain.PasswordForgotRequest;
-import dev.lucavassos.recruiter.modules.user.domain.PasswordResetRequest;
-import dev.lucavassos.recruiter.modules.user.domain.UserApprovalRequest;
+import dev.lucavassos.recruiter.modules.user.domain.*;
 import dev.lucavassos.recruiter.modules.user.entities.PasswordResetToken;
+import dev.lucavassos.recruiter.modules.user.entities.Role;
 import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.entities.UserHistory;
 import dev.lucavassos.recruiter.modules.user.repository.PasswordResetTokenRepository;
+import dev.lucavassos.recruiter.modules.user.repository.RoleRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserHistoryRepository;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDtoMapper;
-import dev.lucavassos.recruiter.service.email.EmailService;
+import dev.lucavassos.recruiter.service.email.NewUserPasswordEmailService;
+import dev.lucavassos.recruiter.service.email.PasswordResetEmailService;
 import dev.lucavassos.recruiter.utils.DateTimeUtils;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static dev.lucavassos.recruiter.utils.RandomUtils.generateRandomPassword;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -39,9 +42,11 @@ public class UserService {
     private final PasswordResetTokenGenerator resetTokenGenerator;
     private final UserRepository userRepository;
     private final UserHistoryRepository historyRepository;
+    private final RoleRepository roleRepository;
     private final PasswordResetTokenRepository tokenRepository;
     private final UserDtoMapper userDtoMapper;
-    private final EmailService emailService;
+    private final PasswordResetEmailService passwordResetEmailService;
+    private final NewUserPasswordEmailService newUserPasswordEmailService;
 
     @Value("${password.reset.token.expirationInSeconds}")
     private Integer expirationInSeconds;
@@ -139,10 +144,9 @@ public class UserService {
         tokenRepository.save(token);
 
         log.info("Sending email to [{}]", userByName.getUsername());
-        emailService.sendEmail(userByName.getUsername(),
+        passwordResetEmailService.sendPasswordResetEmail(userByName.getUsername(),
                 userByName.getName(),
-                token.getTokenString(),
-                expirationInSeconds / 60);
+                token.getTokenString());
     }
 
     @Transactional
@@ -231,6 +235,86 @@ public class UserService {
     }
 
     @Transactional
+    public void createUser(NewUserRequest request) throws MessagingException {
+        validateUserExistence(request);
+
+        User authUser = getAuthUser();
+        String randomPassword = generateRandomPassword();
+
+        User newUser = buildUser(request, authUser, randomPassword);
+        User created = createUser(newUser);
+        log.info("New user created: [{}]", created);
+
+        newUserPasswordEmailService.sendEmailWithPassword(
+                created.getUsername(),
+                created.getName(),
+                getAuthUser().getUsername(),
+                randomPassword
+        );
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordRequest request) {
+        User user = getAuthUser();
+        if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
+            throw new BadRequestException("Old password is incorrect.");
+        }
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+    }
+
+    private void validateUserExistence(NewUserRequest request) {
+        if (userRepository.existsUserByEmail(request.email())) {
+            throw new DuplicateResourceException(
+                    "User with email %s already exists.".formatted(request.email())
+            );
+        }
+        if (userRepository.existsUserByPhone(request.phone())) {
+            throw new DuplicateResourceException(
+                    "User with phone %s already exists.".formatted(request.phone())
+            );
+        }
+        if (userRepository.existsUserByName(request.name())) {
+            throw new DuplicateResourceException(
+                    "User with name %s already exists.".formatted(request.name())
+            );
+        }
+    }
+
+    private User createUser(User user) {
+        try {
+            User savedUser = userRepository.save(user);
+            saveUserHistoryEvent(savedUser, savedUser, HistoryEventType.CREATED);
+            return savedUser;
+        } catch (Exception e) {
+            log.error("Error creating user: [{}]", user, e);
+            throw new DatabaseException("Error while creating user.");
+        }
+    }
+
+    private User buildUser(NewUserRequest request, User creator, String randomPassword) {
+        Role userRole = roleRepository.findByName(RoleName.valueOf(request.roleName()))
+                .orElseThrow(() -> new BadRequestException("The user role provided is invalid."));
+
+        User newUser = User.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(passwordEncoder.encode(randomPassword))
+                .phone(request.phone())
+                .city(request.city())
+                .country(request.country())
+                .role(userRole)
+                .build();
+
+        if (creator.isAdmin()) {
+            newUser.setApproved(true);
+            newUser.setApprovedAt(LocalDateTime.now());
+            newUser.setApprover(creator);
+        }
+
+        return newUser;
+    }
+
     private void saveUserHistoryEvent(User modifiedBy, User user, HistoryEventType eventType) {
         try {
             UserHistory event = UserHistory.builder()
@@ -263,3 +347,4 @@ public class UserService {
         );
     }
 }
+

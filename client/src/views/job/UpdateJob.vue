@@ -35,11 +35,6 @@ const job = ref<Job>();
 const clients = ref<Client[]>([]);
 const skills = ref<Skill[]>([]);
 const questionnaires = ref<Questionnaire[]>([]);
-const emptyQuestionnaire = {
-  title: '',
-  client: {} as Client,
-  questions: [],
-} satisfies Questionnaire;
 
 const initializingJob = ref(false);
 const updatingJob = ref(false);
@@ -444,12 +439,13 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
           />
         </div>
 
+
         <div
-          v-if="job.questionnaire.title !== ''"
+          v-if="job.questionnaire"
           class="border-slate-150 mt-10 flex w-full items-center rounded-md border p-4"
         >
           <span class="flex min-w-fit gap-4">
-            <Button unstyled icon="pi pi-trash" @click="job.questionnaire = emptyQuestionnaire" />
+            <Button unstyled icon="pi pi-trash" @click="job.questionnaire = null" />
             <Button
               unstyled
               icon="pi pi-file-edit"

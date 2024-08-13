@@ -50,6 +50,7 @@ const submitLogin = async () => {
         <Password
           v-model="userForm.password"
           :feedback="false"
+          toggleMask
           placeholder="Password"
           minlength="8"
           maxlength="64"
