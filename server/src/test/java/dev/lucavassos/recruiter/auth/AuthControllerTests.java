@@ -1,9 +1,13 @@
 package dev.lucavassos.recruiter.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.lucavassos.recruiter.auth.domain.LoginRequest;
 import dev.lucavassos.recruiter.auth.domain.SignupRequest;
 import dev.lucavassos.recruiter.auth.domain.SignupResponse;
 import dev.lucavassos.recruiter.jwt.JwtService;
+import dev.lucavassos.recruiter.modules.user.domain.RoleName;
+import dev.lucavassos.recruiter.modules.user.entities.Role;
+import dev.lucavassos.recruiter.modules.user.entities.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthControllerTests {
 
     private final String signupUrl = "/api/v1/auth/signup";
+    private final String loginUrl = "/api/v1/auth/login";
 
     @Autowired
     private MockMvc mockMvc;
@@ -527,4 +532,36 @@ public class AuthControllerTests {
 
         verify(authService, never()).register(request);
     }
+
+    @Test
+    void authenticate_Returns200_IfRequestIsValid() throws Exception {
+        LoginRequest request = LoginRequest.builder()
+                .email("mail@mail.com")
+                .password("Password123!")
+                .build();
+        User user = User.builder()
+                .id(1L)
+                .email("mail@mail.com")
+                .role(Role.builder().name(RoleName.ADMIN).build())
+                .build();
+
+        when(authService.authenticate(request))
+                .thenReturn(user);
+
+        ResultActions result = mockMvc
+                .perform(post(loginUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.user.id", is(1)))
+                .andExpect(jsonPath("$.user.name", is(user.getUsername())))
+                .andExpect(jsonPath("$.user.roleName", is(user.getRoleName().name())))
+                .andExpect(jsonPath("$.tokenType", is("Bearer")));
+
+        verify(authService, times(1)).authenticate(request);
+    }
+
 }
