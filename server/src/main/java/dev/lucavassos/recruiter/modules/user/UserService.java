@@ -21,12 +21,16 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -89,17 +93,20 @@ public class UserService {
     }
 
     @Transactional
-    public List<UserDto> getAllUsers() {
-        log.info("Request received for all users");
-        List<User> users = userRepository.findAll();
+    public PaginatedUsersResponse getAllUsers(Integer page, Integer pageSize, String sort) {
         User user = getAuthUser();
 
-        return users
-                .stream()
-                .filter(u -> !u.getId().equals(user.getId()))
-                .map(userDtoMapper)
-                .toList();
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("name").ascending());
+        Page<User> usersPage = userRepository.findAllButMe(user.getId(), pageRequest);
 
+        PaginatedUsersResponse res = PaginatedUsersResponse.builder()
+                .users(usersPage.getContent().stream().map(userDtoMapper).toList())
+                .page(usersPage.getNumber())
+                .totalPages(usersPage.getTotalPages())
+                .totalElements(usersPage.getTotalElements())
+                .build();
+        log.info("{}", res);
+        return res;
     }
 
     @Transactional

@@ -26,7 +26,7 @@ public class AuthController {
     private final JwtService jwtService;
     private final AuthService service;
     private static final String JWT_TOKEN_TYPE = "Bearer";
-    private static final String JWT_USER_CLAIM_KEY = "User";
+    private static final String JWT_USER_CLAIM_KEY = "user";
 
     @PostMapping("/signup")
     public ResponseEntity<?> register(

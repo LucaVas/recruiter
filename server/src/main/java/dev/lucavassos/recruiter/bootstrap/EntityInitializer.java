@@ -370,6 +370,48 @@ public class EntityInitializer {
                 .role(recruiterRole)
                 .build();
 
+        User recruiter3 = User.builder()
+                .name("recruiter3")
+                .email("recruiter3@mail.com")
+                .password(encoder.encode("Password123!"))
+                .phone("1234567893")
+                .city("Test city 3")
+                .country("India")
+                .role(recruiterRole)
+                .build();
+
+
+        User recruiter4 = User.builder()
+                .name("recruiter4")
+                .email("recruiter4@mail.com")
+                .password(encoder.encode("Password123!"))
+                .phone("1234567894")
+                .city("Test city 4")
+                .country("India")
+                .role(recruiterRole)
+                .build();
+
+
+        User recruiter5 = User.builder()
+                .name("recruiter5")
+                .email("recruiter5@mail.com")
+                .password(encoder.encode("Password123!"))
+                .phone("1234567895")
+                .city("Test city 5")
+                .country("India")
+                .role(recruiterRole)
+                .build();
+
+        User recruiter6 = User.builder()
+                .name("recruiter6")
+                .email("recruiter6@mail.com")
+                .password(encoder.encode("Password123!"))
+                .phone("1234567896")
+                .city("Test city 6")
+                .country("India")
+                .role(recruiterRole)
+                .build();
+
         User admin = User.builder()
                 .name("admin")
                 .email("admin@mail.com")
@@ -382,6 +424,6 @@ public class EntityInitializer {
                 .role(adminRole)
                 .build();
 
-        userRepository.saveAllAndFlush(List.of(recruiter, recruiter2, admin));
+        userRepository.saveAllAndFlush(List.of(recruiter, recruiter2, recruiter3, recruiter4, recruiter5, recruiter6, admin));
     }
 }
