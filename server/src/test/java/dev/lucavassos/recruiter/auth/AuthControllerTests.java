@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -777,6 +778,56 @@ public class AuthControllerTests {
                 .andExpect(jsonPath("$.description", is("One of more fields are invalid")));
 
         verify(authService, never()).authenticate(request);
+    }
+
+    @Test
+    void authenticate_Returns403_IfUserIsNotApproved() throws Exception {
+        LoginRequest request = LoginRequest.builder()
+                .email("mail@mail.com")
+                .password("Password123!")
+                .build();
+
+        when(authService.authenticate(request))
+                .thenThrow(new AccessDeniedException("User access is not yet approved. Please, contact your administrator"));
+
+        mockMvc
+                .perform(post(loginUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.type", is("https://www.rfc-editor.org/rfc/rfc9110.html#name-403-forbidden")))
+                .andExpect(jsonPath("$.title", is("Forbidden")))
+                .andExpect(jsonPath("$.status", is(403)))
+                .andExpect(jsonPath("$.detail", is("User access is not yet approved. Please, contact your administrator")))
+                .andExpect(jsonPath("$.instance", is("/api/v1/auth/login")))
+                .andExpect(jsonPath("$.description", is("You are not authorized to access this resource")));
+
+        verify(authService, times(1)).authenticate(request);
+    }
+
+    @Test
+    void authenticate_Returns403_IfCredentialsAreInvalid() throws Exception {
+        LoginRequest request = LoginRequest.builder()
+                .email("mail@mail.com")
+                .password("Password123!")
+                .build();
+
+        when(authService.authenticate(request))
+                .thenThrow(new AccessDeniedException("Invalid credentials."));
+
+        mockMvc
+                .perform(post(loginUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.type", is("https://www.rfc-editor.org/rfc/rfc9110.html#name-403-forbidden")))
+                .andExpect(jsonPath("$.title", is("Forbidden")))
+                .andExpect(jsonPath("$.status", is(403)))
+                .andExpect(jsonPath("$.detail", is("Invalid credentials.")))
+                .andExpect(jsonPath("$.instance", is("/api/v1/auth/login")))
+                .andExpect(jsonPath("$.description", is("You are not authorized to access this resource")));
+
+        verify(authService, times(1)).authenticate(request);
     }
 
 }
