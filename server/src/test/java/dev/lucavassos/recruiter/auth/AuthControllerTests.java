@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.lucavassos.recruiter.auth.domain.LoginRequest;
 import dev.lucavassos.recruiter.auth.domain.SignupRequest;
 import dev.lucavassos.recruiter.auth.domain.SignupResponse;
+import dev.lucavassos.recruiter.exception.BadRequestException;
+import dev.lucavassos.recruiter.exception.DatabaseException;
+import dev.lucavassos.recruiter.exception.DuplicateResourceException;
 import dev.lucavassos.recruiter.jwt.JwtService;
 import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import dev.lucavassos.recruiter.modules.user.entities.Role;
@@ -44,6 +47,7 @@ public class AuthControllerTests {
     @MockBean
     private UserDetailsService userDetailsService;
 
+    // Registration
 
     @Test
     void register_Returns201_IfRequestIsValid() throws Exception {
@@ -534,6 +538,173 @@ public class AuthControllerTests {
     }
 
     @Test
+    void register_Returns400_IfEmailAlreadyExist() throws Exception {
+        SignupRequest request = SignupRequest.builder()
+                .name("Name")
+                .email("mail@mail.com")
+                .password("Password123!")
+                .phone("1234567890")
+                .city("City")
+                .country("Country")
+                .roleName("RECRUITER")
+                .build();
+
+        when(authService.register(request))
+                .thenThrow(new DuplicateResourceException("User with email mail@mail.com already exists."));
+
+        ResultActions result = mockMvc
+                .perform(post(signupUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        result
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type", is("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request")))
+                .andExpect(jsonPath("$.title", is("Bad Request")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.detail", is("User with email mail@mail.com already exists.")))
+                .andExpect(jsonPath("$.instance", is("/api/v1/auth/signup")))
+                .andExpect(jsonPath("$.description", is("The resource already exists")));
+
+        verify(authService, times(1)).register(request);
+    }
+
+    @Test
+    void register_Returns400_IfPhoneAlreadyExist() throws Exception {
+        SignupRequest request = SignupRequest.builder()
+                .name("Name")
+                .email("mail@mail.com")
+                .password("Password123!")
+                .phone("1234567890")
+                .city("City")
+                .country("Country")
+                .roleName("RECRUITER")
+                .build();
+
+        when(authService.register(request))
+                .thenThrow(new DuplicateResourceException("User with phone 1234567890 already exists."));
+
+        ResultActions result = mockMvc
+                .perform(post(signupUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        result
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type", is("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request")))
+                .andExpect(jsonPath("$.title", is("Bad Request")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.detail", is("User with phone 1234567890 already exists.")))
+                .andExpect(jsonPath("$.instance", is("/api/v1/auth/signup")))
+                .andExpect(jsonPath("$.description", is("The resource already exists")));
+
+        verify(authService, times(1)).register(request);
+    }
+
+    @Test
+    void register_Returns400_IfNameAlreadyExist() throws Exception {
+        SignupRequest request = SignupRequest.builder()
+                .name("Name")
+                .email("mail@mail.com")
+                .password("Password123!")
+                .phone("1234567890")
+                .city("City")
+                .country("Country")
+                .roleName("RECRUITER")
+                .build();
+
+        when(authService.register(request))
+                .thenThrow(new DuplicateResourceException("User with name Name already exists."));
+
+        ResultActions result = mockMvc
+                .perform(post(signupUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        result
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type", is("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request")))
+                .andExpect(jsonPath("$.title", is("Bad Request")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.detail", is("User with name Name already exists.")))
+                .andExpect(jsonPath("$.instance", is("/api/v1/auth/signup")))
+                .andExpect(jsonPath("$.description", is("The resource already exists")));
+
+        verify(authService, times(1)).register(request);
+    }
+
+    @Test
+    void register_Returns400_IfRoleIsInvalid() throws Exception {
+        SignupRequest request = SignupRequest.builder()
+                .name("Name")
+                .email("mail@mail.com")
+                .password("Password123!")
+                .phone("1234567890")
+                .city("City")
+                .country("Country")
+                .roleName("BAD_ROLE")
+                .build();
+
+        when(authService.register(request))
+                .thenThrow(new BadRequestException("The user role provided is invalid."));
+
+        ResultActions result = mockMvc
+                .perform(post(signupUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        result
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type", is("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request")))
+                .andExpect(jsonPath("$.title", is("Bad Request")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.detail", is("The user role provided is invalid.")))
+                .andExpect(jsonPath("$.instance", is("/api/v1/auth/signup")))
+                .andExpect(jsonPath("$.description", is("The request is invalid")));
+
+        verify(authService, times(1)).register(request);
+    }
+
+    @Test
+    void register_Returns500_IfDatabaseOperationFails() throws Exception {
+        SignupRequest request = SignupRequest.builder()
+                .name("Name")
+                .email("mail@mail.com")
+                .password("Password123!")
+                .phone("1234567890")
+                .city("City")
+                .country("Country")
+                .roleName("BAD_ROLE")
+                .build();
+
+        when(authService.register(request))
+                .thenThrow(new DatabaseException("Database exception"));
+
+        ResultActions result = mockMvc
+                .perform(post(signupUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        result
+                .andDo(print())
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.type", is("https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error")))
+                .andExpect(jsonPath("$.title", is("Internal Server Error")))
+                .andExpect(jsonPath("$.status", is(500)))
+                .andExpect(jsonPath("$.detail", is("Database exception")))
+                .andExpect(jsonPath("$.instance", is("/api/v1/auth/signup")))
+                .andExpect(jsonPath("$.description", is("Unknown internal server error.")));
+
+        verify(authService, times(1)).register(request);
+    }
+
+    // Authentication
+
+    @Test
     void authenticate_Returns200_IfRequestIsValid() throws Exception {
         LoginRequest request = LoginRequest.builder()
                 .email("mail@mail.com")
@@ -562,6 +733,50 @@ public class AuthControllerTests {
                 .andExpect(jsonPath("$.tokenType", is("Bearer")));
 
         verify(authService, times(1)).authenticate(request);
+    }
+
+    @Test
+    void authenticate_Returns400_IfRequestHasNoEmail() throws Exception {
+        LoginRequest request = LoginRequest.builder()
+                .email("")
+                .password("Password123!")
+                .build();
+
+        mockMvc
+                .perform(post(loginUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type", is("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request")))
+                .andExpect(jsonPath("$.title", is("Bad Request")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.detail", is("One of more fields are invalid:\n- Email cannot be empty\n")))
+                .andExpect(jsonPath("$.instance", is("/api/v1/auth/login")))
+                .andExpect(jsonPath("$.description", is("One of more fields are invalid")));
+
+        verify(authService, never()).authenticate(request);
+    }
+
+    @Test
+    void authenticate_Returns400_IfRequestHasNoPassword() throws Exception {
+        LoginRequest request = LoginRequest.builder()
+                .email("mail@mail.com")
+                .password("")
+                .build();
+
+        mockMvc
+                .perform(post(loginUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.type", is("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request")))
+                .andExpect(jsonPath("$.title", is("Bad Request")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.detail", is("One of more fields are invalid:\n- Password cannot be empty\n")))
+                .andExpect(jsonPath("$.instance", is("/api/v1/auth/login")))
+                .andExpect(jsonPath("$.description", is("One of more fields are invalid")));
+
+        verify(authService, never()).authenticate(request);
     }
 
 }
