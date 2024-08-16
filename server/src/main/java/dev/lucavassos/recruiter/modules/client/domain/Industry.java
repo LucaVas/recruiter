@@ -9,5 +9,6 @@ public enum Industry {
     SALES,
     HUMAN_RESOURCES,
     ENGINEERING,
+    CONSULTANCY,
     OTHER;
 }

@@ -58,7 +58,7 @@ spring:
         check-template-location: false
     jpa:
         hibernate:
-            ddl-auto: ${DDL_AUTO}
+            ddl-auto: none
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.PostgreSQLDialect
