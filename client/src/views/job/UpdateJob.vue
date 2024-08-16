@@ -439,6 +439,7 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
           />
         </div>
 
+
         <div
           v-if="job.questionnaire"
           class="border-slate-150 mt-10 flex w-full items-center rounded-md border p-4"

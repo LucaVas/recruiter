@@ -35,6 +35,8 @@ import java.time.temporal.ChronoUnit;
 
 import static dev.lucavassos.recruiter.utils.RandomUtils.generateRandomPassword;
 
+import static dev.lucavassos.recruiter.utils.RandomUtils.generateRandomPassword;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor

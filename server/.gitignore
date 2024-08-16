@@ -42,4 +42,3 @@ secrets.yml
 .git-hooks/
 /src/main/resources/secrets/
 /src/main/resources/tmp/
-create.sql

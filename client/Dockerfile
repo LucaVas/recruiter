@@ -29,7 +29,7 @@ RUN npm ci
 # To not mix up what is used at build time and what is used at runtime, Docker
 # calls the environment variables that are passed in at build time ARGs (arguments).
 # Here we are specifying that we expect two arguments to be passed in at build time.
-ARG VITE_API_ORIGIN=https://recruiter-server-yklq5atc4q-ew.a.run.app
+ARG VITE_API_ORIGIN=https://recruiter-api-yklq5atc4q-ew.a.run.app
 ARG VITE_API_PATH=/api/v1
 
 # Build the client (HTML, CSS, JS, ...)
