@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DataTable, { type DataTablePageEvent } from 'primevue/datatable';
+import DataTable from 'primevue/datatable';
 import ApproveModal from './ApproveModal.vue';
 import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
@@ -52,7 +52,7 @@ const initTable = async (pageNumber: number, pageSize: number) => {
   loading.value = true;
   try {
     const res = await getAllUsers(pageNumber, pageSize);
-    users.value = res.users;
+    users.value = res.elements;
     totalUsers.value = res.totalElements;
   } catch (err) {
     if (err instanceof ApiError) usersTableError.value = err.message;
@@ -157,6 +157,6 @@ onMounted(async () => {
     :rows="5"
     :totalRecords="totalUsers"
     :rowsPerPageOptions="[5, 10, 20, 30]"
-    @page="(event: DataTablePageEvent) => initTable(event.page, event.rows)"
+    @page="(event) => initTable(event.page, event.rows)"
   />
 </template>

@@ -2,6 +2,7 @@ package dev.lucavassos.recruiter.modules.job;
 
 import dev.lucavassos.recruiter.modules.job.domain.ChangeJobStatusRequest;
 import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
+import dev.lucavassos.recruiter.modules.job.domain.PaginatedJobsResponse;
 import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
 import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import jakarta.validation.Valid;
@@ -11,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -55,9 +54,14 @@ public class JobController {
     }
 
     @GetMapping
-    public ResponseEntity<List<JobDto>> getAllJobs() {
-        log.debug("Received request for all jobs.");
-        return new ResponseEntity<>(service.getAllJobs(0, 1000), HttpStatus.OK);
+    public ResponseEntity<PaginatedJobsResponse> getAllJobs(
+            @RequestParam(name = "page", required = false, defaultValue = "0") final Integer pageNumber,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "5") final Integer pageSize,
+            @RequestParam(name = "sort", required = false, defaultValue = "asc") final String sort
+    ) {
+        log.debug("Received request for all jobs: page {}, pageSize {}, sort {}", pageNumber, pageSize, sort);
+        PaginatedJobsResponse response = service.getAllJobs(pageNumber, pageSize, sort);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

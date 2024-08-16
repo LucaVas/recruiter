@@ -2,18 +2,14 @@ package dev.lucavassos.recruiter.modules.user;
 
 import dev.lucavassos.recruiter.auth.domain.UpdateProfileRequest;
 import dev.lucavassos.recruiter.modules.user.domain.*;
-import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,12 +29,12 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<PaginatedUsersResponse> getAllUsers(
-            @RequestParam(name = "page", required = false, defaultValue = "0") final Integer page,
+            @RequestParam(name = "page", required = false, defaultValue = "0") final Integer pageNumber,
             @RequestParam(name = "pageSize", required = false, defaultValue = "5") final Integer pageSize,
             @RequestParam(name = "sort", required = false, defaultValue = "asc") final String sort
     ) {
-        log.info("Received request for users: page {}, pageSize {}, sort {}", page, pageSize, sort);
-        PaginatedUsersResponse response = service.getAllUsers(page, pageSize, sort);
+        log.info("Received request for users: page {}, pageSize {}, sort {}", pageNumber, pageSize, sort);
+        PaginatedUsersResponse response = service.getAllUsers(pageNumber, pageSize, sort);
         return ResponseEntity.ok(response);
     }
 

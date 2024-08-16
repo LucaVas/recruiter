@@ -30,10 +30,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import static dev.lucavassos.recruiter.utils.RandomUtils.generateRandomPassword;
 
@@ -100,12 +98,12 @@ public class UserService {
         Page<User> usersPage = userRepository.findAllButMe(user.getId(), pageRequest);
 
         PaginatedUsersResponse res = PaginatedUsersResponse.builder()
-                .users(usersPage.getContent().stream().map(userDtoMapper).toList())
+                .elements(usersPage.getContent().stream().map(userDtoMapper).toList())
                 .page(usersPage.getNumber())
                 .totalPages(usersPage.getTotalPages())
                 .totalElements(usersPage.getTotalElements())
                 .build();
-        log.info("{}", res);
+        log.info("Users retrieved: {}", res);
         return res;
     }
 

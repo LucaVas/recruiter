@@ -18,7 +18,12 @@ defineEmits<{
 
 <template>
   <div class="card flex justify-center">
-    <Dialog :visible="visible" modal :header="`Confirm ${isApproval ? 'approval' : 'rejection'}`" @update:visible="$emit('close')">
+    <Dialog
+      :visible="visible"
+      modal
+      :header="`Confirm ${isApproval ? 'approval' : 'rejection'}`"
+      @update:visible="$emit('close')"
+    >
       <Textarea
         v-model="comment"
         rows="5"

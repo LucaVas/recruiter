@@ -1,7 +1,7 @@
-package dev.lucavassos.recruiter.modules.user.domain;
+package dev.lucavassos.recruiter.modules.job.domain;
 
 import dev.lucavassos.recruiter.modules.CustomPage;
-import dev.lucavassos.recruiter.modules.user.repository.dto.UserDto;
+import dev.lucavassos.recruiter.modules.job.repository.dto.JobDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,8 +13,8 @@ import java.util.List;
 @ToString
 @Builder
 @Data
-public class PaginatedUsersResponse extends CustomPage<UserDto> {
-    List<UserDto> elements;
+public class PaginatedJobsResponse extends CustomPage<JobDto> {
+    List<JobDto> elements;
     Integer page;
     Integer totalPages;
     Long totalElements;
