@@ -54,22 +54,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping
-    public ResponseEntity<?> createUser(
-            @Valid @RequestBody NewUserRequest request) throws MessagingException {
-        log.info("Received request to create user: {}", request);
-        service.createUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PostMapping("/password")
-    public ResponseEntity<?> changePassword(
-            @Valid @RequestBody ChangePasswordRequest request) {
-        log.info("Received request to change password.");
-        service.changePassword(request);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
     @PostMapping("/resetPassword")
     public ResponseEntity<?> sendResetPasswordToken(
             @RequestBody PasswordForgotRequest request) throws MessagingException {
