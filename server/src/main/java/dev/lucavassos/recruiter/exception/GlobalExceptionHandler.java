@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateResourceException.class)
     ProblemDetail handleDuplicateResourceException(DuplicateResourceException e) {
         log.error(e.getMessage());
-        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
         errorDetail.setType(URI.create("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request"));
         errorDetail.setProperty("description", "The resource already exists");
 
@@ -126,7 +126,7 @@ public class GlobalExceptionHandler {
                     .append("; ");
         });
 
-        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, errorMessage.toString());
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errorMessage.toString());
         errorDetail.setType(URI.create("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request"));
         errorDetail.setProperty("description", "One of more fields are invalid");
 
@@ -144,10 +144,21 @@ public class GlobalExceptionHandler {
         return errorDetail;
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    ProblemDetail handleBadRequestException(BadRequestException e) {
+        log.error(e.getMessage());
+
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        errorDetail.setType(URI.create("https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request"));
+        errorDetail.setProperty("description", "The request is invalid");
+
+        return errorDetail;
+    }
+
     @ExceptionHandler({Exception.class, DatabaseException.class})
     ProblemDetail handlException(Exception e) {
         log.error(e.getMessage());
-        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         errorDetail.setType(URI.create("https://www.rfc-editor.org/rfc/rfc9110.html#name-500-internal-server-error"));
         errorDetail.setProperty("description", "Unknown internal server error.");
 

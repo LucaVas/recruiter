@@ -34,7 +34,7 @@ const emits = defineEmits<{
   <div class="space-y-4 border bg-slate-100 p-4">
     <div class="flex flex-col items-center gap-4 md:flex-row">
       <InputText
-        class="md:w-2/3 w-full"
+        class="w-full md:w-2/3"
         placeholder="Write your question here"
         v-model="text"
         @update:model-value="updateQuestion()"

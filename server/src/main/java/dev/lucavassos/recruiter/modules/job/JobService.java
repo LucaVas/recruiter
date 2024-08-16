@@ -7,10 +7,7 @@ import dev.lucavassos.recruiter.modules.HistoryEventType;
 import dev.lucavassos.recruiter.modules.candidacy.repository.CandidacyRepository;
 import dev.lucavassos.recruiter.modules.client.entities.Client;
 import dev.lucavassos.recruiter.modules.client.repository.ClientRepository;
-import dev.lucavassos.recruiter.modules.job.domain.ChangeJobStatusRequest;
-import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
-import dev.lucavassos.recruiter.modules.job.domain.NewJobRequest;
-import dev.lucavassos.recruiter.modules.job.domain.UpdateJobRequest;
+import dev.lucavassos.recruiter.modules.job.domain.*;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
 import dev.lucavassos.recruiter.modules.job.entities.JobHistory;
 import dev.lucavassos.recruiter.modules.job.repository.JobHistoryRepository;
@@ -27,8 +24,9 @@ import dev.lucavassos.recruiter.modules.user.entities.User;
 import dev.lucavassos.recruiter.modules.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -269,21 +267,22 @@ public class JobService {
     }
 
     @Transactional
-    public List<JobDto> getAllJobs(Integer pageNumber, Integer pageSize) {
-        Pageable limit = PageRequest.of(pageNumber, pageSize);
-        log.debug("Retrieving {} jobs", 1000);
+    public PaginatedJobsResponse getAllJobs(Integer pageNumber, Integer pageSize, String sort) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, Sort.by("name").ascending());
+        Page<Job> jobsPage = repository.findByStatusNotIn(List.of(JobStatus.DELETED, JobStatus.ARCHIVED), pageRequest);
 
-        List<Job> jobs = repository.findByStatusNot(JobStatus.DELETED, limit);
+        PaginatedJobsResponse response = PaginatedJobsResponse.builder()
+                .elements(jobsPage.getContent().stream()
+                        .peek(job -> job.setNumberOfCandidates(candidacyRepository.findByJob(job).size()))
+                        .map(jobDtoMapper)
+                        .toList())
+                .page(jobsPage.getNumber())
+                .totalPages(jobsPage.getTotalPages())
+                .totalElements(jobsPage.getTotalElements())
+                .build();
+        log.info("Jobs retrieved: {}", response);
 
-        User user = getAuthUser();
-        List<JobDto> jobDtos = jobs.stream()
-                .filter(job -> user.getRoleName() == RoleName.ADMIN || job.getStatus() != JobStatus.ARCHIVED)
-                .peek(job -> job.setNumberOfCandidates(candidacyRepository.findByJob(job).size()))
-                .map(jobDtoMapper)
-                .toList();
-
-        jobDtos.forEach(job -> log.debug("Job retrieved: {}", job));
-        return jobDtos;
+        return response;
     }
 
     @Transactional

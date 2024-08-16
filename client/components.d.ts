@@ -96,6 +96,7 @@ declare module 'vue' {
     NumberInput: typeof import('./src/components/shared/NumberInput.vue')['default']
     PageForm: typeof import('./src/components/PageForm.vue')['default']
     PageHeaderBanner: typeof import('./src/components/job/PageHeaderBanner.vue')['default']
+    Paginator: typeof import('primevue/paginator')['default']
     Panel: typeof import('primevue/panel')['default']
     Password: typeof import('primevue/password')['default']
     ProgressSpinner: typeof import('primevue/progressspinner')['default']

@@ -6,7 +6,7 @@ export type User = {
   phone: string;
   city: string;
   country: string;
-  role: Role;
+  roleName: RoleName;
   comments: string;
   approved: boolean;
   approver: Recruiter;

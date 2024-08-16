@@ -22,9 +22,9 @@ export type UserInfoUpdateRequest = Pick<SignupRequest, 'email' | 'phone' | 'cit
 export type PasswordForgotRequest = Pick<SignupRequest, 'email' | 'name'>;
 export type NewPasswordRequest = Pick<SignupRequest, 'password'>;
 export type ChangePasswordRequest = {
-  oldPassword: string,
-  newPassword: string
-}
+  oldPassword: string;
+  newPassword: string;
+};
 
 // response
 export type SignupResponse = { id: number };

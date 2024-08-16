@@ -3,12 +3,12 @@ export const capitalize = (word: string) =>
 
 export const capitalizeText = (text: string) =>
   text
-    .split(' ') // split words into array
-    .map((word, index) => (index === 0 ? capitalize(word) : word)) // Capitalize the first word
-    .join(' '); // Join the words back into a string
+    .split(' ')
+    .map((word, index) => (index === 0 ? capitalize(word) : word))
+    .join(' ');
 
 export const capitalizeWords = (text: string) =>
   text
-    .split(' ') // split words into array
-    .map((word) => capitalize(word)) // Capitalize all words
-    .join(' '); // Join the words back into a string
+    .split(' ')
+    .map((word) => capitalize(word))
+    .join(' ');

@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -30,9 +28,14 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        log.info("Received request for users.");
-        return ResponseEntity.ok(service.getAllUsers());
+    public ResponseEntity<PaginatedUsersResponse> getAllUsers(
+            @RequestParam(name = "page", required = false, defaultValue = "0") final Integer pageNumber,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "5") final Integer pageSize,
+            @RequestParam(name = "sort", required = false, defaultValue = "asc") final String sort
+    ) {
+        log.info("Received request for users: page {}, pageSize {}, sort {}", pageNumber, pageSize, sort);
+        PaginatedUsersResponse response = service.getAllUsers(pageNumber, pageSize, sort);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping

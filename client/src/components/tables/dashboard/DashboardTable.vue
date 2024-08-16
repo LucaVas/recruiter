@@ -17,13 +17,18 @@ import { formatJobStatus, getJobSeverity } from '@/components/job/utils';
 
 const loading = ref(false);
 const jobs = ref<Job[]>();
+const totalJobs = ref(0);
 
 const toast = useToast();
+const defaultPageNumber = 0;
+const defaultPageSize = 5;
 
-async function initTable() {
+async function initTable(pageNumber: number, pageSize: number) {
   loading.value = true;
   try {
-    jobs.value = await getAllJobs();
+    const res = await getAllJobs(pageNumber, pageSize);
+    jobs.value = res.elements;
+    totalJobs.value = res.totalElements;
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -36,7 +41,7 @@ async function initTable() {
 initFilters();
 
 onMounted(async () => {
-  await initTable();
+  await initTable(defaultPageNumber, defaultPageSize);
 });
 </script>
 
@@ -48,23 +53,23 @@ onMounted(async () => {
     :globalFilterFields="globalFiltersFields"
     :value="jobs"
     stripedRows
-    paginator
-    :rows="5"
     :loading="loading"
     dataKey="id"
-    :rowsPerPageOptions="[5, 10, 20, 50]"
     class="w-full"
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <Header :filters="filters" @refresh="initTable()" />
+      <Header :filters="filters" @refresh="initTable(defaultPageNumber, defaultPageSize)" />
     </template>
     <template #empty> No jobs found. </template>
     <template #loading> Loading jobs, please wait... </template>
 
     <Column class="min-w-fit text-center">
       <template #body="{ data }">
-        <ActionButtonsColumn :data="data" @reloadTable="initTable()" />
+        <ActionButtonsColumn
+          :data="data"
+          @reloadTable="initTable(defaultPageNumber, defaultPageSize)"
+        />
       </template>
     </Column>
 
@@ -103,4 +108,10 @@ onMounted(async () => {
       <template #body="{ data }"> {{ data.noticePeriodInDays }} </template>
     </Column>
   </DataTable>
+  <Paginator
+    :rows="5"
+    :totalRecords="totalJobs"
+    :rowsPerPageOptions="[5, 10, 20, 30]"
+    @page="(event) => initTable(event.page, event.rows)"
+  />
 </template>
