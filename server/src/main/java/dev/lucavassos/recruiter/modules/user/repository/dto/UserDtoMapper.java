@@ -17,7 +17,7 @@ public class UserDtoMapper implements Function<User, UserDto> {
                 .phone(user.getPhone())
                 .city(user.getCity())
                 .country(user.getCountry())
-                .role(user.getRole())
+                .roleName(user.getRole().getName())
                 .approved(user.isApproved())
                 .approver(ApproverDto.builder()
                         .id(user.getId())

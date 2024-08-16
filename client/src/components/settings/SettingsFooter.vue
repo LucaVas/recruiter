@@ -17,7 +17,10 @@ const changePasswordModalOpen = ref(false);
 </script>
 
 <template>
-  <ChangePasswordModal :visible="changePasswordModalOpen" @close="changePasswordModalOpen = false" />
+  <ChangePasswordModal
+    :visible="changePasswordModalOpen"
+    @close="changePasswordModalOpen = false"
+  />
   <div class="flex w-full items-center justify-between">
     <div class="flex items-center gap-3">
       <Button

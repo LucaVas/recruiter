@@ -20,11 +20,16 @@ const toast = useToast();
 const usersTableError = ref('');
 const loading = ref(false);
 const approvingUser = ref(false);
+
 const users = ref<User[]>();
+const totalUsers = ref(0);
+
 const isApproval = ref(false);
 const targetUser = ref<User>();
 const approveModalOpen = ref(false);
 const newUserModalOpen = ref(false);
+const defaultPage = 0;
+const defaultPageSize = 5;
 
 const approve = async (request: UserApprovalRequest) => {
   approvingUser.value = true;
@@ -33,7 +38,7 @@ const approve = async (request: UserApprovalRequest) => {
     approveModalOpen.value = false;
     initFilters();
     showSuccess(toast, 'User status updated successfully!');
-    await initTable();
+    await initTable(defaultPage, defaultPageSize);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -43,10 +48,12 @@ const approve = async (request: UserApprovalRequest) => {
   }
 };
 
-const initTable = async () => {
+const initTable = async (pageNumber: number, pageSize: number) => {
   loading.value = true;
   try {
-    users.value = await getAllUsers();
+    const res = await getAllUsers(pageNumber, pageSize);
+    users.value = res.elements;
+    totalUsers.value = res.totalElements;
   } catch (err) {
     if (err instanceof ApiError) usersTableError.value = err.message;
   } finally {
@@ -56,7 +63,7 @@ const initTable = async () => {
 
 initFilters();
 onMounted(async () => {
-  await initTable();
+  await initTable(defaultPage, defaultPageSize);
 });
 </script>
 
@@ -66,7 +73,7 @@ onMounted(async () => {
     @close="
       {
         newUserModalOpen = false;
-        initTable();
+        initTable(defaultPage, defaultPageSize);
       }
     "
   />
@@ -77,11 +84,8 @@ onMounted(async () => {
     :globalFilterFields="columns"
     :value="users"
     stripedRows
-    paginator
-    :rows="10"
     :loading="loading"
     dataKey="id"
-    :rowsPerPageOptions="[5, 10, 20, 50]"
     class="w-full"
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
@@ -102,7 +106,7 @@ onMounted(async () => {
           :isApproval="isApproval"
           @close="approveModalOpen = false"
           @approve="
-            (comment) => {
+            (comment: string) => {
               if (targetUser)
                 approve({
                   userId: Number(targetUser.id),
@@ -149,4 +153,10 @@ onMounted(async () => {
       </template>
     </Column>
   </DataTable>
+  <Paginator
+    :rows="5"
+    :totalRecords="totalUsers"
+    :rowsPerPageOptions="[5, 10, 20, 30]"
+    @page="(event) => initTable(event.page, event.rows)"
+  />
 </template>

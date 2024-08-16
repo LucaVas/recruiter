@@ -6,6 +6,9 @@ import type {
   PasswordForgotRequest,
   UserInfoUpdateRequest,
 } from '../auth/schema';
+import type { AxiosResponse } from 'axios';
+import type { CustomPage } from '../sharedSchema';
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/consts';
 
 // vars
 const api = axiosApi();
@@ -16,8 +19,10 @@ export async function approveUser(approvalRequest: UserApprovalRequest): Promise
   await api.post(`${baseApi}/approvals`, approvalRequest);
 }
 
-export async function getAllUsers(): Promise<User[]> {
-  const { data } = await api.get(`${baseApi}`);
+export async function getAllUsers(pageNumber: number, pageSize: number): Promise<CustomPage<User>> {
+  const { data } = (await api.get(
+    `${baseApi}?page=${pageNumber ?? DEFAULT_PAGE_NUMBER}&pageSize=${pageSize ?? DEFAULT_PAGE_SIZE}`
+  )) as AxiosResponse<CustomPage<User>>;
   return data;
 }
 

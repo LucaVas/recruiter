@@ -37,12 +37,7 @@
         />
       </div>
       <div class="grid gap-2">
-        <Button
-          type="submit"
-          label="Change Password"
-          :loading="loading"
-          :disabled="loading"
-        />
+        <Button type="submit" label="Change Password" :loading="loading" :disabled="loading" />
       </div>
     </form>
   </Dialog>

@@ -2,28 +2,29 @@ package dev.lucavassos.recruiter.auth.domain;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 
+@Builder
 public record SignupRequest(
 
-        @NotBlank(message = "Name cannot be empty")
-        @Pattern(regexp = "^[a-zA-Z0-9_\\-.]+$", message = "Invalid name. It can contain only letters, numbers, underscores, hyphens and dots")
+        @Pattern(regexp = "^[a-zA-Z0-9_\\-.]{3,50}$",
+                message = "Invalid name. It must be between 3 and 50 characters long " +
+                        "and can contain only letters, numbers, underscores, hyphens and dots")
         String name,
 
-        @NotBlank(message = "Username or email cannot be empty")
+        @NotBlank(message = "Email cannot be empty")
         @Email(message = "Invalid email")
         String email,
 
-        @NotBlank(message = "Password cannot be empty")
         @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()-+=])[A-Za-z\\d!@#$%^&*()-+=]{8,64}$",
                 message = "Password must be between 8 and 64 characters long "
                         + "and contain at least one uppercase letter, one lowercase letter, "
-                        + "one digit, and one special character")
+                        + "one digit, and one special character"
+        )
         String password,
 
-        @NotBlank(message = "Mobile cannot be empty")
-        @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must have 10 digits.")
+        @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must have 10 digits")
         String phone,
 
         @NotBlank(message = "City cannot be empty")
@@ -32,9 +33,8 @@ public record SignupRequest(
         @NotBlank(message = "Country cannot be empty")
         String country,
 
-        @NotNull(message = "Role name cannot be empty")
+        @NotBlank(message = "Role name cannot be empty")
         String roleName,
-        String comments
-) {
 
-}
+        String comments
+) {}

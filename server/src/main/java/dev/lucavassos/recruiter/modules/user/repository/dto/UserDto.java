@@ -1,6 +1,6 @@
 package dev.lucavassos.recruiter.modules.user.repository.dto;
 
-import dev.lucavassos.recruiter.modules.user.entities.Role;
+import dev.lucavassos.recruiter.modules.user.domain.RoleName;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public final class UserDto {
     private final String phone;
     private final String city;
     private final String country;
-    private final Role role;
+    private final RoleName roleName;
     private final Boolean approved;
     private final ApproverDto approver;
     private final String comment;

@@ -14,7 +14,7 @@
     </div>
     <div class="space-y-1">
       <h2 class="text-lg font-bold">Role</h2>
-      <p>{{ user.role.name === 'ADMIN' ? 'Administrator' : 'Recruiter' }}</p>
+      <p>{{ user.roleName === 'ADMIN' ? 'Administrator' : 'Recruiter' }}</p>
     </div>
   </div>
 </template>

@@ -28,7 +28,6 @@
         <commons-text.version>1.12.0</commons-text.version>
         <google-cloud-storage.version>2.37.0</google-cloud-storage.version>
         <guava.version>33.2.0-jre</guava.version>
-        <flyway.version>10.13.0</flyway.version>
     </properties>
 
     <dependencies>
@@ -100,7 +99,6 @@
             <version>${guava.version}</version>
         </dependency>
 
-
         <!-- In-Memory database used for local development & testing -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -113,8 +111,6 @@
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
         </dependency>
-
-
 
         <dependency>
             <groupId>org.projectlombok</groupId>

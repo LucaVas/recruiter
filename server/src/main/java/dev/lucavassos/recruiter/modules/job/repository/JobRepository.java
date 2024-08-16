@@ -2,12 +2,13 @@ package dev.lucavassos.recruiter.modules.job.repository;
 
 import dev.lucavassos.recruiter.modules.job.domain.JobStatus;
 import dev.lucavassos.recruiter.modules.job.entities.Job;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 public interface JobRepository extends JpaRepository<Job, Long> {
@@ -20,5 +21,5 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             "WHERE j.id = :id AND j.status != :status")
     Optional<Job> findByIdAndStatusNotWithClientAndSkillsAndQuestionnaire(@Param("id") Long id, @Param("status") JobStatus status);
 
-    List<Job> findByStatusNot(JobStatus status, Pageable pageable);
+    Page<Job> findByStatusNotIn(Collection<JobStatus> statuses, Pageable pageable);
 }

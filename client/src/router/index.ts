@@ -96,7 +96,7 @@ const router = createRouter({
     {
       path: '/:catchAll(.*)',
       name: 'NotFound',
-      component: () => import('@/views/not-found/NotFoundPage.vue'),
+      component: () => import('@/views/NotFoundPage.vue'),
       meta: {
         requiresAuth: false,
       },
