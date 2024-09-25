@@ -42,3 +42,7 @@ CREATE TABLE users_history (
             CONSTRAINT fk_users_history_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
             CONSTRAINT fk_users_history_modified_by FOREIGN KEY (modified_by_id) REFERENCES users(id) ON DELETE CASCADE
         );
+
+--rollback DROP TRIGGER IF EXISTS update_roles_updated_at ON users;
+--rollback DROP TABLE IF EXISTS users;
+--rollback DROP TABLE IF EXISTS users_history;

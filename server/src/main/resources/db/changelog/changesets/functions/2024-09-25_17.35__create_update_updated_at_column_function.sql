@@ -8,3 +8,5 @@ BEGIN
     RETURN NEW;
 END
 $$ LANGUAGE plpgsql;
+
+--rollback DROP FUNCTION IF EXISTS update_updated_at_column();

@@ -4,3 +4,5 @@
 INSERT INTO clients (name, industry)
 VALUES
     ('TCS', 'CONSULTANCY');
+
+--rollback DELETE FROM clients WHERE name = 'TCS' AND industry = 'CONSULTANCY';

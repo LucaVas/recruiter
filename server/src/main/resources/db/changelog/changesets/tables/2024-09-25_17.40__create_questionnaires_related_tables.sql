@@ -27,3 +27,7 @@ CREATE TABLE questionnaires_history (
     FOREIGN KEY (modified_by_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (questionnaire_id) REFERENCES questionnaires(id) ON DELETE CASCADE
 );
+
+--rollback DROP TRIGGER IF EXISTS update_roles_updated_at ON questionnaires;
+--rollback DROP TABLE IF EXISTS questionnaires;
+--rollback DROP TABLE IF EXISTS questionnaires_history;

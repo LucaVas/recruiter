@@ -6,3 +6,5 @@ VALUES
     ('RECRUITER', 'Recruiter role'),
     ('ADMIN', 'Administrator role'),
     ('TESTER', 'Tester role');
+
+--rollback DELETE FROM roles WHERE name IN ('RECRUITER', 'ADMIN', 'TESTER');

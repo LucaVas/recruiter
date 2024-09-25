@@ -33,3 +33,8 @@ CREATE TABLE skills_history (
     CONSTRAINT fk_skill_history_skill FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE,
     CONSTRAINT fk_skill_history_modified_by FOREIGN KEY (modified_by_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+--rollback DROP TABLE IF EXISTS skills_history;
+--rollback DROP TABLE IF EXISTS job_skills;
+--rollback DROP TRIGGER IF EXISTS update_skills_updated_at ON skills;
+--rollback DROP TABLE IF EXISTS skills;

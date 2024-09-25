@@ -42,3 +42,7 @@ CREATE TABLE candidates_history (
     FOREIGN KEY (candidate_id) REFERENCES candidates(pan) ON DELETE CASCADE,
     FOREIGN KEY (modified_by_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+--rollback DROP TABLE IF EXISTS candidates_history;
+--rollback DROP TRIGGER IF EXISTS update_candidates_updated_at ON candidates;
+--rollback DROP TABLE IF EXISTS candidates;

@@ -25,3 +25,7 @@ CREATE TABLE clients_history (
     FOREIGN KEY (client_name) REFERENCES clients(name) ON DELETE CASCADE,
     FOREIGN KEY (modified_by_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+--rollback DROP TRIGGER IF EXISTS update_roles_updated_at ON clients;
+--rollback DROP TABLE IF EXISTS clients;
+--rollback DROP TABLE IF EXISTS clients_history;

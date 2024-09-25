@@ -10,3 +10,5 @@ VALUES
     ('recruiter5', 'recruiter5@mail.com', 'encodedPassword1', '1234567895', 'Test city 5', 'India', FALSE, NULL, (SELECT id FROM roles WHERE name = 'RECRUITER')),
     ('recruiter6', 'recruiter6@mail.com', 'encodedPassword1', '1234567896', 'Test city 6', 'India', FALSE, NULL, (SELECT id FROM roles WHERE name = 'RECRUITER')),
     ('admin', 'admin@mail.com', 'encodedPassword1', '1234567891', 'Test city', 'India', TRUE, CURRENT_TIMESTAMP, (SELECT id FROM roles WHERE name = 'ADMIN'));
+
+--rollback DELETE FROM users WHERE email IN ('recruiter@mail.com', 'recruiter2@mail.com', 'recruiter3@mail.com', 'recruiter4@mail.com', 'recruiter5@mail.com', 'recruiter6@mail.com', 'admin@mail.com');
