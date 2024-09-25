@@ -18,7 +18,7 @@
         <Password
           v-model="form.oldPassword"
           :feedback="false"
-          placeholder="Password"
+          placeholder="Old Password"
           minlength="8"
           maxlength="64"
           class="flex flex-col"
@@ -28,7 +28,7 @@
         <Password
           v-model="form.newPassword"
           :feedback="false"
-          placeholder="Password"
+          placeholder="New Password"
           minlength="8"
           maxlength="64"
           class="flex flex-col"

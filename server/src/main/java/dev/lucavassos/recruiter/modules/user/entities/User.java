@@ -82,7 +82,7 @@ public class User implements UserDetails {
     @Setter
     private boolean approved = false;
 
-    @Column(name = "approved_dtime")
+    @Column(name = "approved_at")
     @Getter
     @Setter
     private LocalDateTime approvedAt;
