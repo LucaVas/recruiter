@@ -20,10 +20,10 @@ CREATE TABLE questionnaires_history (
     event_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL,
     event_type VARCHAR(255) NOT NULL,
-    modified_by BIGINT,
+    modified_by_id BIGINT,
     questionnaire_id BIGINT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
-    FOREIGN KEY (modified_by) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (modified_by_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (questionnaire_id) REFERENCES questionnaires(id) ON DELETE CASCADE
 );
