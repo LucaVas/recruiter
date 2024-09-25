@@ -32,3 +32,7 @@ CREATE TABLE questions_history (
     FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE,
     FOREIGN KEY (modified_by_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+--rollback DROP TRIGGER IF EXISTS update_questions_updated_at ON questions;
+--rollback DROP TABLE IF EXISTS questions;
+--rollback DROP TABLE IF EXISTS questions_history;

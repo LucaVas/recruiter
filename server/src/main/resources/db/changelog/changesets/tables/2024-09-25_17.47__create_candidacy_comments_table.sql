@@ -17,3 +17,6 @@ CREATE TRIGGER update_candidacy_comments_updated_at
 BEFORE UPDATE ON candidacy_comments
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
+
+--rollback DROP TRIGGER IF EXISTS update_candidacy_comments_updated_at ON candidacy_comments;
+--rollback DROP TABLE IF EXISTS candidacy_comments;

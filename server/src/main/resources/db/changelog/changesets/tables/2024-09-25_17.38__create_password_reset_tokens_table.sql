@@ -15,3 +15,6 @@ CREATE TRIGGER update_password_reset_tokens_updated_at
 BEFORE UPDATE ON password_reset_tokens
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
+
+--rollback DROP TRIGGER IF EXISTS update_roles_updated_at ON password_reset_tokens;
+--rollback DROP TABLE IF EXISTS password_reset_tokens;

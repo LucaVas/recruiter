@@ -54,3 +54,6 @@ CREATE TABLE jobs_history (
             CONSTRAINT fk_job_history_job FOREIGN KEY (job_id) REFERENCES jobs(id),
             CONSTRAINT fk_job_history_modified_by FOREIGN KEY (modified_by_id) REFERENCES users(id)
         );
+
+--rollback DROP TABLE IF EXISTS jobs_history;
+--rollback DROP TABLE IF EXISTS jobs;
