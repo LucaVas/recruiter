@@ -66,7 +66,7 @@
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
-import QuestionCard from './QuestionCard.vue';
+import QuestionCard from '../questionnaire/QuestionCard.vue';
 import { type Questionnaire, type QuestionnaireDto } from '@/stores/questionnaire/schema';
 import { ref, watch } from 'vue';
 import { handleError } from '@/utils/errorUtils';

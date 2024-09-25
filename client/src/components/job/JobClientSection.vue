@@ -65,7 +65,7 @@
 <script setup lang="ts">
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
-import ClientModal from '@/components/client/ClientModal.vue';
+import ClientModal from '@/components/modals/ClientModal.vue';
 import { ref } from 'vue';
 import { createClient } from '@/stores/client/index';
 import type { Client, NewClient } from '@/stores/client/schema';

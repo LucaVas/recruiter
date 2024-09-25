@@ -9,7 +9,7 @@ import { ApiError } from '@/utils/types';
 import { getAllUsers, approveUser } from '@/stores/user';
 import { useToast } from 'primevue/usetoast';
 import { columns } from '../candidates';
-import NewUserModal from '@/components/users/NewUserModal.vue';
+import NewUserModal from '@/components/modals/NewUserModal.vue';
 import UserCard from '@/components/users/UserCard.vue';
 import UsersHeader from '@/components/users/UsersHeader.vue';
 import UsersTableButtons from './UsersTableButtons.vue';

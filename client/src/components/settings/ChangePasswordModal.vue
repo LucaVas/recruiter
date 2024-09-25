@@ -16,28 +16,27 @@
     <form class="space-y-4" aria-label="ChangePasswordModal" @submit.prevent="change">
       <div class="space-y-4">
         <Password
-          v-model="form.oldPassword"
+          v-model="form.oldPassword.value"
           :feedback="false"
           placeholder="Old Password"
-          minlength="8"
-          maxlength="64"
           class="flex flex-col"
           required
+          :invalid="!form.oldPassword.isValid"
           toggleMask
         />
         <Password
-          v-model="form.newPassword"
+          v-model="form.newPassword.value"
           :feedback="false"
           placeholder="New Password"
-          minlength="8"
-          maxlength="64"
           class="flex flex-col"
           required
+          :invalid="!form.newPassword.isValid"
           toggleMask
         />
       </div>
-      <div class="grid gap-2">
-        <Button type="submit" label="Change Password" :loading="loading" :disabled="loading" />
+      <div class="mt-3 flex justify-between">
+        <Button label="Cancel" size="small" severity="secondary" outlined @click="$emit('close')" />
+        <Button type="submit" size="small" label="Change" :loading="loading" :disabled="loading" />
       </div>
     </form>
   </Dialog>
@@ -53,6 +52,7 @@ import { DEFAULT_SERVER_ERROR } from '@/consts';
 import Success from '@/components/Success.vue';
 import { type ChangePasswordRequest } from '@/stores/auth/schema';
 import { changePassword } from '@/stores/user/index';
+import { isPasswordValid, errorMessages } from '@/utils/validation/userFormValidationUtils';
 
 const props = defineProps<{
   visible: boolean;
@@ -63,29 +63,58 @@ const emits = defineEmits<{
 
 const toast = useToast();
 
-const form = ref<ChangePasswordRequest>({
-  oldPassword: '',
-  newPassword: '',
-});
-const resetForm = () => {
-  form.value = {
-    oldPassword: '',
-    newPassword: '',
+export type ChangePasswordRequestForm = {
+  [K in keyof ChangePasswordRequest]: {
+    value: ChangePasswordRequest[K];
+    isValid: boolean;
   };
 };
+const form = ref<ChangePasswordRequestForm>({
+  oldPassword: { value: '', isValid: true },
+  newPassword: { value: '', isValid: true },
+});
 const loading = ref(false);
 const passwordChanged = ref(false);
 
+const isValidInput = () => {
+  const oldPassword = form.value.oldPassword.value;
+  const newPassword = form.value.newPassword.value;
+
+  if (oldPassword === newPassword) {
+    form.value = {
+      oldPassword: { value: oldPassword, isValid: false },
+      newPassword: { value: newPassword, isValid: false },
+    };
+    showError(toast, errorMessages.samePasswords.message);
+    return false;
+  }
+
+  const isOldPasswordValid = isPasswordValid(oldPassword);
+  const isNewPasswordValid = isPasswordValid(newPassword);
+  if (!isOldPasswordValid || !isNewPasswordValid) {
+    form.value = {
+      oldPassword: { value: oldPassword, isValid: isOldPasswordValid },
+      newPassword: { value: newPassword, isValid: isNewPasswordValid },
+    };
+    showError(toast, errorMessages.invalidPassword.message);
+    return false;
+  }
+  return true;
+};
+
 const change = async () => {
   loading.value = true;
-  if (form.value.oldPassword === form.value.newPassword) {
-    showError(toast, 'The two passwords entered are identical.');
+
+  if (!isValidInput()) {
     loading.value = false;
     return;
   }
 
   try {
-    await changePassword(form.value);
+    await changePassword({
+      oldPassword: form.value.oldPassword.value,
+      newPassword: form.value.newPassword.value,
+    });
     emits('close');
     passwordChanged.value = true;
   } catch (err) {
@@ -101,7 +130,10 @@ watch(
   () => props.visible,
   (open) => {
     if (open) {
-      resetForm();
+      form.value = {
+        oldPassword: { value: '', isValid: true },
+        newPassword: { value: '', isValid: true },
+      };
     }
   }
 );

@@ -18,7 +18,7 @@ import CandidaciesTableActionButtonsColumn from './CandidaciesTableActionButtons
 import CandidacyCandidateCard from './CandidacyCandidateCard.vue';
 import CandidacyJobCard from './CandidacyJobCard.vue';
 import CommentsModal from './CommentsModal.vue';
-import CandidacyFilesModal from '@/components/candidacy/files/CandidacyFilesModal.vue';
+import CandidacyFilesModal from '@/components/modals/CandidacyFilesModal.vue';
 import { clearFilter, filters, initFilters } from './filters';
 import { getCandidacyStatus, getCandidacyStatusIcon, getCandidacyStatusSeverity } from './utils';
 import { type CandidacyComment } from '@/stores/candidacy/schema';
@@ -31,7 +31,7 @@ import {
   getFile,
   uploadFilesToCandidacy,
 } from '@/stores/candidacy/index';
-import UploadFilesModal from '@/components/candidacy/files/UploadFilesModal.vue';
+import UploadFilesModal from '@/components/modals/UploadFilesModal.vue';
 import {
   withdrawCandidacy,
   rejectCandidacy,

@@ -10,9 +10,9 @@ import SkillsDropdown from '@/components/job/SkillsDropdown.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import Success from '@/components/Success.vue';
 import PageHeaderBanner from '@/components/job/PageHeaderBanner.vue';
-import NewSkillModal from '@/components/skill/NewSkillModal.vue';
+import NewSkillModal from '@/components/modals/NewSkillModal.vue';
 import QuestionnaireDropdown from '@/components/job/QuestionnaireDropdown.vue';
-import NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue';
+import NewQuestionnaireModal from '@/components/modals/NewQuestionnaireModal.vue';
 // primevue
 import { useToast } from 'primevue/usetoast';
 import Divider from 'primevue/divider';

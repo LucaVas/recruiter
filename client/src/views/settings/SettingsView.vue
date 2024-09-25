@@ -22,7 +22,7 @@
 import SettingsHeader from '@/components/settings/SettingsHeader.vue';
 import SettingsFooter from '@/components/settings/SettingsFooter.vue';
 import SettingsBody from '@/components/settings/SettingsBody.vue';
-import UserProfileModal from '@/components/settings/UserProfileModal.vue';
+import UserProfileModal from '@/components/modals/UserProfileModal.vue';
 import Divider from 'primevue/divider';
 import ProgressSpinner from 'primevue/progressspinner';
 import { onMounted } from 'vue';

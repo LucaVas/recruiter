@@ -5,7 +5,7 @@ import Button from 'primevue/button';
 import type { JobStatus } from '@/stores/job/schema';
 import { formatDate } from '@/utils/dateUtils';
 import { ref } from 'vue';
-import DeleteJobModal from './DeleteJobModal.vue';
+import DeleteJobModal from '../modals/DeleteJobModal.vue';
 import { getJobSeverity, getJobStatusIcon, formatJobStatus } from './utils';
 
 // props
