@@ -83,31 +83,6 @@ public class EntityInitializer {
         }
     }
 
-    @Transactional
-    public void createUsers() {
-
-        Role adminRole = roleRepository.findByName(RoleName.ADMIN).orElseThrow();
-
-        User admin = User.builder()
-                .name("admin")
-                .email("admin@mail.com")
-                .password(encoder.encode("Password123!"))
-                .phone("1234567891")
-                .city("Test city")
-                .country("India")
-                .approvedAt(LocalDateTime.now())
-                .approved(true)
-                .role(adminRole)
-                .build();
-
-        try {
-            userRepository.saveAndFlush(admin);
-        } catch (Exception e) {
-            log.error("Exception while persisting users during bootstrap: [{}]", e.getMessage());
-            throw e;
-        }
-    }
-
     // FOR DEVELOPMENT ONLY: The following methods are used to populate the database with dummy data
 
     @Transactional
