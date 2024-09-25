@@ -39,20 +39,20 @@ public class CandidateHistory {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "total_experience")
     private double totalExperience;
 
     @Column(nullable = false)
     private String education;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "current_ctc")
     private double currentCtc;
 
     @Column(name = "candidate_status")
     @Enumerated(EnumType.STRING)
     private CandidateStatus status;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "event_type")
     @Enumerated(EnumType.STRING)
     private HistoryEventType eventType;
 
@@ -65,6 +65,6 @@ public class CandidateHistory {
     private User modifiedBy;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 }

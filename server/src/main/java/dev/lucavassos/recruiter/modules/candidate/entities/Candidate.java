@@ -60,6 +60,6 @@ public class Candidate {
     // Relationships
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recuiter_id")
+    @JoinColumn(name = "recruiter_id")
     private User recruiter;
 }

@@ -16,9 +16,9 @@ public class EntityInitializationRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         try {
-            entityInitializer.createRoles();
-            entityInitializer.createUsers();
-            entityInitializer.createClients();
+//            entityInitializer.createRoles();
+//            entityInitializer.createUsers();
+//            entityInitializer.createClients();
         } catch (Exception e) {
             log.error("Error during bootstrap: ", e);
         }
