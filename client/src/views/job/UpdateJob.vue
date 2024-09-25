@@ -6,14 +6,14 @@ import { useRoute, useRouter } from 'vue-router';
 import ProgressSpinner from 'primevue/progressspinner';
 import type { Job, JobStatus } from '@/stores/job/schema';
 import { useToast } from 'primevue/usetoast';
-import NewSkillModal from '@/components/skill/NewSkillModal.vue';
+import NewSkillModal from '@/components/modals/NewSkillModal.vue';
 import SkillsDropdown from '@/components/job/SkillsDropdown.vue';
 import JobSkills from '@/components/job/job-page/JobSkills.vue';
 import type { Skill } from '@/stores/skill/schema';
 import type { Client } from '@/stores/client/schema';
 import { contractTypes } from '@/components/job/utils';
 import JobClientSection from '@/components/job/JobClientSection.vue';
-import NewQuestionnaireModal from '@/components/questionnaire/NewQuestionnaireModal.vue';
+import NewQuestionnaireModal from '@/components/modals/NewQuestionnaireModal.vue';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import InputGroup from 'primevue/inputgroup';
 import InputText from 'primevue/inputtext';
@@ -438,7 +438,6 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
             class="min-w-fit md:hidden"
           />
         </div>
-
 
         <div
           v-if="job.questionnaire"

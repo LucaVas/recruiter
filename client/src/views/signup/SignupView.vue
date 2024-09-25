@@ -8,9 +8,9 @@ import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router';
-import { ApiError } from '../../utils/types';
-import SignupCommentsModal from '@/components/signup/SignupCommentsModal.vue';
-import { DEFAULT_SERVER_ERROR } from '../../consts';
+import { ApiError } from '@/utils/types';
+import SignupCommentsModal from '@/components/modals/SignupCommentsModal.vue';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import {
   loading,
@@ -145,19 +145,6 @@ const submitSignup = async (userForm: SignupRequest) => {
             required
           />
         </div>
-
-        <!-- comments -->
-        <!-- <SignupCommentsModal
-          :visible="signupCommentsModalOpen"
-          @closeModal="signupCommentsModalOpen = false"
-          @continueSignup="
-            (comments) => {
-              userForm.comments = comments;
-              signupCommentsModalOpen = false;
-              submitSignup();
-            }
-          "
-        /> -->
         <div class="grid gap-2">
           <Button
             type="submit"

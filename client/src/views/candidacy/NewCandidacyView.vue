@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
+import CandidacyHiringDetailsModal from '@/components/modals/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
@@ -18,7 +18,7 @@ import type { Candidate } from '@/stores/candidate/schema';
 import Success from '@/components/Success.vue';
 import SearchCandidate from '@/components/candidacy/candidate/SearchCandidate.vue';
 import CandidateTable from '@/components/candidacy/candidate/CandidateTable.vue';
-import CandidateModal from '@/components/candidacy/candidate/shared/CandidateModal.vue';
+import CandidateModal from '@/components/modals/CandidateModal.vue';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import type { NewCandidacy } from '@/stores/candidacy/schema';

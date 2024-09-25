@@ -12,7 +12,7 @@ import { getAllCandidates } from '@/stores/candidate';
 import { useToast } from 'primevue/usetoast';
 import type { Candidate, NewCandidate } from '@/stores/candidate/schema';
 import { columns } from '.';
-import CandidateModal from '@/components/candidacy/candidate/shared/CandidateModal.vue';
+import CandidateModal from '@/components/modals/CandidateModal.vue';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 

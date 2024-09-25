@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CandidateTable from '@/components/candidacy/candidate/CandidateTable.vue';
-import CandidacyHiringDetailsModal from '@/components/candidacy/header/CandidacyHiringDetailsModal.vue';
+import CandidacyHiringDetailsModal from '@/components/modals/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import {
