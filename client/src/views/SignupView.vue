@@ -142,7 +142,6 @@ import { ref } from 'vue';
 const router = useRouter();
 const toast = useToast();
 
-
 const signupCommentsModalOpen = ref(false);
 const countries = ref([{ label: 'India', value: 'india' }]);
 const roles = ref([
