@@ -4,7 +4,7 @@ import Dropdown from 'primevue/dropdown';
 import RadioButton from 'primevue/radiobutton';
 import Button from 'primevue/button';
 import { questionTypes } from './questionTypes';
-import type { Question, QuestionType } from '@/stores/question/schema';
+import type { Question, QuestionType } from '@/types/questionTypes';
 import { ref } from 'vue';
 
 const props = defineProps<{

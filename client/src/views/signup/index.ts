@@ -1,4 +1,4 @@
-import type { SignupRequest } from '@/stores/auth/schema';
+import type { SignupRequest } from '@/types/authTypes';
 import { ref } from 'vue';
 
 export const signupCommentsModalOpen = ref(false);

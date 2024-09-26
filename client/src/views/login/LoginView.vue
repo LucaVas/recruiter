@@ -6,7 +6,7 @@ import Button from 'primevue/button';
 import { userForm, loading } from './index';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
-import { login } from '@/stores/auth';
+import { login } from '@/api/authApi';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import { useRouter } from 'vue-router';

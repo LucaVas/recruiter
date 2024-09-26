@@ -1,4 +1,4 @@
-import type { LoginRequest } from '@/stores/auth/schema';
+import type { LoginRequest } from '@/types/authTypes';
 import { ref } from 'vue';
 
 export const loading = ref(false);

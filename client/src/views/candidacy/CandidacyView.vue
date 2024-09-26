@@ -9,11 +9,11 @@ import {
   rejectCandidacy,
   archiveCandidacy,
   reopenCandidacy,
-} from '@/stores/candidacy/index';
+} from '@/api/candidacyApi';
 import { useRoute, useRouter } from 'vue-router';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import { ApiError } from '@/utils/types';
-import type { CandidacyDto } from '@/stores/candidacy/schema';
+import type { CandidacyDto } from '@/types/candidacyTypes';
 import ProgressSpinner from 'primevue/progressspinner';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';

@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios';
-import axiosApi from '../api';
-import type { CustomPage } from '../sharedSchema';
-import { type Job, type JobResponse, type JobStatus, type NewJob } from './schema';
+import axiosApi from './baseApi';
+import type { CustomPage } from '../types/paginationTypes';
+import { type Job, type JobResponse, type JobStatus, type NewJob } from '../types/jobTypes';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/consts';
 
 const api = axiosApi();

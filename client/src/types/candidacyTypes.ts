@@ -1,6 +1,6 @@
-import type { Candidate } from '../candidate/schema';
-import type { Job } from '../job/schema';
-import type { User } from '../user/schema';
+import type { Candidate } from './candidateTypes';
+import type { Job } from './jobTypes';
+import type { User } from './userTypes';
 
 export type CandidacyStatus = 'SENT_TO_CLIENT' | 'REJECTED' | 'ACCEPTED' | 'WITHDRAWN' | 'ARCHIVED';
 

@@ -1,14 +1,14 @@
-import { type NewUserRequest, type User, type UserApprovalRequest } from './schema';
-import axiosApi from '../api';
+import axiosApi from './baseApi';
 import type {
   ChangePasswordRequest,
   NewPasswordRequest,
   PasswordForgotRequest,
   UserInfoUpdateRequest,
-} from '../auth/schema';
+} from '../types/authTypes';
 import type { AxiosResponse } from 'axios';
-import type { CustomPage } from '../sharedSchema';
+import type { CustomPage } from '../types/paginationTypes';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/consts';
+import { type NewUserRequest, type User, type UserApprovalRequest } from '../types/userTypes';
 
 // vars
 const api = axiosApi();

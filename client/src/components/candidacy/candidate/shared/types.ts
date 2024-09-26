@@ -1,3 +1,3 @@
-import type { Candidate } from '@/stores/candidate/schema';
+import type { Candidate } from '@/types/candidateTypes';
 
 export type CandidateModalForm = Candidate;

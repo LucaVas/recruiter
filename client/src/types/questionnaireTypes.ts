@@ -1,5 +1,5 @@
-import type { Client } from '../client/schema';
-import type { NewQuestion, Question } from '../question/schema';
+import type { Client } from './clientTypes';
+import type { NewQuestion, Question } from './questionTypes';
 
 export interface Questionnaire {
   title: string;

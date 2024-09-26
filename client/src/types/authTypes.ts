@@ -1,4 +1,4 @@
-import type { RoleName } from '../user/schema';
+import type { RoleName } from './roleTypes';
 
 export type AuthUserInfoDto = {
   id: number;

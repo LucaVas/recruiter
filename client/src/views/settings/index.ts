@@ -1,4 +1,4 @@
-import type { User } from '@/stores/user/schema';
+import type { User } from '@/types/userTypes';
 import { ref } from 'vue';
 
 export const user = ref<User>();

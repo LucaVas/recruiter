@@ -1,4 +1,4 @@
-import type { PasswordForgotRequest } from '@/stores/auth/schema';
+import type { PasswordForgotRequest } from '@/types/authTypes';
 import { ref } from 'vue';
 
 export const sendingEmail = ref(false);

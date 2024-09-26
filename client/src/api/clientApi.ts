@@ -1,5 +1,5 @@
-import type { Client, NewClient } from './schema';
-import axiosApi from '../api';
+import type { Client, NewClient } from '../types/clientTypes';
+import axiosApi from './baseApi';
 
 const api = axiosApi();
 const baseApi = '/clients';

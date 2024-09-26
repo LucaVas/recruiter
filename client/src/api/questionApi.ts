@@ -1,5 +1,5 @@
-import { type Question, type QuestionForm } from './schema';
-import axiosApi from '../api';
+import { type Question, type QuestionForm } from '../types/questionTypes';
+import axiosApi from './baseApi';
 
 // vars
 const api = axiosApi();

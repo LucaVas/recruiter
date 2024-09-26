@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import PageForm from '@/components/PageForm.vue';
-import { signup } from '@/stores/auth/index';
-import type { SignupRequest } from '@/stores/auth/schema';
+import { signup } from '@/api/authApi';
+import type { SignupRequest } from '@/types/authTypes';
 import Dropdown from 'primevue/dropdown';
 import InputMask from 'primevue/inputmask';
 import InputText from 'primevue/inputtext';

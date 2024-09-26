@@ -67,14 +67,14 @@ import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import QuestionCard from '../questionnaire/QuestionCard.vue';
-import { type Questionnaire, type QuestionnaireDto } from '@/stores/questionnaire/schema';
+import { type Questionnaire, type QuestionnaireDto } from '@/types/questionnaireTypes';
 import { ref, watch } from 'vue';
 import { handleError } from '@/utils/errorUtils';
 import { useToast } from 'primevue/usetoast';
-import { saveNewQuestionnaire, updateQuestionnaire } from '../../stores/questionnaire/api';
-import type { Client } from '@/stores/client/schema';
+import { saveNewQuestionnaire, updateQuestionnaire } from '../../api/questionnaireApi';
+import type { Client } from '@/types/clientTypes';
 import { v4 } from 'uuid';
-import type { NewQuestion, Question } from '@/stores/question/schema';
+import type { NewQuestion, Question } from '@/types/questionTypes';
 
 const props = defineProps<{
   visible: boolean;

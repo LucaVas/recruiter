@@ -2,7 +2,7 @@
 import JobMetadataEntry from '../job/metadata/JobMetadataEntry.vue';
 import { formatDate } from '@/utils/dateUtils';
 import Dialog from 'primevue/dialog';
-import type { Job } from '@/stores/job/schema';
+import type { Job } from '@/types/jobTypes';
 
 const { job, visible } = defineProps<{
   job: Job;

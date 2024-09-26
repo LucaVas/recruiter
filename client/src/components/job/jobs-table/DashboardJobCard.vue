@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Job } from '@/stores/job/schema';
+import type { Job } from '@/types/jobTypes';
 import { formatDate } from '@/utils/dateUtils';
 
 const { job } = defineProps<{

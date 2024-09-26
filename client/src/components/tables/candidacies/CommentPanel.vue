@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { type CandidacyComment } from '@/stores/candidacy/schema';
+import { type CandidacyComment } from '@/types/candidacyTypes';
 import { formatDateTime } from '@/utils/dateUtils';
 
 const { comment } = defineProps<{

@@ -67,9 +67,9 @@ import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
-import { type User } from '@/stores/user/schema';
+import { type User } from '@/types/userTypes';
 import { ref, computed, watch } from 'vue';
-import { type UserInfoUpdateRequest } from '@/stores/auth/schema';
+import { type UserInfoUpdateRequest } from '@/types/authTypes';
 import { showError } from '@/utils/errorUtils';
 import { useToast } from 'primevue/usetoast';
 import {

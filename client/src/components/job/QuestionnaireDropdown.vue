@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Dropdown from 'primevue/dropdown';
-import type { Questionnaire } from '@/stores/questionnaire/schema';
+import type { Questionnaire } from '@/types/questionnaireTypes';
 
 // variables
 const loading = ref(false);

@@ -1,6 +1,6 @@
-import type { Client } from '../client/schema';
-import type { Questionnaire } from '../questionnaire/schema';
-import type { Skill } from '../skill/schema';
+import type { Client } from './clientTypes';
+import type { Questionnaire } from './questionnaireTypes';
+import type { Skill } from './skillTypes';
 
 export interface JobI {
   client: Client;

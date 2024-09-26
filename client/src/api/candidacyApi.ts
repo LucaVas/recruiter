@@ -7,8 +7,8 @@ import {
   type UpdateCandidacy,
   type CandidacyDto,
   type CandidacyStatus,
-} from './schema';
-import axiosApi from '../api';
+} from '../types/candidacyTypes';
+import axiosApi from './baseApi';
 
 const api = axiosApi();
 const baseApi = '/candidacies';

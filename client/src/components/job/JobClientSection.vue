@@ -67,8 +67,8 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import ClientModal from '@/components/modals/ClientModal.vue';
 import { ref } from 'vue';
-import { createClient } from '@/stores/client/index';
-import type { Client, NewClient } from '@/stores/client/schema';
+import { createClient } from '@/api/clientApi';
+import type { Client, NewClient } from '@/types/clientTypes';
 import { useToast } from 'primevue/usetoast';
 import { handleError } from '@/utils/errorUtils';
 

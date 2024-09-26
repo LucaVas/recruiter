@@ -1,4 +1,4 @@
-import axiosApi from '../api';
+import axiosApi from './baseApi';
 import {
   clearStoredAccessToken,
   getAuthRoleFromToken,
@@ -12,7 +12,7 @@ import {
   type LoginResponse,
   type SignupRequest,
   type SignupResponse,
-} from './schema';
+} from '../types/authTypes';
 import { computed, ref } from 'vue';
 
 // vars

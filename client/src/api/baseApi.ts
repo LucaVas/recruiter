@@ -2,7 +2,7 @@ import { apiBase } from '@/config';
 import { getStoredAccessToken } from '@/utils/auth';
 import { ApiError } from '@/utils/types';
 import axios, { type RawAxiosRequestHeaders } from 'axios';
-import { logout } from './auth';
+import { logout } from './authApi';
 
 export default () => {
   let headers: RawAxiosRequestHeaders = {

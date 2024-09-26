@@ -3,7 +3,7 @@ import DataTable, { type DataTableRowReorderEvent } from 'primevue/datatable';
 import Column from 'primevue/column';
 import { ref } from 'vue';
 import SkillsDropdown from '@/components/job/SkillsDropdown.vue';
-import type { Skill } from '@/stores/skill/schema';
+import type { Skill } from '@/types/skillTypes';
 
 const { skills } = defineProps<{
   skills: Skill[];

@@ -1,5 +1,5 @@
-import type { AuthUserInfoDto } from '@/stores/auth/schema';
-import type { RoleName } from '@/stores/user/schema';
+import type { AuthUserInfoDto } from '@/types/authTypes';
+import type { RoleName } from '@/types/roleTypes';
 
 const TOKEN_KEY = 'token';
 

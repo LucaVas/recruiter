@@ -1,4 +1,4 @@
-import type { NewPasswordRequest } from '@/stores/auth/schema';
+import type { NewPasswordRequest } from '@/types/authTypes';
 import { ref } from 'vue';
 
 export const resettingPassword = ref(false);

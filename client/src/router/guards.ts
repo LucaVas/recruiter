@@ -1,4 +1,4 @@
-import { isAdmin, isLoggedIn } from '@/stores/auth';
+import { isAdmin, isLoggedIn } from '@/api/authApi';
 
 export const authenticate = () => {
   if (!isLoggedIn.value) return { name: 'Login' };

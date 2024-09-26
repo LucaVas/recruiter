@@ -1,4 +1,4 @@
-import type { RoleName } from '@/stores/user/schema';
+import type { RoleName } from '@/types/roleTypes';
 
 export type MenuItem = {
   group: string;

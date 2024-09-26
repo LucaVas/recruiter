@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getJobSeverity, getJobStatusIcon, formatJobStatus } from '@/components/job/utils';
-import type { CandidacyDto, NewCandidacy } from '@/stores/candidacy/schema';
-import type { Job } from '@/stores/job/schema';
+import type { CandidacyDto, NewCandidacy } from '@/types/candidacyTypes';
+import type { Job } from '@/types/jobTypes';
 import {
   getCandidacyStatus,
   getCandidacyStatusSeverity,
