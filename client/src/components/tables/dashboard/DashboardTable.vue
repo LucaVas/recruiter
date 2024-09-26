@@ -3,32 +3,26 @@ import DataTable from 'primevue/datatable';
 import ActionButtonsColumn from './columns/ActionButtonsColumn.vue';
 import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
-import type { Job } from '@/types/jobTypes';
 import { filters, initFilters, globalFiltersFields } from './utils';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
-import { getAllJobs } from '@/api/jobApi';
 import Header from '../shared/Header.vue';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DashboardJobCard from '@/components/job/jobs-table/DashboardJobCard.vue';
 import DashboardJobInfoCard from '@/components/job/jobs-table/DashboardJobInfoCard.vue';
 import { formatJobStatus, getJobSeverity } from '@/components/job/utils';
+import useJobStore from '@/stores/jobStore';
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '../../../consts';
 
-const loading = ref(false);
-const jobs = ref<Job[]>();
-const totalJobs = ref(0);
+const jobStore = useJobStore();
 
 const toast = useToast();
-const defaultPageNumber = 0;
-const defaultPageSize = 5;
-
+const loading = ref(false);
 async function initTable(pageNumber: number, pageSize: number) {
   loading.value = true;
   try {
-    const res = await getAllJobs(pageNumber, pageSize);
-    jobs.value = res.elements;
-    totalJobs.value = res.totalElements;
+    await jobStore.loadJobs(pageNumber, pageSize);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -41,7 +35,7 @@ async function initTable(pageNumber: number, pageSize: number) {
 initFilters();
 
 onMounted(async () => {
-  await initTable(defaultPageNumber, defaultPageSize);
+  await initTable(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
 });
 </script>
 
@@ -51,7 +45,7 @@ onMounted(async () => {
     filterDisplay="menu"
     size="small"
     :globalFilterFields="globalFiltersFields"
-    :value="jobs"
+    :value="jobStore.jobs"
     stripedRows
     :loading="loading"
     dataKey="id"
@@ -59,7 +53,7 @@ onMounted(async () => {
     tableStyle="margin-top: 1rem; margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.25rem;"
   >
     <template #header>
-      <Header :filters="filters" @refresh="initTable(defaultPageNumber, defaultPageSize)" />
+      <Header :filters="filters" @refresh="initTable(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE)" />
     </template>
     <template #empty> No jobs found. </template>
     <template #loading> Loading jobs, please wait... </template>
@@ -68,7 +62,7 @@ onMounted(async () => {
       <template #body="{ data }">
         <ActionButtonsColumn
           :data="data"
-          @reloadTable="initTable(defaultPageNumber, defaultPageSize)"
+          @reloadTable="initTable(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE)"
         />
       </template>
     </Column>
@@ -110,7 +104,7 @@ onMounted(async () => {
   </DataTable>
   <Paginator
     :rows="5"
-    :totalRecords="totalJobs"
+    :totalRecords="jobStore.totalJobs"
     :rowsPerPageOptions="[5, 10, 20, 30]"
     @page="(event) => initTable(event.page, event.rows)"
   />
