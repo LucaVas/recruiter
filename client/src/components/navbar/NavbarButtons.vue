@@ -15,9 +15,10 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
-import { isAdmin } from '@/api/authApi';
 import { computed, ref } from 'vue';
+import useAuthStore from '@/stores/authStore';
 
+const authStore = useAuthStore();
 const router = useRouter();
 const buttons = ref([
   {
@@ -27,22 +28,22 @@ const buttons = ref([
   },
   {
     icon: 'pi pi-users',
-    visible: isAdmin.value,
+    visible: authStore.isAdmin,
     command: () => router.push({ name: 'UsersView' }),
   },
   {
     icon: 'pi pi-plus',
-    visible: isAdmin.value,
+    visible: authStore.isAdmin,
     command: () => router.push({ name: 'NewJob' }),
   },
   {
     icon: 'pi pi-users',
-    visible: !isAdmin.value,
+    visible: !authStore.isAdmin,
     command: () => router.push({ name: 'CandidatesPage' }),
   },
   {
     icon: 'pi pi-file',
-    visible: !isAdmin.value,
+    visible: !authStore.isAdmin,
     command: () => router.push({ name: 'CandidaciesPage' }),
   },
   {

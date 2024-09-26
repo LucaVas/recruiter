@@ -1,6 +1,6 @@
 import type { MenuItem } from './types';
 
-export function getMenuItems(isAdmin: boolean, items: MenuItem[]) {
+export function getMenuItems(isAdmin: boolean | undefined, items: MenuItem[]) {
   const filteredItems = items
     .map((group) => ({
       ...group,

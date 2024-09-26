@@ -2,16 +2,17 @@
 import Button from 'primevue/button';
 import Avatar from 'primevue/avatar';
 import { useRouter } from 'vue-router';
-import { logout } from '@/api/authApi';
+import useAuthStore from '@/stores/authStore';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const { name } = defineProps<{
   name: string;
 }>();
 
 function logOut() {
-  logout();
+  authStore.logout();
   router.push({ name: 'Login' });
 }
 </script>

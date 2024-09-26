@@ -2,9 +2,9 @@ import { apiBase } from '@/config';
 import { getStoredAccessToken } from '@/utils/auth';
 import { ApiError } from '@/utils/types';
 import axios, { type RawAxiosRequestHeaders } from 'axios';
-import { logout } from './authApi';
+import useAuthStore from '@/stores/authStore';
 
-export default () => {
+const baseApi = () => {
   let headers: RawAxiosRequestHeaders = {
     'Content-Type': 'application/json',
   };
@@ -90,8 +90,11 @@ export default () => {
 
   return instance;
 };
+export default baseApi;
 
 const logoutProcess = () => {
-  logout();
+  const authStore = useAuthStore();
+
+  authStore.logout();
   window.location.reload();
 };

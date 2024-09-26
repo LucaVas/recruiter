@@ -33,9 +33,10 @@ import { getProfileInformation, updateProfileInformation } from '@/api/userApi';
 import type { UserInfoUpdateRequest } from '@/types/authTypes';
 import { updatingUser, openUserProfileModal, loading, user } from './index';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
-import { logout } from '@/api/authApi';
+import useAuthStore from '@/stores/authStore';
 
 const toast = useToast();
+const authStore = useAuthStore();
 
 const update = async (userForm: UserInfoUpdateRequest, loginRequired: boolean) => {
   updatingUser.value = true;
@@ -43,7 +44,7 @@ const update = async (userForm: UserInfoUpdateRequest, loginRequired: boolean) =
     await updateProfileInformation(userForm);
     openUserProfileModal.value = false;
     if (loginRequired) {
-      logout();
+      authStore.logout();
       showSuccess(
         toast,
         'Profile information updated successfully! You will be redirected to the login page shortly'
