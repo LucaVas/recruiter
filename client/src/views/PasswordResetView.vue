@@ -1,36 +1,3 @@
-<script lang="ts" setup>
-import PageForm from '@/components/PageForm.vue';
-import Button from 'primevue/button';
-import Password from 'primevue/password';
-import { useToast } from 'primevue/usetoast';
-import { ApiError } from '@/utils/types';
-import { DEFAULT_SERVER_ERROR } from '@/consts';
-import type { NewPasswordRequest } from '@/types/authTypes';
-import { resetPassword } from '@/api/userApi';
-import { useRoute } from 'vue-router';
-import { showError, showSuccess } from '@/utils/errorUtils';
-import { resettingPassword, passwordReset, form } from './index';
-
-const route = useRoute();
-const urlToken = route.params.token as string;
-const toast = useToast();
-
-const submit = async (token: string, form: NewPasswordRequest) => {
-  resettingPassword.value = true;
-  try {
-    await resetPassword(token, form);
-    showSuccess(toast, 'Password reset successfully. You can now login.');
-    passwordReset.value = true;
-  } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message, err.title);
-    if (err instanceof Error) showError(toast, err.message);
-    else showError(toast, DEFAULT_SERVER_ERROR);
-  } finally {
-    resettingPassword.value = false;
-  }
-};
-</script>
-
 <template>
   <div class="flex h-screen w-screen justify-center bg-slate-100">
     <PageForm
@@ -89,3 +56,42 @@ const submit = async (token: string, form: NewPasswordRequest) => {
     </PageForm>
   </div>
 </template>
+
+<script lang="ts" setup>
+import PageForm from '@/components/PageForm.vue';
+import Button from 'primevue/button';
+import Password from 'primevue/password';
+import { useToast } from 'primevue/usetoast';
+import { ApiError } from '@/utils/types';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
+import type { NewPasswordRequest } from '@/types/authTypes';
+import { resetPassword } from '@/api/userApi';
+import { useRoute } from 'vue-router';
+import { showError, showSuccess } from '@/utils/errorUtils';
+import { ref } from 'vue';
+
+const route = useRoute();
+const urlToken = route.params.token as string;
+const toast = useToast();
+const resettingPassword = ref(false);
+const passwordReset = ref(false);
+
+const form = ref<NewPasswordRequest>({
+  password: '',
+});
+
+const submit = async (token: string, form: NewPasswordRequest) => {
+  resettingPassword.value = true;
+  try {
+    await resetPassword(token, form);
+    showSuccess(toast, 'Password reset successfully. You can now login.');
+    passwordReset.value = true;
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    resettingPassword.value = false;
+  }
+};
+</script>

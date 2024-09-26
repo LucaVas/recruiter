@@ -137,18 +137,31 @@ import { ApiError } from '@/utils/types';
 import SignupCommentsModal from '@/components/modals/SignupCommentsModal.vue';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import { showError, showSuccess } from '@/utils/errorUtils';
-import {
-  loading,
-  hasSucceeded,
-  signupCommentsModalOpen,
-  userForm,
-  countries,
-  roles,
-} from './index';
+import { ref } from 'vue';
 
 const router = useRouter();
 const toast = useToast();
 
+
+const signupCommentsModalOpen = ref(false);
+const countries = ref([{ label: 'India', value: 'india' }]);
+const roles = ref([
+  { label: 'Recruiter', value: 'RECRUITER' },
+  { label: 'Admin', value: 'ADMIN' },
+]);
+const userForm = ref<SignupRequest>({
+  name: '',
+  email: '',
+  password: '',
+  phone: '',
+  city: '',
+  country: '',
+  roleName: 'RECRUITER',
+  comments: '',
+});
+
+const hasSucceeded = ref(false);
+const loading = ref(false);
 const submitSignup = async (userForm: SignupRequest) => {
   loading.value = true;
   try {
