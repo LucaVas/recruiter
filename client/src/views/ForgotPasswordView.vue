@@ -9,9 +9,15 @@ import { DEFAULT_SERVER_ERROR } from '@/consts';
 import { requestNewPassword } from '@/api/userApi';
 import { showSuccess } from '@/utils/errorUtils';
 import { showError } from '@/utils/errorUtils';
-import { sendingEmail, form } from './index';
+import { ref } from 'vue';
 
 const toast = useToast();
+const sendingEmail = ref(false);
+
+const form = ref<PasswordForgotRequest>({
+  email: '',
+  name: '',
+});
 
 const submit = async (form: PasswordForgotRequest) => {
   sendingEmail.value = true;

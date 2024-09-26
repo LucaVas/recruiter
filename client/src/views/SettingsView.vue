@@ -31,12 +31,18 @@ import { ApiError } from '@/utils/types';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { getProfileInformation, updateProfileInformation } from '@/api/userApi';
 import type { UserInfoUpdateRequest } from '@/types/authTypes';
-import { updatingUser, openUserProfileModal, loading, user } from './index';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import useAuthStore from '@/stores/authStore';
+import { ref } from 'vue';
+import type { User } from '@/types/userTypes';
 
 const toast = useToast();
 const authStore = useAuthStore();
+
+const user = ref<User>();
+const loading = ref(false);
+const updatingUser = ref(false);
+const openUserProfileModal = ref(false);
 
 const update = async (userForm: UserInfoUpdateRequest, loginRequired: boolean) => {
   updatingUser.value = true;

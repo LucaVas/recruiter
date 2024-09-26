@@ -25,29 +25,29 @@ const router = createRouter({
           path: '/candidacies/:id',
           name: 'Candidacy',
           beforeEnter: [showForAdminGuard],
-          component: () => import('@/views/candidacy/CandidacyView.vue'),
+          component: () => import('@/views/CandidacyView.vue'),
         },
         {
           path: '/candidacies/job=:id',
           name: 'NewCandidacy',
           beforeEnter: [showForAdminGuard],
-          component: () => import('@/views/candidacy/NewCandidacyView.vue'),
+          component: () => import('@/views/NewCandidacyView.vue'),
         },
         {
           path: '/candidacies/:id/edit',
           beforeEnter: [showForAdminGuard],
           name: 'UpdateCandidacy',
-          component: () => import('@/views/candidacy/UpdateCandidacyView.vue'),
+          component: () => import('@/views/UpdateCandidacyView.vue'),
         },
         {
           path: '/candidates',
           name: 'CandidatesPage',
-          component: () => import('@/views/candidates-page/CandidatesPage.vue'),
+          component: () => import('@/views/CandidatesPage.vue'),
         },
         {
           path: '/candidacies',
           name: 'CandidaciesPage',
-          component: () => import('@/views/candidacy/CandidaciesPageView.vue'),
+          component: () => import('@/views/CandidaciesPageView.vue'),
         },
         {
           path: '/users',
@@ -69,7 +69,7 @@ const router = createRouter({
         {
           path: '/settings',
           name: 'Settings',
-          component: () => import('@/views/settings/SettingsView.vue'),
+          component: () => import('@/views/SettingsView.vue'),
         },
       ],
     },
@@ -89,7 +89,7 @@ const router = createRouter({
         requiresAuth: false,
       },
       beforeEnter: [hideForAuthGuard],
-      component: () => import('@/views/signup/SignupView.vue'),
+      component: () => import('@/views/SignupView.vue'),
     },
     {
       path: '/forgot-password',
@@ -98,7 +98,7 @@ const router = createRouter({
         requiresAuth: false,
       },
       beforeEnter: [hideForAuthGuard],
-      component: () => import('@/views/forgot-password/ForgotPasswordView.vue'),
+      component: () => import('@/views/ForgotPasswordView.vue'),
     },
     {
       path: '/password-reset/token=:token',
@@ -107,7 +107,7 @@ const router = createRouter({
         requiresAuth: false,
       },
       beforeEnter: [hideForAuthGuard],
-      component: () => import('@/views/password-reset/PasswordResetView.vue'),
+      component: () => import('@/views/PasswordResetView.vue'),
     },
     {
       path: '/:catchAll(.*)',
