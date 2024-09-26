@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { authenticate, hideForAdmin, showForAdmin } from './guards';
+import { hideForAuthGuard, showForAdminGuard, showForAuthGuard } from './guards';
 import DashboardLayout from '@/layouts/dashboard/DashboardLayout.vue';
 
 const router = createRouter({
@@ -8,7 +8,7 @@ const router = createRouter({
     {
       path: '/',
       component: DashboardLayout,
-      beforeEnter: [authenticate],
+      beforeEnter: [showForAuthGuard],
       children: [
         {
           path: '/',
@@ -17,25 +17,25 @@ const router = createRouter({
         },
         {
           path: '/jobs/new',
-          beforeEnter: [showForAdmin],
+          beforeEnter: [showForAdminGuard],
           name: 'NewJob',
           component: () => import('@/views/job/NewJob.vue'),
         },
         {
           path: '/candidacies/:id',
           name: 'Candidacy',
-          beforeEnter: [showForAdmin],
+          beforeEnter: [showForAdminGuard],
           component: () => import('@/views/candidacy/CandidacyView.vue'),
         },
         {
           path: '/candidacies/job=:id',
           name: 'NewCandidacy',
-          beforeEnter: [hideForAdmin],
+          beforeEnter: [showForAdminGuard],
           component: () => import('@/views/candidacy/NewCandidacyView.vue'),
         },
         {
           path: '/candidacies/:id/edit',
-          beforeEnter: [hideForAdmin],
+          beforeEnter: [showForAdminGuard],
           name: 'UpdateCandidacy',
           component: () => import('@/views/candidacy/UpdateCandidacyView.vue'),
         },
@@ -51,7 +51,7 @@ const router = createRouter({
         },
         {
           path: '/users',
-          beforeEnter: [showForAdmin],
+          beforeEnter: [showForAdminGuard],
           name: 'UsersView',
           component: () => import('@/views/UsersView.vue'),
         },
@@ -62,7 +62,7 @@ const router = createRouter({
         },
         {
           path: '/jobs/update/:id',
-          beforeEnter: [showForAdmin],
+          beforeEnter: [showForAdminGuard],
           name: 'UpdateJob',
           component: () => import('@/views/job/UpdateJob.vue'),
         },
@@ -76,32 +76,50 @@ const router = createRouter({
     {
       path: '/login',
       name: 'Login',
-      component: () => import('@/views/login/LoginView.vue'),
+      meta: {
+        requiresAuth: false,
+      },
+      beforeEnter: [hideForAuthGuard],
+      component: () => import('@/views/LoginView.vue'),
     },
     {
       path: '/signup',
       name: 'Signup',
+      meta: {
+        requiresAuth: false,
+      },
+      beforeEnter: [hideForAuthGuard],
       component: () => import('@/views/signup/SignupView.vue'),
     },
     {
       path: '/forgot-password',
       name: 'ForgotPassword',
+      meta: {
+        requiresAuth: false,
+      },
+      beforeEnter: [hideForAuthGuard],
       component: () => import('@/views/forgot-password/ForgotPasswordView.vue'),
     },
     {
       path: '/password-reset/token=:token',
       name: 'PasswordReset',
+      meta: {
+        requiresAuth: false,
+      },
+      beforeEnter: [hideForAuthGuard],
       component: () => import('@/views/password-reset/PasswordResetView.vue'),
     },
     {
       path: '/:catchAll(.*)',
       name: 'NotFound',
-      component: () => import('@/views/NotFoundPage.vue'),
       meta: {
         requiresAuth: false,
       },
+      component: () => import('@/views/NotFoundPage.vue'),
     },
   ],
 });
+
+// global guard
 
 export default router;

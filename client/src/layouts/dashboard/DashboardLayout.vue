@@ -1,7 +1,7 @@
 <template>
   <StackedLayout
-    :menuItems="getMenuItems(isAdmin, menuItems) ?? menuItems"
-    :name="authName ?? 'null'"
+    :menuItems="getMenuItems(authStore.isAdmin, menuItems) ?? menuItems"
+    :name="authStore.authUserName ?? 'null'"
   />
 </template>
 
@@ -9,5 +9,7 @@
 import StackedLayout from '../StackedLayout.vue';
 import { getMenuItems } from '../utils';
 import { menuItems } from './index';
-import { authName, isAdmin } from '../../api/authApi';
+import useAuthStore from '@/stores/authStore';
+
+const authStore = useAuthStore();
 </script>

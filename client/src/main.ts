@@ -12,11 +12,17 @@ import Ripple from 'primevue/ripple';
 import Tooltip from 'primevue/tooltip';
 
 import router from './router';
+import { createPinia } from 'pinia';
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
 
 const app = createApp(App);
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedState);
+
 app.directive('ripple', Ripple);
 app.directive('tooltip', Tooltip);
 
-app.use(router).use(ToastService).use(PrimeVue);
+app.use(router).use(ToastService).use(PrimeVue).use(pinia);
 
 app.mount('#app');

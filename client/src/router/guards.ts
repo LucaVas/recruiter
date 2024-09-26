@@ -1,25 +1,38 @@
-import { isAdmin, isLoggedIn } from '@/api/authApi';
+import useAuthStore from '@/stores/authStore';
+import type { NavigationGuard } from 'vue-router';
 
-export const authenticate = () => {
-  if (!isLoggedIn.value) return { name: 'Login' };
-
-  return true;
+export const showForAdminGuard: NavigationGuard = async (to, from, next) => {
+  const authStore = useAuthStore();
+  if (authStore.isAdmin) {
+    next();
+  } else {
+    return next({ name: 'Dashboard' });
+  }
 };
 
-export const showForAdmin = () => {
-  if (!isAdmin.value) return { name: 'Dashboard' };
-
-  return true;
+export const hideForAdminGuard: NavigationGuard = async (to, from, next) => {
+  const authStore = useAuthStore();
+  if (!authStore.isAdmin) {
+    next();
+  } else {
+    return next({ name: 'Dashboard' });
+  }
 };
 
-export const hideForAdmin = () => {
-  if (isAdmin.value) return { name: 'Dashboard' };
-
-  return true;
+export const showForAuthGuard: NavigationGuard = async (to, from, next) => {
+  const authStore = useAuthStore();
+  if (authStore.isLoggedIn) {
+    next();
+  } else {
+    return next({ name: 'Login' });
+  }
 };
 
-export const hideForAuth = () => {
-  if (isLoggedIn.value) return { name: 'Dashboard' };
-
-  return true;
+export const hideForAuthGuard: NavigationGuard = async (to, from, next) => {
+  const authStore = useAuthStore();
+  if (!authStore.isLoggedIn) {
+    next();
+  } else {
+    return next({ name: 'Dashboard' });
+  }
 };

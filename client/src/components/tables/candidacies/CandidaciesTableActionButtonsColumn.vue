@@ -11,7 +11,7 @@
       ref="menu"
       id="config_menu"
       :model="
-        isAdmin
+        authStore.isAdmin
           ? adminItems.filter((item) => item.visible)
           : recruiterItems.filter((item) => item.visible)
       "
@@ -23,9 +23,10 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
-import { isAdmin } from '@/api/authApi';
 import { ref } from 'vue';
+import useAuthStore from '@/stores/authStore';
 
+const authStore = useAuthStore();
 const router = useRouter();
 const props = defineProps<{
   data: any;

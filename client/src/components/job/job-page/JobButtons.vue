@@ -2,8 +2,9 @@
 import Button from 'primevue/button';
 import type { JobStatus } from '@/types/jobTypes';
 import { useRouter } from 'vue-router';
-import { isAdmin } from '@/api/authApi';
+import useAuthStore from '@/stores/authStore';
 
+const authStore = useAuthStore();
 const router = useRouter();
 const { id, status } = defineProps<{
   id: number;
@@ -21,7 +22,7 @@ defineEmits<{
       type="button"
       size="small"
       label="Apply"
-      v-if="status === 'OPEN' && !isAdmin"
+      v-if="status === 'OPEN' && !authStore.isAdmin"
       @click="router.push({ name: 'NewCandidacy', params: { id: id } })"
     />
     <div>
@@ -55,7 +56,7 @@ defineEmits<{
         label="Edit"
         outlined
         class="hidden sm:block"
-        v-if="status !== 'DELETED' && isAdmin"
+        v-if="status !== 'DELETED' && authStore.isAdmin"
         @click="router.push({ name: 'UpdateJob', params: { id: id } })"
       />
       <Button
@@ -65,7 +66,7 @@ defineEmits<{
         icon="pi pi-file-edit"
         outlined
         class="visible min-w-max sm:hidden"
-        v-if="status !== 'DELETED' && isAdmin"
+        v-if="status !== 'DELETED' && authStore.isAdmin"
         @click="router.push({ name: 'UpdateJob', params: { id: id } })"
       />
     </div>
@@ -78,7 +79,7 @@ defineEmits<{
         label="Delete"
         outlined
         class="hidden sm:block"
-        v-if="status !== 'DELETED' && isAdmin"
+        v-if="status !== 'DELETED' && authStore.isAdmin"
         @click="$emit('deleteJob')"
       />
       <Button
@@ -88,7 +89,7 @@ defineEmits<{
         icon="pi pi-trash"
         outlined
         class="block min-w-max sm:hidden"
-        v-if="status !== 'DELETED' && isAdmin"
+        v-if="status !== 'DELETED' && authStore.isAdmin"
         @click="$emit('deleteJob')"
       />
     </div>

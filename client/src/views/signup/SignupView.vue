@@ -1,55 +1,5 @@
-<script lang="ts" setup>
-import PageForm from '@/components/PageForm.vue';
-import { signup } from '@/api/authApi';
-import type { SignupRequest } from '@/types/authTypes';
-import Dropdown from 'primevue/dropdown';
-import InputMask from 'primevue/inputmask';
-import InputText from 'primevue/inputtext';
-import Password from 'primevue/password';
-import { useToast } from 'primevue/usetoast';
-import { useRouter } from 'vue-router';
-import { ApiError } from '@/utils/types';
-import SignupCommentsModal from '@/components/modals/SignupCommentsModal.vue';
-import { DEFAULT_SERVER_ERROR } from '@/consts';
-import { showError, showSuccess } from '@/utils/errorUtils';
-import {
-  loading,
-  hasSucceeded,
-  signupCommentsModalOpen,
-  userForm,
-  countries,
-  roles,
-} from './index';
-
-const router = useRouter();
-const toast = useToast();
-
-const submitSignup = async (userForm: SignupRequest) => {
-  loading.value = true;
-  try {
-    await signup(userForm);
-    hasSucceeded.value = true;
-    setTimeout(
-      () =>
-        showSuccess(
-          toast,
-          'You have successfully signed up! An administrator will review your registration and confirm or reject it.'
-        ),
-      100
-    );
-    router.push({ name: 'Login' });
-  } catch (err) {
-    if (err instanceof ApiError) showError(toast, err.message, err.title);
-    else if (err instanceof Error) showError(toast, err.message);
-    else showError(toast, DEFAULT_SERVER_ERROR);
-  } finally {
-    loading.value = false;
-  }
-};
-</script>
-
 <template>
-  <div class="flex h-full w-full items-center justify-center bg-slate-100">
+  <div class="flex h-screen w-screen justify-center bg-slate-100">
     <SignupCommentsModal
       :visible="signupCommentsModalOpen"
       @continueSignup="submitSignup(userForm)"
@@ -152,25 +102,73 @@ const submitSignup = async (userForm: SignupRequest) => {
             label="Sign up"
             :loading="loading"
             :disabled="loading"
+            size="small"
           />
         </div>
       </template>
       <template #footer>
-        <div>
-          <Message
-            class="text-center"
-            severity="contrast"
-            :sticky="true"
-            outlined
-            :closable="false"
-            data-testid="alredy-member-message"
-          >
-            Already a member?
-            {{ ' ' }}
-            <RouterLink :to="{ name: 'Login' }" class="font-semibold leading-6">Log in</RouterLink>
-          </Message>
-        </div>
+        <RouterLink :to="{ name: 'Login' }">
+          <Button
+            size="small"
+            link
+            class="my-4 w-full"
+            type="button"
+            label="Already a member?"
+            :disabled="loading"
+            data-testid="reset-password-button"
+          />
+        </RouterLink>
       </template>
     </PageForm>
   </div>
 </template>
+
+<script lang="ts" setup>
+import PageForm from '@/components/PageForm.vue';
+import { signup } from '@/api/authApi';
+import type { SignupRequest } from '@/types/authTypes';
+import Dropdown from 'primevue/dropdown';
+import InputMask from 'primevue/inputmask';
+import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
+import { useToast } from 'primevue/usetoast';
+import { useRouter } from 'vue-router';
+import { ApiError } from '@/utils/types';
+import SignupCommentsModal from '@/components/modals/SignupCommentsModal.vue';
+import { DEFAULT_SERVER_ERROR } from '@/consts';
+import { showError, showSuccess } from '@/utils/errorUtils';
+import {
+  loading,
+  hasSucceeded,
+  signupCommentsModalOpen,
+  userForm,
+  countries,
+  roles,
+} from './index';
+
+const router = useRouter();
+const toast = useToast();
+
+const submitSignup = async (userForm: SignupRequest) => {
+  loading.value = true;
+  try {
+    await signup(userForm);
+    hasSucceeded.value = true;
+    setTimeout(
+      () =>
+        showSuccess(
+          toast,
+          'You have successfully signed up! An administrator will review your registration and confirm or reject it.'
+        ),
+      100
+    );
+    router.push({ name: 'Login' });
+  } catch (err) {
+    if (err instanceof ApiError) showError(toast, err.message, err.title);
+    else if (err instanceof Error) showError(toast, err.message);
+    else showError(toast, DEFAULT_SERVER_ERROR);
+  } finally {
+    loading.value = false;
+  }
+};
+</script>
