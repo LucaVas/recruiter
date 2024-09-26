@@ -4,8 +4,8 @@ import {
   getAllCandidacies,
   getCandidacyComments,
   deleteCandidacy,
-} from '@/stores/candidacy';
-import type { CandidacyDto, CandidacyFile } from '@/stores/candidacy/schema';
+} from '@/api/candidacyApi';
+import type { CandidacyDto, CandidacyFile } from '@/types/candidacyTypes';
 import { ApiError } from '@/utils/types';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
@@ -21,22 +21,13 @@ import CommentsModal from './CommentsModal.vue';
 import CandidacyFilesModal from '@/components/modals/CandidacyFilesModal.vue';
 import { clearFilter, filters, initFilters } from './filters';
 import { getCandidacyStatus, getCandidacyStatusIcon, getCandidacyStatusSeverity } from './utils';
-import { type CandidacyComment } from '@/stores/candidacy/schema';
+import { type CandidacyComment } from '@/types/candidacyTypes';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import DeleteModal from '@/components/candidacy/DeleteModal.vue';
-import {
-  getCandidacyFiles,
-  deleteFile,
-  getFile,
-  uploadFilesToCandidacy,
-} from '@/stores/candidacy/index';
+import { getCandidacyFiles, deleteFile, getFile, uploadFilesToCandidacy } from '@/api/candidacyApi';
 import UploadFilesModal from '@/components/modals/UploadFilesModal.vue';
-import {
-  withdrawCandidacy,
-  rejectCandidacy,
-  acceptCandidacy,
-} from '../../../stores/candidacy/index';
+import { withdrawCandidacy, rejectCandidacy, acceptCandidacy } from '../../../api/candidacyApi';
 
 const toast = useToast();
 

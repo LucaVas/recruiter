@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import type { Candidate } from '@/stores/candidate/schema';
+import type { Candidate } from '@/types/candidateTypes';
 
 const { candidates } = defineProps<{
   candidates?: Candidate[];

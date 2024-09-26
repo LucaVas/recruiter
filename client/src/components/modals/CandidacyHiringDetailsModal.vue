@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import JobMetadataEntry from '@/components/job/metadata/JobMetadataEntry.vue';
 import { formatDate } from '@/utils/dateUtils';
-import type { Job } from '@/stores/job/schema';
+import type { Job } from '@/types/jobTypes';
 import Dialog from 'primevue/dialog';
 import { capitalize } from '@/utils/stringUtils';
 import { ref } from 'vue';

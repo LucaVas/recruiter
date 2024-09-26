@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // components
-import TextInput from '@/components/shared/TextInput.vue';
-import NumberInput from '@/components/shared/NumberInput.vue';
-import DateInput from '@/components/shared/DateInput.vue';
+import TextInput from '@/components/inputs/BaseTextInput.vue';
+import NumberInput from '@/components/inputs/BaseNumberInput.vue';
+import DateInput from '@/components/inputs/BaseDateInput.vue';
 import TextArea from '@/components/shared/TextArea.vue';
 import DropDown from '@/components/shared/DropDown.vue';
 import JobClientSection from '@/components/job/JobClientSection.vue';
@@ -22,14 +22,14 @@ import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 // stores
-import type { Skill } from '@/stores/skill/schema';
-import { getAllClients } from '@/stores/client';
-import type { Client } from '@/stores/client/schema';
-import { createJob } from '@/stores/job';
-import type { NewJob } from '@/stores/job/schema';
-import { getAllSkills } from '@/stores/skill';
-import type { Questionnaire } from '@/stores/questionnaire/schema';
-import { getAllQuestionnaires } from '@/stores/questionnaire/api';
+import type { Skill } from '@/types/skillTypes';
+import { getAllClients } from '@/api/clientApi';
+import type { Client } from '@/types/clientTypes';
+import { createJob } from '@/api/jobApi';
+import type { NewJob } from '@/types/jobTypes';
+import { getAllSkills } from '@/api/skillApi';
+import type { Questionnaire } from '@/types/questionnaireTypes';
+import { getAllQuestionnaires } from '@/api/questionnaireApi';
 // utils
 import { handleError } from '@/utils/errorUtils';
 import { createNewSkill, creatingSkill, skillModalOpen } from './jobCommons';

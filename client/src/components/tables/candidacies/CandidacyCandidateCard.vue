@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Candidate } from '@/stores/candidate/schema';
+import type { Candidate } from '@/types/candidateTypes';
 
 const { candidate } = defineProps<{
   candidate: Candidate;

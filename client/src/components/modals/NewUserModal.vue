@@ -98,8 +98,8 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { type NewUserRequest } from '@/stores/user/schema';
-import { createNewUser } from '@/stores/user/index';
+import { type NewUserRequest } from '@/types/userTypes';
+import { createNewUser } from '@/api/userApi';
 import { ApiError } from '@/utils/types';
 import { showError } from '@/utils/errorUtils';
 import { useToast } from 'primevue/usetoast';

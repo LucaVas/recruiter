@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Job } from '@/stores/job/schema';
+import type { Job } from '@/types/jobTypes';
 import JobMetadataEntry from '../metadata/JobMetadataEntry.vue';
 
 const { job } = defineProps<{

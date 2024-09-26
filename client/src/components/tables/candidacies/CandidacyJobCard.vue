@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CandidacyDto } from '@/stores/candidacy/schema';
+import type { CandidacyDto } from '@/types/candidacyTypes';
 import { formatDate } from '@/utils/dateUtils';
 
 const { candidacy } = defineProps<{

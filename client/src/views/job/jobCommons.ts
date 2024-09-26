@@ -1,10 +1,10 @@
 import type { ToastServiceMethods } from 'primevue/toastservice';
 import type { Router } from 'vue-router';
 import { ref } from 'vue';
-import { deleteJob, getJob } from '@/stores/job';
+import { deleteJob, getJob } from '@/api/jobApi';
 import { handleError, showSuccess } from '@/utils/errorUtils';
-import type { NewSkill } from '@/stores/skill/schema';
-import { createSkill } from '@/stores/skill';
+import type { NewSkill } from '@/types/skillTypes';
+import { createSkill } from '@/api/skillApi';
 
 export const deleteJobModalOpen = ref(false);
 export const deletingJob = ref(false);

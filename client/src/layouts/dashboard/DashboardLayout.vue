@@ -9,5 +9,5 @@
 import StackedLayout from '../StackedLayout.vue';
 import { getMenuItems } from '../utils';
 import { menuItems } from './index';
-import { authName, isAdmin } from '../../stores/auth/index';
+import { authName, isAdmin } from '../../api/authApi';
 </script>

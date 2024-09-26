@@ -37,8 +37,8 @@ import JobHiringDetailsModal from '@/components/modals/JobHiringDetailsModal.vue
 import DeleteJobModal from '@/components/modals/DeleteJobModal.vue';
 import { handleError } from '@/utils/errorUtils';
 import { ref } from 'vue';
-import { getJob } from '@/stores/job/index';
-import type { Job } from '@/stores/job/schema';
+import { getJob } from '@/api/jobApi';
+import type { Job } from '@/types/jobTypes';
 import JobQuestionnairePanel from '@/components/job/job-page/JobQuestionnairePanel.vue';
 
 const loading = ref(false);

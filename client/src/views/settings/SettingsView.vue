@@ -29,11 +29,11 @@ import { onMounted } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import { ApiError } from '@/utils/types';
 import { showError, showSuccess } from '@/utils/errorUtils';
-import { getProfileInformation, updateProfileInformation } from '@/stores/user';
-import type { UserInfoUpdateRequest } from '@/stores/auth/schema';
+import { getProfileInformation, updateProfileInformation } from '@/api/userApi';
+import type { UserInfoUpdateRequest } from '@/types/authTypes';
 import { updatingUser, openUserProfileModal, loading, user } from './index';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
-import { logout } from '@/stores/auth';
+import { logout } from '@/api/authApi';
 
 const toast = useToast();
 

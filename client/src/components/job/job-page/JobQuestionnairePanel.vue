@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Questionnaire } from '@/stores/questionnaire/schema';
+import { type Questionnaire } from '@/types/questionnaireTypes';
 import Panel from 'primevue/panel';
 import { ref } from 'vue';
 

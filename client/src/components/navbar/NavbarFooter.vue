@@ -2,7 +2,7 @@
 import Button from 'primevue/button';
 import Avatar from 'primevue/avatar';
 import { useRouter } from 'vue-router';
-import { logout } from '@/stores/auth';
+import { logout } from '@/api/authApi';
 
 const router = useRouter();
 

@@ -4,9 +4,8 @@ import ApproveModal from './ApproveModal.vue';
 import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
-import type { User, UserApprovalRequest } from '@/stores/user/schema';
 import { ApiError } from '@/utils/types';
-import { getAllUsers, approveUser } from '@/stores/user';
+import { getAllUsers, approveUser } from '@/api/userApi';
 import { useToast } from 'primevue/usetoast';
 import { columns } from '../candidates';
 import NewUserModal from '@/components/modals/NewUserModal.vue';
@@ -15,6 +14,7 @@ import UsersHeader from '@/components/users/UsersHeader.vue';
 import UsersTableButtons from './UsersTableButtons.vue';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
+import type { UserApprovalRequest, User } from '@/types/userTypes';
 
 const toast = useToast();
 const usersTableError = ref('');

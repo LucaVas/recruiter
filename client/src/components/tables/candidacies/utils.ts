@@ -1,4 +1,4 @@
-import type { CandidacyStatus } from '@/stores/candidacy/schema';
+import type { CandidacyStatus } from '@/types/candidacyTypes';
 
 export const getCandidacyStatus = (status: CandidacyStatus): string => {
   if (status === 'ACCEPTED') return 'Accepted';

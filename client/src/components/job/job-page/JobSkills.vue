@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Skill } from '@/stores/skill/schema';
+import type { Skill } from '@/types/skillTypes';
 import Chip from 'primevue/chip';
 
 const { skills, isNewJob } = defineProps<{

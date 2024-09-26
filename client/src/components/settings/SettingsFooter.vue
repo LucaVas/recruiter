@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { User } from '@/stores/user/schema';
+import type { User } from '@/types/userTypes';
 import { formatDate } from '@/utils/dateUtils';
 import Button from 'primevue/button';
-import ChangePasswordModal from '@/components/settings/ChangePasswordModal.vue';
+import ChangePasswordModal from '@/components/modals/ChangePasswordModal.vue';
 import { ref } from 'vue';
 
 const { user } = defineProps<{

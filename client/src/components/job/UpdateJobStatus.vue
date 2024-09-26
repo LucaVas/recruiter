@@ -2,7 +2,7 @@
 import Tag from 'primevue/tag';
 import TieredMenu from 'primevue/tieredmenu';
 import Button from 'primevue/button';
-import type { JobStatus } from '@/stores/job/schema';
+import type { JobStatus } from '@/types/jobTypes';
 import { formatDate } from '@/utils/dateUtils';
 import { ref } from 'vue';
 import DeleteJobModal from '../modals/DeleteJobModal.vue';

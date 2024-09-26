@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { Skill } from '@/stores/skill/schema';
+import type { Skill } from '@/types/skillTypes';
 import Dropdown from 'primevue/dropdown';
 
 // variables

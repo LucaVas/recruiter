@@ -44,7 +44,7 @@
 import Dialog from 'primevue/dialog';
 import ProgressSpinner from 'primevue/progressspinner';
 import Button from 'primevue/button';
-import { type CandidacyFile } from '@/stores/candidacy/schema';
+import { type CandidacyFile } from '@/types/candidacyTypes';
 import { formatDateTime } from '@/utils/dateUtils';
 
 const { visible, files, loading, downloading } = defineProps<{

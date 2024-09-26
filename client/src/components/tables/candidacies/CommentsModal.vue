@@ -29,7 +29,7 @@ import CommentPanel from './CommentPanel.vue';
 import NewCommentContainer from '@/components/comments/shared/NewCommentContainer.vue';
 import ProgressSpinner from 'primevue/progressspinner';
 import Divider from 'primevue/divider';
-import type { CandidacyComment } from '@/stores/candidacy/schema';
+import type { CandidacyComment } from '@/types/candidacyTypes';
 
 const { visible, comments, loadingComments } = defineProps<{
   visible: boolean;

@@ -3,13 +3,13 @@ import CandidateTable from '@/components/candidacy/candidate/CandidateTable.vue'
 import CandidacyHiringDetailsModal from '@/components/modals/CandidacyHiringDetailsModal.vue';
 import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
-import { getCandidacy, updateCandidacy } from '@/stores/candidacy/index';
+import { getCandidacy, updateCandidacy } from '@/api/candidacyApi';
 import { useRoute, useRouter } from 'vue-router';
 import CandidacyHeader from '@/components/candidacy/CandidacyHeader.vue';
 import CandidacyFooter from '@/components/candidacy/CandidacyFooter.vue';
 import Success from '@/components/Success.vue';
 import { ApiError } from '@/utils/types';
-import type { CandidacyDto, UpdateCandidacy } from '@/stores/candidacy/schema';
+import type { CandidacyDto, UpdateCandidacy } from '@/types/candidacyTypes';
 import { showError } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import ProgressSpinner from 'primevue/progressspinner';

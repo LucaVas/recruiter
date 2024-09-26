@@ -1,4 +1,4 @@
-import type { QuestionType } from '@/stores/question/schema';
+import type { QuestionType } from '@/types/questionTypes';
 import { ref } from 'vue';
 
 export const questionTypes = ref<{ value: QuestionType; label: string }[]>([

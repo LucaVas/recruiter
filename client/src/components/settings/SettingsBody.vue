@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import type { User } from '@/stores/user/schema';
+import type { User } from '@/types/userTypes';
 
 const { user } = defineProps<{
   user: User;

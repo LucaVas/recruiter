@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
-import type { JobStatus } from '@/stores/job/schema';
+import type { JobStatus } from '@/types/jobTypes';
 import { useRouter } from 'vue-router';
-import { isAdmin } from '@/stores/auth';
+import { isAdmin } from '@/api/authApi';
 
 const router = useRouter();
 const { id, status } = defineProps<{

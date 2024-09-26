@@ -6,7 +6,7 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Dropdown from 'primevue/dropdown';
 import { ref } from 'vue';
-import { industries, type NewClient } from '@/stores/client/schema';
+import { industries, type NewClient } from '@/types/clientTypes';
 
 const { visible } = defineProps<{
   visible: boolean;
