@@ -99,12 +99,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { type NewUserRequest } from '@/types/userTypes';
-import { createNewUser } from '@/api/userApi';
 import { ApiError } from '@/utils/types';
 import { showError } from '@/utils/errorUtils';
 import { useToast } from 'primevue/usetoast';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import Success from '@/components/Success.vue';
+import useUserStore from '@/stores/userStore';
 
 const props = defineProps<{
   visible: boolean;
@@ -142,11 +142,12 @@ const roles = ref([
   { label: 'Admin', value: 'ADMIN' },
 ]);
 
+const userStore = useUserStore();
 const create = async () => {
   loading.value = true;
 
   try {
-    await createNewUser(form.value);
+    await userStore.createNewUser(form.value);
     emits('close');
     userCreated.value = true;
   } catch (err) {

@@ -22,7 +22,7 @@ const loading = ref(false);
 async function initTable(pageNumber: number, pageSize: number) {
   loading.value = true;
   try {
-    await jobStore.loadJobs(pageNumber, pageSize);
+    await jobStore.fetchJobs(pageNumber, pageSize);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);

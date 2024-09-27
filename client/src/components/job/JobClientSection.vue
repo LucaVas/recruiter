@@ -75,7 +75,7 @@ import { handleError } from '@/utils/errorUtils';
 const toast = useToast();
 
 // props
-const { client, clients } = defineProps<{
+const props = defineProps<{
   client: Client;
   clients: Client[];
 }>();
@@ -96,5 +96,5 @@ const emit = defineEmits<{
 }>();
 
 const clientModalOpen = ref(false);
-const selectedClient = ref(client);
+const selectedClient = ref(props.client);
 </script>

@@ -37,12 +37,12 @@ defineEmits<{
         <JobMetadataEntry :icon="'pi-briefcase'" :content="`${job.salaryBudget} ${job.currency}`" />
         <JobMetadataEntry
           :icon="'pi-money-bill'"
-          :content="`${job.bonusPayPerCv} INR per CV paid on ${formatDate(job.cvRatePaymentDate)}`"
+          :content="`${job.bonusPayPerCv} INR per CV on ${formatDate(job.cvRatePaymentDate)}`"
         />
         <JobMetadataEntry
           v-if="job.closureBonus.toLowerCase() !== 'not applicable' && job.closureBonus !== ''"
           :icon="'pi-wallet'"
-          :content="`${job.closureBonus} INR closure bonus paid on ${formatDate(job.closureBonusPaymentDate)}`"
+          :content="`${job.closureBonus} closure bonus on ${formatDate(job.closureBonusPaymentDate)}`"
         />
       </div>
       <div class="mt-5 flex justify-end gap-2">

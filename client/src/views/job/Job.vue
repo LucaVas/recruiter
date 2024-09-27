@@ -10,7 +10,7 @@
       @deleteJob="delJob(id, router, toast)"
     />
     <JobButtons
-      @deleteJob="(id) => (deleteJobModalOpen = true)"
+      @deleteJob="deleteJobModalOpen = true"
       @openModal="modalOpen = true"
       :id="job.id"
       :status="job.status"
@@ -44,7 +44,6 @@ import JobQuestionnairePanel from '@/components/job/job-page/JobQuestionnairePan
 const loading = ref(false);
 const job = ref<Job>();
 
-// modal
 const modalOpen = ref(false);
 
 const getJobDetails = async (id: number) => {
@@ -61,15 +60,10 @@ const getJobDetails = async (id: number) => {
   }
 };
 
-// route
 const router = useRouter();
 const route = useRoute();
 const id = Number(route.params.id);
-
-// toast
 const toast = useToast();
-
-// functions
 
 onMounted(async () => {
   await getJobDetails(id);

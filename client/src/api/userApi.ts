@@ -4,31 +4,11 @@ import type {
   NewPasswordRequest,
   PasswordForgotRequest,
   UserInfoUpdateRequest,
-} from '../types/authTypes';
-import type { AxiosResponse } from 'axios';
-import type { CustomPage } from '../types/paginationTypes';
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/consts';
-import { type NewUserRequest, type User, type UserApprovalRequest } from '../types/userTypes';
+} from '@/types/authTypes';
+import type { User } from '@/types/userTypes';
 
-// vars
 const api = axiosApi();
 const baseApi = '/users';
-
-// functions
-export async function approveUser(approvalRequest: UserApprovalRequest): Promise<void> {
-  await api.post(`${baseApi}/approvals`, approvalRequest);
-}
-
-export async function getAllUsers(pageNumber: number, pageSize: number): Promise<CustomPage<User>> {
-  const { data } = (await api.get(
-    `${baseApi}?page=${pageNumber ?? DEFAULT_PAGE_NUMBER}&pageSize=${pageSize ?? DEFAULT_PAGE_SIZE}`
-  )) as AxiosResponse<CustomPage<User>>;
-  return data;
-}
-
-export const createNewUser = async (form: NewUserRequest): Promise<void> => {
-  await api.post(`${baseApi}`, form);
-};
 
 export const getProfileInformation = async (): Promise<User> => {
   const { data } = await api.get(`${baseApi}/profile`);

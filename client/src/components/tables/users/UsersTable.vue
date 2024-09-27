@@ -5,7 +5,6 @@ import { onMounted, ref } from 'vue';
 import Column from 'primevue/column';
 import { filters, initFilters, clearFilter } from './filters';
 import { ApiError } from '@/utils/types';
-import { getAllUsers, approveUser } from '@/api/userApi';
 import { useToast } from 'primevue/usetoast';
 import { columns } from '../candidates';
 import NewUserModal from '@/components/modals/NewUserModal.vue';
@@ -15,14 +14,12 @@ import UsersTableButtons from './UsersTableButtons.vue';
 import { showError, showSuccess } from '@/utils/errorUtils';
 import { DEFAULT_SERVER_ERROR } from '@/consts';
 import type { UserApprovalRequest, User } from '@/types/userTypes';
+import useUserStore from '@/stores/userStore';
 
 const toast = useToast();
 const usersTableError = ref('');
 const loading = ref(false);
 const approvingUser = ref(false);
-
-const users = ref<User[]>();
-const totalUsers = ref(0);
 
 const isApproval = ref(false);
 const targetUser = ref<User>();
@@ -31,14 +28,14 @@ const newUserModalOpen = ref(false);
 const defaultPage = 0;
 const defaultPageSize = 5;
 
+const userStore = useUserStore();
 const approve = async (request: UserApprovalRequest) => {
   approvingUser.value = true;
   try {
-    await approveUser(request);
+    await userStore.approveUser(request);
     approveModalOpen.value = false;
     initFilters();
     showSuccess(toast, 'User status updated successfully!');
-    await initTable(defaultPage, defaultPageSize);
   } catch (err) {
     if (err instanceof ApiError) showError(toast, err.message, err.title);
     else if (err instanceof Error) showError(toast, err.message);
@@ -51,9 +48,7 @@ const approve = async (request: UserApprovalRequest) => {
 const initTable = async (pageNumber: number, pageSize: number) => {
   loading.value = true;
   try {
-    const res = await getAllUsers(pageNumber, pageSize);
-    users.value = res.elements;
-    totalUsers.value = res.totalElements;
+    await userStore.fetchUsers(pageNumber, pageSize);
   } catch (err) {
     if (err instanceof ApiError) usersTableError.value = err.message;
   } finally {
@@ -68,21 +63,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NewUserModal
-    :visible="newUserModalOpen"
-    @close="
-      {
-        newUserModalOpen = false;
-        initTable(defaultPage, defaultPageSize);
-      }
-    "
-  />
+  <NewUserModal :visible="newUserModalOpen" @close="newUserModalOpen = false" />
   <DataTable
     v-model:filters="filters"
     filterDisplay="menu"
     size="small"
     :globalFilterFields="columns"
-    :value="users"
+    :value="userStore.users"
     stripedRows
     :loading="loading"
     dataKey="id"
@@ -155,7 +142,7 @@ onMounted(async () => {
   </DataTable>
   <Paginator
     :rows="5"
-    :totalRecords="totalUsers"
+    :totalRecords="userStore.totalUsers"
     :rowsPerPageOptions="[5, 10, 20, 30]"
     @page="(event) => initTable(event.page, event.rows)"
   />

@@ -13,15 +13,6 @@ BEFORE UPDATE ON skills
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TABLE job_skills (
-    job_id BIGINT NOT NULL,
-    skill_id BIGINT NOT NULL,
-
-    PRIMARY KEY (job_id, skill_id),
-    CONSTRAINT fk_job FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE,
-    CONSTRAINT fk_skill FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE
-);
-
 CREATE TABLE skills_history (
     event_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -32,6 +23,15 @@ CREATE TABLE skills_history (
 
     CONSTRAINT fk_skill_history_skill FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE,
     CONSTRAINT fk_skill_history_modified_by FOREIGN KEY (modified_by_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE jobs_skills (
+    jobs_id BIGINT NOT NULL,
+    skills_id BIGINT NOT NULL,
+
+    PRIMARY KEY (jobs_id, skills_id),
+    CONSTRAINT fk_job FOREIGN KEY (jobs_id) REFERENCES jobs(id) ON DELETE CASCADE,
+    CONSTRAINT fk_skill FOREIGN KEY (skills_id) REFERENCES skills(id) ON DELETE CASCADE
 );
 
 --rollback DROP TABLE IF EXISTS skills_history;
