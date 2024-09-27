@@ -43,4 +43,6 @@ selenium-debug.log
 
 !.mvn/wrapper/maven-wrapper.jar
 
-vars.env
+development.server.env
+prod.server.env
+vars.client.env
