@@ -69,60 +69,46 @@ jobs:
         working-directory: ./server
         run: |
           ./mvnw clean package \
-          
-          -Dserver.port=${SERVER_PORT} \
-          -Dserver.error.include-message=always \
-          
-          -Dgoogle.storage.bucket.name=${GOOGLE_CLOUD_BUCKET_NAME} \
-          -Dgoogle.storage.project.id=${GOOGLE_CLOUD_PROJECT_ID} \
-          
-          -Dpassword.reset.token.expirationInSeconds=${RESET_PASSWORD_TOKEN_EXPIRATION_SECONDS} \
-          
-          -Dclient.base-url=${CLIENT_BASE_URL} \
-          -Dclient.reset-password-url=${CLIENT_RESET_PASSWORD_URL} \
-          
-          -Dlogging.level.root=${DEBUG_LEVEL} \
-          -Dlogging.level.org.springframework.web=DEBUG \
-          -Dlogging.level.org.springframework.mail=DEBUG \
-          -Dlogging.level.org.hibernate=ERROR \
-          
-          -Dmanagement.endpoints.web.exposure.include=* \
-          -Dmanagement.endpoint.health.show-details=always \
-          
-          -Dspring.servlet.multipart.max-file-size=5MB \
-          -Dspring.servlet.multipart.max-request-size=5MB \
-          
-          -Dspring.mail.host=${EMAIL_HOST} \
-          -Dspring.mail.port=${EMAIL_PORT} \
-          -Dspring.mail.username=${EMAIL_USERNAME} \
-          -Dspring.mail.password=${EMAIL_PASSWORD} \
-          -Dspring.mail.properties.mail.debug=${EMAIL_SERVICE_DEBUG} \
-          -Dspring.mail.properties.mail.smtp.auth=true \
-          -Dspring.mail.properties.mail.smtp.starttls.enable=true \
-          
-          -Dspring.thymeleaf.check-template-location=false \
-          
-          -Dspring.jpa.hibernate.ddl-auto=none \
-          -Dspring.jpa.show-sql=false \
-          -Dspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect \
-          -Dspring.jpa.properties.hibernate.format-sql=true \
-          -Dspring.jpa.properties.hibernate.jdbc.time_zone=UTC \
-          
-          -Dspring.datasource.platform=postgres \
-          -Dspring.datasource.url=jdbc:postgresql://${DB_HOST}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}&sslmode=${DB_SSL} \
-          -Dspring.datasource.driverClassName=org.postgresql.Driver \
-          
-          -Dspring.liquibase.change-log=db/changelog/db.changelog-master.xml \
-          -Dspring.liquibase.enabled=true \
-          -Dspring.liquibase.show-summary=summary \
-          
-          -Dcors.allowed-origins=${CORS_ALLOWED_ORIGINS} \
-          -Dcors.allowed-methods=* \
-          -Dcors.allowed-headers=* \
-          -Dcors.exposed-headers=* \
-          
-          -Djwt.jwtSecret=${JWT_SECRET} \
-          -Djwt.jwtExpirationInMs=${JWT_EXPIRATION_MS} 
+            -Dserver.port=${SERVER_PORT} \
+            -Dserver.error.include-message=always \
+            -Dgoogle.storage.bucket.name=${GOOGLE_CLOUD_BUCKET_NAME} \
+            -Dgoogle.storage.project.id=${GOOGLE_CLOUD_PROJECT_ID} \
+            -Dpassword.reset.token.expirationInSeconds=${RESET_PASSWORD_TOKEN_EXPIRATION_SECONDS} \
+            -Dclient.base-url=${CLIENT_BASE_URL} \
+            -Dclient.reset-password-url=${CLIENT_RESET_PASSWORD_URL} \
+            -Dlogging.level.root=${DEBUG_LEVEL} \
+            -Dlogging.level.org.springframework.web=DEBUG \
+            -Dlogging.level.org.springframework.mail=DEBUG \
+            -Dlogging.level.org.hibernate=ERROR \
+            -Dmanagement.endpoints.web.exposure.include=* \
+            -Dmanagement.endpoint.health.show-details=always \
+            -Dspring.servlet.multipart.max-file-size=5MB \
+            -Dspring.servlet.multipart.max-request-size=5MB \
+            -Dspring.mail.host=${EMAIL_HOST} \
+            -Dspring.mail.port=${EMAIL_PORT} \
+            -Dspring.mail.username=${EMAIL_USERNAME} \
+            -Dspring.mail.password=${EMAIL_PASSWORD} \
+            -Dspring.mail.properties.mail.debug=${EMAIL_SERVICE_DEBUG} \
+            -Dspring.mail.properties.mail.smtp.auth=true \
+            -Dspring.mail.properties.mail.smtp.starttls.enable=true \
+            -Dspring.thymeleaf.check-template-location=false \
+            -Dspring.jpa.hibernate.ddl-auto=none \
+            -Dspring.jpa.show-sql=false \
+            -Dspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect \
+            -Dspring.jpa.properties.hibernate.format-sql=true \
+            -Dspring.jpa.properties.hibernate.jdbc.time_zone=UTC \
+            -Dspring.datasource.platform=postgres \
+            -Dspring.datasource.url=jdbc:postgresql://${DB_HOST}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}&sslmode=${DB_SSL} \
+            -Dspring.datasource.driverClassName=org.postgresql.Driver \
+            -Dspring.liquibase.change-log=db/changelog/db.changelog-master.xml \
+            -Dspring.liquibase.enabled=true \
+            -Dspring.liquibase.show-summary=summary \
+            -Dcors.allowed-origins=${CORS_ALLOWED_ORIGINS} \
+            -Dcors.allowed-methods=* \
+            -Dcors.allowed-headers=* \
+            -Dcors.exposed-headers=* \
+            -Djwt.jwtSecret=${JWT_SECRET} \
+            -Djwt.jwtExpirationInMs=${JWT_EXPIRATION_MS} 
 
       # Store artifacts if needed
 #      - name: Upload Backend Artifact
