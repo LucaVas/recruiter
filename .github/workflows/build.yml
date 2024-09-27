@@ -94,12 +94,9 @@ jobs:
             -Dspring.thymeleaf.check-template-location=false \
             -Dspring.jpa.hibernate.ddl-auto=none \
             -Dspring.jpa.show-sql=false \
-            -Dspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect \
             -Dspring.jpa.properties.hibernate.format-sql=true \
             -Dspring.jpa.properties.hibernate.jdbc.time_zone=UTC \
-            -Dspring.datasource.platform=postgres \
-            -Dspring.datasource.url=jdbc:postgresql://${DB_HOST}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}&sslmode=${DB_SSL} \
-            -Dspring.datasource.driverClassName=org.postgresql.Driver \
+            -Dspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect \
             -Dspring.liquibase.change-log=db/changelog/db.changelog-master.xml \
             -Dspring.liquibase.enabled=true \
             -Dspring.liquibase.show-summary=summary \
@@ -108,7 +105,10 @@ jobs:
             -Dcors.allowed-headers=* \
             -Dcors.exposed-headers=* \
             -Djwt.jwtSecret=${JWT_SECRET} \
-            -Djwt.jwtExpirationInMs=${JWT_EXPIRATION_MS} 
+            -Djwt.jwtExpirationInMs=${JWT_EXPIRATION_MS} \
+            -Dspring.datasource.platform=postgres \
+            -Dspring.datasource.driverClassName=org.postgresql.Driver \
+            -Dspring.datasource.url=jdbc:postgresql://${DB_HOST}/${DB_NAME}?user=${DB_USER}&password=${DB_PASSWORD}&sslmode=${DB_SSL} 
 
       # Store artifacts if needed
 #      - name: Upload Backend Artifact
