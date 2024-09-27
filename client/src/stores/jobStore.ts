@@ -19,16 +19,13 @@ const useJobStore = defineStore('jobStore', {
   }),
   getters: {},
   actions: {
-    async loadJobs(pageNumber: number, pageSize: number): Promise<void> {
+    async fetchJobs(pageNumber: number, pageSize: number): Promise<void> {
       const { data }: AxiosResponse<CustomPage<Job>> = await api.get(
         `${baseApiPath}?page=${pageNumber ?? DEFAULT_PAGE_NUMBER}&pageSize=${pageSize ?? DEFAULT_PAGE_SIZE}`
       );
       this.jobs = data.elements;
       this.totalJobs = data.totalElements;
     },
-  },
-  persist: {
-    storage: localStorage,
   },
 });
 

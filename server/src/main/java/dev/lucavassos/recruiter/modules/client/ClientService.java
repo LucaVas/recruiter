@@ -58,8 +58,8 @@ public class ClientService {
             throw new BadRequestException("Client already exists");
         }
 
-        Client newClient = Client.builder().name(request.name()).industry(request.industry()).build();
-        ClientDto client = clientDtoMapper.apply(saveClient(newClient));
+        Client newClient = saveClient(Client.builder().name(request.name()).industry(request.industry()).build());
+        ClientDto client = clientDtoMapper.apply(newClient);
 
         log.debug("Client added: {}", client);
 

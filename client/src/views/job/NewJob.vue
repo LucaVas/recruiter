@@ -121,7 +121,7 @@ onMounted(async () => {
   <div class="flex w-full flex-col justify-evenly gap-3">
     <PageHeaderBanner title="New Job" />
 
-    <body class="flex flex-col gap-6">
+    <div class="flex flex-col gap-6">
       <JobClientSection
         :client="job.client"
         :clients="clients"
@@ -355,7 +355,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-    </body>
+    </div>
 
     <Divider />
     <div class="flex w-full justify-between">

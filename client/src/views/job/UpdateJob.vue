@@ -139,7 +139,7 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
   <div v-else class="flex w-full flex-col justify-evenly gap-3">
     <PageHeaderBanner title="Update Job" />
 
-    <body class="flex flex-col gap-6">
+    <div class="flex flex-col gap-6">
       <JobStatusComponent
         :status="job.status"
         :createdAt="new Date(job.createdAt)"
@@ -463,7 +463,7 @@ onMounted(async () => await initializeJob(Number(jobId.value), toast));
           </div>
         </div>
       </div>
-    </body>
+    </div>
 
     <Divider />
     <footer class="flex justify-between">
