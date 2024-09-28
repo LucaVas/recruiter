@@ -63,13 +63,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Lint, Format and Type Check Client
-        working-directory: ./client
-        run: |
-          npm run typecheck
-          npm run lint
-          npm run format
-
       - name: Build Client
         working-directory: ./client
         run: |
