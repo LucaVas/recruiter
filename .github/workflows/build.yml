@@ -66,7 +66,9 @@ jobs:
       - name: Lint, Format and Type Check Client
         working-directory: ./client
         run: |
-          npm run prepare
+          npm run typecheck
+          npm run lint
+          npm run format
 
       - name: Build Client
         working-directory: ./client
